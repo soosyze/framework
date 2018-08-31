@@ -449,9 +449,9 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     public function testValidFile()
     {
         $this->object->setInputs([
-            'field_file'              => __DIR__ . '\ValidatorTest.php',
-            'field_not_file'          => __DIR__ . '\noFichier.php',
-            'field_file_required'     => __DIR__ . '\ValidatorTest.php',
+            'field_file'              => 'tests/components/validator/ValidatorTest.php',
+            'field_not_file'          => 'tests/components/validator/noFichier.php',
+            'field_file_required'     => 'tests/components/validator/ValidatorTest.php',
             'field_file_not_required' => '',
         ])->setRules([
             'field_file'              => 'file',
@@ -463,8 +463,8 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($this->object->isValid());
 
         $this->object->setInputs([
-            'field_file'     => __DIR__ . '\noFichier.php',
-            'field_not_file' => __DIR__ . '\ValidatorTest.php'
+            'field_file'     => 'tests/components/validator/noFichier.php',
+            'field_not_file' => 'tests/components/validator/ValidatorTest.php'
         ])->setRules([
             'field_file'     => 'file',
             'field_not_file' => '!file'
