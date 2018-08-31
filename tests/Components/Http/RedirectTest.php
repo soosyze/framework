@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Http;
 
 use Soosyze\Components\Http\Redirect;
 
-class RedirectTest extends \PHPUnit_Framework_TestCase
+class RedirectTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Reponse

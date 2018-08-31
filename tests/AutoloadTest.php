@@ -2,7 +2,7 @@
 
 namespace Soosyze\Test;
 
-class AutoloadTest extends \PHPUnit_Framework_TestCase
+class AutoloadTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Soosyze\Autoload

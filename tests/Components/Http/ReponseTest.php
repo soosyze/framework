@@ -5,7 +5,7 @@ namespace Soosyze\Tests\Components\Http;
 use Soosyze\Components\Http\Reponse,
     Soosyze\Components\Http\Stream;
 
-class ReponseTest extends \PHPUnit_Framework_TestCase
+class ReponseTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Reponse

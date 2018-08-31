@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Http;
 
 use Soosyze\Components\Http\Stream;
 
-class StreamTest extends \PHPUnit_Framework_TestCase
+class StreamTest extends \PHPUnit\Framework\TestCase
 {
 
     /**

@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Http;
 
 use Soosyze\Components\Http\ServerRequest;
 
-class ServerRequestTest extends \PHPUnit_Framework_TestCase
+class ServerRequestTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var UplaodeFile

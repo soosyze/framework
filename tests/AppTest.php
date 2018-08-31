@@ -2,7 +2,7 @@
 
 namespace Soosyze\Test;
 
-class AppTest extends \PHPUnit_Framework_TestCase
+class AppTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AppCore

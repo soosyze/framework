@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Form;
 
 use Soosyze\Components\Form\FormBuilder;
 
-class FormTest extends \PHPUnit_Framework_TestCase
+class FormTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var FormBuilder

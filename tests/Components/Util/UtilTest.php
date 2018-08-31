@@ -8,7 +8,7 @@ use Soosyze\Components\Util\Util;
  * @requires extension json
  * @coversDefaultClass \Soosyze\Components\Util\Util
  */
-class UtilTest extends \PHPUnit_Framework_TestCase
+class UtilTest extends \PHPUnit\Framework\TestCase
 {
     static $path = __DIR__ . DIRECTORY_SEPARATOR . 'build';
 

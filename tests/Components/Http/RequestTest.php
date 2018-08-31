@@ -5,7 +5,7 @@ namespace Soosyze\Tests\Components\Http;
 use Soosyze\Components\Http\Request,
     Soosyze\Components\Http\Uri;
 
-class RequestTest extends \PHPUnit_Framework_TestCase
+class RequestTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Request

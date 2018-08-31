@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Form;
 
 use Soosyze\Components\Validator\Validator;
 
-class ValidatorTest extends \PHPUnit_Framework_TestCase
+class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Validator
@@ -49,8 +49,8 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
             'field_alpha_num_required'     => 'hello2000',
             'field_alpha_num_not_required' => ''
         ])->setRules([
-            'field_alpha_num'              => 'AlphaNum',
-            'field_not_alpha_num'          => '!AlphaNum',
+            'field_alpha_num'              => 'alphanum',
+            'field_not_alpha_num'          => '!alphaNum',
             'field_alpha_num_required'     => 'required|AlphaNum',
             'field_alpha_num_not_required' => '!required|AlphaNum',
         ]);

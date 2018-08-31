@@ -4,7 +4,7 @@ namespace Soosyze\Test;
 
 use \Soosyze\Components\Http\Request;
 
-class RoutingTest extends \PHPUnit_Framework_TestCase
+class RoutingTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Routing

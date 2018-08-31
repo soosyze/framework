@@ -7,7 +7,7 @@ use Soosyze\Components\Template\Template;
 /**
  * @coversDefaultClass \Soosyze\Components\Template\Template
  */
-class TemplateTest extends \PHPUnit_Framework_TestCase
+class TemplateTest extends \PHPUnit\Framework\TestCase
 {
     /**
      *

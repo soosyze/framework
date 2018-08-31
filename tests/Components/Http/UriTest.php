@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Http;
 
 use Soosyze\Components\Http\Uri;
 
-class UriTest extends \PHPUnit_Framework_TestCase
+class UriTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Uri

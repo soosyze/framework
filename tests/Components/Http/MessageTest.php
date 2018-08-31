@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Http;
 
 use Soosyze\Components\Http\Message;
 
-class MessageTest extends \PHPUnit_Framework_TestCase
+class MessageTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
