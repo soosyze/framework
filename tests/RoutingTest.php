@@ -41,7 +41,6 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
      */
     protected function tearDown()
     {
-        
     }
 
     public function testParse()
@@ -174,13 +173,12 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
 
 class TestController
 {
-
     public function index()
     {
         return "hello world !";
     }
 
-    public function page( $item )
+    public function page($item)
     {
         return "hello page " . $item;
     }
@@ -188,7 +186,6 @@ class TestController
 
 class TestControllerOther
 {
-
     public function index()
     {
         return "hello world !";

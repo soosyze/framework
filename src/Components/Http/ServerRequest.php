@@ -2,7 +2,7 @@
 
 /**
  * Soosyze Framework http://soosyze.com
- * 
+ *
  * @package Soosyze\Components\Http
  * @author  Mathieu NOËL <mathieu@soosyze.com>
  * @license https://github.com/soosyze/framework/blob/master/LICENSE (MIT License)
@@ -16,56 +16,56 @@ use Psr\Http\Message\ServerRequestInterface;
  * Représentation d'une requête HTTP entrante, côté serveur.
  *
  * @link https://www.php-fig.org/psr/psr-7/ PSR-7: HTTP message interfaces
- * 
+ *
  * @author Mathieu NOËL
  */
 class ServerRequest extends Request implements ServerRequestInterface
 {
     /**
      * Paramètres du serveur ($_SERVER).
-     * 
-     * @var array 
+     *
+     * @var array
      */
     protected $serverParams = [];
 
     /**
      * Les cookies ($_COOKIE).
-     * 
-     * @var type 
+     *
+     * @var type
      */
     protected $cookieParams = [];
 
     /**
      * Paramètres de la requête ($_GET).
-     * 
-     * @var array 
+     *
+     * @var array
      */
     protected $queryParams = [];
 
     /**
      * Fichiers transmis au serveur ($_FILES).
-     * 
-     * @var array 
+     *
+     * @var array
      */
     protected $uploadFiles = [];
 
     /**
      * Les attribues.
-     * 
-     * @var array 
+     *
+     * @var array
      */
     protected $attributes = [];
 
     /**
      * Le corps de la requête.
-     * 
-     * @var null|array|object 
+     *
+     * @var null|array|object
      */
     protected $parseBody = null;
 
     /**
      * Construit une requête coté serveur.
-     * 
+     *
      * @param string $method Méthode HTTP ('GET'|'POST'|...).
      * @param \Soosyze\Components\Http\UriInterface $uri L'URI de la requête.
      * @param array $headers Les en-têtes du message.
@@ -76,11 +76,15 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @param array $uploadFiles Fichiers transmis au serveur.
      */
     public function __construct(
-    $method, \Psr\Http\Message\UriInterface $uri, array $headers = [],
-        \Psr\Http\Message\StreamInterface $body = null, $version = '1.1',
-        array $serverParams = [], array $cookies = [], array $uploadFiles = []
-    )
-    {
+    $method,
+        \Psr\Http\Message\UriInterface $uri,
+        array $headers = [],
+        \Psr\Http\Message\StreamInterface $body = null,
+        $version = '1.1',
+        array $serverParams = [],
+        array $cookies = [],
+        array $uploadFiles = []
+    ) {
         parent::__construct($method, $uri, $headers, $body, $version);
         $this->serverParams = $serverParams;
         $this->cookieParams = $cookies;
@@ -89,7 +93,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     /**
      * Construit une requête à partir des paramètre du serveur.
-     * 
+     *
      * @return ServerRequest
      */
     public static function create()
@@ -109,7 +113,14 @@ class ServerRequest extends Request implements ServerRequestInterface
             : '1.1';
 
         $request = new ServerRequest(
-            $_SERVER[ 'REQUEST_METHOD' ], $uri, $headers, new Stream(), $protocol, $_SERVER, $_COOKIE, $_FILES
+            $_SERVER[ 'REQUEST_METHOD' ],
+            $uri,
+            $headers,
+            new Stream(),
+            $protocol,
+            $_SERVER,
+            $_COOKIE,
+            $_FILES
         );
 
         return $request->withParsedBody($_POST)
@@ -153,13 +164,14 @@ class ServerRequest extends Request implements ServerRequestInterface
      * être injecté à l'instanciation.
      *
      * @param array $cookies Tableau de paires clé/valeur représentant les cookies.
-     * 
+     *
      * @return static
      */
-    public function withCookieParams( array $cookies )
+    public function withCookieParams(array $cookies)
     {
         $clone               = clone $this;
         $clone->cookieParams = $cookies;
+
         return $clone;
     }
 
@@ -183,10 +195,10 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @param array $query Tableau d'arguments de chaîne de requête, généralement de
      * $_GET.
-     * 
+     *
      * @return static
      */
-    public function withQueryParams( array $query )
+    public function withQueryParams(array $query)
     {
         $clone              = clone $this;
         $clone->queryParams = $query;
@@ -212,17 +224,15 @@ class ServerRequest extends Request implements ServerRequestInterface
      * Créer une nouvelle instance avec les fichiers téléchargés spécifiés.
      *
      * @param array $uploadedFiles Arbre de tableau des instances de UploadedFileInterface.
-     * 
+     *
      * @return static
-     * 
+     *
      * @throws \InvalidArgumentException Les contenus doivent être tous des instance d'UploadedFileInterface.
      */
-    public function withUploadedFiles( array $uploadedFiles )
+    public function withUploadedFiles(array $uploadedFiles)
     {
-        foreach( $uploadedFiles as $value )
-        {
-            if( !$value instanceof UploadedFile )
-            {
+        foreach ($uploadedFiles as $value) {
+            if (!$value instanceof UploadedFile) {
                 throw new \InvalidArgumentException('The contents must all be instances of UploadedFileInterface.');
             }
         }
@@ -251,16 +261,17 @@ class ServerRequest extends Request implements ServerRequestInterface
      * SEULEMENT pour injecter le contenu de $_POST.
      *
      * @param null|array|object $data Données du corps désérialisées.
-     * 
+     *
      * @return static
-     * 
+     *
      * @throws \InvalidArgumentException Si un type d'argument non pris en charge est
      * à condition de.
      */
-    public function withParsedBody( $data )
+    public function withParsedBody($data)
     {
         $clone            = clone $this;
         $clone->parseBody = $data;
+
         return $clone;
     }
 
@@ -288,13 +299,13 @@ class ServerRequest extends Request implements ServerRequestInterface
      * la valeur par défaut fournie.
      *
      * @see getAttributes()
-     * 
+     *
      * @param string $name Nom de l'attribut.
      * @param mixed $default Valeur par défaut à renvoyer si l'attribut n'existe pas.
-     * 
+     *
      * @return mélangé
      */
-    public function getAttribute( $name, $default = null )
+    public function getAttribute($name, $default = null)
     {
         return isset($this->attributes[ $name ])
             ? $this->attributes[ $name ]
@@ -312,13 +323,13 @@ class ServerRequest extends Request implements ServerRequestInterface
      * attribut mis à jour.
      *
      * @see getAttributes()
-     * 
+     *
      * @param string $name Nom de l'attribut.
      * @param mixed $value Valeur de l'attribut.
-     * 
+     *
      * @return static
      */
-    public function withAttribute( $name, $value )
+    public function withAttribute($name, $value)
     {
         $clone                      = clone $this;
         $clone->attributes[ $name ] = $value;
@@ -333,18 +344,18 @@ class ServerRequest extends Request implements ServerRequestInterface
      * décrit dans getAttributes().
      *
      * @see getAttributes ()
-     * 
+     *
      * @param string $name Nom de l'attribut.
-     * 
+     *
      * @return static
      */
-    public function withoutAttribute( $name )
+    public function withoutAttribute($name)
     {
         $clone = clone $this;
-        if( isset($clone->attributes[ $name ]) )
-        {
+        if (isset($clone->attributes[ $name ])) {
             unset($clone->attributes[ $name ]);
         }
+
         return $clone;
     }
 }

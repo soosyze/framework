@@ -2,7 +2,7 @@
 
 /**
  * Soosyze Framework http://soosyze.com
- * 
+ *
  * @package Soosyze\Components\Http
  * @author  Mathieu NOËL <mathieu@soosyze.com>
  * @license https://github.com/soosyze/framework/blob/master/LICENSE (MIT License)
@@ -10,44 +10,44 @@
 
 namespace Soosyze\Components\Http;
 
-use Psr\Http\Message\RequestInterface,
-    Psr\Http\Message\StreamInterface,
-    Psr\Http\Message\UriInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UriInterface;
 
 /**
  * Représentation d'une requête côté client sortant.
  *
  * @link https://www.php-fig.org/psr/psr-7/ PSR-7: HTTP message interfaces
- * 
+ *
  * @author Mathieu NOËL
  */
 class Request extends Message implements RequestInterface
 {
     /**
      * Méthode de la requête HTTP.
-     * 
-     * @var string 
+     *
+     * @var string
      */
     protected $method;
 
     /**
      * Cible de la requête.
-     * 
-     * @var string 
+     *
+     * @var string
      */
     protected $requestTarget;
 
     /**
      * L'URI de la requête.
-     * 
-     * @var \Psr\Http\Message\UriInterface 
+     *
+     * @var \Psr\Http\Message\UriInterface
      */
     protected $uri;
 
     /**
      * Méthodes acceptés par le protocole HTTP.
-     * 
-     * @var string 
+     *
+     * @var string
      */
     protected $methods = [
         'CONNECT',
@@ -64,24 +64,27 @@ class Request extends Message implements RequestInterface
     /**
      * Pendant la construction, les implémentations DOIVENT essayer de définir l'en-tête Host à partir de
      * un URI fourni si aucun en-tête Host n'est fourni.
-     * 
+     *
      * @param string $method Méthode HTTP ('GET'|'POST'|...).
      * @param UriInterface $uri L'URI de la requête.
      * @param array $headers Les en-têtes du message.
      * @param StreamInterface $body Le corps du message.
      * @param type $version La version du protocole HTTP.
      */
-    public function __construct( $method, UriInterface $uri,
-        array $headers = [], StreamInterface $body = null, $version = '1.1' )
-    {
+    public function __construct(
+        $method,
+        UriInterface $uri,
+        array $headers = [],
+        StreamInterface $body = null,
+        $version = '1.1'
+    ) {
         $this->method          = $this->filterMethod($method);
         $this->uri             = $uri;
         $this->withHeaders($headers);
         $this->body            = $body;
         $this->protocolVersion = $this->filterProtocolVersion($version);
 
-        if( !isset($headers[ 'Host' ]) && $uri->getHost() !== '' )
-        {
+        if (!isset($headers[ 'Host' ]) && $uri->getHost() !== '') {
             $this->headers[ 'host' ] = [ $uri->getHost() ];
         }
     }
@@ -100,13 +103,12 @@ class Request extends Message implements RequestInterface
      * Récupère la cible de requête telque les utilisateurs la voit.
      * Si aucune adresse URI n'est disponible et qu'aucune cible de requête n'a été spécifiée
      * cette méthode DOIT retourner la chaîne "/".
-     * 
+     *
      * @return string Cible ce la requête.
      */
     public function getRequestTarget()
     {
-        if( $this->requestTarget !== null )
-        {
+        if ($this->requestTarget !== null) {
             return $this->requestTarget;
         }
 
@@ -126,8 +128,8 @@ class Request extends Message implements RequestInterface
      * Cette méthode DOIT retourner une instance d'UriInterface.
      *
      * @link http://tools.ietf.org/html/rfc3986#section-4.3
-     * 
-     * @return UriInterface Renvoie une instance d'UriInterface 
+     *
+     * @return UriInterface Renvoie une instance d'UriInterface
      * représentant l'URI de la requête.
      */
     public function getUri()
@@ -137,18 +139,18 @@ class Request extends Message implements RequestInterface
 
     /**
      * Renvoie une instance avec la méthode HTTP fournie.
-     * 
+     *
      * @param string $method Nom de la méthode (sensible à la casse).
-     * 
+     *
      * @return static
-     * 
+     *
      * @throws \InvalidArgumentException pour les méthodes HTTP invalides.
      */
-    public function withMethod( $method )
+    public function withMethod($method)
     {
-
         $clone         = clone $this;
         $clone->method = $this->filterMethod($method);
+
         return $clone;
     }
 
@@ -162,14 +164,14 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
-    public function withRequestTarget( $requestTarget )
+    public function withRequestTarget($requestTarget)
     {
-        if( !is_string($requestTarget) )
-        {
+        if (!is_string($requestTarget)) {
             throw new \InvalidArgumentException('The target of the request must be a string.');
         }
         $clone                = clone $this;
         $clone->requestTarget = $requestTarget;
+
         return $clone;
     }
 
@@ -183,19 +185,17 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
-    public function withUri( UriInterface $uri, $preserveHost = false )
+    public function withUri(UriInterface $uri, $preserveHost = false)
     {
         $clone      = clone $this;
         $clone->uri = $uri;
 
-        if( $preserveHost )
-        {
+        if ($preserveHost) {
             /**
              * Si l'en-tête Host est manquant ou vide, et que le nouvel URI contient
              * un composant hôte, cette méthode DOIT mettre à jour l'en-tête Host dans le retour.
              */
-            if( empty($this->getHeader('Host')) && $uri->getHost() !== '' )
-            {
+            if (empty($this->getHeader('Host')) && $uri->getHost() !== '') {
                 return $clone->withHeader('Host', $uri->getHost());
             }
         }
@@ -205,27 +205,26 @@ class Request extends Message implements RequestInterface
 
     /**
      * Filtre la méthde HTTP de la requête.
-     * 
+     *
      * @param string $method Méthode HTTP ('GET'|'POST'|...).
-     * 
+     *
      * @return string Méthode HTTP filtré.
-     * 
+     *
      * @throws \InvalidArgumentException La méthode doit être une chaine de caractère.
      * @throws \InvalidArgumentException La méthode n'est pas prise en charge par la requête.
      */
-    protected function filterMethod( $method )
+    protected function filterMethod($method)
     {
-        if( !is_string($method) )
-        {
+        if (!is_string($method)) {
             throw new \InvalidArgumentException('The method must be a string');
         }
 
         $methodUp = strtoupper($method);
 
-        if( !in_array($methodUp, $this->methods) )
-        {
+        if (!in_array($methodUp, $this->methods)) {
             throw new \InvalidArgumentException('The method is not valid (only ' . implode('|', $this->methods) . ').');
         }
+
         return $methodUp;
     }
 }

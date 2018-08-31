@@ -2,8 +2,8 @@
 
 namespace Soosyze\Tests\Components\Http;
 
-use Soosyze\Components\Http\Reponse,
-    Soosyze\Components\Http\Stream;
+use Soosyze\Components\Http\Reponse;
+use Soosyze\Components\Http\Stream;
 
 class ReponseTest extends \PHPUnit\Framework\TestCase
 {
@@ -27,7 +27,6 @@ class ReponseTest extends \PHPUnit\Framework\TestCase
      */
     protected function tearDown()
     {
-        
     }
 
     public function testSetUpReponse()

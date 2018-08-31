@@ -27,7 +27,6 @@ class AppTest extends \PHPUnit\Framework\TestCase
      */
     protected function tearDown()
     {
-        
     }
 
     public function testRun()
@@ -105,7 +104,6 @@ class AppTest extends \PHPUnit\Framework\TestCase
 
 class AppCore extends \Soosyze\App
 {
-
     protected function loadModules()
     {
         return [

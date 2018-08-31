@@ -10,65 +10,80 @@
 
 namespace Soosyze;
 
-use Psr\Container\ContainerInterface,
-    Soosyze\Exception\Container\NotFoundException,
-    Soosyze\Exception\Container\ContainerException;
+use Psr\Container\ContainerInterface;
+use Soosyze\Exception\Container\NotFoundException;
+use Soosyze\Exception\Container\ContainerException;
 
 /**
  * Conteneur d'injection de dépendances et middleware.
  *
  * @see https://www.php-fig.org/psr/psr-11/ Suit les recommandations PSR-11.
- * 
+ *
  * @author Mathieu NOËL
  */
 class Container implements ContainerInterface
 {
     /**
      * Liste des services.
-     * 
+     *
      * @var array
      */
     protected $services = [];
 
     /**
      * Liste des objets instanciés.
-     * 
+     *
      * @var array
      */
     protected $instances = [];
 
     /**
      * Fonctions de hook
-     * 
+     *
      * @var array
      */
     protected $hooks = [];
 
     /**
+     * Appel un service comme une fonction.
+     *
+     * @param string $name Nom du service.
+     * @param array $arg Paramètres passés à la fonction.
+     *
+     * @return object
+     */
+    public function __call($name, $arg)
+    {
+        return $this->get($name);
+    }
+
+    /**
      * Charges un service.
-     * 
+     *
      * @param string $key Nom du service.
      * @param string $class Objet à instancier.
      * @param array $arg Arguments d'instanciation.
      *
      * @return $this
      */
-    public function setService( $key, $class, array $arg = null )
+    public function setService($key, $class, array $arg = null)
     {
         $this->services[ $key ] = [ 'class' => $class, 'arguments' => $arg ];
+
         return $this;
     }
 
     /**
      * Charge les services.
-     * 
+     *
      * @param array $services Liste de services.
      *
      * @return $this
      */
-    public function setServices( array $services )
+    public function setServices(array $services)
     {
         $this->services = $services;
+
         return $this;
     }
 
@@ -80,9 +95,10 @@ class Container implements ContainerInterface
      *
      * @return $this
      */
-    public function setInstance( $key, $instance )
+    public function setInstance($key, $instance)
     {
         $this->instances[ $key ] = $instance;
+
         return $this;
     }
 
@@ -93,94 +109,87 @@ class Container implements ContainerInterface
      *
      * @return $this
      */
-    public function setInstances( array $instances )
+    public function setInstances(array $instances)
     {
         $this->instances = $instances;
+
         return $this;
     }
 
     /**
-     * Si le service existe alors on le retourne, sinon on injecte 
+     * Si le service existe alors on le retourne, sinon on injecte
      * ses dépendances et retourne son instance.
-     * 
+     *
      * @param string $key Nom du service.
-     * 
+     *
      * @return object
-     * 
+     *
      * @throws \InvalidArgumentException La fonction get accepte uniquement les chaînes de caractères.
      * @throws NotFoundException Le service appelé n'existe pas.
      * @throws ContainerException La classe n'est pas instanciable.
      */
-    public function get( $key )
+    public function get($key)
     {
-        if( !is_string($key) )
-        {
-            throw new \InvalidArgumentException('Get function only accepts strings. Input was : '
+        if (!is_string($key)) {
+            throw new \InvalidArgumentException(
+                'Get function only accepts strings. Input was : '
             . htmlspecialchars($key) . '.'
             );
         }
 
-        if( isset($this->instances[ $key ]) )
-        {
+        if (isset($this->instances[ $key ])) {
             return $this->instances[ $key ];
         }
 
-        if( !isset($this->services[ $key ]) )
-        {
+        if (!isset($this->services[ $key ])) {
             throw new NotFoundException('Service ' . htmlspecialchars($key) . ' does not exist.');
         }
 
         $args = [];
-        if( isset($this->services[ $key ][ 'arguments' ]) )
-        {
+        if (isset($this->services[ $key ][ 'arguments' ])) {
             $args = $this->services[ $key ][ 'arguments' ];
-            foreach( $args as $keyArg => $arg )
-            {
+            foreach ($args as $keyArg => $arg) {
                 /* Injecte d'autres services comme argument d'instantiation du service appelé. */
-                if( preg_match("/^@.*/", $arg, $matches) )
-                {
+                if (preg_match("/^@.*/", $arg, $matches)) {
                     $args[ $keyArg ] = $this->get(substr($matches[ 0 ], 1));
                 }
             }
         }
 
-        try
-        {
+        try {
             /*
-             * ReflectionClass à la même fonctionnalité que call_user_func_array 
+             * ReflectionClass à la même fonctionnalité que call_user_func_array
              * mais pour le constructeur d'un objet.
              */
             $ref = new \ReflectionClass($this->services[ $key ][ 'class' ]);
-        }
-        catch( \ReflectionException $ex )
-        {
+        } catch (\ReflectionException $ex) {
             throw new ContainerException(htmlspecialchars($key) . " is not exist.", $ex->getCode(), $ex);
         }
 
         $instance = $ref->newInstanceArgs($args);
         $this->setInstance($key, $instance);
 
-
         return $this->get($key);
     }
 
     /**
      * Si le service existe.
-     * 
+     *
      * @param string $key Nom du service.
-     * 
+     *
      * @return bool
-     * 
+     *
      * @throws \InvalidArgumentException La fonction get accepte uniquement les chaînes de caractères.
      */
-    public function has( $key )
+    public function has($key)
     {
-        if( !is_string($key) )
-        {
-            throw new \InvalidArgumentException('Get function only accepts strings. Input was: '
+        if (!is_string($key)) {
+            throw new \InvalidArgumentException(
+                'Get function only accepts strings. Input was: '
             . htmlspecialchars($key) . '.'
             );
         }
+
         return isset($this->services[ $key ]) || isset($this->instances[ $key ]);
     }
 
@@ -192,40 +201,35 @@ class Container implements ContainerInterface
      *
      * @return $this
      */
-    public function addHook( $name, callable $func )
+    public function addHook($name, callable $func)
     {
         $this->hooks[ $name ][] = $func;
+
         return $this;
     }
 
     /**
-     * Demande d'exécution de fonction si elle existe. 
+     * Demande d'exécution de fonction si elle existe.
      * Utilise le container pour l'ajout des hooks depuis les fichier de services.
      *
      * @param string $name Clé pour appeler la fonction.
      * @param array args Paramètres passés à la fonction.
-     * 
+     *
      * @return mixed|void le résultat des fonctions appelées ou rien
      */
-    public function callHook( $name, array $args = [] )
+    public function callHook($name, array $args = [])
     {
         $return = "";
         /* Si mes hooks existent, ils sont exécutés. */
-        if( isset($this->hooks[ $name ]) )
-        {
-            foreach( $this->hooks[ $name ] as $func )
-            {
+        if (isset($this->hooks[ $name ])) {
+            foreach ($this->hooks[ $name ] as $func) {
                 $return = call_user_func_array($func, $args);
             }
-        }
-        else
-        {
+        } else {
             /* Je regarde dans les hooks de mes services. */
-            foreach( $this->services as $key => $value )
-            {
+            foreach ($this->services as $key => $value) {
                 /* Si le hook que je recherche existe alors je le charge. */
-                if( isset($value[ 'hooks' ][ $name ]) )
-                {
+                if (isset($value[ 'hooks' ][ $name ])) {
                     $obj = $this->get($key);
                     $this->addHook($name, [
                         /* L'instance de mon service. */
@@ -234,24 +238,11 @@ class Container implements ContainerInterface
                         $value[ 'hooks' ][ $name ] ]);
                 }
             }
-            if( isset($this->hooks[ $name ]) )
-            {
+            if (isset($this->hooks[ $name ])) {
                 $return = $this->callHook($name, $args);
             }
         }
-        return $return;
-    }
 
-    /**
-     * Appel un service comme une fonction.
-     * 
-     * @param string $name Nom du service.
-     * @param array $arg Paramètres passés à la fonction.
-     * 
-     * @return object
-     */
-    public function __call( $name, $arg )
-    {
-        return $this->get($name);
+        return $return;
     }
 }

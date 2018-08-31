@@ -29,15 +29,6 @@ class EmailTest extends \PHPUnit\Framework\TestCase
      */
     protected function tearDown()
     {
-        
-    }
-
-    protected static function callMethod( $obj, $name, array $args = [] )
-    {
-        $class  = new \ReflectionClass($obj);
-        $method = $class->getMethod($name);
-        $method->setAccessible(true);
-        return $method->invokeArgs($obj, $args);
     }
 
     public function testFiltreMail()
@@ -144,5 +135,14 @@ class EmailTest extends \PHPUnit\Framework\TestCase
     {
         $this->object->isHtml();
         $this->assertEquals([ 'text/html; charset="iso-8859-1"' ], $this->object->getHeader('content-type'));
+    }
+
+    protected static function callMethod($obj, $name, array $args = [])
+    {
+        $class  = new \ReflectionClass($obj);
+        $method = $class->getMethod($name);
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($obj, $args);
     }
 }

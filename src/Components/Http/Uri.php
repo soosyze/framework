@@ -2,7 +2,7 @@
 
 /**
  * Soosyze Framework http://soosyze.com
- * 
+ *
  * @package Soosyze\Components\Http
  * @author  Mathieu NOËL <mathieu@soosyze.com>
  * @license https://github.com/soosyze/framework/blob/master/LICENSE (MIT License)
@@ -18,70 +18,70 @@ use Psr\Http\Message\UriInterface;
  *
  * @link https://en.wikipedia.org/wiki/Uniform_Resource_Identifier
  * @link https://www.php-fig.org/psr/psr-7/ PSR-7: HTTP message interfaces
- * 
+ *
  * @author Mathieu NOËL
  */
 class Uri implements UriInterface
 {
     /**
      * Schéma de l'URI (http(s)|ftp|mailto|file...).
-     * 
+     *
      * @var string
      */
     protected $scheme = '';
 
     /**
      * Utilisateur (partie de l'authority).
-     * 
+     *
      * @var string
      */
     protected $user = '';
 
     /**
      * Mot de passe (partie de l'authority).
-     * 
+     *
      * @var string
      */
     protected $password = '';
 
     /**
      * Nom d'hôte, nom enregistré ou une adresse IP (partie de l'authority).
-     * 
+     *
      * @var string
      */
     protected $host = '';
 
     /**
      * Port (80 pour le http, 443 pour le https).
-     * 
+     *
      * @var int
      */
     protected $port = '';
 
     /**
      * Chemin de l'URI.
-     * 
+     *
      * @var string
      */
     protected $path = '';
 
     /**
      * Requête encodée.
-     * 
+     *
      * @var string
      */
     protected $query = '';
 
     /**
      * Fragment (ou ancre) encodée.
-     * 
+     *
      * @var string
      */
     protected $fragment = '';
 
     /**
      * Les ports supportés.
-     * 
+     *
      * @var array
      */
     protected $ports = [
@@ -93,21 +93,26 @@ class Uri implements UriInterface
 
     /**
      * Construit une URI à partir de chacun de ses attributs.
-     * 
+     *
      * @param string $scheme $_SERVER['REQUEST_SCHEME']
      * @param string $host $_SERVER['HTTP_HOST']
      * @param string $path $_SERVER['PHP_SELF']
-     * @param int|null $port $_SERVER['SERVER_PORT'] 
+     * @param int|null $port $_SERVER['SERVER_PORT']
      * @param string $query $_SERVER['QUERY_STRING']
      * @param string $fragment
-     * @param string $user 
+     * @param string $user
      * @param string $password
      */
     public function __construct(
-    $scheme = '', $host = '', $path = '/', $port = null, $query = '',
-        $fragment = '', $user = '', $password = ''
-    )
-    {
+    $scheme = '',
+        $host = '',
+        $path = '/',
+        $port = null,
+        $query = '',
+        $fragment = '',
+        $user = '',
+        $password = ''
+    ) {
         $this->scheme   = $this->filterScheme($scheme);
         $this->host     = $this->filterStringToLower($host);
         $this->path     = $this->filterPath($path);
@@ -116,6 +121,34 @@ class Uri implements UriInterface
         $this->fragment = $this->filterFragment($fragment);
         $this->user     = $this->filterString($user);
         $this->password = $this->filterString($password);
+    }
+
+    /**
+     * Renvoie la représentation sous forme de chaîne en tant que référence d'URI.
+     *
+     * @see http://tools.ietf.org/html/rfc3986#section-4.1
+     *
+     * @return string L'URI.
+     */
+    public function __toString()
+    {
+        $uri = $this->scheme !== ''
+            ? $this->scheme . ':'
+            : '';
+        $uri .= $this->getAuthority() !== ''
+            ? '//' . $this->getAuthority()
+            : '';
+        $uri .= preg_match('/^(\/).*/', $this->path)
+            ? $this->path
+            : '/' . $this->path;
+        $uri .= $this->query !== ''
+            ? '?' . $this->query
+            : '';
+        $uri .= $this->fragment !== ''
+            ? '#' . $this->fragment
+            : '';
+
+        return $uri;
     }
 
     /**
@@ -131,11 +164,11 @@ class Uri implements UriInterface
     }
 
     /**
-     * Retourne l'autorité de l'URI ou une chaine vide 
+     * Retourne l'autorité de l'URI ou une chaine vide
      * si l'information d'autorité n'est pas présente.
      *
      * @see https://tools.ietf.org/html/rfc3986#section-3.2*
-     * 
+     *
      * @return string Autorité de l'URI, au format "[user-info@]host[:port]".
      */
     public function getAuthority()
@@ -152,25 +185,25 @@ class Uri implements UriInterface
     }
 
     /**
-     * Retourne les informations utilisateur de l'URI 
+     * Retourne les informations utilisateur de l'URI
      * ou une chaine vide s'il n'y a aucune information.
      *
-     * @return string Informations de l'utilisateur de l'URI, 
+     * @return string Informations de l'utilisateur de l'URI,
      * au format "nom d'utilisateur[:mot de passe]".
      */
     public function getUserInfo()
     {
-        if( !empty($this->user) )
-        {
+        if (!empty($this->user)) {
             return $this->user . (!empty($this->password)
                 ? ':' . $this->password
                 : '');
         }
+
         return '';
     }
 
     /**
-     * Retourne l'hôte de l'URI normalisé en minuscule 
+     * Retourne l'hôte de l'URI normalisé en minuscule
      * ou une chaine vide si l'hôte est absent.
      *
      * @see http://tools.ietf.org/html/rfc3986#section-3.2.2
@@ -220,7 +253,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Retourne le fragment de l'URI encodée en pourcentage sans 
+     * Retourne le fragment de l'URI encodée en pourcentage sans
      * le caractère "#" principale, sinon une chaine vide.
      *
      * @see https://tools.ietf.org/html/rfc3986#section-2
@@ -234,7 +267,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Renvoie une instance avec le schéma spécifié, 
+     * Renvoie une instance avec le schéma spécifié,
      * doit soutenir les schémas "http" et "https".
      *
      * @param string $scheme Schéma à utiliser avec la nouvelle instance.
@@ -243,10 +276,11 @@ class Uri implements UriInterface
      *
      * @throws \InvalidArgumentException pour les schémas invalides ou non pris en charge.
      */
-    public function withScheme( $scheme )
+    public function withScheme($scheme)
     {
         $clone         = clone $this;
         $clone->scheme = $this->filterScheme($scheme);
+
         return $clone;
     }
 
@@ -258,13 +292,14 @@ class Uri implements UriInterface
      *
      * @return static Nouvelle instance avec les informations utilisateur spécifiées.
      */
-    public function withUserInfo( $user, $password = null )
+    public function withUserInfo($user, $password = null)
     {
         $clone           = clone $this;
         $clone->user     = $this->filterString($user);
         $clone->password = $password !== null
             ? $this->filterString($password)
             : '';
+
         return $clone;
     }
 
@@ -278,10 +313,11 @@ class Uri implements UriInterface
      *
      * @throws \InvalidArgumentException Noms d'hôtes non valides.
      */
-    public function withHost( $host )
+    public function withHost($host)
     {
         $clone       = clone $this;
         $clone->host = $this->filterStringToLower($host);
+
         return $clone;
     }
 
@@ -297,10 +333,11 @@ class Uri implements UriInterface
      *
      * @throws \InvalidArgumentException Ports non valides.
      */
-    public function withPort( $port )
+    public function withPort($port)
     {
         $clone       = clone $this;
         $clone->port = $this->filterPort($port);
+
         return $clone;
     }
 
@@ -313,10 +350,11 @@ class Uri implements UriInterface
      *
      * @throws \InvalidArgumentException Chemins d'accès non valides.
      */
-    public function withPath( $path )
+    public function withPath($path)
     {
         $clone       = clone $this;
         $clone->path = $this->filterPath($path);
+
         return $clone;
     }
 
@@ -329,10 +367,11 @@ class Uri implements UriInterface
      *
      * @throws \InvalidArgumentException Chaînes de requêtes non valides.
      */
-    public function withQuery( $query )
+    public function withQuery($query)
     {
         $clone        = clone $this;
         $clone->query = $this->filterQuery($query);
+
         return $clone;
     }
 
@@ -343,45 +382,19 @@ class Uri implements UriInterface
      *
      * @return static Une nouvelle instance avec le fragment spécifié.
      */
-    public function withFragment( $fragment )
+    public function withFragment($fragment)
     {
         $clone           = clone $this;
         $clone->fragment = $this->filterFragment($fragment);
+
         return $clone;
     }
 
     /**
-     * Renvoie la représentation sous forme de chaîne en tant que référence d'URI.
-     *
-     * @see http://tools.ietf.org/html/rfc3986#section-4.1
-     * 
-     * @return string L'URI.
-     */
-    public function __toString()
-    {
-        $uri = $this->scheme !== ''
-            ? $this->scheme . ':'
-            : '';
-        $uri .= $this->getAuthority() !== ''
-            ? '//' . $this->getAuthority()
-            : '';
-        $uri .= preg_match('/^(\/).*/', $this->path)
-            ? $this->path
-            : '/' . $this->path;
-        $uri .= $this->query !== ''
-            ? '?' . $this->query
-            : '';
-        $uri .= $this->fragment !== ''
-            ? '#' . $this->fragment
-            : '';
-        return $uri;
-    }
-
-    /**
      * Retourne l'URL contenu dans l'URI.
-     * 
+     *
      * Cette méthode ne fait pas partie de la norme PSR-7
-     * 
+     *
      * @return string L'URL.
      */
     public function getBasePath()
@@ -392,46 +405,54 @@ class Uri implements UriInterface
 
     /**
      * Retourne si le port est dans la gamme des ports TCP / UDP.
-     * 
+     *
      * Cette méthode ne fait pas partie de la norme PSR-7
      *
      * @param int $port Port à tester.
      *
      * @return bool
      */
-    public static function validePort( $port )
+    public static function validePort($port)
     {
         return is_numeric($port) && ($port > 0 && $port <= 65535);
     }
 
     /**
      * Créer une URI à partir d'une URL.
-     * 
+     *
      * Cette méthode ne fait pas partie de la norme PSR-7
      *
      * @param string $url
      *
      * @return static Nouvelle instance d'URI.
      */
-    public static function create( $url )
+    public static function create($url)
     {
         $parse = parse_url($url);
+
         return new Uri(
             isset($parse[ 'scheme' ])
             ? $parse[ 'scheme' ]
-            : '', isset($parse[ 'host' ])
+            : '',
+            isset($parse[ 'host' ])
             ? $parse[ 'host' ]
-            : '', isset($parse[ 'path' ])
+            : '',
+            isset($parse[ 'path' ])
             ? $parse[ 'path' ]
-            : '', isset($parse[ 'port' ])
+            : '',
+            isset($parse[ 'port' ])
             ? $parse[ 'port' ]
-            : '', isset($parse[ 'query' ])
+            : '',
+            isset($parse[ 'query' ])
             ? $parse[ 'query' ]
-            : '', isset($parse[ 'fragment' ])
+            : '',
+            isset($parse[ 'fragment' ])
             ? $parse[ 'fragment' ]
-            : '', isset($parse[ 'user' ])
+            : '',
+            isset($parse[ 'user' ])
             ? $parse[ 'user' ]
-            : '', isset($parse[ 'pass' ])
+            : '',
+            isset($parse[ 'pass' ])
             ? $parse[ 'pass' ]
             : ''
         );
@@ -446,10 +467,9 @@ class Uri implements UriInterface
      *
      * @throws \InvalidArgumentException Le schéma n'est pas pris en compte.
      */
-    protected function filterScheme( $sch = '' )
+    protected function filterScheme($sch = '')
     {
-        if( empty($sch) )
-        {
+        if (empty($sch)) {
             return '';
         }
 
@@ -457,8 +477,7 @@ class Uri implements UriInterface
 
         $schStr = str_replace(':', '', $str);
 
-        if( !isset($this->ports[ $schStr ]) )
-        {
+        if (!isset($this->ports[ $schStr ])) {
             throw new \InvalidArgumentException('The schema is not supported (only ' . implode('|', $this->ports) . ').');
         }
 
@@ -474,15 +493,13 @@ class Uri implements UriInterface
      *
      * @throws \InvalidArgumentException Le port n'est pas dans la gamme des ports TCP/UDP.
      */
-    protected function filterPort( $port )
+    protected function filterPort($port)
     {
-        if( empty($port) )
-        {
+        if (empty($port)) {
             return null;
         }
 
-        if( !self::validePort($port) )
-        {
+        if (!self::validePort($port)) {
             throw new \InvalidArgumentException('The port is not in the TCP/UDP port.');
         }
 
@@ -498,7 +515,7 @@ class Uri implements UriInterface
      *
      * @return string Requête normalisée.
      */
-    protected function filterQuery( $query )
+    protected function filterQuery($query)
     {
         $queryStr    = $this->filterString($query);
         $queryDecode = rawurldecode($queryStr);
@@ -513,7 +530,7 @@ class Uri implements UriInterface
      *
      * @return string Ancre normalisée.
      */
-    protected function filterFragment( $fragment )
+    protected function filterFragment($fragment)
     {
         $fragmentStr    = $this->filterString($fragment);
         $fragmentDecode = rawurldecode($fragmentStr);
@@ -528,15 +545,16 @@ class Uri implements UriInterface
      *
      * @return string Chemin normalisé.
      */
-    protected function filterPath( $path )
+    protected function filterPath($path)
     {
         $pathStr    = $this->filterString($path);
         $pathDecode = rawurldecode($pathStr);
 
-        $dataPath = array_map(function($value)
-        {
-            return rawurlencode($value);
-        }, explode('/', $pathDecode)
+        $dataPath = array_map(
+            function ($value) {
+                return rawurlencode($value);
+            },
+            explode('/', $pathDecode)
         );
 
         return implode('/', $dataPath);
@@ -549,39 +567,38 @@ class Uri implements UriInterface
      *
      * @return string Chaine de caractère normalisée.
      */
-    protected function filterString( $value )
+    protected function filterString($value)
     {
-        if( $value === null || $value === '' )
-        {
+        if ($value === null || $value === '') {
             return '';
         }
-        if( !is_string($value) )
-        {
+        if (!is_string($value)) {
             throw new \InvalidArgumentException('The value must be a string.');
         }
+
         return $value;
     }
 
     /**
      * Filtre une chaine de caractère et la renvoie en minuscule.
-     * 
+     *
      * @param string $value Chaine de caractère à filtrer.
-     * 
+     *
      * @return string Chaine de caractère filtré.
      */
-    protected function filterStringToLower( $value )
+    protected function filterStringToLower($value)
     {
         return strtolower($this->filterString($value));
     }
 
     /**
      * Si le port est prise en charge.
-     * 
+     *
      * @param int $port
-     * 
+     *
      * @return bool
      */
-    protected function validPortStandard( $port )
+    protected function validPortStandard($port)
     {
         return (
             in_array($port, $this->ports) &&
@@ -591,19 +608,18 @@ class Uri implements UriInterface
 
     /**
      * Analyse une requête HTTP et génère une chaîne de requête en encodage URL.
-     * 
+     *
      * @param string $query Requête HTTP.
-     * 
+     *
      * @return string Chaine de requête en encodage URL.
      */
-    protected function rawurldecodeValue( $query )
+    protected function rawurldecodeValue($query)
     {
         return preg_replace_callback(
-            '/(?:[^' . 'a-zA-Z0-9_\-\.~' . '!\$&\'\(\)\*\+,;=' . '%:@\/\?]++|%(?![A-Fa-f0-9]{2}))/', 
-            function($match)
-            {
+            '/(?:[^' . 'a-zA-Z0-9_\-\.~' . '!\$&\'\(\)\*\+,;=' . '%:@\/\?]++|%(?![A-Fa-f0-9]{2}))/',
+            function ($match) {
                 return rawurlencode($match[ 0 ]);
-            }, 
+            },
             $query
         );
     }

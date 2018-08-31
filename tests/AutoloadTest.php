@@ -29,7 +29,6 @@ class AutoloadTest extends \PHPUnit\Framework\TestCase
      */
     protected function tearDown()
     {
-        
     }
 
     public function testSetLib()

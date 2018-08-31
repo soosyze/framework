@@ -13,7 +13,6 @@ class MessageTest extends \PHPUnit\Framework\TestCase
      */
     protected function setUp()
     {
-        
     }
 
     /**
@@ -22,7 +21,6 @@ class MessageTest extends \PHPUnit\Framework\TestCase
      */
     protected function tearDown()
     {
-        
     }
 
     public function testWithProtocolVersion()
@@ -97,7 +95,8 @@ class MessageTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             $clone->withAddedHeader('Location', 'http://www.bar.com/')
-                ->getHeaderLine('location'), 'http://www.foo.com/,http://www.bar.com/'
+                ->getHeaderLine('location'),
+            'http://www.foo.com/,http://www.bar.com/'
         );
     }
 
@@ -133,14 +132,12 @@ class MessageTest extends \PHPUnit\Framework\TestCase
         $this->assertAttributeSame([
             'testheader1' => [ 'ValueTest1' ],
             'testheader2' => [ 'ValueTest2' ]
-            ]
-            , 'headers', $cloneError);
+            ], 'headers', $cloneError);
 
         $cloneSuccess = $clone->withoutHeader('TestHeader1');
         $this->assertAttributeSame([
             'testheader2' => [ 'ValueTest2' ]
-            ]
-            , 'headers', $cloneSuccess);
+            ], 'headers', $cloneSuccess);
     }
 
     public function testWithBody()

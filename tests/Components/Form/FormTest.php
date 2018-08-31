@@ -28,7 +28,6 @@ class FormTest extends \PHPUnit\Framework\TestCase
      */
     protected function tearDown()
     {
-        
     }
 
     public function testInputBasic()
@@ -149,9 +148,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
     public function testGroup()
     {
-        $this->object->group('group', 'div', function()
-        {
-            
+        $this->object->group('group', 'div', function () {
         });
 
         $form   = $this->object->form_group('group');
@@ -267,8 +264,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
     public function testAddAttrGroup()
     {
-        $this->object->group('group', 'div', function($form)
-        {
+        $this->object->group('group', 'div', function ($form) {
             $form->text('textName1', 'textId');
         });
         $this->object->addAttr('textName1', [ 'required' => 'required' ]);
@@ -300,8 +296,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
     public function testGetItemGroup()
     {
-        $this->object->group('group', 'div', function($form)
-        {
+        $this->object->group('group', 'div', function ($form) {
             $form->text('textName1', 'textId');
         });
         $item = $this->object->getItem('textName1');

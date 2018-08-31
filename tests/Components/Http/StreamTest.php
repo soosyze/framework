@@ -13,7 +13,6 @@ class StreamTest extends \PHPUnit\Framework\TestCase
      */
     protected function setUp()
     {
-        
     }
 
     /**
@@ -22,14 +21,14 @@ class StreamTest extends \PHPUnit\Framework\TestCase
      */
     protected function tearDown()
     {
-        
     }
 
-    public function streamFactory( $mode = 'r+' )
+    public function streamFactory($mode = 'r+')
     {
         $stream = fopen('php://temp', $mode);
         fwrite($stream, 'test');
         rewind($stream);
+
         return $stream;
     }
 
@@ -109,8 +108,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($body->eof());
 
         /* Va lire caractère par caractère jusqu'a arriver à la fin de la chaine. */
-        while( !$body->eof() )
-        {
+        while (!$body->eof()) {
             $body->read(1);
         }
         $this->assertTrue($body->eof());

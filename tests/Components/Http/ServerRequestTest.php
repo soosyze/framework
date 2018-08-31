@@ -35,7 +35,6 @@ class ServerRequestTest extends \PHPUnit\Framework\TestCase
      */
     protected function tearDown()
     {
-        
     }
 
     public function testCreate()

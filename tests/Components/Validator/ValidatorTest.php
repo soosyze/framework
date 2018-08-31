@@ -27,7 +27,6 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
      */
     protected function tearDown()
     {
-        
     }
 
     /**
@@ -1016,24 +1015,16 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_custom_not_cube'  => 2,
             'field_custom_multi'     => 8,
             'field_custom_not_multi' => 2
-        ])->addTest('cube', function($key, $value, $multi, $not = true)
-        {
-            if( $value * $value != $multi && $not )
-            {
+        ])->addTest('cube', function ($key, $value, $multi, $not = true) {
+            if ($value * $value != $multi && $not) {
                 $this->object->addReturn($key, $value, 'La valeur au cube de %s n\'est pas égale à 4.');
-            }
-            else if( $value * $value == $multi && !$not )
-            {
+            } elseif ($value * $value == $multi && !$not) {
                 $this->object->addReturn($key, $value, 'La valeur au cube de %s ne doit pas être égale à 4.');
             }
-        })->addTest('double', function($key, $value, $not = true)
-        {
-            if( $value * 2 != 16 && $not )
-            {
+        })->addTest('double', function ($key, $value, $not = true) {
+            if ($value * 2 != 16 && $not) {
                 $this->object->addReturn($key, $value, 'Le double de la valeur de %s n\'est pas égale à 16.');
-            }
-            else if( $value * 2 == 16 && !$not )
-            {
+            } elseif ($value * 2 == 16 && !$not) {
                 $this->object->addReturn($key, $value, 'Le double de la valeur de %s ne doit pas être égale à 16.');
             }
         })->setRules([

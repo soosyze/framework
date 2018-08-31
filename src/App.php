@@ -2,7 +2,7 @@
 
 /**
  * Soosyze Framework http://soosyze.com
- * 
+ *
  * @package Soosyze
  * @author  Mathieu NOËL <mathieu@soosyze.com>
  * @license https://github.com/soosyze/framework/blob/master/LICENSE (MIT License)
@@ -10,91 +10,91 @@
 
 namespace Soosyze;
 
-use Soosyze\Router,
-    Soosyze\Container,
-    Soosyze\Components\Http\Reponse,
-    Soosyze\Components\Http\ServerRequest,
-    Soosyze\Components\Http\Stream,
-    Soosyze\Components\Util\Util;
+use Soosyze\Router;
+use Soosyze\Container;
+use Soosyze\Components\Http\Reponse;
+use Soosyze\Components\Http\ServerRequest;
+use Soosyze\Components\Http\Stream;
+use Soosyze\Components\Util\Util;
 
 /**
  * Coeur de l'application, il est le ciment qui unis les modules et les services.
  * Il possède la logique de framework (le router, les configurations... ).
- * 
+ *
  * @author Mathieu NOËL
  */
 abstract class App
 {
+
+    /**
+     * Liste des environnements.
+     *
+     * @var array
+     */
+    protected $environnement = [];
     /**
      * Instance unique de App.
-     * 
+     *
      * @var $self
      */
     private static $instance = null;
 
     /**
      * Le routeur.
-     * 
+     *
      * @var Router
      */
     private $router;
 
     /**
      * Conteneur d'injection de dépendance (CID).
-     * 
+     *
      * @var Container
      */
     private $container;
 
     /**
      * Instances des modules.
-     * 
+     *
      * @var array
      */
     private $modules = [];
 
     /**
      * Paramètres du framework.
-     * 
+     *
      * @var array
      */
     private $settings = [];
 
     /**
      * Requête courante à la création de la classe.
-     * 
+     *
      * @var ServerRequest
      */
     private $request;
 
     /**
      * Liste des routes.
-     * 
+     *
      * @var array
      */
     private $routes = [];
 
     /**
      * Liste des services.
-     * 
-     * @var array 
+     *
+     * @var array
      */
     private $services = [];
 
     /**
-     * Liste des environnements.
-     * 
-     * @var array 
-     */
-    protected $environnement = [];
-
-    /**
      * À la construction de notre application ont créé l'objet Request
      * pour le traiter et renvoyer une réponse.
-     * 
+     *
      * @param ServerRequest|null $request requête courante de l'application.
      */
-    private function __construct( ServerRequest $request = null )
+    private function __construct(ServerRequest $request = null)
     {
         $this->request = $request === null
             ? ServerRequest::create()
@@ -105,35 +105,36 @@ abstract class App
      * Singleton pour une classe abstraite.
      *
      * @param ServerRequest|null $request requête courante de l'application.
-     * 
+     *
      * @return self Instancte unique de App.
      */
-    public static function getInstance( ServerRequest $request = null )
+    public static function getInstance(ServerRequest $request = null)
     {
-        if( is_null(self::$instance) )
-        {
+        if (is_null(self::$instance)) {
             $class          = get_called_class();
             self::$instance = new $class($request);
         }
+
         return self::$instance;
     }
 
     /**
      * Charge les paramètres du framework.
-     * 
+     *
      * @param array $settings
-     * 
+     *
      * @return $this
      */
-    public function setSettings( array $settings )
+    public function setSettings(array $settings)
     {
         $this->settings = $settings;
+
         return $this;
     }
 
     /**
      * Revoie les paramètres du framework.
-     * 
+     *
      * @return array
      */
     public function getSettings()
@@ -143,12 +144,12 @@ abstract class App
 
     /**
      * Revoie la valeur d'un paramètre du framework ou une chaine vide si absent.
-     * 
+     *
      * @param string $key
-     * 
+     *
      * @return mixed
      */
-    public function getSetting( $key )
+    public function getSetting($key)
     {
         return isset($this->settings[ $key ])
             ? $this->settings[ $key ]
@@ -156,9 +157,9 @@ abstract class App
     }
 
     /**
-     * Initialise le routeur et le container. Charge les configurations, les routes, 
+     * Initialise le routeur et le container. Charge les configurations, les routes,
      * les services et les modules. Transmet le container aux Contrôleurs.
-     * 
+     *
      * @return $this
      */
     public function init()
@@ -175,39 +176,11 @@ abstract class App
             ->setInstance('router', $this->router)
             ->setServices($this->services);
 
-        foreach( $this->modules as $module )
-        {
+        foreach ($this->modules as $module) {
             $module->setContainer($this->container);
         }
+
         return $this;
-    }
-
-    /**
-     * Charge les instances des contrôleurs dans la table des modules (clé => objet).
-     * 
-     * @return object[]
-     */
-    abstract protected function loadModules();
-
-    /**
-     * Cherche les routes des modules et les charge dans l'application.
-     */
-    protected function loadRoutesAndServices()
-    {
-        foreach( $this->modules as $module )
-        {
-            if( !empty($module->getPathRoutes()) )
-            {
-                $routesConfig = Util::getJson($module->getPathRoutes());
-                $this->routes += $routesConfig;
-            }
-
-            if( !empty($module->getPathServices()) )
-            {
-                $servicesConfig = Util::getJson($module->getPathServices());
-                $this->services += $servicesConfig;
-            }
-        }
     }
 
     /**
@@ -222,28 +195,33 @@ abstract class App
 
         $this->container->callHook('app.reponse.before', [ &$request, &$reponse ]);
 
-        if( ($route = $this->router->parse($request) ) && $reponse->getStatusCode() == 404 )
-        {
+        if (($route = $this->router->parse($request)) && $reponse->getStatusCode() == 404) {
             $this->container->callHook(
-                $route[ 'key' ] . '.reponse.before', [
+                $route[ 'key' ] . '.reponse.before',
+                [
                 &$request,
                 &$reponse
-            ]);
+            ]
+            );
 
             $exec    = $this->router->execute($route, $request);
             $reponse = $this->parseReponse($exec);
 
             $this->container->callHook(
-                $route[ 'key' ] . '.reponse.after', [
+                $route[ 'key' ] . '.reponse.after',
+                [
                 $this->request,
                 &$reponse
-            ]);
+            ]
+            );
         }
         $this->container->callHook(
-            'app.' . $reponse->getStatusCode(), [
+            'app.' . $reponse->getStatusCode(),
+            [
             $this->request,
             &$reponse
-        ]);
+        ]
+        );
 
         $this->container->callHook('app.reponse.after', [ $this->request, &$reponse ]);
 
@@ -252,37 +230,38 @@ abstract class App
 
     /**
      * Cherche l'instance d'un service dans le container.
-     * 
+     *
      * @codeCoverageIgnore Fonction testé directement avec l'objet Container.
      *
      * @param string $key Nom du service.
      *
      * @return object Service du container.
      */
-    public function get( $key )
+    public function get($key)
     {
         return $this->container->get($key);
     }
 
     /**
      * Ajoute un service au container.
-     * 
+     *
      * @codeCoverageIgnore Fonction testé directement avec l'objet Container
      *
      * @param string $key Nom du service.
      * @param string $srv Instance du service.
-     * 
+     *
      * @return $this
      */
-    public function set( $key, $srv )
+    public function set($key, $srv)
     {
         $this->container->set($key, $srv);
+
         return $this;
     }
 
     /**
      * Appelle un hook (trigger/middelware).
-     * 
+     *
      * @codeCoverageIgnore Fonction testé directement avec l'objet Container.
      *
      * @param string $name Nom du hook à déclencher.
@@ -290,7 +269,7 @@ abstract class App
      *
      * @return mixed Résultat final des exécutions des hooks.
      */
-    public function callHook( $name, array $args = [] )
+    public function callHook($name, array $args = [])
     {
         return $this->container->callHook($name, $args);
     }
@@ -300,9 +279,10 @@ abstract class App
      *
      * @param array $env Liste des environnements.
      */
-    public function setEnvironnement( array $env )
+    public function setEnvironnement(array $env)
     {
         $this->environnement = $env;
+
         return $this;
     }
 
@@ -313,43 +293,41 @@ abstract class App
      */
     public function getEnvironment()
     {
-        if( ($host = gethostname()) !== false )
-        {
-            foreach( $this->environnement as $key => $env )
-            {
-                if( in_array($host, $env) )
-                {
+        if (($host = gethostname()) !== false) {
+            foreach ($this->environnement as $key => $env) {
+                if (in_array($host, $env)) {
                     return $key;
                 }
             }
         }
+
         return '';
     }
 
     /**
      * Si la machine fait partie de l'environnement passé en paramètre.
-     * 
+     *
      * @param string $nameEnv Nom de l'environnement.
      *
      * @return bool
      */
-    public function isEnvironnement( $nameEnv )
+    public function isEnvironnement($nameEnv)
     {
         return isset($this->environnement[ $nameEnv ]) &&
             in_array(gethostname(), $this->environnement[ $nameEnv ]);
     }
 
     /**
-     * Récupère un élément de configuration en fonction 
+     * Récupère un élément de configuration en fonction
      * de l'emplacement de l'application, l'environnement, du fichier et d'une clé.
-     * 
+     *
      * @param string $str "nom_fichier" ou "nom_fichier.nom_clé".
      * @param mixed $default Valeur par défaut si aucune valeur n'est trouvé.
-     * 
+     *
      * @return array|mixed|null Tableau des paramètres ou le paramètre si la clé est renseignée.
-     * 
+     *
      */
-    public function getConfig( $str, $default = null )
+    public function getConfig($str, $default = null)
     {
         $configDir = $this->getSetting('config') !== ''
             ? $this->getSetting('config') . '/'
@@ -362,8 +340,7 @@ abstract class App
         $file     = $configDir . $envDir . $data[ 0 ] . '.json';
         $settings = Util::getJson($file);
 
-        if( !isset($data[ 1 ]) )
-        {
+        if (!isset($data[ 1 ])) {
             return $settings;
         }
 
@@ -375,16 +352,41 @@ abstract class App
     }
 
     /**
-     * Si le parmètre est une réponse alors celle-ci est renvoyé, 
+     * Charge les instances des contrôleurs dans la table des modules (clé => objet).
+     *
+     * @return object[]
+     */
+    abstract protected function loadModules();
+
+    /**
+     * Cherche les routes des modules et les charge dans l'application.
+     */
+    protected function loadRoutesAndServices()
+    {
+        foreach ($this->modules as $module) {
+            if (!empty($module->getPathRoutes())) {
+                $routesConfig = Util::getJson($module->getPathRoutes());
+                $this->routes += $routesConfig;
+            }
+
+            if (!empty($module->getPathServices())) {
+                $servicesConfig = Util::getJson($module->getPathServices());
+                $this->services += $servicesConfig;
+            }
+        }
+    }
+
+    /**
+     * Si le parmètre est une réponse alors celle-ci est renvoyé,
      * sinon une réponse est créé à partir des données du paramètre.
-     * 
+     *
      * Les données doivent pouvoir être prise en charge par le Stream de la réponse.
-     * 
-     * @param Reponse|bool|float|int|ressource|string|null $reponse 
-     * 
+     *
+     * @param Reponse|bool|float|int|ressource|string|null $reponse
+     *
      * @return Reponse
      */
-    protected function parseReponse( $reponse )
+    protected function parseReponse($reponse)
     {
         return !($reponse instanceof Reponse)
             ? new Reponse(200, new Stream($reponse))

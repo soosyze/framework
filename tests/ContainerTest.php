@@ -24,7 +24,6 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
      */
     protected function tearDown()
     {
-        
     }
 
     public function testSetServices()
@@ -128,8 +127,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
 
     public function testHook()
     {
-        $this->object->addHook('hook.double', function(&$output)
-        {
+        $this->object->addHook('hook.double', function (&$output) {
             $output *= 2;
         });
 
@@ -157,13 +155,12 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
 
 class service1
 {
-
     public function isOk()
     {
         return true;
     }
 
-    public function hookDouble( &$var )
+    public function hookDouble(&$var)
     {
         $var *= 2;
     }
@@ -173,7 +170,7 @@ class service2
 {
     protected $service;
 
-    public function __construct( Service1 $service1 )
+    public function __construct(Service1 $service1)
     {
         $this->service = $service1;
     }

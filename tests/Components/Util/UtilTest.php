@@ -10,13 +10,26 @@ use Soosyze\Components\Util\Util;
  */
 class UtilTest extends \PHPUnit\Framework\TestCase
 {
-    static $path = __DIR__ . DIRECTORY_SEPARATOR . 'build';
+    public static $path = __DIR__ . DIRECTORY_SEPARATOR . 'build';
 
-    static $file = 'file';
+    public static $file = 'file';
 
-    static $pathFile = __DIR__ . '/build/file.json';
+    public static $pathFile = __DIR__ . '/build/file.json';
 
-    static $pathFileError = __DIR__ . '/build/fileError.json';
+    public static $pathFileError = __DIR__ . '/build/fileError.json';
+
+    public static function tearDownAfterClass()
+    {
+        if (file_exists(self::$pathFile)) {
+            unlink(self::$pathFile);
+        }
+        if (file_exists(self::$pathFileError)) {
+            unlink(self::$pathFileError);
+        }
+        if (is_dir(self::$path)) {
+            rmdir(self::$path);
+        }
+    }
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -24,7 +37,6 @@ class UtilTest extends \PHPUnit\Framework\TestCase
      */
     protected function setUp()
     {
-        
     }
 
     /**
@@ -33,23 +45,6 @@ class UtilTest extends \PHPUnit\Framework\TestCase
      */
     protected function tearDown()
     {
-        
-    }
-
-    public static function tearDownAfterClass()
-    {
-        if( file_exists(self::$pathFile) )
-        {
-            unlink(self::$pathFile);
-        }
-        if( file_exists(self::$pathFileError) )
-        {
-            unlink(self::$pathFileError);
-        }
-        if( is_dir(self::$path) )
-        {
-            rmdir(self::$path);
-        }
     }
 
     public function testCreateJson()

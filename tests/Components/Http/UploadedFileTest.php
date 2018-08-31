@@ -37,8 +37,7 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
     protected function tearDown()
     {
         /* Supprime le fichier du test */
-        if( file_exists($this->file) )
-        {
+        if (file_exists($this->file)) {
             unlink($this->file);
         }
     }
@@ -83,7 +82,6 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
     {
         new UploadedFile('', null, null, 1);
     }
-
 
     public function testConstructErrorException()
     {

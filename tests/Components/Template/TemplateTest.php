@@ -32,7 +32,6 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
      */
     protected function tearDown()
     {
-        
     }
 
     public function testAddVar()
@@ -83,8 +82,7 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
 
     public function testAddFilter()
     {
-        $function = function($html)
-        {
+        $function = function ($html) {
             return strtolower($html);
         };
         $this->object->addfilter($function);
@@ -109,8 +107,7 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
     public function testFilter()
     {
         $this->object->addVar('attr', 'TEST')
-            ->addfilter(function($html)
-            {
+            ->addfilter(function ($html) {
                 return strtolower($html);
             });
         $this->assertEquals('test', $this->object->render());

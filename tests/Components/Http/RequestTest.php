@@ -2,8 +2,8 @@
 
 namespace Soosyze\Tests\Components\Http;
 
-use Soosyze\Components\Http\Request,
-    Soosyze\Components\Http\Uri;
+use Soosyze\Components\Http\Request;
+use Soosyze\Components\Http\Uri;
 
 class RequestTest extends \PHPUnit\Framework\TestCase
 {
@@ -27,7 +27,6 @@ class RequestTest extends \PHPUnit\Framework\TestCase
      */
     protected function tearDown()
     {
-        
     }
 
     /**
