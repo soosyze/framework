@@ -1,9 +1,9 @@
 {
     "name": "soosyze/framework",
-    "type": "framework",
-    "homepage": "http://soosyze.com",
     "description": "A simple framework for creating web applications",
+    "type": "framework",
     "keywords": ["php", "framework", "php-framework", "mvc", "composer", "psr-4", "psr-7", "psr-11"],
+    "homepage": "http://soosyze.com",
     "license": "MIT",
     "authors": [
         {
@@ -12,21 +12,31 @@
             "homepage": "http://mathieu-noel.fr"
         }
     ],
+    "support": {
+        "email": "mathieu@soosyze.com"
+    },
     "require": {
         "php": ">=5.4",
         "psr/container": "^1.0",
         "psr/http-message": "^1.0"
     },
+    "require-dev": {
+        "phpunit/phpunit": "5.*",
+        "phpdocumentor/phpdocumentor": "2.*",
+        "phpmetrics/phpmetrics": "2.*",
+        "satooshi/php-coveralls": "^2.0"
+    },
     "autoload": {
         "psr-4": {
-            "Soosyze\\": "src",
-            "Psr\\Container\\": "vendor/psr/container/src/",
-            "Psr\\Http\\Message\\": "vendor/psr/http-message/src/"
+            "Soosyze\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": { 
             "Soosyze\\Test\\": "tests"
         }
+    },
+    "config": {
+        "optimize-autoloader": true
     }
 }
