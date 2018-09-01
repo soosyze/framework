@@ -102,11 +102,8 @@ class UtilTest extends \PHPUnit\Framework\TestCase
 
     public function testGetFolder()
     {
-        $output = Util::getFolder('tests/components/util');
+        $output = Util::getFolder(__DIR__);
         $this->assertArraySubset([], $output);
-
-        $output = Util::getFolder('tests/components/util', []);
-        $this->assertArraySubset([ '.', '..' ], $output);
     }
 
     public function testArrayPrefixValue()
