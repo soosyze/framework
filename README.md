@@ -1,5 +1,7 @@
 # Soosyze Framework
 
+[![Build Status](https://travis-ci.org/soosyze/framework.svg?branch=master)](https://travis-ci.org/soosyze/framework)
+[![Coverage Status](https://coveralls.io/repos/github/soosyze/framework/badge.svg?branch=master)](https://coveralls.io/github/soosyze/framework?branch=master)
 ![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)
 ![Packagist](https://img.shields.io/packagist/v/soosyze/framework.svg)
 ![PHP from Packagist](https://img.shields.io/packagist/php-v/soosyze/framework.svg)
