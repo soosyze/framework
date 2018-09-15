@@ -3,6 +3,7 @@
 namespace Soosyze\Test;
 
 use \Soosyze\Components\Http\Request;
+use \Soosyze\Components\Http\Uri;
 
 class RoutingTest extends \PHPUnit\Framework\TestCase
 {
