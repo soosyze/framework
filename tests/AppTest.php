@@ -69,37 +69,6 @@ class AppTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($this->object->isEnvironnement('prod'));
         $this->assertTrue($this->object->isEnvironnement('local'));
     }
-
-    public function testGetConfigFile()
-    {
-        $data = $this->object->getConfig('testConfig');
-        $this->assertEquals([ 'key1' => 'value1', 'key2' => 'value2' ], $data);
-    }
-
-    public function testGetConfigKey()
-    {
-        $data = $this->object->getConfig('testConfig.key1');
-        $this->assertEquals('value1', $data);
-    }
-
-    /**
-     * @expectedException Exception
-     */
-    public function testGetConfigFileException()
-    {
-        $this->object->getConfig('error.test');
-    }
-
-    public function testGetConfigKeyNull()
-    {
-        $this->assertNull($this->object->getConfig('testConfig.error'));
-    }
-
-    public function testGetConfigKeyDefault()
-    {
-        $config = $this->object->getConfig('testConfig.error', 'valueDefault');
-        $this->assertEquals($config, 'valueDefault');
-    }
 }
 
 class AppCore extends \Soosyze\App

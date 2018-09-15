@@ -164,8 +164,11 @@ abstract class App
      */
     public function init()
     {
-        $this->container = new Container();
-
+        $config = new Config($this->getSetting('config'), $this->getEnvironment());
+        
+        $this->container = (new Container)
+            ->setInstance('config', $config);
+                    
         $this->modules = $this->loadModules();
         $this->loadRoutesAndServices();
 
@@ -317,40 +320,9 @@ abstract class App
         return isset($this->environnement[ $nameEnv ]) &&
             in_array(gethostname(), $this->environnement[ $nameEnv ]);
     }
-
     /**
-     * Récupère un élément de configuration en fonction
-     * de l'emplacement de l'application, l'environnement, du fichier et d'une clé.
-     *
-     * @param string $str "nom_fichier" ou "nom_fichier.nom_clé".
-     * @param mixed $default Valeur par défaut si aucune valeur n'est trouvé.
-     *
-     * @return array|mixed|null Tableau des paramètres ou le paramètre si la clé est renseignée.
      *
      */
-    public function getConfig($str, $default = null)
-    {
-        $configDir = $this->getSetting('config') !== ''
-            ? $this->getSetting('config') . '/'
-            : '';
-        $envDir    = $this->getEnvironment() !== ''
-            ? $this->getEnvironment() . '/'
-            : '';
-        $data      = explode('.', $str);
-
-        $file     = $configDir . $envDir . $data[ 0 ] . '.json';
-        $settings = Util::getJson($file);
-
-        if (!isset($data[ 1 ])) {
-            return $settings;
-        }
-
-        $key = $data[ 1 ];
-
-        return isset($settings[ $key ])
-            ? $settings[ $key ]
-            : $default;
-    }
 
     /**
      * Charge les instances des contrôleurs dans la table des modules (clé => objet).
