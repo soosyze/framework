@@ -294,8 +294,9 @@ abstract class App
     public function getEnvironment()
     {
         if (($host = gethostname()) !== false) {
+            $path = $this->request->getUri()->getBasePath();
             foreach ($this->environnement as $key => $env) {
-                if (in_array($host, $env)) {
+                if (in_array($host, $env) || $path == $env) {
                     return $key;
                 }
             }
