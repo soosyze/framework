@@ -39,7 +39,7 @@ class Router
      * Requête courante
      * @var RequestInterface
      */
-    protected $currentRequest;
+    protected $currentRequest = null;
 
     /**
      * Configuration des routes.
@@ -70,6 +70,9 @@ class Router
     public function parse(RequestInterface $request)
     {
         foreach ($this->routes as $key => $route) {
+            if (strtoupper($route[ 'methode' ]) !== $request->getMethod()) {
+                continue;
+            }
             $path = $this->relplaceSlash($route[ 'path' ]);
 
             if (isset($route[ 'with' ])) {
@@ -112,7 +115,7 @@ class Router
         }
 
         /* Ajoute la requête en dernier paramètre de fonction. */
-        $params[] = $request === null
+        $params[] = ($request === null)
             ? $this->currentRequest
             : $request;
 
@@ -120,10 +123,8 @@ class Router
         $obj = !empty($this->objects[ $class ])
             ? $this->objects[ $class ]
             : new $class();
-        
-        $output = call_user_func_array([ $obj, $methode ], $params);
-        
-        return $output;
+
+        return call_user_func_array([ $obj, $methode ], $params);
     }
 
     /**
@@ -242,7 +243,7 @@ class Router
     protected function parseQueryFromRequest(RequestInterface $request = null)
     {
         if ($request === null && $this->currentRequest === null) {
-            throw new \InvalidArgumentException();
+            throw new \InvalidArgumentException("No request is provided.");
         }
 
         $req = $request === null
@@ -257,11 +258,9 @@ class Router
          * Exemple : http://exemple.com/?first_param = 'first_param'
          * Il faut prendre le 1er élément du tableau inversé des paraètres de l'Uri.
          */
-        $query = !empty($parseQuery)
+        return !empty($parseQuery)
             ? rawurlencode(array_keys($parseQuery)[ 0 ])
             : '%2F';
-
-        return $query;
     }
 
     /**

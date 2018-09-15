@@ -1,5 +1,6 @@
 {
     "test": {
+        "methode": "GET",
         "path": "index",
         "uses": "Test@index"
     }

@@ -19,10 +19,17 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
     {
         $routes = [
             "test.index" => [
+                "methode" => "GET",
                 "path" => "/",
                 "uses" => "\Soosyze\Test\TestController@index"
             ],
+            "test.post" => [
+                "methode" => "POST",
+                "path" => "/",
+                "uses" => "\Soosyze\Test\TestController@indexPost"
+            ],
             "test.page"  => [
+                "methode" => "GET",
                 "path" => "page/:item",
                 "uses" => "TestController@page",
                 "with" => [
@@ -45,11 +52,12 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
 
     public function testParse()
     {
-        $uri     = \Soosyze\Components\Http\Uri::create('http://test.com');
+        $uri     = Uri::create('http://test.com');
         $request = new Request('GET', $uri);
 
         $route  = $this->object->parse($request);
         $result = [
+            "methode" => "GET",
             'path' => "/",
             "uses" => "\Soosyze\Test\TestController@index",
             'key'  => "test.index"
@@ -57,16 +65,16 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals($route, $result);
 
-        $uri     = \Soosyze\Components\Http\Uri::create('http://test.com/?q=404');
+        $uri     = Uri::create('http://test.com/?q=404');
         $request = new Request('GET', $uri);
 
         $route = $this->object->parse($request);
         $this->assertNull($route);
     }
-
+    
     public function testExecute()
     {
-        $uri     = \Soosyze\Components\Http\Uri::create('http://test.com');
+        $uri     = Uri::create('http://test.com');
         $request = new Request('GET', $uri);
 
         $route  = $this->object->parse($request);
@@ -74,10 +82,21 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals($result, "hello world !");
     }
+    
+    public function testExecuteSetRequest()
+    {
+        $uri     = Uri::create('http://test.com');
+        $request = new Request('GET', $uri);
+
+        $route  = $this->object->parse($request);
+        $result = $this->object->setRequest($request)->execute($route);
+
+        $this->assertEquals($result, "hello world !");
+    }
 
     public function testExecuteParam()
     {
-        $uri     = \Soosyze\Components\Http\Uri::create('http://test.com/?page/1');
+        $uri     = Uri::create('http://test.com/?page/1');
         $request = new Request('GET', $uri);
 
         $route  = $this->object->parse($request);
@@ -85,20 +104,16 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals($result, "hello page 1");
     }
-
+    
     /**
      * @expectedException Exception
      */
     public function testExecuteExceptionNotRequest()
     {
-        $route = [
-            'path' => "page/:item",
-            'uses' => "TestController@page",
-            'with' => [
-                ':item' => "[0-9]+"
-            ],
-            'key'  => "test.page"
-        ];
+        $uri     = Uri::create('http://test.com/?page/1');
+        $request = new Request('GET', $uri);
+
+        $route  = $this->object->parse($request);
         $this->object->execute($route);
     }
 
@@ -112,7 +127,7 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
 
     public function testGetRoute()
     {
-        $uri     = \Soosyze\Components\Http\Uri::create('http://test.com/?test');
+        $uri     = Uri::create('http://test.com/?test');
         $request = new Request('GET', $uri);
 
         $this->object->setRequest($request);
@@ -123,7 +138,7 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
 
     public function testGetRouteParam()
     {
-        $uri     = \Soosyze\Components\Http\Uri::create('http://test.com/?test');
+        $uri     = Uri::create('http://test.com/?test');
         $request = new Request('GET', $uri);
 
         $this->object->setRequest($request);
@@ -137,7 +152,7 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetRouteException()
     {
-        $uri     = \Soosyze\Components\Http\Uri::create('http://test.com/');
+        $uri     = Uri::create('http://test.com/');
         $request = new Request('GET', $uri);
 
         $this->object->setRequest($request);
@@ -149,7 +164,7 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetRouteRouteArgumentException()
     {
-        $uri     = \Soosyze\Components\Http\Uri::create('http://test.com/');
+        $uri     = Uri::create('http://test.com/');
         $request = new Request('GET', $uri);
 
         $this->object->setRequest($request);
@@ -158,7 +173,7 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
 
     public function testIsRewrite()
     {
-        $uri     = \Soosyze\Components\Http\Uri::create('http://test.com/');
+        $uri     = Uri::create('http://test.com/');
         $request = new Request('GET', $uri, [ 'HTTP_MOD_REWRITE' => 'On' ]);
 
         $this->object->setRequest($request)
