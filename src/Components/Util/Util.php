@@ -17,6 +17,7 @@ namespace Soosyze\Components\Util;
  */
 class Util
 {
+    const DS = DIRECTORY_SEPARATOR;
 
     /**
      * Lit un fichier de type JSON et retourne un tableau associatif.
@@ -172,5 +173,57 @@ class Util
     public static function arrayKeysExists(array $keys, array $data)
     {
         return count(array_intersect_key(array_flip($keys), $data)) === count($keys);
+    }
+
+    /**
+     * Remplace les barres obliques et barres obliques inversées par le séparateur du système
+     * et supprime les espaces et slash en début et fin de chaîne.
+     *
+     * @param string $path Chemin nettoyé.
+     * @param string $character_mask Liste de caractères à supprimer en début et fin de chaîne.
+     *
+     * @return string Chemin nettoyé.
+     */
+    public static function cleanPath($path, $character_mask = " \t\n\r\0\x0B" . self::DS)
+    {
+        $str = str_replace([ '\\', '/' ], self::DS, $path);
+
+        return trim($str, $character_mask);
+    }
+
+    /**
+     * Remplace la première occurrence dans une chaine.
+     *
+     * @param string $search Chaîne recherché.
+     * @param string $replace Chaîne de remplacement.
+     * @param string $subject Chaîne d'entrée.
+     *
+     * @return string
+     */
+    public static function strReplaceFirst($search, $replace, $subject)
+    {
+        if (($pos = strpos($subject, $search)) !== false) {
+            return substr_replace($subject, $replace, $pos, strlen($search));
+        }
+
+        return $subject;
+    }
+    
+    /**
+     * Remplace la dernière occurrence dans une chaine.
+     *
+     * @param string $search Chaîne recherché.
+     * @param string $replace Chaîne de remplacement.
+     * @param string $subject Chaîne d'entrée.
+     *
+     * @return string
+     */
+    public static function strReplaceLast($search, $replace, $subject)
+    {
+        if (($pos = strrpos($subject, $search)) !== false) {
+            return substr_replace($subject, $replace, $pos, strlen($search));
+        }
+
+        return $subject;
     }
 }

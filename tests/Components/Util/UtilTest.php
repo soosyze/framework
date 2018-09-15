@@ -127,4 +127,28 @@ class UtilTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->assertTrue($output);
     }
+
+    public function testCleanPath()
+    {
+        $output = Util::cleanPath('\path/test\file/');
+        $this->assertEquals($output, 'path' . DIRECTORY_SEPARATOR . 'test' . DIRECTORY_SEPARATOR . 'file');
+    }
+
+    public function testStrReplaceFirst()
+    {
+        $output = Util::strReplaceFirst('e', 'a', 'hello');
+        $this->assertEquals($output, 'hallo');
+
+        $output2 = Util::strReplaceFirst('z', 'e', 'hello');
+        $this->assertEquals($output2, 'hello');
+    }
+
+    public function testStrReplaceLast()
+    {
+        $output = Util::strReplaceLast('l', 'o', 'hello');
+        $this->assertEquals($output, 'heloo');
+
+        $output2 = Util::strReplaceLast('z', 'e', 'hello');
+        $this->assertEquals($output2, 'hello');
+    }
 }
