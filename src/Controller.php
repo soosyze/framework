@@ -11,7 +11,6 @@
 namespace Soosyze;
 
 use Soosyze\Components\Http\Reponse;
-use Soosyze\Components\Http\ServerRequest;
 use Soosyze\Components\Http\Stream;
 
 /**
@@ -110,6 +109,8 @@ class Controller
 
     /**
      * Retourne une réponse avec le statut 404.
+     *
+     * @codeCoverageIgnore Fonction testé directement avec l'objet Reponse.
      *
      * @param string $text
      *

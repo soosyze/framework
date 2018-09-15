@@ -49,11 +49,11 @@ class AutoloadTest extends \PHPUnit\Framework\TestCase
     {
         $class = $this->object->autoload('Soosyze\Tests\AppTest');
         $file  = __DIR__ . '\AppTest.php';
-        $this->assertEquals($class, str_replace('\\', '/', $file));
+        $this->assertEquals($class, str_replace('\\', DIRECTORY_SEPARATOR, $file));
 
         $class = $this->object->autoload('Soosyze\Tests\Components\Http\MessageTest');
         $file  = __DIR__ . '\Components\Http\MessageTest.php';
-        $this->assertEquals($class, str_replace('\\', '/', $file));
+        $this->assertEquals($class, str_replace('\\', DIRECTORY_SEPARATOR, $file));
     }
 
     public function testAutoloadLibError()
@@ -71,7 +71,7 @@ class AutoloadTest extends \PHPUnit\Framework\TestCase
 
         $class = $auto->autoload('Components\Http\MessageTest');
         $file  = __DIR__ . '\Components\Http\MessageTest.php';
-        $this->assertEquals($class, str_replace('\\', '/', $file));
+        $this->assertEquals($class, str_replace('\\', DIRECTORY_SEPARATOR, $file));
     }
 
     public function testAutoloadMapError()

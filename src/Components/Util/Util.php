@@ -27,29 +27,30 @@ class Util
      *
      * @return array|object
      *
-     * @throws FileNotFoundException Le fichier est manquant.
-     * @throws ExtensionNotLoadedException L'extension JSON n'est pas chargé.
-     * @throws \Exception Le fichier n'est pas au format JSON.
+     * @throws \Exception L'extension JSON n'est pas chargé.
+     * @throws \InvalidArgumentException Le fichier est manquant.
+     * @throws \InvalidArgumentException L'extension du fichier n'est pas au format JSON.
+     * @throws \Exception Le fichier JSON n'est pas accessible en lecture.
+     * @throws \Exception Le fichier JSON est invalide.
      */
     public static function getJson($file, $assoc = true)
     {
-        if (!file_exists($file)) {
-            throw new \Exception('The ' . htmlspecialchars($file) . ' file is missing.');
-        }
-        /* @codeCoverageIgnoreStart */
+        // @codeCoverageIgnoreStart
         if (!extension_loaded('json')) {
             throw new \Exception('The JSON extension is not loaded.');
         }
-        /* @codeCoverageIgnoreEnd */
-        if (strrchr($file, '.') != '.json') {
-            throw new \Exception('The ' . htmlspecialchars($file) . ' is not in JSON format.');
+        // @codeCoverageIgnoreEnd
+        if (!file_exists($file)) {
+            throw new \InvalidArgumentException('The ' . htmlspecialchars($file) . ' file is missing.');
         }
-
-        $json   = file_get_contents($file);
-        $return = json_decode($json, $assoc);
-
-        if ($return === null) {
-            throw new \Exception('The ' . htmlspecialchars($file) . ' is not in JSON format.');
+        if (strrchr($file, '.') != '.json') {
+            throw new \InvalidArgumentException('The ' . htmlspecialchars($file) . ' is not in JSON format.');
+        }
+        if (($json   = file_get_contents($file)) === null) {
+            throw new \Exception('The ' . htmlspecialchars($file) . ' file is not readable.');
+        }
+        if (($return = json_decode($json, $assoc)) === null) {
+            throw new \Exception('The JSON ' . htmlspecialchars($file) . ' file is invalid.');
         }
 
         return $return;
@@ -58,23 +59,27 @@ class Util
     /**
      * Créer un fichier au format JSON si celui si n'existe pas.
      *
-     * @param string $path Chemin du fichier.
-     * @param string $file Nom du fichier.
+     * @param string $strPath Chemin du fichier.
+     * @param string $strFileName Nom du fichier.
      * @param array $data Les données.
      *
      * @return bool|null Si le fichier JSON est créé.
      */
-    public static function createJson($path, $file, array $data = [])
+    public static function createJson($strPath, $strFileName, array $data = [])
     {
-        if (!file_exists($path)) {
-            mkdir($path, 0775);
-        }
-        $pathFil = $path . DIRECTORY_SEPARATOR . $file . '.json';
-        if (!file_exists($pathFil)) {
-            $fichier = fopen($pathFil, 'w+');
-            fwrite($fichier, json_encode($data));
+        $cleanPath = self::cleanPath($strPath);
 
-            return fclose($fichier);
+        if (!file_exists($strPath)) {
+            mkdir($strPath, 0775);
+        }
+
+        $pathFile =  $cleanPath . self::DS . $strFileName . '.json';
+        
+        if (!file_exists($pathFile)) {
+            $file = fopen($pathFile, 'w+');
+            fwrite($file, json_encode($data));
+
+            return fclose($file);
         }
 
         return null;
@@ -91,7 +96,7 @@ class Util
      */
     public static function saveJson($path, $file, array $data)
     {
-        $fp = fopen($path . DIRECTORY_SEPARATOR . $file . '.json', 'w');
+        $fp = fopen(self::cleanPath($path) . self::DS . $file . '.json', 'w');
         fwrite($fp, json_encode($data));
 
         return fclose($fp);

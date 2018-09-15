@@ -66,7 +66,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException Exception
      */
-    public function testGetJsonExceptionCentent()
+    public function testGetJsonExceptionContent()
     {
         fopen(self::$pathFileError, 'w+');
         Util::getJson(self::$pathFileError);

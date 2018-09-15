@@ -11,7 +11,7 @@
 namespace Soosyze;
 
 /**
- * Permet de charger les objets en fonction de leur namespace.
+ * Permet de charger les fichiers en fonction de leur namespace.
  *
  * @see https://www.php-fig.org/psr/psr-4/ Suit les recommandations PSR-4.
  *
@@ -167,6 +167,6 @@ class Autoload
      */
     protected function relplaceSlash($str)
     {
-        return str_replace('\\', '/', $str);
+        return str_replace('\\', self::DS, $str);
     }
 }

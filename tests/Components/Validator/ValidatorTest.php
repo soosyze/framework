@@ -48,8 +48,8 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_alpha_num_required'     => 'hello2000',
             'field_alpha_num_not_required' => ''
         ])->setRules([
-            'field_alpha_num'              => 'alphanum',
-            'field_not_alpha_num'          => '!alphaNum',
+            'field_alpha_num'              => 'AlphaNum',
+            'field_not_alpha_num'          => '!AlphaNum',
             'field_alpha_num_required'     => 'required|AlphaNum',
             'field_alpha_num_not_required' => '!required|AlphaNum',
         ]);
@@ -469,7 +469,6 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_file'     => 'file',
             'field_not_file' => '!file'
         ]);
-
 
         $this->assertFalse($this->object->isValid());
     }
