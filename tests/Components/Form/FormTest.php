@@ -289,7 +289,6 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $item = $this->object->getItem('textName1');
 
         $this->assertEquals([ 'type' => 'text',
-            'name' => 'textName1',
             'attr' => [ 'id' => 'textId' ]
             ], $item);
     }
@@ -302,7 +301,6 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $item = $this->object->getItem('textName1');
 
         $this->assertEquals([ 'type' => 'text',
-            'name' => 'textName1',
             'attr' => [ 'id' => 'textId' ]
             ], $item);
     }
@@ -314,5 +312,95 @@ class FormTest extends \PHPUnit\Framework\TestCase
     {
         $this->object->text('textName1', 'textId');
         $this->object->getItem('error');
+    }
+    
+    public function testBefore()
+    {
+        $this->object->text('1', '1')
+            ->text('2', '2');
+
+        $this->object->addBefore('2', function ($form) {
+            $form->text('3', '3');
+        });
+        $this->object->addBefore('3', function ($form) {
+            $form->text('4', '4');
+        });
+
+        $this->assertEquals(
+            $this->object->renderForm(),
+            '<form method="post" action="http://localhost/">' . "\r\n" .
+            '<input name="1" type="text" id="1">' . "\r\n" .
+            '<input name="4" type="text" id="4">' . "\r\n" .
+            '<input name="3" type="text" id="3">' . "\r\n" .
+            '<input name="2" type="text" id="2">' . "\r\n" .
+            '</form>' . "\r\n"
+        );
+    }
+    
+    public function testBeforeSubForm()
+    {
+        $this->object->group('group', 'div', function ($form) {
+            $form->text('1', '1')
+                ->text('2', '2');
+        });
+
+        $this->object->addBefore('2', function ($form) {
+            $form->text('3', '3');
+        });
+        $this->object->addBefore('3', function ($form) {
+            $form->text('4', '4');
+        });
+
+        $this->assertEquals(
+            $this->object->renderForm(),
+            '<form method="post" action="http://localhost/">' . "\r\n" .
+            '<div>' . "\r\n" .
+            '<input name="1" type="text" id="1">' . "\r\n" .
+            '<input name="4" type="text" id="4">' . "\r\n" .
+            '<input name="3" type="text" id="3">' . "\r\n" .
+            '<input name="2" type="text" id="2">' . "\r\n" .
+            '</div>' . "\r\n" .
+            '</form>' . "\r\n"
+        );
+    }
+
+    public function testAfter()
+    {
+        $this->object->text('1', '1')->text('2', '2');
+
+        $this->object->addAfter('1', function ($form) {
+            $form->text('3', '3');
+        });
+        $this->object->addAfter('1', function ($form) {
+            $form->text('4', '4');
+        });
+
+        $this->assertEquals(
+            $this->object->renderForm(),
+            '<form method="post" action="http://localhost/">' . "\r\n" .
+            '<input name="1" type="text" id="1">' . "\r\n" .
+            '<input name="4" type="text" id="4">' . "\r\n" .
+            '<input name="3" type="text" id="3">' . "\r\n" .
+            '<input name="2" type="text" id="2">' . "\r\n" .
+            '</form>' . "\r\n"
+        );
+    }
+    
+    /**
+     * @expectedException Exception
+     */
+    public function testBeforeException()
+    {
+        $this->object->addBefore('error', function () {
+        });
+    }
+    
+    /**
+     * @expectedException Exception
+     */
+    public function testAfterException()
+    {
+        $this->object->addAfter('error', function () {
+        });
     }
 }

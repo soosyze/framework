@@ -20,52 +20,6 @@ namespace Soosyze\Components\Form;
 class FormBuilder
 {
     /**
-     * Attributs HTML5 autorisées des balises inputs.
-     *
-     * @var string[]
-     */
-    protected $attributesInput = [
-        'accept', 'align', 'alt', 'autocomplete', 'autofocus',
-        'checked', 'cols',
-        'disabled',
-        'form', 'formaction', 'formenctype', 'formmethod',
-        'formnovalidate', 'formtarget',
-        'height',
-        'list',
-        'max', 'maxlength', 'min', 'multiple',
-        'name',
-        'pattern', 'placeholder',
-        'readonly', 'required', 'rows',
-        'size', 'src', 'step',
-        'type',
-        'value',
-        'width'
-    ];
-
-    /**
-     * Attributs HTML5 autorisées des balises labels.
-     *
-     * @var string[]
-     */
-    protected $attributesLabel = [
-        'for', 'form'
-    ];
-
-    /**
-     * Attributs HTML5 autorisées pour la baslise formulaire.
-     *
-     * @var string[]
-     */
-    protected $attributesForms = [
-        'accept-charset', 'action', 'autocomplete',
-        'enctype',
-        'method',
-        'name',
-        'novalidate',
-        'target'
-    ];
-
-    /**
      * Attributs CSS.
      *
      * @var string[]
@@ -135,14 +89,6 @@ class FormBuilder
     protected $success = [];
 
     /**
-     * À l'exécution du formulaire chaque étape est détaillée dans cette
-     * variable pour simplifier les attributions par identifiant.
-     *
-     * @var string
-     */
-    protected $inputPrevious = '';
-
-    /**
      * Déclare l'ouverture du formulaire.
      *
      * @param array $attributes
@@ -176,6 +122,44 @@ class FormBuilder
         . ' type field does not exist'
         );
     }
+    
+    /**
+     * Ajoute un ou pluisieurs input avant un élément existant.
+     *
+     * @param string $key Clé unique.
+     * @param callable $callback Fonction de création du sous-formulaire.
+     *
+     * @return $this
+     *
+     * @throws \Exception L'élément n'a pas été trouvé.
+     */
+    public function addBefore($key, callable $callback)
+    {
+        if ($this->addItem($key, $callback)) {
+            return $this;
+        }
+
+        throw new \Exception('The item ' . htmlspecialchars($key) . ' was not found.');
+    }
+
+    /**
+     * Ajoute un ou pluisieurs input après un élément existant.
+     *
+     * @param string $key Clé unique.
+     * @param callable $callback Fonction de création du sous-formulaire.
+     *
+     * @return $this
+     *
+     * @throws \Exception L'élément n'a pas été trouvé.
+     */
+    public function addAfter($key, callable $callback)
+    {
+        if ($this->addItem($key, $callback, true)) {
+            return $this;
+        }
+
+        throw new \Exception('The item ' . htmlspecialchars($key) . ' was not found.');
+    }
 
     /**
      * Retourne les paramètres du formulaire.
@@ -185,20 +169,6 @@ class FormBuilder
     public function getForm()
     {
         return $this->form;
-    }
-
-    /**
-     * À chaque enregistrement d'une balise, conserve en mémoire la dernière balise créée.
-     *
-     * @param string $name Nom de la balise.
-     *
-     * @return $this
-     */
-    public function this($name)
-    {
-        $this->inputPrevious = $name;
-
-        return $this;
     }
 
     /**
@@ -224,36 +194,34 @@ class FormBuilder
      */
     public function openForm(array $attr = null)
     {
-        $this->form[ 'open' ][ 'attr' ] = $attr;
-        $this->form[ 'open' ][ 'type' ] = 'open';
+        $this->form[ 'open' ] = [ 'attr' => $attr, 'type' => 'open' ];
 
-        return $this->this('open');
+        return $this;
     }
 
     /**
      * Enregistre un groupe d'input.
      *
-     * @param string $name Nom du group.e
+     * @param string $name Nom du groupe.
      * @param string $balise Type de balise (div|span|fieldset).
      * @param callable $callback Fonction de création du sous-formulaire.
      * @param array|null $attr Liste d'attributs.
      *
      * @return $this
      */
-    public function group($name, $balise, $callback, $attr = null)
+    public function group($name, $balise, callable $callback, $attr = null)
     {
         $form  = new FormBuilder([]);
         call_user_func_array($callback, [ &$form ]);
         $group = $this->merge_attr([ 'balise' => $balise ], $attr);
 
-        return $this->input([ 'type'    => 'group', 'name'    => $name, 'subform' => $form,
-                'attr'    => $group ]);
+        return $this->input($name, [ 'type' => 'group', 'subform' => $form, 'attr' => $group ]);
     }
 
     /**
      * Enregistre un label.
      *
-     * @param string $name Clé unique
+     * @param string $name Clé unique.
      * @param string $label Texte à afficher.
      * @param array|null $attr Liste d'attributs.
      *
@@ -261,9 +229,7 @@ class FormBuilder
      */
     public function label($name, $label, array $attr = null)
     {
-        $input = $this->merge_attr([ 'label' => $label ], $attr);
-
-        return $this->input([ 'type' => 'label', 'name' => $name, 'attr' => $input ]);
+        return $this->input($name, [ 'type' => 'label', 'label' => $label, 'attr' => $attr ]);
     }
 
     /**
@@ -277,9 +243,7 @@ class FormBuilder
      */
     public function legend($name, $legend, array $attr = null)
     {
-        $input = $this->merge_attr([ 'legend' => $legend ], $attr);
-
-        return $this->input([ 'type' => 'legend', 'name' => $name, 'attr' => $input ]);
+        return $this->input($name, [ 'type' => 'legend', 'legend' => $legend, 'attr' => $attr ]);
     }
 
     /**
@@ -293,8 +257,7 @@ class FormBuilder
      */
     public function textarea($name, $content = '', array $attr = null)
     {
-        return $this->input([ 'type'    => 'textarea', 'name'    => $name, 'content' => $content,
-                'attr'    => $attr ]);
+        return $this->input($name, [ 'type' => 'textarea', 'content' => $content, 'attr' => $attr ]);
     }
 
     /**
@@ -308,8 +271,7 @@ class FormBuilder
      */
     public function select($name, $options = [], array $attr = null)
     {
-        return $this->input([ 'type'    => 'select', 'name'    => $name, 'options' => $options,
-                'attr'    => $attr ]);
+        return $this->input($name, [ 'type' => 'select', 'options' => $options, 'attr' => $attr ]);
     }
 
     /**
@@ -326,7 +288,7 @@ class FormBuilder
     {
         $basic = $this->merge_attr([ 'id' => $id ], $attr);
 
-        return $this->input([ 'type' => $type, 'name' => $name, 'attr' => $basic ]);
+        return $this->input($name, [ 'type' => $type, 'attr' => $basic ]);
     }
 
     /**
@@ -342,7 +304,7 @@ class FormBuilder
     {
         $basic = $this->merge_attr([ 'value' => $value ], $attr);
 
-        return $this->input([ 'type' => 'submit', 'name' => $name, 'attr' => $basic ]);
+        return $this->input($name, [ 'type' => 'submit', 'attr' => $basic ]);
     }
 
     /**
@@ -362,14 +324,13 @@ class FormBuilder
         /* On enregistre aussi le timestamp correspondant au moment de la création du token. */
         $_SESSION[ 'token_time' ] = time();
 
-        $this->input([
+        $this->input('token', [
             'type' => 'hidden',
-            'name' => 'token',
             'id'   => 'token',
             'attr' => [ 'value' => $token ]
         ]);
 
-        return $this->this('token');
+        return $this;
     }
 
     /**
@@ -384,7 +345,7 @@ class FormBuilder
         $attr = $this->merge_attr($this->form[ 'open' ][ 'attr' ], $attrAdd);
 
         return '<form'
-            . $this->getAttributesForm($attr)
+            . $this->getAttributesInput($attr)
             . $this->getAttributesCSS($attr)
             . ">\r\n";
     }
@@ -411,11 +372,15 @@ class FormBuilder
     {
         $item = $this->getItem($key);
         $attr = $this->merge_attr($item[ 'attr' ], $attrAdd);
+        $label = isset($attr[ 'attr' ][ 'label' ])
+            ? $attr[ 'attr' ][ 'label' ]
+            : $item[ 'label' ];
+        unset($attr[ 'attr' ][ 'label' ]);
 
         $html = '<label'
             . $this->getAttributesCSS($attr)
-            . $this->getAttributesLabel($attr) . '>'
-            . $attr[ 'label' ];
+            . $this->getAttributesInput($attr) . '>'
+            . $label;
         $html .= isset($attr[ 'for' ]) && $this->isRequired($attr[ 'for' ])
             ? '<span class="form-required">*</span>'
             : '';
@@ -436,14 +401,18 @@ class FormBuilder
     {
         $item = $this->getItem($key);
         $attr = $this->merge_attr($item[ 'attr' ], $attrAdd);
+        $legend = isset($attr[ 'attr' ][ 'label' ])
+            ? $attr[ 'attr' ][ 'legend' ]
+            : $item[ 'legend' ];
+        unset($attr[ 'attr' ][ 'legend' ]);
 
         return '<legend'
             . $this->getAttributesCSS($attr)
-            . $this->getAttributesLabel($attr) . '>'
-            . $attr[ 'legend' ]
+            . $this->getAttributesInput($attr) . '>'
+            . $legend
             . "</legend>\r\n";
     }
-
+    
     /**
      * Génère une balise input standard.
      *
@@ -668,7 +637,7 @@ class FormBuilder
      */
     public function addAttr($key, array $attr)
     {
-        if ($this->addAttrRecurses($key, $attr) !== null) {
+        if ($this->addAttrRecurses($key, $attr)) {
             return $this;
         }
 
@@ -718,10 +687,8 @@ class FormBuilder
     protected function renderSubForm()
     {
         $html = "";
-        foreach ($this->form as $input) {
-            $html .= $input[ 'type' ] == 'group'
-                ? $this->form_group($input[ 'name' ])
-                : $this->renderInput($input);
+        foreach ($this->form as $key => $input) {
+            $html .= $this->renderInput($key, $input);
         }
 
         return $html;
@@ -730,37 +697,38 @@ class FormBuilder
     /**
      * Génère les inputs.
      *
-     * @param array $input
+     * @param string $key Clé unique.
+     * @param array $input Paramètres du champ.
      *
      * @return string HTML
      */
-    protected function renderInput(array $input)
+    protected function renderInput($key, array $input)
     {
         $html = '';
         switch ($input[ 'type' ]) {
             case 'label':
-                $html .= $this->form_label($input[ 'name' ]);
+                $html .= $this->form_label($key);
 
                 break;
             case 'legend':
-                $html .= $this->form_legend($input[ 'name' ]);
+                $html .= $this->form_legend($key);
 
                 break;
             case 'select':
-                $html .= $this->form_select($input[ 'name' ]);
+                $html .= $this->form_select($key);
 
                 break;
             case 'textarea':
-                $html .= $this->form_textarea($input[ 'name' ]);
+                $html .= $this->form_textarea($key);
 
                 break;
             case 'group':
-                $html .= $this->form_group($input[ 'name' ]);
+                $html .= $this->form_group($key);
 
                 break;
             default:
                 if (in_array($input[ 'type' ], $this->typeInputBasic)) {
-                    $html .= $this->form_input($input[ 'name' ]);
+                    $html .= $this->form_input($key);
                 }
         }
 
@@ -770,38 +738,38 @@ class FormBuilder
     /**
      * Enregistre un input.
      *
+     * @param string $name Clé unique.
      * @param array $attr Options des champs et attributs de la balise.
      *
      * @return $this
      */
-    protected function input(array $attr)
+    protected function input($name, array $attr)
     {
         /**
          * Si le for n'est pas précisé dans le label précédent
          * il devient automatiquement l'id de la balise courante.
          */
-        $previous = $this->form[ $this->inputPrevious ];
-        if ($previous[ 'type' ] == 'label' && !isset($previous[ 'attr' ][ 'for' ]) && isset($attr[ 'attr' ][ 'id' ])) {
-            $this->form[ $this->inputPrevious ][ 'attr' ][ 'for' ] = $attr[ 'attr' ][ 'id' ];
+        $previous = end($this->form);
+        if ($previous && $previous[ 'type' ] == 'label' && !isset($previous[ 'attr' ][ 'for' ]) && isset($attr[ 'attr' ][ 'id' ])) {
+            $this->form[ key($this->form) ][ 'attr' ][ 'for' ] = $attr[ 'attr' ][ 'id' ];
         }
-        $this->form[ $attr[ 'name' ] ] = $attr;
+        $this->form[ $name ] = $attr;
 
-        return $this->this($attr[ 'name' ]);
+        return $this;
     }
 
     /**
-     * Génère le code d'attributs de balise HTML.
-     *
-     * @param array $attr Attributs enregistrés pour la balise.
-     * @param array $_attr Tableau des attributs autorisés pour la balise.
-     *
-     * @return string Attributs mises en formes.
-     */
-    protected function getAttributes(array $attr, array $_attr)
+    * Met en forme les attributs CSS pour les balises.
+    *
+    * @param array $attr Listes des attributs enregistrés.
+    *
+    * @return string
+    */
+    protected function getAttributesCSS(array $attr)
     {
         $output = [];
         foreach ($attr as $key => $values) {
-            if (in_array($key, $_attr) && $values != "") {
+            if (in_array($key, $this->attributesCss) && $values !== '') {
                 $output[] = $key . '="' . $values . '"';
             }
         }
@@ -810,42 +778,6 @@ class FormBuilder
         return $implode
             ? " $implode"
             : '';
-    }
-
-    /**
-     * Met en forme les attributs pour la balise form.
-     *
-     * @param array $attr Liste des attributs enregistrés.
-     *
-     * @return string
-     */
-    protected function getAttributesForm(array $attr)
-    {
-        return $this->getAttributes($attr, $this->attributesForms);
-    }
-
-    /**
-     * Met en forme les attributs pour la balise label.
-     *
-     * @param array $attr Listes des attributs enregistrés.
-     *
-     * @return string
-     */
-    protected function getAttributesLabel(array $attr)
-    {
-        return $this->getAttributes($attr, $this->attributesLabel);
-    }
-
-    /**
-     * Met en forme les attributs CSS pour les balises.
-     *
-     * @param array $attr Listes des attributs enregistrés.
-     *
-     * @return string
-     */
-    protected function getAttributesCSS(array $attr)
-    {
-        return $this->getAttributes($attr, $this->attributesCss);
     }
 
     /**
@@ -859,17 +791,10 @@ class FormBuilder
     {
         $output = [];
         foreach ($attr as $key => $values) {
-            if (!in_array($key, $this->attributesInput) || $values === '') {
-                continue;
-            }
-            switch ($key) {
-                case 'checked':
-                case 'required':
-                    $output[] = $key;
-
-                    break;
-                default:
-                    $output[] = $key . '="' . $values . '"';
+            if (in_array($key, ['checked', 'required'])) {
+                $output[] = $key;
+            } elseif (!in_array($key, $this->attributesCss) && $values !== '' && $key !== 'selected') {
+                $output[] = $key . '="' . $values . '"';
             }
         }
         $implode = implode(' ', $output);
@@ -920,8 +845,7 @@ class FormBuilder
      */
     protected function isRequired($key)
     {
-        return isset($this->form[ $key ][ 'attr' ][ 'required' ]) &&
-            !empty($this->form[ $key ][ 'attr' ][ 'required' ]);
+        return !empty($this->form[ $key ][ 'attr' ][ 'required' ]);
     }
 
     /**
@@ -931,14 +855,14 @@ class FormBuilder
      * @param string $key Clé unique.
      * @param array $attr Liste des attributs à ajouter.
      *
-     * @return $this|null
+     * @return $this|bool
      */
     protected function addAttrRecurses($key, array $attr)
     {
-        if (isset($this->form [ $key ])) {
-            $this->form [ $key ][ 'attr' ] = $this->merge_attr($this->form [ $key ][ 'attr' ], $attr);
+        if (isset($this->form[ $key ])) {
+            $this->form [ $key ][ 'attr' ] = $this->merge_attr($this->form[ $key ][ 'attr' ], $attr);
 
-            return $this;
+            return true;
         }
 
         foreach ($this->form as $input) {
@@ -946,12 +870,12 @@ class FormBuilder
                 continue;
             }
 
-            if ($input[ 'subform' ]->addAttrRecurses($key, $attr) !== null) {
-                return $this;
+            if ($input[ 'subform' ]->addAttrRecurses($key, $attr)) {
+                return true;
             }
         }
 
-        return null;
+        return false;
     }
 
     /**
@@ -978,5 +902,69 @@ class FormBuilder
         }
 
         return null;
+    }
+    
+    /**
+     * Fonction PHP array_slice() pour tableau associatif.
+     *
+     * @see http://php.net/manual/fr/function.array-slice.php
+     *
+     * @param array $input Tableau associatif.
+     * @param int|string $offset
+     * @param int|string $length
+     * @param array $replacement
+     * @param bool $after Si le tableau de remplacement doit être intègré après.
+     */
+    private function array_splice_assoc(
+        array &$input,
+        $offset,
+        $length,
+        array $replacement,
+        $after = false
+    ) {
+        $key_indices = array_flip(array_keys($input));
+
+        if (isset($input[ $offset ]) && is_string($offset)) {
+            $offset = $key_indices[ $offset ];
+        }
+        if (isset($input[ $length ]) && is_string($length)) {
+            $length = $key_indices[ $length ] - $offset;
+        }
+
+        $input = array_slice($input, 0, $offset + ($after ? 1 : 0), true)
+            + $replacement
+            + array_slice($input, $offset + $length, null, true);
+    }
+    
+    /**
+     * Ajoute un nouvel élément de formulaire avant ou après un élément existant.
+     *
+     * @param string $key Clé unique.
+     * @param callable $callback Fonction de création du sous-formulaire.
+     * @param bool $after Si l'item doit être placé après l'élément représenter par la clé.
+     *
+     * @return bool
+     */
+    private function addItem($key, callable $callback, $after = false)
+    {
+        if (isset($this->form[ $key ])) {
+            $form = new FormBuilder([]);
+            call_user_func_array($callback, [ &$form ]);
+            $this->array_splice_assoc($this->form, $key, ($after ? $key : 0), $form->getForm(), $after);
+
+            return true;
+        }
+
+        foreach ($this->form as $input) {
+            if ($input[ 'type' ] != 'group') {
+                continue;
+            }
+
+            if ($input[ 'subform' ]->addBefore($key, $callback)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
