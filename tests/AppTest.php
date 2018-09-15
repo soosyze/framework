@@ -79,6 +79,11 @@ class AppCore extends \Soosyze\App
             'Test' => new TestModule()
         ];
     }
+
+    protected function loadServices()
+    {
+        return [];
+    }
 }
 
 class TestModule extends \Soosyze\Controller

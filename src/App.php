@@ -167,17 +167,21 @@ abstract class App
         $config = new Config($this->getSetting('config'), $this->getEnvironment());
         
         $this->container = (new Container)
+            ->setConfig($config)
+            ->setInstance('core', $this)
             ->setInstance('config', $config);
                     
+        $services  = $this->loadServices();
+        $this->container->setServices($services);
+        
         $this->modules = $this->loadModules();
         $this->loadRoutesAndServices();
 
-        $this->router = new Router($this->routes, $this->modules);
-        $this->router->setRequest($this->request);
+        $this->router = (new Router($this->routes, $this->modules))
+            ->setRequest($this->request);
 
-        $this->container->setInstance('core', $this)
-            ->setInstance('router', $this->router)
-            ->setServices($this->services);
+        $this->container->addServices($this->services)
+            ->setInstance('router', $this->router);
 
         foreach ($this->modules as $module) {
             $module->setContainer($this->container);
@@ -320,9 +324,13 @@ abstract class App
         return isset($this->environnement[ $nameEnv ]) &&
             in_array(gethostname(), $this->environnement[ $nameEnv ]);
     }
+    
     /**
+     * Charge les instances des services hors modules.
      *
+     * @return array
      */
+    abstract protected function loadServices();
 
     /**
      * Charge les instances des contrôleurs dans la table des modules (clé => objet).

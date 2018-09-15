@@ -43,6 +43,13 @@ class Container implements ContainerInterface
      * @var array
      */
     protected $hooks = [];
+    
+    /**
+     * Composant de configuration.
+     *
+     * @var Config
+     */
+    protected $config;
 
     /**
      * Appel un service comme une fonction.
@@ -83,6 +90,20 @@ class Container implements ContainerInterface
     public function setServices(array $services)
     {
         $this->services = $services;
+
+        return $this;
+    }
+
+    /**
+     * Charge les services.
+     *
+     * @param array $services Liste de services.
+     *
+     * @return $this
+     */
+    public function addServices(array $services)
+    {
+        $this->services += $services;
 
         return $this;
     }
@@ -145,17 +166,6 @@ class Container implements ContainerInterface
             throw new NotFoundException('Service ' . htmlspecialchars($key) . ' does not exist.');
         }
 
-        $args = [];
-        if (isset($this->services[ $key ][ 'arguments' ])) {
-            $args = $this->services[ $key ][ 'arguments' ];
-            foreach ($args as $keyArg => $arg) {
-                /* Injecte d'autres services comme argument d'instantiation du service appelé. */
-                if (preg_match("/^@.*/", $arg, $matches)) {
-                    $args[ $keyArg ] = $this->get(substr($matches[ 0 ], 1));
-                }
-            }
-        }
-
         try {
             /*
              * ReflectionClass à la même fonctionnalité que call_user_func_array
@@ -166,10 +176,11 @@ class Container implements ContainerInterface
             throw new ContainerException(htmlspecialchars($key) . " is not exist.", $ex->getCode(), $ex);
         }
 
+        $args = $this->matchArgs($key);
         $instance = $ref->newInstanceArgs($args);
         $this->setInstance($key, $instance);
 
-        return $this->get($key);
+        return $instance;
     }
 
     /**
@@ -244,5 +255,53 @@ class Container implements ContainerInterface
         }
 
         return $return;
+    }
+    
+    /**
+     * Ajoute le composant de configuration pour les services.
+     *
+     * @param Config $config
+     *
+     * @return $this
+     */
+    public function setConfig(Config $config)
+    {
+        $this->config = $config;
+        
+        return $this;
+    }
+    
+    /**
+     * Alimente les arguments d'un service avec
+     * des valeurs, des élements de configuration ou/et d'autres services.
+     *
+     * @param string $key Nom du service.
+     *
+     * @return array Arguments chargés.
+     */
+    private function matchArgs($key)
+    {
+        if (!isset($this->services[ $key ][ 'arguments' ])) {
+            return [];
+        }
+        
+        $args = $this->services[ $key ][ 'arguments' ];
+
+        foreach ($args as &$arg) {
+            /* Injecte d'autres services comme argument d'instantiation du service appelé. */
+            if (strpos($arg, '@') === 0) {
+                $arg = $this->get(substr($arg, 1));
+            }
+            /* Injecte un parmètre comme argument d'instantiation du service appelé. */
+            elseif (strpos($arg, '#') === 0) {
+                $arg = $this->config->get(substr($arg, 1));
+            }
+            /* Dans le cas ou ont souhaites échaper l'appel à un autre service ou un paramètre. */
+            elseif (strpos($arg, '\@') === 0 || strpos($arg, '\#') === 0) {
+                $arg = substr($arg, 1);
+            }
+        }
+
+        return $args;
     }
 }

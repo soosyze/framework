@@ -35,24 +35,49 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
             'service2' => [
                 "class"     => "Soosyze\\Test\\service2",
                 "arguments" => [
-                    "@service1",
+                    "@service1"
                 ]
             ]
         ]);
 
         $isOk = $this->object->get('service2')->isOk();
-
+        
         $this->assertTrue($isOk);
     }
 
     public function testSetService()
     {
-        $this->object->SetService('service2', "Soosyze\\Test\\service2", [ '@service1' ]);
-        $this->object->SetService('service1', "Soosyze\\Test\\service1");
+        $this->object
+            ->SetService('service2', "Soosyze\\Test\\service2", [ '@service1' ])
+            ->SetService('service1', "Soosyze\\Test\\service1");
 
         $isOk = $this->object->get('service2')->isOk();
 
         $this->assertTrue($isOk);
+    }
+    
+    public function testSetServiceParam()
+    {
+        $this->object
+            ->SetService('service3', "Soosyze\\Test\\service3", [ '@service1', '\@service1' ])
+            ->SetService('service1', "Soosyze\\Test\\service1");
+
+        $str = $this->object->get('service3')->getStr();
+
+        $this->assertEquals($str, '@service1');
+    }
+    
+    public function testSetServiceParamConfig()
+    {
+        $config = new \Soosyze\Config('tests/config', 'local');
+        $this->object
+            ->setConfig($config)
+            ->SetService('service3', "Soosyze\\Test\\service3", [ '@service1', '#testConfig.key1' ])
+            ->SetService('service1', "Soosyze\\Test\\service1");
+
+        $str = $this->object->get('service3')->getStr();
+
+        $this->assertEquals($str, 'value1');
     }
 
     public function testSetInstance()
@@ -67,7 +92,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     public function testSetInstances()
     {
         $service1 = new Service1;
-        $service2 = new Service2($service1);
+        $service2 = new Service2($service1, "");
 
         $this->object->setInstances([ 'service1' => $service1, 'service2' => $service2 ]);
 
@@ -170,13 +195,30 @@ class service2
 {
     protected $service;
 
-    public function __construct(Service1 $service1)
+    public function __construct(Service1 $arg1)
     {
-        $this->service = $service1;
+        $this->service = $arg1;
     }
 
     public function isOk()
     {
         return $this->service->isOk();
+    }
+}
+
+class service3
+{
+    protected $service;
+    protected $str;
+
+    public function __construct(Service1 $arg1, $arg2)
+    {
+        $this->service = $arg1;
+        $this->str     = $arg2;
+    }
+    
+    public function getStr()
+    {
+        return $this->str;
     }
 }
