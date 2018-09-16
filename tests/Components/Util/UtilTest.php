@@ -10,13 +10,13 @@ use Soosyze\Components\Util\Util;
  */
 class UtilTest extends \PHPUnit\Framework\TestCase
 {
-    public static $path = __DIR__ . DIRECTORY_SEPARATOR . 'build';
+    public static $path = 'tests/Components/Util/build';
 
     public static $file = 'file';
 
-    public static $pathFile = __DIR__ . '/build/file.json';
+    public static $pathFile = 'tests/Components/Util/build/file.json';
 
-    public static $pathFileError = __DIR__ . '/build/fileError.json';
+    public static $pathFileError = 'tests/Components/Util/build/fileError.json';
 
     public static function tearDownAfterClass()
     {
