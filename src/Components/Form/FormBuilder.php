@@ -792,7 +792,9 @@ class FormBuilder
         $output = [];
         foreach ($attr as $key => $values) {
             if (in_array($key, ['checked', 'required'])) {
-                $output[] = $key;
+                if (!empty($values)) {
+                    $output[] = $key;
+                }
             } elseif (!in_array($key, $this->attributesCss) && $values !== '' && $key !== 'selected') {
                 $output[] = $key . '="' . $values . '"';
             }
