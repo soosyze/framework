@@ -193,7 +193,7 @@ class Util
     {
         $str = str_replace([ '\\', '/' ], self::DS, $path);
 
-        return trim($str, $character_mask);
+        return rtrim($str, $character_mask);
     }
 
     /**
