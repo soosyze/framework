@@ -292,6 +292,16 @@ abstract class App
 
         return $this;
     }
+    
+    /**
+     * Retourne la requête courante.
+     *
+     * @return ServerRequest
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
 
     /**
      * Retourne la clé de l'environnement ou une chaine vide si la machine n'est pas reconnue.
