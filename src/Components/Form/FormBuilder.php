@@ -36,7 +36,7 @@ class FormBuilder
     protected $baliseGroup = [
         'div', 'span', 'fieldset'
     ];
-
+    
     /**
      * Types des champs standards.
      *

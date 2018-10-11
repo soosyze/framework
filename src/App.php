@@ -92,7 +92,7 @@ abstract class App
      * À la construction de notre application ont créé l'objet Request
      * pour le traiter et renvoyer une réponse.
      *
-     * @param ServerRequest|null $request requête courante de l'application.
+     * @param ServerRequest|null $request Requête courante de l'application.
      */
     private function __construct(ServerRequest $request = null)
     {
@@ -104,7 +104,7 @@ abstract class App
     /**
      * Singleton pour une classe abstraite.
      *
-     * @param ServerRequest|null $request requête courante de l'application.
+     * @param ServerRequest|null $request Requête courante de l'application.
      *
      * @return self Instancte unique de App.
      */
@@ -158,7 +158,7 @@ abstract class App
 
     /**
      * Initialise le routeur et le container. Charge les configurations, les routes,
-     * les services et les modules. Transmet le container aux Contrôleurs.
+     * les services et les modules. Transmet le container aux contrôleurs.
      *
      * @return $this
      */
@@ -252,7 +252,7 @@ abstract class App
     /**
      * Ajoute un service au container.
      *
-     * @codeCoverageIgnore Fonction testé directement avec l'objet Container
+     * @codeCoverageIgnore Fonction testé directement avec l'objet Container.
      *
      * @param string $key Nom du service.
      * @param string $srv Instance du service.

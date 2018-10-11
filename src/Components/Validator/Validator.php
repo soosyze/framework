@@ -283,7 +283,7 @@ class Validator
                     : $func;
 
                 /* Si la fonction à des arguments. */
-                if ($arg !== false) {
+                if ($arg) {
                     /* Sépare le nom de la fonction un argument. */
                     $function = strstr($function, ":", true);
 
@@ -733,14 +733,16 @@ class Validator
      * Filtre une valeur avec la méthode htmlspecialchars.
      *
      * @param string $keyStr Identifiant de la valeur.
+     *
+     * @throws \InvalidArgumentException La valeur time n'est pas numérique.
      */
     protected function validHtmlsc($keyStr)
     {
         $key = strstr($keyStr, ".", true);
         if (!is_string($this->inputs[ $key ])) {
-            throw new \InvalidArgumentException('The '
-            . htmlspecialchars($key)
-            . ' field does not exist');
+            throw new \InvalidArgumentException(
+                'The ' . htmlspecialchars($key) . ' field does not exist'
+            );
         }
         $this->inputs[ $key ] = htmlspecialchars($this->inputs[ $key ]);
     }
@@ -908,6 +910,8 @@ class Validator
      * @param string $keyStr Identifiant de la valeur.
      * @param string $value Valeur à filtrer.
      * @param string $tags Liste des balise HTML autorisés.
+     *
+     * @throws \InvalidArgumentException La valeur time n'est pas numérique.
      */
     protected function validStripTags(
         $keyStr,
@@ -918,9 +922,9 @@ class Validator
     . '<ul><ol><li><dl><dt><dd><img><br><hr>'
     ) {
         if (!is_string($value)) {
-            throw new \InvalidArgumentException('The value of the '
-            . htmlspecialchars($keyStr)
-            . ' field is not a string');
+            throw new \InvalidArgumentException(
+                'The value of the ' . htmlspecialchars($keyStr) . ' field is not a string'
+            );
         }
         $key                  = strstr($keyStr, ".", true);
         $this->inputs[ $key ] = strip_tags($value, $tags);
@@ -935,7 +939,7 @@ class Validator
      * @param int $time Nombre de seconde ou le token est valide (défaut 15 minutes),
      * si la valeur du time = 0 alors le test du temps de validation n'est pas effectif.
      *
-     * @throws \\InvalidArgumentException La valeur time n'est pas numérique.
+     * @throws \InvalidArgumentException La valeur time n'est pas numérique.
      */
     protected function validToken($key, $value, $time = 900)
     {
