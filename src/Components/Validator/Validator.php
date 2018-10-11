@@ -50,7 +50,7 @@ class Validator
      *
      * @var callable[]
      */
-    protected $test = [];
+    protected static $test = [];
 
     /**
      * Lance les fonctions de validation à partir du type de test.
@@ -66,16 +66,18 @@ class Validator
     public function __call($name, $arguments)
     {
         $func = 'valid' . $name;
-        if (isset($this->test[ $func ])) {
-            return call_user_func_array($this->test[ $func ], $arguments);
+        if (isset(self::$test[ $func ])) {
+            $return = call_user_func_array(self::$test[ $func ], $arguments);
+            
+            return !empty($return)
+                ? $this->addReturn($return['key'], $return['value'], $return['msg'])
+                : $return;
         } elseif (method_exists($this, $func)) {
             return call_user_func_array([ $this, $func ], $arguments);
         }
 
         throw new \BadMethodCallException(
-            'The '
-        . htmlspecialchars($name)
-        . ' function does not exist.'
+            'The ' . htmlspecialchars($name) . ' function does not exist.'
         );
     }
 
@@ -124,11 +126,9 @@ class Validator
      *
      * @return $this
      */
-    public function addTest($key, callable $callback)
+    public static function addTest($key, callable $callback)
     {
-        $this->test[ 'valid' . $key ] = $callback;
-
-        return $this;
+        self::$test[ 'valid' . $key ] = $callback;
     }
 
     /**
