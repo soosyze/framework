@@ -1010,24 +1010,26 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
     public function testCustomTest()
     {
+        Validator::addTest('cube', function ($key, $value, $multi, $not = true) {
+            if ($value * $value != $multi && $not) {
+                return ['key' => $key, 'value' => $value, 'msg' => 'La valeur au cube de %s n\'est pas égale à 4.'];
+            } elseif ($value * $value == $multi && !$not) {
+                return ['key' => $key, 'value' => $value, 'msg' => 'La valeur au cube de %s ne doit pas être égale à 4.'];
+            }
+        });
+        Validator::addTest('double', function ($key, $value, $not = true) {
+            if ($value * 2 != 16 && $not) {
+                return ['key' => $key, 'value' => $value, 'msg' => 'Le double de la valeur de %s n\'est pas égale à 16.'];
+            } elseif ($value * 2 == 16 && !$not) {
+                return ['key' => $key, 'value' => $value, 'msg' => 'Le double de la valeur de %s ne doit pas être égale à 16.'];
+            }
+        });
         $this->object->setInputs([
             'field_custom_cube'      => 4,
             'field_custom_not_cube'  => 2,
             'field_custom_multi'     => 8,
             'field_custom_not_multi' => 2
-        ])->addTest('cube', function ($key, $value, $multi, $not = true) {
-            if ($value * $value != $multi && $not) {
-                $this->object->addReturn($key, $value, 'La valeur au cube de %s n\'est pas égale à 4.');
-            } elseif ($value * $value == $multi && !$not) {
-                $this->object->addReturn($key, $value, 'La valeur au cube de %s ne doit pas être égale à 4.');
-            }
-        })->addTest('double', function ($key, $value, $not = true) {
-            if ($value * 2 != 16 && $not) {
-                $this->object->addReturn($key, $value, 'Le double de la valeur de %s n\'est pas égale à 16.');
-            } elseif ($value * 2 == 16 && !$not) {
-                $this->object->addReturn($key, $value, 'Le double de la valeur de %s ne doit pas être égale à 16.');
-            }
-        })->setRules([
+        ])->setRules([
             'field_custom_cube'      => 'cube:16',
             'field_custom_not_cube'  => '!cube:16',
             'field_custom_multi'     => 'double',
@@ -1036,13 +1038,34 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
         $this->assertTrue($this->object->isValid());
     }
+    
+    public function testCustomTestReturn()
+    {
+        Validator::addTest('cube', function ($key, $value, $multi, $not = true) {
+            if ($value * $value != $multi && $not) {
+                return ['key' => $key, 'value' => $value, 'msg' => 'La valeur au cube de %s n\'est pas égale à 4.'];
+            } elseif ($value * $value == $multi && !$not) {
+                return ['key' => $key, 'value' => $value, 'msg' => 'La valeur au cube de %s ne doit pas être égale à 4.'];
+            }
+        });
+        $this->object->setInputs([
+            'field_custom_cube'     => 5,
+            'field_custom_not_cube' => 4
+        ])->setRules([
+            'field_custom_cube'     => 'cube:16',
+            'field_custom_not_cube' => '!cube:16'
+        ]);
+
+        $this->assertFalse($this->object->isValid());
+        $this->assertEquals($this->object->getError('field_custom_cube.cube'), 'La valeur au cube de field_custom_cube n\'est pas égale à 4.');
+    }
 
     public function testCustomMessage()
     {
         $this->object->setInputs([
-            'field' => 'hello world !',
+            'field' => 'hello world !'
         ])->setRules([
-            'field' => '!string',
+            'field' => '!string'
         ])->setMessages([
             'field.string' => 'My message custom for %s !'
         ]);
