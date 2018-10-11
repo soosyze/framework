@@ -35,6 +35,13 @@ class Autoload
     protected $map = [];
 
     /**
+     * Liste directement les fichiers à la racine de leur namespace.
+     *
+     * @var array
+     */
+    protected $prefix = [];
+
+    /**
      * Créer notre autoload à partir de la liste des namespace.
      *
      * @param array $lib
@@ -73,6 +80,20 @@ class Autoload
     }
 
     /**
+     * Ajoute une liste de prefix pour trouver des classes.
+     *
+     * @param array $prefix
+     *
+     * @return $this
+     */
+    public function setPrefix(array $prefix)
+    {
+        $this->prefix = $prefix;
+
+        return $this;
+    }
+
+    /**
      * Appel l'autoload register.
      */
     public function register()
@@ -104,8 +125,8 @@ class Autoload
          * Si la classe recherchée est à la racine du namespace le chemin sera
          * égale à la clé. Cette condition peut éviter la boucle.
          */
-        if (isset($this->lib[ $path ])) {
-            $filepath = $this->relplaceSlash($this->lib[ $path ] . self::DS . $file);
+        if (isset($this->prefix[ $path ])) {
+            $filepath = $this->relplaceSlash($this->prefix[ $path ] . self::DS . $file);
 
             if ($this->requireFile($filepath)) {
                 return $filepath;
