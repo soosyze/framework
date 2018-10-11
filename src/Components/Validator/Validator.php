@@ -92,11 +92,6 @@ class Validator
     public function addInput($key, $value)
     {
         $this->inputs[ $key ] = $value;
-        if ($diff                 = array_diff_key($this->rules, $this->inputs)) {
-            foreach ($diff as $key => $value) {
-                $this->inputs[ $key ] = '';
-            }
-        }
 
         return $this;
     }
@@ -268,7 +263,7 @@ class Validator
      */
     public function isValid()
     {
-        /* Parcours les règles */
+        $this->correctInputs();
         foreach ($this->rules as $key => $test) {
             /* Si la valeur n'est pas vide. */
             if ($this->inputs[ $key ] === '') {
@@ -322,12 +317,6 @@ class Validator
     public function setInputs(array $fields)
     {
         $this->inputs = $fields;
-        /* Si les régles contiennes plus de champs que les champs reçut */
-        if ($diff         = array_diff_key($this->rules, $this->inputs)) {
-            foreach ($diff as $key => $value) {
-                $this->inputs[ $key ] = '';
-            }
-        }
 
         return $this;
     }
@@ -1006,5 +995,18 @@ class Validator
         }
 
         $this->keyUniqueReturn[] = $key;
+    }
+    
+    /**
+     * Si les régles contiennes plus de champs que les valeurs reçut,
+     * Les valeurs se voient corrigé.
+     */
+    private function correctInputs()
+    {
+        if (($diff = array_diff_key($this->rules, $this->inputs))) {
+            foreach ($diff as $key => $value) {
+                $this->inputs[ $key ] = '';
+            }
+        }
     }
 }

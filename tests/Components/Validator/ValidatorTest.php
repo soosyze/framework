@@ -1074,4 +1074,28 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals($this->object->getError('field.string'), 'My message custom for field !');
     }
+    
+    public function testNoInput()
+    {
+        $this->object->setInputs([
+            'field'  => 'Lorem ipsum',
+            'field2' => ''
+        ])->setRules([
+            'field' => 'string'
+        ]);
+
+        $this->assertTrue($this->object->isValid());
+    }
+    
+    public function testNoRule()
+    {
+        $this->object->setInputs([
+            'field'  => 'Lorem ipsum',
+        ])->setRules([
+            'field' => 'string',
+            'field2' => 'string'
+        ]);
+
+        $this->assertFalse($this->object->isValid());
+    }
 }
