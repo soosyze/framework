@@ -310,10 +310,12 @@ abstract class App
      */
     public function getEnvironment()
     {
-        if (($host = gethostname()) !== false) {
-            $path = $this->request->getUri()->getBasePath();
+        if (!empty($this->environnement)) {
+            $host      = gethostname();
+            $authority = $this->request->getUri()->getAuthority();
+
             foreach ($this->environnement as $key => $env) {
-                if (in_array($host, $env) || $path == $env) {
+                if (in_array($host, $env) || in_array($authority, $env)) {
                     return $key;
                 }
             }
@@ -331,8 +333,12 @@ abstract class App
      */
     public function isEnvironnement($nameEnv)
     {
-        return isset($this->environnement[ $nameEnv ]) &&
-            in_array(gethostname(), $this->environnement[ $nameEnv ]);
+        $authority = $this->request->getUri()->getAuthority();
+
+        return isset($this->environnement[ $nameEnv ]) && (
+            in_array(gethostname(), $this->environnement[ $nameEnv ]) ||
+            in_array($authority, $this->environnement[ $nameEnv ])
+        );
     }
     
     /**

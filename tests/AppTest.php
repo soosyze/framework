@@ -52,13 +52,23 @@ class AppTest extends \PHPUnit\Framework\TestCase
         $this->assertAttributeSame([ 'prod' => [ '' ] ], 'environnement', $this->object);
     }
 
-    public function testGetEnvironnement()
+    public function testGetEnvironnementHostname()
     {
         $this->assertEquals($this->object->getEnvironment(), '');
 
         $this->object->setEnvironnement([
             'prod'  => [ '' ],
             'local' => [ gethostname() ]
+        ]);
+
+        $this->assertEquals($this->object->getEnvironment(), 'local');
+    }
+    
+    public function testGetEnvironnementAuthority()
+    {
+        $this->object->setEnvironnement([
+            'prod'  => [ '' ],
+            'local' => [ 'test.com' ]
         ]);
 
         $this->assertEquals($this->object->getEnvironment(), 'local');
