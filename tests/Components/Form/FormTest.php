@@ -114,13 +114,13 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
     public function testInputSelect()
     {
-        $this->object->select('inputSelect', [
+        $this->object->select('inputSelect', 'idInputSelect', [
             [ 'value' => 0, 'label' => 'hello' ],
             [ 'value' => 1, 'label' => 'world' ]
             ], [ 'selected' => 0 ]);
 
         $form   = $this->object->form_select('inputSelect');
-        $result = '<select name="inputSelect">' . "\r\n"
+        $result = '<select name="inputSelect" id="idInputSelect">' . "\r\n"
             . '<option value="0" selected>hello</option>' . "\r\n"
             . '<option value="1" >world</option>' . "\r\n"
             . '</select>' . "\r\n";
@@ -130,10 +130,10 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
     public function testInputTextarea()
     {
-        $this->object->textarea('textareaName', 'lorem ipsum');
+        $this->object->textarea('textareaName', "idInputTextarea", 'lorem ipsum');
 
         $form   = $this->object->form_textarea('textareaName');
-        $result = '<textarea name="textareaName">lorem ipsum</textarea>' . "\r\n";
+        $result = '<textarea name="textareaName" id="idInputTextarea">lorem ipsum</textarea>' . "\r\n";
 
         $this->assertEquals($form, $result);
     }
