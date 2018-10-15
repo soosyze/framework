@@ -36,7 +36,7 @@ class FormBuilder
     protected $baliseGroup = [
         'div', 'span', 'fieldset'
     ];
-    
+
     /**
      * Types des champs standards.
      *
@@ -255,9 +255,11 @@ class FormBuilder
      *
      * @return $this
      */
-    public function textarea($name, $content = '', array $attr = null)
+    public function textarea($name, $id, $content = '', array $attr = null)
     {
-        return $this->input($name, [ 'type' => 'textarea', 'content' => $content, 'attr' => $attr ]);
+        $basic = $this->merge_attr([ 'id' => $id ], $attr);
+        
+        return $this->input($name, [ 'id' => $id, 'type' => 'textarea', 'content' => $content, 'attr' => $basic ]);
     }
 
     /**
@@ -269,9 +271,11 @@ class FormBuilder
      *
      * @return $this
      */
-    public function select($name, $options = [], array $attr = null)
+    public function select($name, $id, $options = [], array $attr = null)
     {
-        return $this->input($name, [ 'type' => 'select', 'options' => $options, 'attr' => $attr ]);
+        $basic = $this->merge_attr([ 'id' => $id ], $attr);
+        
+        return $this->input($name, [ 'type' => 'select', 'options' => $options, 'attr' => $basic ]);
     }
 
     /**
@@ -315,7 +319,10 @@ class FormBuilder
     public function token()
     {
         if (session_id() == '') {
-            session_start();
+            session_start([
+                'cookie_httponly' => true,
+                'cookie_secure' => true
+            ]);
         }
         /* On génère un token totalement unique. */
         $token                    = uniqid(rand(), true);
