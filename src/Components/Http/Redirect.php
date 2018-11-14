@@ -55,6 +55,7 @@ class Redirect extends Reponse
     {
         header('HTTP/' . $this->protocolVersion . ' ' . $this->code . ' ' . $this->reasonPhrase, true);
         header('Location: ' . $this->getHeaderLine('location'));
+        exit;
     }
 
     /**
