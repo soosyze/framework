@@ -118,7 +118,7 @@ class Autoload
         $className = array_pop($parts);
 
         /* On créé le chemin vers la classe */
-        $path = implode(self::DS, $parts);
+        $path = implode('\\', $parts);
         $file = $className . '.php';
 
         /*
