@@ -98,10 +98,12 @@ class AppCore extends \Soosyze\App
 
 class TestModule extends \Soosyze\Controller
 {
-    protected $pathRoutes = __DIR__ . '/config/testRouting.json';
-
-    protected $pathServices = __DIR__ . '/config/testService.json';
-
+    public function __construct()
+    {
+        $this->pathRoutes   = __DIR__ . '/config/testRouting.json';
+        $this->pathServices = __DIR__ . '/config/testService.json';
+    }
+    
     public function index()
     {
         return 'ok';
