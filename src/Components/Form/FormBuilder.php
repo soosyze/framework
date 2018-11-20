@@ -319,7 +319,7 @@ class FormBuilder
     public function token()
     {
         if (session_id() == '') {
-            session_start([
+            @session_start([
                 'cookie_httponly' => true,
                 'cookie_secure' => true
             ]);

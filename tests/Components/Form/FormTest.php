@@ -17,7 +17,10 @@ class FormTest extends \PHPUnit\Framework\TestCase
      */
     protected function setUp()
     {
-        @session_start();
+        @session_start([
+            'cookie_httponly' => true,
+            'cookie_secure' => true
+        ]);
         parent::setUp();
         $this->object = new FormBuilder([ 'method' => 'post', 'action' => 'http://localhost/' ]);
     }

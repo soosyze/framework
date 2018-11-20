@@ -195,7 +195,8 @@ class Request extends Message implements RequestInterface
              * Si l'en-tête Host est manquant ou vide, et que le nouvel URI contient
              * un composant hôte, cette méthode DOIT mettre à jour l'en-tête Host dans le retour.
              */
-            if (empty($this->getHeader('Host')) && $uri->getHost() !== '') {
+            $headerHost = $this->getHeader('Host');
+            if (empty($headerHost) && $uri->getHost() !== '') {
                 return $clone->withHeader('Host', $uri->getHost());
             }
         }

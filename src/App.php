@@ -361,12 +361,12 @@ abstract class App
     protected function loadRoutesAndServices()
     {
         foreach ($this->modules as $module) {
-            if (!empty($module->getPathRoutes())) {
+            if ($module->getPathRoutes()) {
                 $routesConfig = Util::getJson($module->getPathRoutes());
                 $this->routes += $routesConfig;
             }
 
-            if (!empty($module->getPathServices())) {
+            if ($module->getPathServices()) {
                 $servicesConfig = Util::getJson($module->getPathServices());
                 $this->services += $servicesConfig;
             }

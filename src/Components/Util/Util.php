@@ -189,7 +189,7 @@ class Util
      *
      * @return string Chemin nettoyé.
      */
-    public static function cleanPath($path, $character_mask = " \t\n\r\0\x0B/" . self::DS)
+    public static function cleanPath($path, $character_mask = "\// \t\n\r\0\x0B/")
     {
         $str = str_replace([ '\\', '/' ], self::DS, $path);
 

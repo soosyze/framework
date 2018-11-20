@@ -173,11 +173,11 @@ class Uri implements UriInterface
      */
     public function getAuthority()
     {
-        $authority = !empty($this->getUserInfo())
+        $authority = $this->getUserInfo()
             ? $this->getUserInfo() . '@'
             : '';
         $authority .= $this->getHost();
-        $authority .= !empty($this->getPort())
+        $authority .= $this->getPort()
             ? ':' . $this->getPort()
             : '';
 

@@ -15,7 +15,7 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
      */
     protected $object;
 
-    protected $pathTemplate = __DIR__ . DIRECTORY_SEPARATOR;
+    protected $pathTemplate;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -23,6 +23,7 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
      */
     protected function setUp()
     {
+        $this->pathTemplate = __DIR__ . DIRECTORY_SEPARATOR;
         $this->object = new Template('testTemplate.php', $this->pathTemplate);
     }
 

@@ -916,10 +916,7 @@ class Validator
     protected function validStripTags(
         $keyStr,
         $value,
-        $tags = '<h1><h2><h3><h4><h5><h6>'
-    . '<p><span><b><i><u><a>'
-    . '<table><thead><tbody><tfoot><tr><th><td>'
-    . '<ul><ol><li><dl><dt><dd><img><br><hr>'
+        $tags = '<h1><h2><h3><h4><h5><h6><p><span><b><i><u><a><table><thead><tbody><tfoot><tr><th><td><ul><ol><li><dl><dt><dd><img><br><hr>'
     ) {
         if (!is_string($value)) {
             throw new \InvalidArgumentException(
@@ -944,7 +941,10 @@ class Validator
     protected function validToken($key, $value, $time = 900)
     {
         if (session_id() == '') {
-            @session_start();
+            @session_start([
+                'cookie_httponly' => true,
+                'cookie_secure' => true
+            ]);
         }
 
         /* À revoir le passage d'argument boolean automatique pour les fonctions hors not */
