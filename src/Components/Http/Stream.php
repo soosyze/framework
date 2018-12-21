@@ -10,7 +10,7 @@
 
 namespace Soosyze\Components\Http;
 
-use \Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Décrit un flux de données.
@@ -66,23 +66,18 @@ class Stream implements StreamInterface
      *
      * @see http://php.net/manual/fr/wrappers.php.php
      *
-     * @param $mixed bool|float|int|ressource|string|null
+     * @param $mixed bool|float|int|object|ressource|string|null
      *
      * @throws \InvalidArgumentException Le type de données n'est pas pris en charge par flux de données.
      */
     public function __construct($mixed = '')
     {
         if (is_scalar($mixed) || $mixed === null) {
-            $stream = fopen('php://temp', 'r+');
-
-            if ($mixed !== '') {
-                fwrite($stream, $mixed);
-                fseek($stream, 0);
-            }
-
-            $this->stream = $stream;
+            $this->createStreamFromScalar($mixed);
         } elseif (is_resource($mixed)) {
             $this->stream = $mixed;
+        } elseif (is_object($mixed) && method_exists($mixed, '__toString')) {
+            $this->createStreamFromScalar((string) $mixed);
         } else {
             throw new \InvalidArgumentException('Stream must be a resource');
         }
@@ -106,6 +101,32 @@ class Stream implements StreamInterface
         $this->seek(0);
 
         return ( string ) stream_get_contents($this->stream);
+    }
+    
+    /**
+     * Créer un flux à partir d'un fichier.
+     *
+     * @param type $filename Nom du fichier.
+     * @param type $mode Mode de lecture du fichier.
+     *
+     * @return \Soosyze\Components\Http\Stream
+     *
+     * @throws \InvalidArgumentException Le mode de lecture n'est pas valide.
+     * @throws \RuntimeException Le fichier ne peut pas être ouvert.
+     */
+    public static function createStreamFromFile($filename, $mode = 'r')
+    {
+        if (!in_array($mode, self::$modes['read'])) {
+            throw new \InvalidArgumentException('The mode is invalid.');
+        }
+
+        try {
+            $handle = fopen($filename, $mode);
+        } catch (\Exception $ex) {
+            throw new \RuntimeException('The file cannot be opened.');
+        }
+
+        return new Stream($handle);
     }
 
     /**
@@ -346,6 +367,23 @@ class Stream implements StreamInterface
     protected function isAttached()
     {
         return is_resource($this->stream);
+    }
+
+    /**
+     * Charge un flux à partir d'une valeur scalaire.
+     * 
+     * @param mixed $scalar Valeur scalaire.
+     */
+    private function createStreamFromScalar($scalar)
+    {
+        $stream = fopen('php://temp', 'r+');
+
+        if ($scalar !== '') {
+            fwrite($stream, $scalar);
+            fseek($stream, 0);
+        }
+
+        $this->stream = $stream;
     }
 
     /**

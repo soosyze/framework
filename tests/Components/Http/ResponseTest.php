@@ -2,13 +2,13 @@
 
 namespace Soosyze\Tests\Components\Http;
 
-use Soosyze\Components\Http\Reponse;
+use Soosyze\Components\Http\Response;
 use Soosyze\Components\Http\Stream;
 
-class ReponseTest extends \PHPUnit\Framework\TestCase
+class ResponseTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Reponse
+     * @var Response
      */
     protected $object;
 
@@ -18,7 +18,7 @@ class ReponseTest extends \PHPUnit\Framework\TestCase
      */
     protected function setUp()
     {
-        $this->object = new Reponse;
+        $this->object = new Response;
     }
 
     /**
@@ -29,7 +29,7 @@ class ReponseTest extends \PHPUnit\Framework\TestCase
     {
     }
 
-    public function testSetUpReponse()
+    public function testSetUpResponse()
     {
         $this->assertAttributeSame(200, 'code', $this->object);
         $this->assertAttributeSame('OK', 'reasonPhrase', $this->object);
@@ -37,18 +37,18 @@ class ReponseTest extends \PHPUnit\Framework\TestCase
         $this->assertAttributeSame([], 'headers', $this->object);
     }
 
-    public function testConstructReponse()
+    public function testConstructResponse()
     {
-        $rep = new Reponse(404, new Stream('Page not found, sorry'), [ 'Localtion' => '/error' ]);
+        $rep = new Response(404, new Stream('Page not found, sorry'), [ 'Localtion' => ['/error'] ]);
         $this->assertAttributeSame(404, 'code', $rep);
         $this->assertAttributeSame('Not Found', 'reasonPhrase', $rep);
         $this->assertEquals('Page not found, sorry', ( string ) $rep->getBody());
-        $this->assertAttributeSame([ 'Localtion' => '/error' ], 'headers', $rep);
+        $this->assertAttributeSame([ 'localtion' => ['/error'] ], 'headers', $rep);
     }
 
-    public function testConstructReponsewithCodeNumeric()
+    public function testConstructResponsewithCodeNumeric()
     {
-        $rep = new Reponse('300');
+        $rep = new Response('300');
         $this->assertAttributeSame(300, 'code', $rep);
     }
 
@@ -96,5 +96,14 @@ class ReponseTest extends \PHPUnit\Framework\TestCase
     public function testWithStatusAndReasonPhraseException()
     {
         $this->object->withStatus(400, 1);
+    }
+    
+    /**
+     * @runInSeparateProcess
+     */
+    public function testToString()
+    {
+        $rep = new Response(404, new Stream('Page not found, sorry'), [ 'Localtion' => '/error' ]);
+        $this->assertEquals('Page not found, sorry', (string) $rep);
     }
 }

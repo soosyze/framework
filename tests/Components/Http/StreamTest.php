@@ -8,11 +8,20 @@ class StreamTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
+     * @var resource
+     */
+    protected $file = './testStream.txt';
+
+    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
     protected function setUp()
     {
+        /* Créer un fichier pour le test */
+        $stream = fopen($this->file, 'w');
+        fwrite($stream, 'test content');
+        fclose($stream);
     }
 
     /**
@@ -21,6 +30,10 @@ class StreamTest extends \PHPUnit\Framework\TestCase
      */
     protected function tearDown()
     {
+        /* Supprime le fichier du test */
+        if (file_exists($this->file)) {
+            unlink($this->file);
+        }
     }
 
     public function streamFactory($mode = 'r+')
@@ -66,6 +79,33 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $body = new Stream('test');
         $body->detach();
         $this->assertEquals($body, '');
+        
+        $body = new Stream(new objetTest());
+        $this->assertEquals($body, 'test');
+    }
+    
+    public function testCreateStreamFromFile()
+    {
+        $stream = Stream::createStreamFromFile($this->file);
+
+        $this->assertInstanceOf('\Psr\Http\Message\StreamInterface', $stream);
+        $this->assertEquals($stream, 'test content');
+    }
+    
+    /**
+     * @expectedException RuntimeException
+     */
+    public function testCreateStreamFromFileRuntime()
+    {
+        Stream::createStreamFromFile('error');
+    }
+    
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testCreateStreamFromFileInvalidArgument()
+    {
+        Stream::createStreamFromFile($this->file, 'error');
     }
 
     public function testDetach()
@@ -292,5 +332,13 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $body = new Stream('test');
         $data = $body->getMetadata('error');
         $this->assertNull($data);
+    }
+}
+
+class objetTest
+{
+    public function __toString()
+    {
+        return 'test';
     }
 }

@@ -343,7 +343,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * Cette méthode permet de supprimer un seul attribut de requête dérivé
      * décrit dans getAttributes().
      *
-     * @see getAttributes ()
+     * @see getAttributes()
      *
      * @param string $name Nom de l'attribut.
      *

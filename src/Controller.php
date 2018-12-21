@@ -10,8 +10,9 @@
 
 namespace Soosyze;
 
-use Soosyze\Components\Http\Reponse;
+use Soosyze\Components\Http\Response;
 use Soosyze\Components\Http\Stream;
+use Psr\Http\Message\RequestInterface;
 
 /**
  * Les méthodes du contrôleur sont appelées à partir d'une requête http
@@ -110,20 +111,20 @@ class Controller
     /**
      * Retourne une réponse avec le statut 404.
      *
-     * @codeCoverageIgnore Fonction testé directement avec l'objet Reponse.
+     * @codeCoverageIgnore Fonction testé directement avec l'objet Response.
      *
      * @param string $stream
      * @param RequestInterface $request
      *
-     * @return Reponse
+     * @return Response
      */
     protected function get404($stream = null, RequestInterface $request = null)
     {
-        $text = 'Page %s Not Found, Sorry, but the page you were trying to view does not exist.';
-        $stream = $stream instanceof RequestInterface && $request === null
+        $text          = 'Page %s Not Found. Sorry, but the page you were trying to view does not exist.';
+        $stream_output = $stream instanceof RequestInterface && $request === null
             ? sprintf($text, $stream->getUri()->getQuery())
-            : sprintf($text, '');
-        
-        return new Reponse(404, new Stream($stream));
+            : sprintf($text, $request->getUri()->getQuery());
+
+        return new Response(404, new Stream($stream_output));
     }
 }

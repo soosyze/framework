@@ -60,6 +60,10 @@ class MessageTest extends \PHPUnit\Framework\TestCase
         $msg   = new Message();
         $clone = $msg->withHeader('Location', 'http://www.example.com/');
         $this->assertAttributeSame([ 'location' => [ 'http://www.example.com/' ] ], 'headers', $clone);
+        
+        $msg2   = new Message();
+        $clone2 = $msg2->withHeader('Location', ['http://www.example.com/']);
+        $this->assertAttributeSame([ 'location' => [ 'http://www.example.com/' ] ], 'headers', $clone2);
     }
 
     public function testGetHeaders()

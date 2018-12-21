@@ -13,6 +13,7 @@ Soosyze Framework est un micro-framework MVC object offrant un socle solide de d
 * ![PSR-4](https://img.shields.io/badge/PSR-4-yellow.svg) Autoloader, interchangeable avec l'autoloader de compsoser,
 * ![PSR-7](https://img.shields.io/badge/PSR-7-yellow.svg) Requête et Réponse,
 * ![PSR-11](https://img.shields.io/badge/PSR-11-yellow.svg) Container d'injection de dépendance ou CID,
+* ![PSR-17](https://img.shields.io/badge/PSR-17-yellow.svg) Fabriques Http implémentées sans les interfaces qui contraignent les implémentations à PHP7,
 * Découpe des fonctionnalitées en modules,
 * Routeur (url),
 * Hook et Middleware,

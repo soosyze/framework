@@ -83,16 +83,23 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
         new UploadedFile('', null, null, 1);
     }
 
+    /**
+     * @expectedException Exception
+     */
     public function testConstructErrorException()
     {
         $upFile = new UploadedFile('', null, null, null, 'bonjour');
-        $this->assertAttributeSame('bonjour', 'error', $upFile);
     }
 
     public function testCreate()
     {
-        $upFile = UploadedFile::create([ 'tmp_name' => $this->file, 'name'     => 'file.txt',
-                'size'     => 1024, 'type'     => 'text/plain' ]);
+        $upFile = UploadedFile::create([
+                'tmp_name' => $this->file,
+                'name'     => 'file.txt',
+                'size'     => 1024,
+                'type'     => 'text/plain',
+                'error'    => 0
+        ]);
 
         $this->assertAttributeSame($this->file, 'file', $upFile);
         $this->assertAttributeSame('file.txt', 'name', $upFile);
@@ -100,7 +107,15 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
         $this->assertAttributeSame('text/plain', 'type', $upFile);
         $this->assertAttributeSame(0, 'error', $upFile);
     }
-
+    
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testCreateInvalidArgument()
+    {
+        UploadedFile::create([]);
+    }
+    
     public function testGetStream()
     {
         $stream = $this->object->getStream();
@@ -108,7 +123,7 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
         /* Si nous ne fermons pas le flux le fichier sera vérouillé pour le reste des opérations */
         $stream->close();
     }
-
+    
     public function testMoveTo()
     {
         $targetPath = './moveTest.txt';
@@ -117,7 +132,7 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
         $this->assertFileExists($targetPath);
         unlink($targetPath);
     }
-
+    
     /**
      * @expectedException Exception
      */

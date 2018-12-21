@@ -53,6 +53,14 @@ class UriTest extends \PHPUnit\Framework\TestCase
         $this->assertAttributeSame('arg=value', 'query', $uri);
         $this->assertAttributeSame('anchor', 'fragment', $uri);
     }
+    
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testCreateUriInvalidArgument()
+    {
+        Uri::create('http:///www.error.org');
+    }
 
     public function testGetScheme()
     {

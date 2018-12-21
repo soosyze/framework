@@ -10,9 +10,10 @@
 
 namespace Soosyze;
 
+use Psr\Http\Message\ResponseInterface;
 use Soosyze\Router;
 use Soosyze\Container;
-use Soosyze\Components\Http\Reponse;
+use Soosyze\Components\Http\Response;
 use Soosyze\Components\Http\ServerRequest;
 use Soosyze\Components\Http\Stream;
 use Soosyze\Components\Util\Util;
@@ -193,12 +194,12 @@ abstract class App
     /**
      * Lance l'application.
      *
-     * @return Reponse La magie de l'application.
+     * @return ResponseInterface La magie de l'application.
      */
     public function run()
     {
         $request = clone $this->request;
-        $reponse = new Reponse(404, new Stream(null));
+        $reponse = new Response(404, new Stream(null));
 
         $this->container->callHook('app.reponse.before', [ &$request, &$reponse ]);
 
@@ -212,7 +213,7 @@ abstract class App
             );
 
             $exec    = $this->router->execute($route, $request);
-            $reponse = $this->parseReponse($exec);
+            $reponse = $this->parseResponse($exec);
 
             $this->container->callHook(
                 $route[ 'key' ] . '.reponse.after',
@@ -379,14 +380,14 @@ abstract class App
      *
      * Les données doivent pouvoir être prise en charge par le Stream de la réponse.
      *
-     * @param Reponse|bool|float|int|ressource|string|null $reponse
+     * @param ResponseInterface|bool|float|int|ressource|string|null $reponse
      *
-     * @return Reponse
+     * @return ResponseInterface
      */
-    protected function parseReponse($reponse)
+    protected function parseResponse($reponse)
     {
-        return !($reponse instanceof Reponse)
-            ? new Reponse(200, new Stream($reponse))
+        return !($reponse instanceof ResponseInterface)
+            ? new Response(200, new Stream($reponse))
             : $reponse;
     }
 }

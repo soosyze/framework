@@ -17,7 +17,7 @@ namespace Soosyze\Components\Http;
  *
  * @author Mathieu NOËL
  */
-class Redirect extends Reponse
+class Redirect extends Response
 {
     /**
      * Codes de redirection valident.
@@ -44,18 +44,6 @@ class Redirect extends Reponse
     ) {
         parent::__construct($code, $body, $headers);
         $this->headers[ 'location' ] = [ $location ];
-    }
-
-    /**
-     * Renvoie les informations de la réponse et son contenu.
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        header('HTTP/' . $this->protocolVersion . ' ' . $this->code . ' ' . $this->reasonPhrase, true);
-        header('Location: ' . $this->getHeaderLine('location'));
-        exit;
     }
 
     /**

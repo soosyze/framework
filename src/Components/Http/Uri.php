@@ -104,7 +104,7 @@ class Uri implements UriInterface
      * @param string $password
      */
     public function __construct(
-    $scheme = '',
+        $scheme = '',
         $host = '',
         $path = '/',
         $port = null,
@@ -418,43 +418,47 @@ class Uri implements UriInterface
     }
 
     /**
-     * Créer une URI à partir d'une URL.
+     * Créer une URI.
      *
      * Cette méthode ne fait pas partie de la norme PSR-7
      *
-     * @param string $url
+     * @param string $uri
      *
      * @return static Nouvelle instance d'URI.
+     *
+     * @throws \InvalidArgumentException
      */
-    public static function create($url)
+    public static function create($uri)
     {
-        $parse = parse_url($url);
+        if (($parse = parse_url($uri)) === false) {
+            throw new \InvalidArgumentException("Unable to parse URI");
+        }
 
         return new Uri(
             isset($parse[ 'scheme' ])
-            ? $parse[ 'scheme' ]
-            : '',
+                ? $parse[ 'scheme' ]
+                : '',
             isset($parse[ 'host' ])
-            ? $parse[ 'host' ]
-            : '',
+                ? $parse[ 'host' ]
+                : '',
             isset($parse[ 'path' ])
-            ? $parse[ 'path' ]
-            : '',
+                ? $parse[ 'path' ]
+                : '',
             isset($parse[ 'port' ])
-            ? $parse[ 'port' ]
-            : '',
+                ? $parse[ 'port' ]
+                : '',
             isset($parse[ 'query' ])
-            ? $parse[ 'query' ]
-            : '',
+                ? $parse[ 'query' ]
+                : '',
             isset($parse[ 'fragment' ])
-            ? $parse[ 'fragment' ]
-            : '',
+                ? $parse[ 'fragment' ]
+                : '',
             isset($parse[ 'user' ])
-            ? $parse[ 'user' ]
-            : '',
+                ? $parse[ 'user' ]
+                : '',
             isset($parse[ 'pass' ])
-            ? $parse[ 'pass' ]
-            : ''
+                ? $parse[ 'pass' ]
+                : ''
         );
     }
 

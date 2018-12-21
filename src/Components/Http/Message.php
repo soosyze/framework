@@ -11,7 +11,7 @@
 namespace Soosyze\Components\Http;
 
 use Psr\Http\Message\MessageInterface;
-use \Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Les messages HTTP sont constitués de requêtes d'un client vers un serveur et des réponses

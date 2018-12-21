@@ -11,6 +11,7 @@
 namespace Soosyze\Components\Http;
 
 use Psr\Http\Message\UploadedFileInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Objet de valeur représentant un fichier téléchargé via une requête HTTP.
@@ -26,7 +27,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @var string|null
      */
-    protected $file;
+    protected $file = null;
 
     /**
      * Chemin du fichier temporaire ($_FILES['key']['name']).
@@ -90,7 +91,7 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Construit un fichier.
      *
-     * @param string $file
+     * @param string|ressource|StreamInterface $file
      * @param string|null $name
      * @param int|null $size
      * @param string|null $type
@@ -103,10 +104,7 @@ class UploadedFile implements UploadedFileInterface
         $type = null,
         $error = UPLOAD_ERR_OK
     ) {
-        if (!is_string($file)) {
-            throw new \InvalidArgumentException();
-        }
-        $this->file  = $file;
+        $this->filterFile($file);
         $this->name  = $this->filterName($name);
         $this->size  = $this->filterSize($size);
         $this->type  = $this->filterType($type);
@@ -119,9 +117,15 @@ class UploadedFile implements UploadedFileInterface
      * @param array $file Doit contenir la clé 'tmp_name' au minimum.
      *
      * @return \Soosyze\Components\Http\UploadedFile
+     * 
+     * @throws \InvalidArgumentException La clé tmp_name est requise.
      */
     public static function create(array $file)
     {
+        if (!isset($file[ 'tmp_name' ])) {
+            throw new \InvalidArgumentException('The tmp_name key is required.');
+        }
+        
         return new UploadedFile(
             $file[ 'tmp_name' ],
             isset($file[ 'name' ])
@@ -147,13 +151,13 @@ class UploadedFile implements UploadedFileInterface
      *
      * @return StreamInterface Stream représentation du fichier téléchargé.
      *
-     * @throws \RuntimeException dans les cas où aucun flux n'est disponible ou peut être
+     * @throws \RuntimeException Dans les cas où aucun flux n'est disponible ou peut être
      * créé.
      */
     public function getStream()
     {
         if ($this->moved) {
-            throw new \RuntimeException();
+            throw new \RuntimeException('The file has already been moved.');
         }
 
         if (empty($this->stream)) {
@@ -186,13 +190,21 @@ class UploadedFile implements UploadedFileInterface
         if (!is_string($targetPath) || $targetPath === '') {
             throw new \InvalidArgumentException('Target is incorrect.');
         }
-        if (!file_exists($this->file) && (file_exists($targetPath) || !is_writable($targetPath))) {
-            throw new \InvalidArgumentException('An error has occurred.');
+        if ($this->file) {
+            if (!file_exists($this->file) && (file_exists($targetPath) || !is_writable($targetPath))) {
+                throw new \InvalidArgumentException('An error has occurred.');
+            }
+            $this->moved = php_sapi_name() == 'cli'
+                ? $this->moveToSapi($targetPath)
+                : $this->moveToNoSapi($targetPath);
+        } else {
+            $stream = fopen($targetPath, 'w');
+            
+            fwrite($stream, $this->stream->getContents());
+            fclose($stream);
+            
+            $this->moved = true;
         }
-
-        $this->moved = php_sapi_name() == 'cli'
-            ? $this->moveToSapi($targetPath)
-            : $this->moveToNoSapi($targetPath);
     }
 
     /**
@@ -247,6 +259,28 @@ class UploadedFile implements UploadedFileInterface
     public function getClientMediaType()
     {
         return $this->type;
+    }
+
+    /**
+     * Déclenche une exception si le fichier n'est pas valide.
+     *
+     * @param string|ressource|StreamInterface $file Le fichier.
+     *
+     * @return string Fichier filtré.
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function filterFile($file)
+    {
+        if (is_string($file)) {
+            $this->file = $file;
+        } elseif (is_resource($file)) {
+            $this->stream = new Stream($file);
+        } elseif ($file instanceof StreamInterface) {
+            $this->stream = $file;
+        } else {
+            throw new \InvalidArgumentException("The file resource is not readable.");
+        }
     }
 
     /**
@@ -314,7 +348,7 @@ class UploadedFile implements UploadedFileInterface
      */
     protected function filterError($error)
     {
-        if (!in_array($error, $this->errors)) {
+        if (!in_array($error, $this->errors, true)) {
             throw new \InvalidArgumentException('The type of error is invalid.');
         }
         

@@ -127,7 +127,9 @@ class ServerRequestTest extends \PHPUnit\Framework\TestCase
     public function testWithAttribute()
     {
         $clone = $this->object->withAttribute('key', 'value');
+
         $this->assertAttributeSame([ 'key' => 'value' ], 'attributes', $clone);
+        $this->assertEquals('value', $clone->getAttribute('key'));
     }
 
     public function testWithoutAttribute()

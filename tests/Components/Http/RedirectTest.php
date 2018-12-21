@@ -7,7 +7,7 @@ use Soosyze\Components\Http\Redirect;
 class RedirectTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Reponse
+     * @var Response
      */
     protected $object;
 
@@ -28,7 +28,7 @@ class RedirectTest extends \PHPUnit\Framework\TestCase
     {
     }
 
-    public function testSetUpReponse()
+    public function testSetUpResponse()
     {
         $this->assertAttributeSame(301, 'code', $this->object);
         $this->assertAttributeSame('Moved Permanently', 'reasonPhrase', $this->object);

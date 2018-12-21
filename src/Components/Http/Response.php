@@ -10,7 +10,7 @@
 
 namespace Soosyze\Components\Http;
 
-use \Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Représentation d'une réponse sortante côté serveur.
@@ -19,7 +19,7 @@ use \Psr\Http\Message\ResponseInterface;
  *
  * @author Mathieu NOËL
  */
-class Reponse extends Message implements ResponseInterface
+class Response extends Message implements ResponseInterface
 {
     /**
      * Code d'état.
@@ -113,16 +113,20 @@ class Reponse extends Message implements ResponseInterface
      * @param int $code Code d'état.
      * @param \Psr\Http\Message\StreamInterface $body Corp de la réponse.
      * @param array $headers En-tête de la réponse.
+     * @param string $reasonPhrase La phrase de raison allant de paire avec le code d'état.
      */
     public function __construct(
         $code = 200,
         \Psr\Http\Message\StreamInterface $body = null,
-        array $headers = []
+        array $headers = [],
+        $reasonPhrase = ''
     ) {
         $this->code         = $this->filtreCode($code);
-        $this->reasonPhrase = $this->reasonPhraseDefault[ $this->code ];
+        $this->reasonPhrase = $reasonPhrase === '' && isset($this->reasonPhraseDefault[ $this->code ])
+            ? $this->reasonPhraseDefault[ $this->code ]
+            : (string) $reasonPhrase;
         $this->body         = $body;
-        $this->headers      = $headers;
+        $this->withHeaders($headers);
     }
 
     /**
@@ -132,9 +136,13 @@ class Reponse extends Message implements ResponseInterface
      */
     public function __toString()
     {
-        header('HTTP/' . $this->protocolVersion . ' ' . $this->code . ' ' . $this->reasonPhrase, true);
+        header('HTTP/' . $this->protocolVersion . ' ' . $this->code . ' ' . $this->reasonPhrase);
 
-        return $this->getBody()->__toString();
+        foreach ($this->getHeaders() as $name => $values) {
+            header("$name: " . implode(', ', $values));
+        }
+
+        return (string) $this->getBody();
     }
 
     /**

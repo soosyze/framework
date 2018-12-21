@@ -57,6 +57,7 @@ class Request extends Message implements RequestInterface
         'OPTIONS',
         'PATCH',
         'POST',
+        'PURGE',
         'PUT',
         'TRACE',
     ];
