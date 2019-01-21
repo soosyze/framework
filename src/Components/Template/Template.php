@@ -22,14 +22,14 @@ class Template
      *
      * @var string
      */
-    protected $template;
+    protected $name;
 
     /**
      * Chemin de la template.
      *
      * @var string
      */
-    protected $templatePath;
+    protected $path;
 
     /**
      * Les sous templates.
@@ -55,13 +55,13 @@ class Template
     /**
      * Charge une template à partir de son nom et son chemin.
      *
-     * @param string $tplName Nom du fichier.
-     * @param string $tplPath Chemin du fichier.
+     * @param string $name Nom du fichier.
+     * @param string $path Chemin du fichier.
      */
-    public function __construct($tplName, $tplPath)
+    public function __construct($name, $path)
     {
-        $this->template     = $tplName;
-        $this->templatePath = $tplPath;
+        $this->name = $name;
+        $this->path = $path;
     }
 
     /**
@@ -72,6 +72,44 @@ class Template
     public function __toString()
     {
         return $this->render();
+    }
+
+    /**
+     * Ajoute une fonction pour filtrer une variable.
+     *
+     * @param string $key Nom de la variable.
+     * @param callable $function Fonction de filtre.
+     *
+     * @return $this
+     */
+    public function addFilterVar($key, callable $function)
+    {
+        return $this->addfilter('var.' . $key, $function);
+    }
+
+    /**
+     * Ajoute une fonction pour filtrer un block.
+     *
+     * @param string $key Nom du block.
+     * @param callable $function Fonction de filtre.
+     *
+     * @return $this
+     */
+    public function addFilterBlock($key, callable $function)
+    {
+        return $this->addfilter('block.' . $key, $function);
+    }
+
+    /**
+     * Ajoute une fonction pour filtrer la sortie de la template.
+     *
+     * @param callable $function Fonction de filtre.
+     *
+     * @return $this
+     */
+    public function addFilterOutput(callable $function)
+    {
+        return $this->addfilter('output', $function);
     }
 
     /**
@@ -106,7 +144,7 @@ class Template
     }
 
     /**
-     * Ajoute un bloc sous template.
+     * Ajoute un bloc sous template avec la variable id_block par défaut.
      *
      * @param string $key Clé unique du bloc.
      * @param Template $tpl Sous template.
@@ -115,9 +153,37 @@ class Template
      */
     public function addBlock($key, Template $tpl = null)
     {
-        $this->blocks[ $key ] = $tpl;
+        $this->blocks[ $key ] = $tpl !== null
+            ? $tpl->addVar('id_block', "block-$key")
+            : null;
 
         return $this;
+    }
+
+    /**
+     * Retourne le contenu d'une variable à partir de son nom.
+     *
+     * @codeCoverageIgnore getter
+     *
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function getVar($key)
+    {
+        return $this->vars[ $key ];
+    }
+
+    /**
+     * Retourne toutes les variables de la template.
+     *
+     * @codeCoverageIgnore getter
+     *
+     * @return array
+     */
+    public function getVars()
+    {
+        return $this->vars;
     }
 
     /**
@@ -135,21 +201,55 @@ class Template
             return $find;
         }
 
-        throw new \Exception('The block ' . htmlspecialchars($key) . ' does not exist.');
+        throw new \Exception(htmlspecialchars("The block $key does not exist."));
     }
 
     /**
-     * Ajoute une fonction de filtre pour le rendu de la template.
+     * Retourne tous les blocs de la template.
      *
-     * @param callable $function
+     * @codeCoverageIgnore getter
      *
-     * @return $this
+     * @return Template[]
      */
-    public function addfilter(callable $function)
+    public function getBlocks()
     {
-        $this->filters[] = $function;
+        return $this->blocks;
+    }
 
-        return $this;
+    /**
+     * Retourne le nom de la template.
+     *
+     * @codeCoverageIgnore getter
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Retourne le chemin de la template.
+     *
+     * @codeCoverageIgnore getter
+     *
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    /**
+     * Change le nom de la template.
+     *
+     * @codeCoverageIgnore setter
+     *
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
     }
 
     /**
@@ -159,46 +259,38 @@ class Template
      */
     public function render()
     {
+        require_once 'functions_include.php';
         $block = [];
         foreach ($this->blocks as $key => &$subTpl) {
             $block[ $key ] = !is_null($subTpl)
-                ? $subTpl->render()
+                ? $this->filter('block.' . $key, $subTpl->render())
                 : '';
         }
 
         foreach ($this->vars as $key => $value) {
-            $$key = $value;
+            $$key = $this->filter('var.' . $key, $value);
         }
 
         ob_start();
-        require $this->templatePath . $this->template;
+        require $this->path . $this->name;
         $html = ob_get_clean();
 
-        foreach ($this->filters as $filter) {
-            $html = $filter($html);
-        }
-
-        return $html;
+        return $this->filter('output', $html);
     }
 
     /**
-     * Retourne le nom de la template.
+     * Ajoute une fonction de filtre pour le rendu de la template.
      *
-     * @return string
+     * @param string $key Description
+     * @param callable $function
+     *
+     * @return $this
      */
-    public function getName()
+    protected function addFilter($key, callable $function)
     {
-        return $this->template;
-    }
+        $this->filters[ $key ][] = $function;
 
-    /**
-     * Retourne le chemin de la template.
-     *
-     * @return string
-     */
-    public function getPath()
-    {
-        return $this->templatePath;
+        return $this;
     }
 
     /**
@@ -221,5 +313,24 @@ class Template
         }
 
         return null;
+    }
+
+    /**
+     * Exécute les fonctions de filtre.
+     *
+     * @param string $key Nom du filtre.
+     * @param string $value Valeur à filtrer.
+     *
+     * @return string
+     */
+    private function filter($key, $value)
+    {
+        if (isset($this->filters[ $key ])) {
+            foreach ($this->filters[ $key ] as $filter) {
+                $value = $filter($value);
+            }
+        }
+
+        return $value;
     }
 }
