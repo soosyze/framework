@@ -11,6 +11,8 @@
 namespace Soosyze\Components\Http;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UploadedFileInterface;
+use Soosyze\Components\Http\UploadedFile;
 
 /**
  * Représentation d'une requête HTTP entrante, côté serveur.
@@ -88,7 +90,7 @@ class ServerRequest extends Request implements ServerRequestInterface
         parent::__construct($method, $uri, $headers, $body, $version);
         $this->serverParams = $serverParams;
         $this->cookieParams = $cookies;
-        $this->uploadFiles  = $uploadFiles;
+        $this->uploadFiles  = self::parseFilesToUploadFiles($uploadFiles);
     }
 
     /**
@@ -231,13 +233,8 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function withUploadedFiles(array $uploadedFiles)
     {
-        foreach ($uploadedFiles as $value) {
-            if (!$value instanceof UploadedFile) {
-                throw new \InvalidArgumentException('The contents must all be instances of UploadedFileInterface.');
-            }
-        }
         $clone              = clone $this;
-        $clone->uploadFiles = $uploadedFiles;
+        $clone->uploadFiles = self::parseFilesToUploadFiles($uploadedFiles);
 
         return $clone;
     }
@@ -357,5 +354,124 @@ class ServerRequest extends Request implements ServerRequestInterface
         }
 
         return $clone;
+    }
+
+    /**
+     * Parse la variable supergloable $_FILES pour sa représentation PSR7
+     * sans conversion des fichiers en instances de UploadedFileInterface.
+     *
+     * N'appartient pas aux définitions des interfaces PSR7.
+     *
+     * @see https://www.php-fig.org/psr/psr-7/#16-uploaded-files
+     *
+     * @param array $files
+     *
+     * @return array
+     */
+    public static function parseFiles(array $files)
+    {
+        if (empty($files)) {
+            return [];
+        }
+        $output = [];
+        /* Premier parcour, détermine les fichier simple ou multiple. */
+        foreach ($files as $key => $file) {
+            if ($file instanceof UploadedFileInterface) {
+                $output[ $key ] = $file;
+            } elseif (is_array($file) && isset($file[ 'tmp_name' ])) {
+                $output[ $key ] = is_array($file[ 'tmp_name' ])
+                    ? self::normaliseMultiFile($file)
+                    : $file;
+            } else {
+                throw new \InvalidArgumentException('The input parameter is not in the correct format.');
+            }
+        }
+
+        return $output;
+    }
+
+    /**
+     * Parse la variable supergloable $_FILES pour sa représentation PSR7
+     * avec conversion des fichiers en instances de UploadedFileInterface.
+     *
+     * N'appartient pas aux définitions des interfaces PSR7.
+     *
+     * @see https://www.php-fig.org/psr/psr-7/#16-uploaded-files
+     *
+     * @param array $files
+     *
+     * @return UploadedFileInterface[]
+     */
+    public static function parseFilesToUploadFiles(array $files)
+    {
+        $filesParse = self::parseFiles($files);
+
+        return self::normaliseUplaod($filesParse);
+    }
+
+    /**
+     * Parse les fichiers multiples contenu dans la variable superglobal $_FILE
+     * à partir des clés standards (tmp_name, size, name...).
+     *
+     * @param array $files Représentation de la variable $_FILE à partir de ses clés standards.
+     *
+     * @return array
+     */
+    private static function normaliseMultiFile(array $files)
+    {
+        $output = [];
+        /* Second parcour. */
+        foreach (array_keys($files) as $value) {
+            self::normaliseFile($output, $files[ $value ], $value);
+        }
+
+        return $output;
+    }
+
+    /**
+     * Parcours récursif à partir d'une clé standard (tmp_name, size, name...)
+     * pour remplir par référence la variable output et regrouper les éléments par fichier.
+     *
+     * @param array|mixed $output Tableau qui sera rempli par référence.
+     * @param array $array Informations contenus dans l'une des clés standards.
+     * @param string $name Clés standards de la variable superglobale $_FILES.
+     */
+    private static function normaliseFile(&$output, array $array, $name)
+    {
+        /* Troisième parcour. */
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                self::normaliseFile($output[ $key ], $value, $name);
+            }
+            if (!is_array($value)) {
+                $output[ $key ][ $name ] = $value;
+            }
+        }
+    }
+
+    /**
+     * Parcours de la variable superglobale $_FILES parsée pour remplacer
+     * les informations de fichier en instances de UploadedFileInterface.
+     *
+     * @param array $files Variable superglobale $_FILES parsée.
+     *
+     * @return UploadedFileInterface[]
+     */
+    private static function normaliseUplaod(array $files)
+    {
+        $output = [];
+        foreach ($files as $key => $value) {
+            if ($value instanceof UploadedFileInterface) {
+                $output[ $key ] = $value;
+            } elseif (is_array($value) && isset($value[ 'tmp_name' ])) {
+                $output[ $key ] = UploadedFile::create($value);
+            } elseif (is_array($value)) {
+                $output[ $key ] = self::normaliseUplaod($value);
+            } else {
+                throw new \InvalidArgumentException('The input parameter is not in the correct format.');
+            }
+        }
+
+        return $output;
     }
 }

@@ -12,6 +12,172 @@ class ServerRequestTest extends \PHPUnit\Framework\TestCase
     protected $object;
 
     /**
+     * Représentation de la variable superglobale $_FILES.
+     *
+     * @var array
+     */
+    protected $filesTest = [
+        'file'  => [
+            'name'     => '',
+            'type'     => '',
+            'tmp_name' => '',
+            'error'    => 4,
+            'size'     => 0
+        ],
+        'file2' => [
+            'name'     => '',
+            'type'     => '',
+            'tmp_name' => '',
+            'error'    => 4,
+            'size'     => 0 ],
+        'file3' => [
+            'name'     => [
+                0 => '',
+                1 => ''
+            ],
+            'type'     => [
+                0 => '',
+                1 => ''
+            ],
+            'tmp_name' => [
+                0 => '',
+                1 => ''
+            ],
+            'error'    => [
+                0 => 4,
+                1 => 4
+            ],
+            'size'     => [
+                0 => 0,
+                1 => 0
+            ]
+        ],
+        'file4' => [
+            'name'     => [
+                'details' => [
+                    0         => '',
+                    1         => '',
+                    'avatars' => [
+                        0 => '',
+                        1 => ''
+                    ]
+                ]
+            ],
+            'type'     => [
+                'details' => [
+                    0         => '',
+                    1         => '',
+                    'avatars' => [
+                        0 => '',
+                        1 => ''
+                    ]
+                ]
+            ],
+            'tmp_name' => [
+                'details' => [
+                    0         => '',
+                    1         => '',
+                    'avatars' => [
+                        0 => '',
+                        1 => ''
+                    ]
+                ]
+            ],
+            'error'    => [
+                'details' => [
+                    0         => 4,
+                    1         => 4,
+                    'avatars' => [
+                        0 => 4,
+                        1 => 4
+                    ]
+                ]
+            ],
+            'size'     => [
+                'details' => [
+                    0         => 0,
+                    1         => 0,
+                    'avatars' => [
+                        0 => 0,
+                        1 => 0
+                    ]
+                ]
+            ]
+        ]
+    ];
+
+    /**
+     *
+     * @var array
+     */
+    protected $resultFiles = [
+        'file'  => [
+            'name'     => '',
+            'type'     => '',
+            'tmp_name' => '',
+            'error'    => 4,
+            'size'     => 0
+        ],
+        'file2' => [
+            'name'     => '',
+            'type'     => '',
+            'tmp_name' => '',
+            'error'    => 4,
+            'size'     => 0
+        ],
+        'file3' => [
+            0 => [
+                'name'     => '',
+                'type'     => '',
+                'tmp_name' => '',
+                'error'    => 4,
+                'size'     => 0
+            ],
+            1 => [
+                'name'     => '',
+                'type'     => '',
+                'tmp_name' => '',
+                'error'    => 4,
+                'size'     => 0
+            ]
+        ],
+        'file4' => [
+            'details' => [
+                0         => [
+                    'name'     => '',
+                    'type'     => '',
+                    'tmp_name' => '',
+                    'error'    => 4,
+                    'size'     => 0
+                ],
+                1         => [
+                    'name'     => '',
+                    'type'     => '',
+                    'tmp_name' => '',
+                    'error'    => 4,
+                    'size'     => 0
+                ],
+                'avatars' => [
+                    0 => [
+                        'name'     => '',
+                        'type'     => '',
+                        'tmp_name' => '',
+                        'error'    => 4,
+                        'size'     => 0
+                    ],
+                    1 => [
+                        'name'     => '',
+                        'type'     => '',
+                        'tmp_name' => '',
+                        'error'    => 4,
+                        'size'     => 0
+                    ]
+                ]
+            ]
+        ]
+    ];
+
+    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
@@ -87,8 +253,32 @@ class ServerRequestTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals([], $this->object->getUploadedFiles());
     }
+    
+    public function testParseFiles()
+    {
+        $output = ServerRequest::parseFiles($this->filesTest);
+
+        $this->assertEquals($output, $this->resultFiles);
+    }
 
     public function testWithUploadedFiles()
+    {
+        $clone = $this->object->withUploadedFiles($this->filesTest);
+
+        $file    = $clone->getUploadedFiles()[ 'file' ];
+        $file2   = $clone->getUploadedFiles()[ 'file2' ];
+        $file3   = $clone->getUploadedFiles()[ 'file3' ][ 0 ];
+        $file4   = $clone->getUploadedFiles()[ 'file4' ][ 'details' ][ 0 ];
+        $file4_1 = $clone->getUploadedFiles()[ 'file4' ][ 'details' ][ 'avatars' ][ 0 ];
+
+        $this->assertInstanceOf('\Psr\Http\Message\UploadedFileInterface', $file);
+        $this->assertInstanceOf('\Psr\Http\Message\UploadedFileInterface', $file2);
+        $this->assertInstanceOf('\Psr\Http\Message\UploadedFileInterface', $file3);
+        $this->assertInstanceOf('\Psr\Http\Message\UploadedFileInterface', $file4);
+        $this->assertInstanceOf('\Psr\Http\Message\UploadedFileInterface', $file4_1);
+    }
+
+    public function testWithUploadedFilesUpload()
     {
         $upl   = new \Soosyze\Components\Http\UploadedFile('');
         $clone = $this->object->withUploadedFiles([ $upl ]);

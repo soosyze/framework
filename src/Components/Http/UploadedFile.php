@@ -34,21 +34,21 @@ class UploadedFile implements UploadedFileInterface
      *
      * @var string|null
      */
-    protected $name;
+    protected $name = null;
 
     /**
      * Taille du fichier en octets ($_FILES['key']['size']).
      *
      * @var int|null
      */
-    protected $size;
+    protected $size = 0;
 
     /**
      * Type MIME du fichier ($_FILES['key']['type']).
      *
      * @var string|null
      */
-    protected $type;
+    protected $type = null;
 
     /**
      * Code erreur ($_FILES['key']['error']).
@@ -104,11 +104,13 @@ class UploadedFile implements UploadedFileInterface
         $type = null,
         $error = UPLOAD_ERR_OK
     ) {
-        $this->filterFile($file);
         $this->name  = $this->filterName($name);
         $this->size  = $this->filterSize($size);
         $this->type  = $this->filterType($type);
         $this->error = $this->filterError($error);
+        if (!$this->isError()) {
+            $this->filterFile($file);
+        }
     }
 
     /**
@@ -156,6 +158,10 @@ class UploadedFile implements UploadedFileInterface
      */
     public function getStream()
     {
+        if ($this->isError()) {
+            throw new \RuntimeException('A download error prevents recovery of the stream.');
+        }
+
         if ($this->moved) {
             throw new \RuntimeException('The file has already been moved.');
         }
@@ -387,5 +393,15 @@ class UploadedFile implements UploadedFileInterface
         }
 
         return true;
+    }
+
+    /**
+     * Si le fichier ne contient pas le code UPLOAD_ERR_OK.
+     *
+     * @return bool
+     */
+    private function isError()
+    {
+        return $this->error !== UPLOAD_ERR_OK;
     }
 }
