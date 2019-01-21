@@ -200,6 +200,22 @@ class FormBuilder
     }
 
     /**
+     * Enregistre une balise HTML. Exemple :
+     * <p:css:attr>:_content</p>
+     * <img:css:attr />
+     *
+     * @param string $name Clé unique.
+     * @param string $html La balise HTML à utiliser.
+     * @param array $attr Liste d'attributs.
+     *
+     * @return $this
+     */
+    public function html($name, $html, array $attr = null)
+    {
+        return $this->input($name, [ 'type' => 'html', 'html' => $html, 'attr' => $attr ]);
+    }
+
+    /**
      * Enregistre un groupe d'input.
      *
      * @param string $name Nom du groupe.
@@ -517,6 +533,33 @@ class FormBuilder
     }
 
     /**
+     * Génère une balise HTML.
+     *
+     * @param string $key Clé unique.
+     * @param array|null $attrAdd Liste des attributs additionnels.
+     *
+     * @return string HTML
+     */
+    public function form_html($key, array $attrAdd = null)
+    {
+        $item = $this->getItem($key);
+        $attr = $this->merge_attr($item[ 'attr' ], $attrAdd);
+        if (isset($attr[ '_content' ])) {
+            $content = $attr[ '_content' ];
+            unset($attr[ '_content' ]);
+        } else {
+            $content = '';
+        }
+
+        return str_replace(
+                [ ':css', ':attr', ':_content' ],
+            [ $this->getAttributesCSS($attr),
+                $this->getAttributesInput($attr), $content ],
+            $item[ 'html' ]
+            ) . "\r\n";
+    }
+
+    /**
      * Génère une balise input hidden pour le token.
      *
      * @return string HTML
@@ -731,6 +774,10 @@ class FormBuilder
                 break;
             case 'group':
                 $html .= $this->form_group($key);
+
+                break;
+            case 'html':
+                $html .= $this->form_html($key);
 
                 break;
             default:
