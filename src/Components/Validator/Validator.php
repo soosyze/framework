@@ -20,65 +20,119 @@ class Validator
     /**
      * Règles de validations.
      *
-     * @var array
+     * @var string[]
      */
     protected $rules = [];
 
     /**
+     * Liste des tests standards.
+     *
+     * @var string[]
+     */
+    protected $tests = [
+        'alphanum'                => 'Rules\AlphaNum',
+        'alphanumtext'            => 'Rules\AlphaNumText',
+        'array'                   => 'Rules\ArrayR',
+        'between'                 => 'Rules\Between',
+        'bool'                    => 'Rules\BoolR',
+        'date'                    => 'Rules\Date',
+        'date_after'              => 'Rules\DateAfter',
+        'date_after_or_equal'     => 'Rules\DateAfterOrEqual',
+        'date_before'             => 'Rules\DateBefore',
+        'date_before_or_equal'    => 'Rules\DateBeforeOrEqual',
+        'date_format'             => 'Rules\DateFormat',
+        'dir'                     => 'Rules\Dir',
+        'equal'                   => 'Rules\Equal',
+        'email'                   => 'Rules\Email',
+        'float'                   => 'Rules\FloatR',
+        'inarray'                 => 'Rules\InArray',
+        'int'                     => 'Rules\IntR',
+        'ip'                      => 'Rules\Ip',
+        'json'                    => 'Rules\Json',
+        'max'                     => 'Rules\Max',
+        'min'                     => 'Rules\Min',
+        'regex'                   => 'Rules\Regex',
+        'required'                => 'Rules\Required',
+        'required_with'           => 'Rules\Required',
+        'required_without'        => 'Rules\Required',
+        'slug'                    => 'Rules\Slug',
+        'string'                  => 'Rules\StringR',
+        'token'                   => 'Rules\Token',
+        'url'                     => 'Rules\Url'
+    ];
+
+    /**
+     * Liste des filtre pour les valeurs.
+     *
+     * @var string[]
+     */
+    protected $filters = [
+        'htmlsc'    => 'Filters\Htmlsc',
+        'striptags' => 'Filters\StripTags'
+    ];
+
+    /**
      * Champs à tester.
      *
-     * @var array
+     * @var array[]
      */
     protected $inputs = [];
 
     /**
      * Valeurs de retour.
      *
-     * @var array
+     * @var string[]
      */
-    protected $return = [];
+    protected $errors = [];
 
     /**
      * Clé unique des champs.
      *
      * @var string[]
      */
-    protected $keyUniqueReturn = [];
+    protected $key = [];
 
     /**
      * Tests personnalisés par l'utilisateur.
      *
-     * @var callable[]
+     * @var Rule[]
      */
-    protected static $test = [];
+    protected static $testsCustom = [];
 
     /**
-     * Lance les fonctions de validation à partir du type de test.
-     * Exemple : L'appel avec le mot clé 'int' lancera la fonction valideInt.
+     * Messages de retours personnalisés.
      *
-     * @param string $name Nom de la fonction de validation.
-     * @param array $arguments Arguments de tests.
-     *
-     * @return mixed
-     *
-     * @throws \BadMethodCallException La fonction n'existe pas.
+     * @var string[]
      */
-    public function __call($name, $arguments)
-    {
-        $func = 'valid' . $name;
-        if (isset(self::$test[ $func ])) {
-            $return = call_user_func_array(self::$test[ $func ], $arguments);
-            
-            return !empty($return)
-                ? $this->addReturn($return['key'], $return['value'], $return['msg'])
-                : $return;
-        } elseif (method_exists($this, $func)) {
-            return call_user_func_array([ $this, $func ], $arguments);
-        }
+    protected static $messagesCustom = [];
 
-        throw new \BadMethodCallException(
-            'The ' . htmlspecialchars($name) . ' function does not exist.'
-        );
+    /**
+     * Ajoute un test personnalisé.
+     *
+     * @param string $key Clé du test.
+     * @param Rule $rule Function de test.
+     *
+     * @return $this
+     */
+    public static function addTest($key, Rule $rule)
+    {
+        self::$testsCustom[ $key ] = $rule;
+
+        return new static;
+    }
+
+    /**
+     * Ajoute des messages de retours personnalisés.
+     *
+     * @param string[] $messages
+     *
+     * @return $this
+     */
+    public static function setMessages(array $messages)
+    {
+        self::$messagesCustom = $messages;
+
+        return new static;
     }
 
     /**
@@ -114,19 +168,6 @@ class Validator
     }
 
     /**
-     * Ajoute un test personnalisé.
-     *
-     * @param string $key Clé du test.
-     * @param callable $callback Function de test.
-     *
-     * @return $this
-     */
-    public static function addTest($key, callable $callback)
-    {
-        self::$test[ 'valid' . $key ] = $callback;
-    }
-
-    /**
      * Retourne une erreur à partir de son nom.
      *
      * @codeCoverageIgnore getter
@@ -137,7 +178,7 @@ class Validator
      */
     public function getError($key)
     {
-        return $this->return[ $key ];
+        return $this->errors[ $key ];
     }
 
     /**
@@ -145,11 +186,21 @@ class Validator
      *
      * @codeCoverageIgnore getter
      *
-     * @return array
+     * @return string[]
      */
     public function getErrors()
     {
-        return $this->return;
+        return $this->errors;
+    }
+
+    /**
+     * Retourne la liste des noms de champ pour lesquels il y a une erreur.
+     *
+     * @return string[]
+     */
+    public function getKeyInputErrors()
+    {
+        return $this->key;
     }
 
     /**
@@ -159,7 +210,7 @@ class Validator
      *
      * @param string $key Nom du champ.
      *
-     * @return array Paramêtres du champ.
+     * @return array Valeur d'un champ.
      */
     public function getInput($key)
     {
@@ -171,7 +222,7 @@ class Validator
      *
      * @codeCoverageIgnore getter
      *
-     * @return array Paramêtres des champs.
+     * @return array Valeur des champs.
      */
     public function getInputs()
     {
@@ -179,27 +230,29 @@ class Validator
     }
 
     /**
+     * Retourne les champs hors ceux précisés en paramètre.
+     *
+     * @codeCoverageIgnore getter
+     *
+     * @return array Valeur des champs.
+     */
+    public function getInputsWithout()
+    {
+        $without = func_get_args();
+
+        return array_diff_key($this->inputs, array_flip($without));
+    }
+
+    /**
      * La liste de la concaténation des noms de champs et erreurs.
      *
      * @codeCoverageIgnore getter
      *
-     * @return array
+     * @return string[]
      */
     public function getKeyErrors()
     {
-        return array_keys($this->return);
-    }
-
-    /**
-     * La liste des noms de champ pour lesquels il y a une erreur.
-     *
-     * @codeCoverageIgnore getter
-     *
-     * @return array
-     */
-    public function getKeyUniqueErrors()
-    {
-        return $this->keyUniqueReturn;
+        return array_keys($this->errors);
     }
 
     /**
@@ -213,7 +266,7 @@ class Validator
      */
     public function hasError($key)
     {
-        return isset($this->return[ $key ]);
+        return isset($this->errors[ $key ]);
     }
 
     /**
@@ -225,7 +278,7 @@ class Validator
      */
     public function hasErrors()
     {
-        return !empty($this->return);
+        return !empty($this->errors);
     }
 
     /**
@@ -251,9 +304,37 @@ class Validator
      *
      * @return bool
      */
-    public function isRequire($key)
+    public function isRequired($key)
     {
-        return strstr($this->rules[ $key ], 'require');
+        return !$this->isNotRequired($key);
+    }
+
+    /**
+     * Si le champ est requis à condition de la présence d'un ensemble d'autres champs.
+     *
+     * @codeCoverageIgnore is
+     *
+     * @param string $key Nom du champ.
+     *
+     * @return type
+     */
+    public function isRequiredWhith($key)
+    {
+        return strstr($this->rules[ $key ], 'required_with') && !$this->isRequiredWhithout($key);
+    }
+
+    /**
+     * Si le champ est requis à condition de l'absence d'un ensemble d'autres champs.
+     *
+     * @codeCoverageIgnore is
+     *
+     * @param string $key Nom du champ.
+     *
+     * @return type
+     */
+    public function isRequiredWhithout($key)
+    {
+        return strstr($this->rules[ $key ], 'required_without');
     }
 
     /**
@@ -263,48 +344,29 @@ class Validator
      */
     public function isValid()
     {
+        $this->key    = [];
+        $this->errors = [];
         $this->correctInputs();
         foreach ($this->rules as $key => $test) {
-            /* Si la valeur n'est pas vide. */
-            if ($this->inputs[ $key ] === '') {
-                if (preg_match('/!required|bool/', $this->rules[ $key ])) {
-                    continue;
-                }
-                $this->addReturn("$key.required", $this->inputs[ $key ], 'la valeur de %s n\'est pas valide ');
+            /* Si la valeur est requise uniquement avec la présence de certains champs. */
+            if ($this->isRequiredWhith($key) && $this->isOneVoidValue($key)) {
+                continue;
             }
-
+            /* Si la valeur est requise uniquement en l'absence de certains champs. */
+            elseif ($this->isRequiredWhithout($key) && !$this->isAllVoidValue($key)) {
+                continue;
+            }
+            /* Si la valeur n'est pas requise et vide. */
+            elseif ($this->isNotRequired($key) && $this->isVoidValue($key)) {
+                continue;
+            }
             /* Pour chaque règle cherche les fonctions séparées par un pipe. */
-            foreach (explode('|', $test) as $func) {
-                $arg = substr(strrchr($func, ":"), 1);
-
-                /* Retire le caractère de négation de la fonction. */
-                $function = $func[ 0 ] == '!'
-                    ? substr(strrchr($func, "!"), 1)
-                    : $func;
-
-                /* Si la fonction à des arguments. */
-                if ($arg) {
-                    /* Sépare le nom de la fonction un argument. */
-                    $function = strstr($function, ":", true);
-
-                    $keyMsg = "$key.$function";
-
-                    /* Si l'argument fait référence à un autre champ. */
-                    if ($arg[ 0 ] == '@') {
-                        $keyArg = substr(strrchr($arg, "@"), 1);
-                        $arg    = $this->inputs[ $keyArg ];
-                    }
-
-                    $this->$function($keyMsg, $this->inputs[ $key ], $arg, $func[ 0 ] != '!');
-                } else {
-                    $keyMsg = "$key.$function";
-
-                    $this->$function($keyMsg, $this->inputs[ $key ], $func[ 0 ] != '!');
-                }
+            foreach (explode('|', $test) as $rule) {
+                $this->parseRules($key, $rule);
             }
         }
 
-        return empty($this->return);
+        return empty($this->errors);
     }
 
     /**
@@ -317,22 +379,6 @@ class Validator
     public function setInputs(array $fields)
     {
         $this->inputs = $fields;
-
-        return $this;
-    }
-
-    /**
-     * Modifie un message d'erreur.
-     *
-     * @param array $msg Liste des messages.
-     *
-     * @return $this
-     */
-    public function setMessages(array $msg)
-    {
-        foreach ($msg as $key => $value) {
-            $this->return[ $key ] = $value;
-        }
 
         return $this;
     }
@@ -354,656 +400,204 @@ class Validator
     }
 
     /**
-     * Test si une valeur est entre 2 valeurs de comparaison.
+     * Si la valeur n'est pas strictement requise.
      *
-     * @param string $key Identifiant de la valeur.
-     * @param string $value Valeur à tester.
-     * @param string $between Liste de 2 valeurs de comparaison séparées par une virgule.
-     * @param bool $not Inverse le test.
+     * @param string $key Nom du champ.
      *
-     * @throws \InvalidArgumentException Les valeurs between sont mal renseignées.
-     * @throws \InvalidArgumentException La valeur min de between n'est pas numérique.
-     * @throws \InvalidArgumentException La valeur max de between n'est pas numérique.
-     * @throws \InvalidArgumentException La valeur min de between est supérieur de la valeur max de between.
-     * @throws \InvalidArgumentException La fonction between ne peut pas tester pas ce type de valeur.
+     * @return bool
      */
-    public function validBetween($key, $value, $between, $not = true)
+    protected function isNotRequired($key)
     {
-        $betweenExplode = explode(",", $between);
+        return strstr($this->rules[ $key ], '!required') && !strstr($this->rules[ $key ], '!required_');
+    }
 
-        if (!isset($betweenExplode[ 0 ]) || !isset($betweenExplode[ 1 ])) {
-            throw new \InvalidArgumentException('Between values are invalid.');
+    /**
+     * Retourne le nom de la règle à partir de sa composition complète.
+     *
+     * @param string $rule Règle compléte.
+     *
+     * @return string Nom de la règle.
+     */
+    protected function getRuleName($rule)
+    {
+        /* Retire le caractère de négation de la fonction. */
+        $function = $rule[ 0 ] == '!'
+            ? substr($rule, 1)
+            : $rule;
+
+        /* Sépare le nom de la fonction si elle a des arguments. */
+        if (($name = strstr($function, ':', true)) !== false) {
+            return strtolower($name);
         }
 
-        $min = $betweenExplode[ 0 ];
-        $max = $betweenExplode[ 1 ];
+        return strtolower($function);
+    }
 
-        if (!is_numeric($min)) {
-            throw new \InvalidArgumentException('The minimum value of between must be numeric.');
-        } elseif (!is_numeric($max)) {
-            throw new \InvalidArgumentException('The maximum value of entry must be numeric.');
-        } elseif ($min > $max) {
-            throw new \InvalidArgumentException('The minimum value must not be greater than the maximum value.');
+    /**
+     * Retourne l'argument de la règle à partir de sa composition complète.
+     *
+     * @param string $rule Règle compléte.
+     *
+     * @return string Argument de la règle.
+     */
+    protected function getRuleArgs($rule)
+    {
+        if (($arg = substr(strstr($rule, ':'), 1)) !== false) {
+            /* Si l'argument fait référence à un autre champ. */
+            if ($arg[ 0 ] == '@') {
+                $keyArg = substr($arg, 1);
+                $arg    = $this->inputs[ $keyArg ];
+            }
         }
 
-        if (is_int($value) || is_float($value)) {
-            $this->sizeBetween($key, $value, $value, $min, $max, $not);
-        } elseif (is_string($value)) {
-            $this->sizeBetween($key, $value, strlen($value), $min, $max, $not);
-        } elseif (is_array($value)) {
-            $this->sizeBetween($key, $value, count($value), $min, $max, $not);
+        return $arg;
+    }
+
+    /**
+     * Analyse et exécute une règle de validation.
+     *
+     * @param string $key Nom du champ.
+     * @param string $strRule Règle de validation.
+     *
+     * @throws \BadMethodCallException The function does not exist.
+     */
+    protected function parseRules($key, $strRule)
+    {
+        $name = $this->getRuleName($strRule);
+        $arg  = $this->getRuleArgs($strRule);
+
+        if (isset(self::$testsCustom[ $name ])) {
+            $rule = self::$testsCustom[ $name ];
+        } elseif (isset($this->tests[ $name ])) {
+            $class = __NAMESPACE__ . '\\' . $this->tests[ $name ];
+            $rule  = new $class();
+        } elseif (isset($this->filters[ $name ])) {
+            $class                = __NAMESPACE__ . '\\' . $this->filters[ $name ];
+            $filter               = new $class();
+            $this->inputs[ $key ] = $filter->execute($key, $this->inputs[ $key ], $arg);
+
+            return 0;
         } else {
-            throw new \InvalidArgumentException('The between function can not test this type of value.');
+            throw new \BadMethodCallException(htmlspecialchars(
+                "The $name function does not exist."
+            ));
+        }
+
+        if (isset(self::$messagesCustom[ $name ])) {
+            $rule->setMessages(self::$messagesCustom[ $name ]);
+        }
+
+        $rule->execute(
+            $name,
+            $key,
+            $this->inputs[ $key ],
+            $arg,
+            $strRule[ 0 ] != '!'
+        );
+
+        if ($rule->hasErrors()) {
+            $this->key[]  = $key;
+            $this->errors += $rule->getErrors();
         }
     }
 
     /**
-     * Test si une valeur est plus grande que la valeur de comparaison.
+     * Si la valeur est vide.
      *
-     * @param string $key Identifiant de la valeur.
-     * @param int|float|string|array $value Valeur à tester.
-     * @param int|float $max Valeur de comparraison.
-     * @param bool $not Inverse le test.
+     * @param string $key Nom du champ.
      *
-     * @throws \InvalidArgumentException La valeur max n'est pas numérique.
-     * @throws \InvalidArgumentException La fonction max ne peut pas tester pas ce type de valeur.
+     * @return bool
      */
-    public function validMax($key, $value, $max, $not = true)
+    protected function isVoidValue($key)
     {
-        if (!is_numeric($max)) {
-            throw new \InvalidArgumentException('The max value must be numeric.');
-        }
+        $require = new Rules\Required;
+        $require->execute('required', $key, $this->inputs[ $key ], false, true);
 
-        if (is_int($value) || is_float($value)) {
-            $this->sizeMax($key, $value, $value, $max, $not);
-        } elseif (is_string($value)) {
-            $this->sizeMax($key, $value, strlen($value), $max, $not);
-        } elseif (is_array($value)) {
-            $this->sizeMax($key, $value, count($value), $max, $not);
-        } else {
-            throw new \InvalidArgumentException('The max function can not test this type of value.');
-        }
+        return $require->hasErrors();
     }
 
     /**
-     * Teste si une valeur est comprise entre 2 valeurs numériques.
+     * Si une des références d'une règle est vide.
      *
-     * @param string $key Identifiant de la valeur.
-     * @param string $value Valeur à tester.
-     * @param int|float $lengthValue Valeur de la taille.
-     * @param int|float $min Valeur minimum.
-     * @param int|float $max Valeur maximum.
-     * @param bool $not Inverse le test.
-     */
-    protected function sizeBetween(
-        $key,
-        $value,
-        $lengthValue,
-        $min,
-        $max,
-        $not = true
-    ) {
-        if (!($lengthValue <= $max && $lengthValue >= $min) && $not) {
-            $this->addReturn($key, $value, 'La valeur de %s est trop grande.');
-        } elseif ($lengthValue <= $max && $lengthValue >= $min && !$not) {
-            $this->addReturn($key, $value, 'La valeur de %s est trop petite.');
-        }
-    }
-
-    /**
-     * Test si une valeur est plus grande que la valeur de comparaison.
+     * @param string $key Nom du champ.
+     * @param string $rule Règle par défaut à utiliser cette méthode.
      *
-     * @param string $key Identifiant de la valeur.
-     * @param string $value Valeur à tester utilisé pour le retour.
-     * @param string $lengthValue Taille de la valeur.
-     * @param string $max Valeur de comparraison.
-     * @param bool $not Inverse le test.
+     * @return bool
+     *
+     * @throws \InvalidArgumentException Le champ fourni n'existe pas.
      */
-    protected function sizeMax($key, $value, $lengthValue, $max, $not = true)
+    protected function isOneVoidValue($key, $rule = 'required_with')
     {
-        if (($lengthValue > $max) && $not) {
-            $this->addReturn($key, $value, 'La valeur de %s est trop grande.');
-        } elseif (!($lengthValue > $max) && !$not) {
-            $this->addReturn($key, $value, 'La valeur de %s est trop petite.');
+        $fields  = $this->getParamField($this->rules[ $key ], $rule);
+        $require = new Rules\Required;
+
+        foreach ($fields as $field) {
+            if (!isset($this->inputs[ $field ])) {
+                throw new \InvalidArgumentException(htmlspecialchars(
+                    "The provided $field field does not exist."
+                ));
+            }
+            $require->execute('required', $field, $this->inputs[ $field ], false, true);
+            if ($require->hasErrors()) {
+                return true;
+            }
         }
+
+        return false;
     }
 
     /**
-     * Test si une valeur est plus petite que la valeur de comparaison.
+     * Si toutes les références d'une régle sont vides.
      *
-     * @param string $key Identifiant de la valeur.
-     * @param string $value Valeur à tester utilisé pour le retour.
-     * @param string $lengthValue Taille de la valeur.
-     * @param string $min Valeur de comparraison.
-     * @param bool $not Inverse le test.
+     * @param string $key Nom du champ.
+     * @param string $rule Règle par défaut à utiliser cette méthode.
+     *
+     * @return bool
+     *
+     * @throws \InvalidArgumentException
      */
-    protected function sizeMin($key, $value, $lengthValue, $min, $not = true)
+    protected function isAllVoidValue($key, $rule = 'required_without')
     {
-        if ($lengthValue < $min && $not) {
-            $this->addReturn($key, $value, 'La valeur de %s est trop petite.');
-        } elseif (!($lengthValue < $min) && !$not) {
-            $this->addReturn($key, $value, 'La valeur de %s est trop grande.');
+        $fields  = $this->getParamField($this->rules[ $key ], $rule);
+        $require = new Rules\Required;
+        $errors  = [];
+
+        foreach ($fields as $field) {
+            if (!isset($this->inputs[ $field ])) {
+                throw new \InvalidArgumentException(htmlspecialchars(
+                    "The provided $field field does not exist."
+                ));
+            }
+            $require->execute('required', $field, $this->inputs[ $field ], false, true);
+            $errors += $require->getErrors();
         }
+
+        return count($errors) == count($fields);
     }
 
     /**
-     * Test si la valeur est Alpha numérique [a-zA-Z0-9].
+     * Retourne les paramètres d'une règle d'un ensemble de règles.
      *
-     * @param string $key Identifiant de la valeur.
-     * @param string $value Valeur à tester.
-     * @param bool $not Inverse le test.
+     * @param string $rules Ensemble de règles.
+     * @param string $rule Règle recherchée.
+     *
+     * @return array Paramètre de la règle.
+     *
+     * @throws \InvalidArgumentException Un champ doit être fourni pour la règle required_with.
      */
-    protected function validAlphaNum($key, $value, $not = true)
+    protected function getParamField($rules, $rule)
     {
-        if (!ctype_alnum($value) && $not) {
-            $this->addReturn($key, $value, 'La valeur de %s n\'est pas alpha numérique.');
-        } elseif (ctype_alnum($value) && !$not) {
-            $this->addReturn($key, $value, 'La valeur de %s ne doit pas être alpha numérique.');
+        preg_match("/$rule:([A-Za-z0-9-_,]*)/", $rules, $matches);
+        if (empty($matches[ 1 ])) {
+            throw new \InvalidArgumentException('A field must be provided for the required with rule.');
         }
+
+        return explode(',', $matches[ 1 ]);
     }
 
     /**
-     * Test si la valeur est alpha numérique et possède des caractères textuelles [a-zA-Z0-9 .!?,;:_-].
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param string $value Valeur à tester.
-     * @param bool $not Inverse le test.
-     */
-    protected function validAlphaNumText($key, $value, $not = true)
-    {
-        if (!preg_match('/^[a-zA-Z0-9 .!?,;:_-]*$/', $value) && $not) {
-            $this->addReturn($key, $value, 'La valeur de %s ne correspond pas à la règle de validation.');
-        } elseif (preg_match('/^[a-zA-Z0-9 .!?,;:_-]*$/', $value) && !$not) {
-            $this->addReturn($key, $value, 'La valeur de %s ne doit pas correspondre à la règle de validation.');
-        }
-    }
-
-    /**
-     * Test si la valeur est de type array.
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param array $value Valeur à tester.
-     * @param bool $not Inverse le test.
-     */
-    protected function validArray($key, $value, $not = true)
-    {
-        if (!is_array($value) && $not) {
-            $this->addReturn($key, $value, 'La valeur de %s n\'est pas un array.');
-        } elseif (is_array($value) && !$not) {
-            $this->addReturn($key, $value, 'La valeur de %s ne doit pas être un array.');
-        }
-    }
-
-    /**
-     * Test si une valeur est de type boolean.
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param bool $value Valeur à tester.
-     * @param bool $not Inverse le test.
-     */
-    protected function validBool($key, $value, $not = true)
-    {
-        if (!filter_var($value, FILTER_VALIDATE_BOOLEAN) && $not) {
-            $this->addReturn($key, $value, 'La valeur de %s n\'est pas un boolean.');
-        } elseif (filter_var($value, FILTER_VALIDATE_BOOLEAN) && !$not) {
-            $this->addReturn($key, $value, 'La valeur de %s ne doit pas être un boolean.');
-        }
-    }
-
-    /**
-     * Test si une valeur est une date.
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param string $value Valeur à tester.
-     * @param bool $not Inverse le test.
-     */
-    protected function validDate($key, $value, $not = true)
-    {
-        if (!strtotime($value) && $not) {
-            $this->addReturn($key, $value, 'La valeur de %s n\'est pas une date.');
-        } elseif (strtotime($value) && !$not) {
-            $this->addReturn($key, $value, 'La valeur de %s ne doit pas être une date.');
-        }
-    }
-
-    /**
-     * Test si une date est antérieur à la date de comparaison.
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param string $value Date à tester.
-     * @param string $dateAfter Date de comparaison.
-     * @param bool $not Inverse le test.
-     *
-     * @return int 1 erreur de date.
-     */
-    protected function validDateAfter($key, $value, $dateAfter, $not = true)
-    {
-        $this->validDate($key, $value);
-        $this->validDate($key, $dateAfter);
-
-        if ($this->hasError($key)) {
-            return 1;
-        }
-
-        if (!($value < $dateAfter) && $not) {
-            $this->addReturn($key, $value, 'La date de %s est supérieur à la date de comparaison.');
-        } elseif (($value < $dateAfter) && !$not) {
-            $this->addReturn($key, $value, 'La date de %s ne doit pas être supérieur à la date de comparaison.');
-        }
-    }
-
-    /**
-     * Test si une date est postérieur à la date de comparaison.
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param string $value Date à tester.
-     * @param string $dateBefore Date de comparaison.
-     * @param bool $not Inverse le test
-     *
-     * @return int 1 erreur de date.
-     */
-    protected function validDateBefore($key, $value, $dateBefore, $not = true)
-    {
-        $this->validDate($key, $value);
-        $this->validDate($key, $dateBefore);
-
-        if ($this->hasError($key)) {
-            return 1;
-        }
-
-        if (!($value > $dateBefore) && $not) {
-            $this->addReturn($key, $value, 'La date de %s est inférieur à la date de comparaison.');
-        } elseif (($value > $dateBefore) && !$not) {
-            $this->addReturn($key, $value, 'La date de %s ne doit pas être inferieur à la date de comparaison.');
-        }
-    }
-
-    /**
-     * Test si une date correspond au format.
-     *
-     * @see http://php.net/manual/fr/datetime.createfromformat.php
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param string $value Valeur à tester.
-     * @param string $format Format de la date (ex: Y-m-d).
-     * @param bool $not Inverse le test.
-     *
-     * @return int 1 erreur de date.
-     */
-    protected function validDateFormat($key, $value, $format, $not = true)
-    {
-        $this->validDate($key, $value);
-
-        if ($this->hasError($key)) {
-            return 1;
-        }
-
-        $dateFormat  = date_parse_from_format($format, $value);
-        $errorFormat = $dateFormat[ 'error_count' ] === 0 && $dateFormat[ 'warning_count' ] === 0;
-
-        if (!$errorFormat && $not) {
-            $this->addReturn($key, $value, 'La valeur de %s n\'est pas au format requis.');
-        } elseif ($errorFormat && !$not) {
-            $this->addReturn($key, $value, 'La valeur de %s ne doit pas être du format requis.');
-        }
-    }
-
-    /**
-     * Test si une valeur est un répértoire existant sur le serveur.
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param string $value Valeur à tester.
-     * @param bool $not Inverse le test.
-     */
-    protected function validDir($key, $value, $not = true)
-    {
-        if (!is_dir($value) && $not) {
-            $this->addReturn($key, $value, 'Le chemin de %s n\'est pas valide.');
-        } elseif (is_dir($value) && !$not) {
-            $this->addReturn($key, $value, 'Le chemin de %s n\'est pas valide.');
-        }
-    }
-
-    /**
-     * Test si une valeur est un email.
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param string $value Valeur à tester.
-     * @param bool $not Inverse le test.
-     */
-    protected function validEmail($key, $value, $not = true)
-    {
-        if (!filter_var($value, FILTER_VALIDATE_EMAIL) && $not) {
-            $this->addReturn($key, $value, 'La valeur de %s n\'est pas une adresse email.');
-        } elseif (filter_var($value, FILTER_VALIDATE_EMAIL) && !$not) {
-            $this->addReturn($key, $value, 'La valeur de %s est une adresse email.');
-        }
-    }
-
-    /**
-     * Test si 2 valeurs sont identiques.
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param scalar $value Valeur à tester.
-     * @param scalar $equal Valeur de comparaison.
-     * @param bool $not Inverse le test.
-     */
-    protected function validEqual($key, $value, $equal, $not = true)
-    {
-        if ($value !== $equal && $not) {
-            $this->addReturn($key, $value, 'la valeur de %s n\'est pas valide.');
-        } elseif ($value === $equal && !$not) {
-            $this->addReturn($key, $value, 'la valeur de %s n\'est pas valide.');
-        }
-    }
-
-    /**
-     * Test si la valeur est un fichier.
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param string $value Valeur à tester.
-     * @param bool $not Inverse le test.
-     */
-    protected function validFile($key, $value, $not = true)
-    {
-        if (!is_file($value) && $not) {
-            $this->addReturn($key, $value, '%s n\'est pas un fichier.');
-        } elseif (is_file($value) && !$not) {
-            $this->addReturn($key, $value, '%s ne doit pas être un fichier.');
-        }
-    }
-
-    /**
-     * Test si une valeur est de type numérique flottant.
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param float $value Valeur à tester.
-     * @param bool $not Inverse le test.
-     */
-    protected function validFloat($key, $value, $not = true)
-    {
-        if (!is_float($value) && $not) {
-            $this->addReturn($key, $value, 'La valeur de %s n\'est pas un nombre flottant.');
-        } elseif (is_float($value) && !$not) {
-            $this->addReturn($key, $value, 'La valeur de %s ne doit être un nombre flottant.');
-        }
-    }
-
-    /**
-     * Filtre une valeur avec la méthode htmlspecialchars.
-     *
-     * @param string $keyStr Identifiant de la valeur.
-     *
-     * @throws \InvalidArgumentException La valeur time n'est pas numérique.
-     */
-    protected function validHtmlsc($keyStr)
-    {
-        $key = strstr($keyStr, ".", true);
-        if (!is_string($this->inputs[ $key ])) {
-            throw new \InvalidArgumentException(
-                'The ' . htmlspecialchars($key) . ' field does not exist'
-            );
-        }
-        $this->inputs[ $key ] = htmlspecialchars($this->inputs[ $key ]);
-    }
-
-    /**
-     * Test si une valeur est contenu dans un tableau.
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param scalar $value Valeur à tester.
-     * @param array $list Tableau de comparaison.
-     * @param bool $not Inverse le test.
-     */
-    protected function validInArray($key, $value, $list, $not = true)
-    {
-        $listExplode = explode(",", $list);
-        if (!in_array($value, $listExplode) && $not) {
-            $this->addReturn($key, $value, 'La valeur %s n\'est pas dans la liste.');
-        } elseif (in_array($value, $listExplode) && !$not) {
-            $this->addReturn($key, $value, 'La valeur de %s ne doit pas être dans la liste.');
-        }
-    }
-
-    /**
-     * Test si une valeur est de type entier.
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param int $value Valeur à tester.
-     * @param bool $not Inverse le test.
-     */
-    protected function validInt($key, $value, $not = true)
-    {
-        if (!filter_var($value, FILTER_VALIDATE_INT) && $not) {
-            $this->addReturn($key, $value, 'La valeur de %s n\'est pas un nombre entier.');
-        } elseif (filter_var($value, FILTER_VALIDATE_INT) && !$not) {
-            $this->addReturn($key, $value, 'La valeur de %s ne doit être un nombre entier.');
-        }
-    }
-
-    /**
-     * Test si une valeur est une adresse IP.
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param float $value Valeur à tester.
-     * @param bool $not Inverse le test.
-     */
-    protected function validIp($key, $value, $not = true)
-    {
-        if (!filter_var($value, FILTER_VALIDATE_IP) && $not) {
-            $this->addReturn($key, $value, 'La valeur de %s n\'est pas une adresse IP.');
-        } elseif (filter_var($value, FILTER_VALIDATE_IP) && !$not) {
-            $this->addReturn($key, $value, 'La valeur de %s ne doit être une adresse IP.');
-        }
-    }
-
-    /**
-     * Test si la valeur et de type JSON.
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param string $value Valeur à tester.
-     * @param bool $not Inverse le test.
-     */
-    protected function validJson($key, $value, $not = true)
-    {
-        json_decode($value);
-        if (json_last_error() != JSON_ERROR_NONE && $not) {
-            $this->addReturn($key, $value, 'La valeur de %s n\'est pas au format JSON.');
-        } elseif (json_last_error() == JSON_ERROR_NONE && !$not) {
-            $this->addReturn($key, $value, 'La valeur de %s ne doit pas être au format JSON.');
-        }
-    }
-
-    /**
-     * Test si une valeur est plus petite que la valeur de comparaison.
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param int|float|string|array $value Valeur à tester.
-     * @param int|float $min Valeur de comparraison.
-     * @param bool $not Inverse le test.
-     *
-     * @throws \InvalidArgumentException La valeur min n'est pas numérique.
-     * @throws \InvalidArgumentException La fonction min ne peut pas tester pas ce type de valeur.
-     */
-    protected function validMin($key, $value, $min, $not = true)
-    {
-        if (!is_numeric($min)) {
-            throw new \InvalidArgumentException('The min value must be numeric.');
-        }
-
-        if (is_int($value) || is_float($value)) {
-            $this->sizeMin($key, $value, $value, $min, $not);
-        } elseif (is_string($value)) {
-            $this->sizeMin($key, $value, strlen($value), $min, $not);
-        } elseif (is_array($value)) {
-            $this->sizeMin($key, $value, count($value), $min, $not);
-        } else {
-            throw new \InvalidArgumentException('The min function can not test this type of value.');
-        }
-    }
-
-    /**
-     * Test si une valeur est égale à une expression régulière.
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param scalar $value Valeur à tester.
-     * @param string $regex Expression régulière.
-     * @param bool $not Inverse le test.
-     */
-    protected function validRegex($key, $value, $regex, $not = true)
-    {
-        if (!preg_match($regex, $value) && $not) {
-            $this->addReturn($key, $value, 'La valeur de %s n\'est pas valide (regex).');
-        } elseif (preg_match($regex, $value) && !$not) {
-            $this->addReturn($key, $value, 'La valeur de %s est valide (regex).');
-        }
-    }
-
-    /**
-     * Test si une valeur est requise.
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param mixed $value Valeur à tester.
-     */
-    protected function validRequired($key, $value)
-    {
-        if (empty($value)) {
-            $this->addReturn($key, $value, 'La valeur %s est requise.');
-        }
-    }
-
-    /**
-     * Test si la valeur correspond à une chaine de caractères alpha numérique (underscore et tiret autorisé).
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param string $value Valeur à tester.
-     * @param bool $not Inverse le test.
-     */
-    protected function validSlug($key, $value, $not = true)
-    {
-        if (!preg_match('/^[a-zA-Z0-9_-]*$/', $value) && $not) {
-            $this->addReturn($key, $value, 'La valeur de %s ne correspond pas à la règle de validation.');
-        } elseif (preg_match('/^[a-zA-Z0-9_-]*$/', $value) && !$not) {
-            $this->addReturn($key, $value, 'La valeur de %s ne doit pas correspondre à la règle de validation.');
-        }
-    }
-
-    /**
-     * Test si la valeur est une chaine de caractères.
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param string $value Valeur à tester.
-     * @param bool $not Inverse le test.
-     */
-    protected function validString($key, $value, $not = true)
-    {
-        if (!is_string($value) && $not) {
-            $this->addReturn($key, $value, 'La valeur de %s n\'est pas une chaine de caractères.');
-        } elseif (is_string($value) && !$not) {
-            $this->addReturn($key, $value, 'La valeur de %s ne doit pas être une chaine de caractères.');
-        }
-    }
-
-    /**
-     * Filtre les balises autorisées dans une valeur.
-     *
-     * @param string $keyStr Identifiant de la valeur.
-     * @param string $value Valeur à filtrer.
-     * @param string $tags Liste des balise HTML autorisés.
-     *
-     * @throws \InvalidArgumentException La valeur time n'est pas numérique.
-     */
-    protected function validStripTags(
-        $keyStr,
-        $value,
-        $tags = '<h1><h2><h3><h4><h5><h6><p><span><b><i><u><a><table><thead><tbody><tfoot><tr><th><td><ul><ol><li><dl><dt><dd><img><br><hr>'
-    ) {
-        if (!is_string($value)) {
-            throw new \InvalidArgumentException(
-                'The value of the ' . htmlspecialchars($keyStr) . ' field is not a string'
-            );
-        }
-        $key                  = strstr($keyStr, ".", true);
-        $this->inputs[ $key ] = strip_tags($value, $tags);
-    }
-
-    /**
-     * Test la validité d'un token ($_SESSION['token']) à une valeur de comparaison
-     * et son rapport au temps ($_SESSION['token_time'])
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param string $value Valeur à tester.
-     * @param int $time Nombre de seconde ou le token est valide (défaut 15 minutes),
-     * si la valeur du time = 0 alors le test du temps de validation n'est pas effectif.
-     *
-     * @throws \InvalidArgumentException La valeur time n'est pas numérique.
-     */
-    protected function validToken($key, $value, $time = 900)
-    {
-        if (session_id() == '') {
-            @session_start([
-                'cookie_httponly' => true,
-                'cookie_secure' => true
-            ]);
-        }
-
-        /* À revoir le passage d'argument boolean automatique pour les fonctions hors not */
-        if ($time === true) {
-            $time = 900;
-        }
-        if (!is_numeric($time)) {
-            throw new \InvalidArgumentException('The time value must be numeric.');
-        }
-
-        if (!isset($_SESSION[ 'token' ]) && !isset($_SESSION[ 'token_time' ])) {
-            $this->addReturn($key, $value, 'Une erreur est survenue.');
-        } elseif ($_SESSION[ 'token' ] != $value) {
-            $this->addReturn($key, $value, 'Le token n\'est pas valide.');
-        } elseif ($_SESSION[ 'token_time' ] <= (time() - intval($time))) {
-            $this->addReturn($key, $value, 'Vous avez attendu trop longtemps, veilliez recharger la page.');
-        }
-    }
-
-    /**
-     * Test si une valeur est une URL.
-     *
-     * @param string $key Identifiant de la valeur.
-     * @param string $value Valeur à tester.
-     * @param bool $not Inverse le test.
-     */
-    protected function validUrl($key, $value, $not = true)
-    {
-        if (!filter_var($value, FILTER_VALIDATE_URL) && $not) {
-            $this->addReturn($key, $value, 'La valeur de %s n\'est pas une URL');
-        } elseif (filter_var($value, FILTER_VALIDATE_URL) && !$not) {
-            $this->addReturn($key, $value, 'La valeur de %s est une URL');
-        }
-    }
-
-    /**
-     * Ajoute une valeur de retour formaté en cas d'erreur de validation.
-     *
-     * @param string $keyFunc Identifiant de la valeur.
-     * @param mixed $value Valeur de test.
-     * @param string $msg Message à formater avec la valeur de test.
-     */
-    private function addReturn($keyFunc, $value, $msg)
-    {
-        $key = strstr($keyFunc, ".", true);
-
-        if (!isset($this->return[ $keyFunc ])) {
-            $this->return[ $keyFunc ] = vsprintf($msg, [ $key, $value, $keyFunc ]);
-        } else {
-            $this->return[ $keyFunc ] = vsprintf($this->return[ $keyFunc ], [ $key,
-                $value, $keyFunc ]);
-        }
-
-        $this->keyUniqueReturn[] = $key;
-    }
-    
-    /**
-     * Si les régles contiennes plus de champs que les valeurs reçut,
-     * Les valeurs se voient corrigé.
+     * Si les règles contiennes plus de champs que les valeurs reçues,
+     * les valeurs se voient corrigées.
      */
     private function correctInputs()
     {

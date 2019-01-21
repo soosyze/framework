@@ -1,8 +1,9 @@
 <?php
 
-namespace Soosyze\Tests\Components\Form;
+namespace Soosyze\Tests\Components\Validator;
 
 use Soosyze\Components\Validator\Validator;
+use Soosyze\Components\Validator\Rule;
 
 class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
@@ -17,7 +18,6 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
      */
     protected function setUp()
     {
-//        @session_start();
         $this->object = new Validator;
     }
 
@@ -180,6 +180,9 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertArraySubset($this->object->getKeyInputErrors(), [
+            'field_text_between_min', 'field_text_between_max'
+        ]);
     }
 
     /**
@@ -232,7 +235,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     public function testValidBetweenExceptionValue()
     {
         $this->object
-            ->addInput('field_between', fopen('php://temp', 'r+'))
+            ->addInput('field_between', new \stdClass())
             ->addRule('field_between', 'between:1,10')
             ->isValid();
     }
@@ -240,23 +243,37 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     public function testValidBool()
     {
         $this->object->setInputs([
-            'field_bool'              => true,
-            'field_bool_int'          => 1,
-            'field_bool_texr'         => 'on',
-            'field_not_bool_text'     => 'not bool',
-            'field_not_bool_int'      => 10,
-            'field_not_bool_array'    => [ 1, 2 ],
-            'field_bool_required'     => true,
-            'field_bool_not_required' => ''
+            /* true */
+            'field_bool_true'            => true,
+            'field_bool_true_text'       => 'true',
+            'field_bool_true_one'        => 1,
+            'field_bool_true_one_text'   => '1',
+            'field_bool_true_on'         => 'on',
+            'field_bool_true_yes'        => 'yes',
+            /* false */
+            'field_bool_false'           => false,
+            'field_bool_false_text'      => 'false',
+            'field_bool_false_zero'      => 0,
+            'field_bool_false_zero_text' => '0',
+            'field_bool_false_off'       => 'off',
+            'field_bool_false_no'        => 'no',
+            'field_bool_false_void'      => ''
         ])->setRules([
-            'field_bool'              => 'bool',
-            'field_bool_int'          => 'bool',
-            'field_bool_texr'         => 'bool',
-            'field_not_bool_text'     => '!bool',
-            'field_not_bool_int'      => '!bool',
-            'field_not_bool_array'    => '!bool',
-            'field_bool_required'     => 'required|bool',
-            'field_bool_not_required' => '!required|bool'
+            /* true */
+            'field_bool_true'            => 'bool',
+            'field_bool_true_text'       => 'bool',
+            'field_bool_true_one'        => 'bool',
+            'field_bool_true_one_text'   => 'bool',
+            'field_bool_true_on'         => 'bool',
+            'field_bool_true_yes'        => 'bool',
+            /* false */
+            'field_bool_false'           => 'bool',
+            'field_bool_false_text'      => 'bool',
+            'field_bool_false_zero'      => 'bool',
+            'field_bool_false_zero_text' => 'bool',
+            'field_bool_false_off'       => 'bool',
+            'field_bool_false_no'        => 'bool',
+            'field_bool_false_void'      => 'bool'
         ]);
 
         $this->assertTrue($this->object->isValid());
@@ -307,10 +324,10 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_date_required'     => '10/01/1994',
             'field_date_not_required' => ''
         ])->setRules([
-            'field_date'              => 'dateformat:j/n/Y',
-            'field_not_date'          => '!dateformat:j/n/Y',
-            'field_date_required'     => 'required|dateformat:j/n/Y',
-            'field_date_not_required' => '!required|dateformat:j/n/Y',
+            'field_date'              => 'date_format:j/n/Y',
+            'field_not_date'          => '!date_format:j/n/Y',
+            'field_date_required'     => 'required|date_format:j/n/Y',
+            'field_date_not_required' => '!required|date_format:j/n/Y',
         ]);
 
         $this->assertTrue($this->object->isValid());
@@ -320,9 +337,9 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_date'       => '1994/10/01',
             'field_not_date'   => '10/01/1994'
         ])->setRules([
-            'field_date_error' => 'dateformat:j/n/Y',
-            'field_date'       => 'dateformat:j/n/Y',
-            'field_not_date'   => '!dateformat:j/n/Y'
+            'field_date_error' => 'date_format:j/n/Y',
+            'field_date'       => 'date_format:j/n/Y',
+            'field_not_date'   => '!date_format:j/n/Y'
         ]);
 
         $this->assertFalse($this->object->isValid());
@@ -336,10 +353,10 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_date_required'     => '10/01/1994',
             'field_date_not_required' => ''
         ])->setRules([
-            'field_date'              => 'dateafter:10/02/1994',
-            'field_not_date'          => '!dateafter:09/01/1994',
-            'field_date_required'     => 'required|dateafter:10/02/1994',
-            'field_date_not_required' => '!required|dateafter:10/02/1994',
+            'field_date'              => 'date_after:10/02/1994',
+            'field_not_date'          => '!date_after:09/01/1994',
+            'field_date_required'     => 'required|date_after:10/02/1994',
+            'field_date_not_required' => '!required|date_after:10/02/1994',
         ]);
 
         $this->assertTrue($this->object->isValid());
@@ -350,10 +367,37 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_date'        => '10/01/1994',
             'field_not_date'    => '09/01/1994',
         ])->setRules([
-            'field_date_error'  => 'dateafter:10/01/1994',
-            'field_date_error2' => 'dateafter:error',
-            'field_date'        => 'dateafter:10/01/1994',
-            'field_not_date'    => '!dateafter:10/01/1994',
+            'field_date_error'  => 'date_after:10/01/1994',
+            'field_date_error2' => 'date_after:error',
+            'field_date'        => 'date_after:10/01/1994',
+            'field_not_date'    => '!date_after:10/01/1994',
+        ]);
+
+        $this->assertFalse($this->object->isValid());
+    }
+
+    public function testValidDateAfterOrEqual()
+    {
+        $this->object->setInputs([
+            'field_date'              => '10/01/1994',
+            'field_not_date'          => '10/01/1994',
+            'field_date_required'     => '10/01/1994',
+            'field_date_not_required' => ''
+        ])->setRules([
+            'field_date'              => 'date_after_or_equal:10/01/1994',
+            'field_not_date'          => '!date_after_or_equal:09/01/1994',
+            'field_date_required'     => 'required|date_after_or_equal:10/01/1994',
+            'field_date_not_required' => '!required|date_after_or_equal:10/02/1994'
+        ]);
+
+        $this->assertTrue($this->object->isValid());
+
+        $this->object->setInputs([
+            'field_date'     => '10/01/1994',
+            'field_not_date' => '10/01/1994'
+        ])->setRules([
+            'field_date'     => 'date_after_or_equal:09/01/1994',
+            'field_not_date' => '!date_after_or_equal:10/01/1994'
         ]);
 
         $this->assertFalse($this->object->isValid());
@@ -367,10 +411,10 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_date_required'     => '10/01/1994',
             'field_date_not_required' => ''
         ])->setRules([
-            'field_date'              => 'datebefore:09/01/1994',
-            'field_not_date'          => '!datebefore:10/02/1994',
-            'field_date_required'     => 'required|datebefore:09/01/1994',
-            'field_date_not_required' => '!required|datebefore:09/01/1994',
+            'field_date'              => 'date_before:09/01/1994',
+            'field_not_date'          => '!date_before:10/02/1994',
+            'field_date_required'     => 'required|date_before:09/01/1994',
+            'field_date_not_required' => '!required|date_before:09/01/1994',
         ]);
 
         $this->assertTrue($this->object->isValid());
@@ -381,10 +425,37 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_date'        => '10/01/1994',
             'field_not_date'    => '10/01/1994',
         ])->setRules([
-            'field_date_error'  => 'datebefore:10/01/1994',
-            'field_date_error2' => 'datebefore:error',
-            'field_date'        => 'datebefore:11/01/1994',
-            'field_not_date'    => '!datebefore:09/01/1994'
+            'field_date_error'  => 'date_before:10/01/1994',
+            'field_date_error2' => 'date_before:error',
+            'field_date'        => 'date_before:11/01/1994',
+            'field_not_date'    => '!date_before:09/01/1994'
+        ]);
+
+        $this->assertFalse($this->object->isValid());
+    }
+
+    public function testValidDateBeforeOrEqual()
+    {
+        $this->object->setInputs([
+            'field_date'              => '10/01/1994',
+            'field_not_date'          => '10/01/1994',
+            'field_date_required'     => '10/01/1994',
+            'field_date_not_required' => ''
+        ])->setRules([
+            'field_date'              => 'date_before_or_equal:10/01/1994',
+            'field_not_date'          => '!date_before_or_equal:10/02/1994',
+            'field_date_required'     => 'required|date_before_or_equal:10/01/1994',
+            'field_date_not_required' => '!required|date_before_or_equal:09/01/1994',
+        ]);
+
+        $this->assertTrue($this->object->isValid());
+
+        $this->object->setInputs([
+            'field_date'     => '10/01/1994',
+            'field_not_date' => '10/01/1994'
+        ])->setRules([
+            'field_date'     => 'date_before_or_equal:11/01/1994',
+            'field_not_date' => '!date_before_or_equal:10/01/1994'
         ]);
 
         $this->assertFalse($this->object->isValid());
@@ -441,33 +512,6 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ])->setRules([
             'field_equals'     => 'equal:hello',
             'field_not_equals' => '!equal:hello',
-        ]);
-
-        $this->assertFalse($this->object->isValid());
-    }
-
-    public function testValidFile()
-    {
-        $this->object->setInputs([
-            'field_file'              => __DIR__ . '/ValidatorTest.php',
-            'field_not_file'          => __DIR__ . '/noFichier.php',
-            'field_file_required'     => __DIR__ . '/ValidatorTest.php',
-            'field_file_not_required' => '',
-        ])->setRules([
-            'field_file'              => 'file',
-            'field_not_file'          => '!file',
-            'field_file_required'     => 'required|file',
-            'field_file_not_required' => '!required|file',
-        ]);
-
-        $this->assertTrue($this->object->isValid());
-
-        $this->object->setInputs([
-            'field_file'     => __DIR__ . '/noFichier.php',
-            'field_not_file' => __DIR__ . '/ValidatorTest.php'
-        ])->setRules([
-            'field_file'     => 'file',
-            'field_not_file' => '!file'
         ]);
 
         $this->assertFalse($this->object->isValid());
@@ -562,6 +606,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     {
         $this->object->setInputs([
             'field_int'              => 10,
+            'field_int_text'         => '10',
             'field_not_int_text'     => 'not int',
             'field_not_int_float'    => 10.1,
             'field_not_int_array'    => [ 1, 2 ],
@@ -569,6 +614,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_int_not_required' => ''
         ])->setRules([
             'field_int'              => 'int',
+            'field_int_text'         => 'int',
             'field_not_int_text'     => '!int',
             'field_not_int_float'    => '!int',
             'field_not_int_array'    => '!int',
@@ -709,13 +755,16 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     public function testValidMaxExceptionValue()
     {
         $this->object
-            ->addInput('field_text_max', fopen('php://temp', 'r+'))
+            ->addInput('field_text_max', new \stdClass())
             ->addRule('field_text_max', 'max:5')
             ->isValid();
     }
 
     public function testValidMin()
     {
+        $stream = fopen('php://temp', 'r+');
+        fwrite($stream, 'test content');
+
         $this->object->setInputs([
             /* Text */
             'field_text_min'              => 'Lorem ipsum',
@@ -729,7 +778,11 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_int_min_not_required'  => '',
             /* Tableau */
             'field_array_min'             => [ 1, 2, 3, 4, 5 ],
-            'field_not_array_min'         => [ 1, 2, 3, 4 ]
+            'field_not_array_min'         => [ 1, 2, 3, 4 ],
+            /* Ressource */
+            'field_ressource_min'         => $stream,
+            /* Object */
+            'field_object_min'            => new ObjectTest
         ])->setRules([
             /* Text */
             'field_text_min'              => 'min:5',
@@ -743,7 +796,11 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_int_min_not_required'  => '!required|min:5',
             /* Entier */
             'field_array_min'             => 'min:5',
-            'field_not_array_min'         => '!min:5'
+            'field_not_array_min'         => '!min:5',
+            /* Ressource */
+            'field_ressource_min'         => 'min:5',
+            /* Object */
+            'field_object_min'            => 'min:5'
         ]);
 
         $this->assertTrue($this->object->isValid());
@@ -759,6 +816,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        fclose($stream);
     }
 
     /**
@@ -778,9 +836,111 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     public function testValidMinExceptionValue()
     {
         $this->object
-            ->addInput('field_text_min', fopen('php://temp', 'r+'))
+            ->addInput('field_text_min', new \stdClass())
             ->addRule('field_text_min', 'min:5')
             ->isValid();
+    }
+
+    public function testValidRequiredWith()
+    {
+        $this->object->setInputs([
+            'field_int'   => '',
+            'field_int_2' => ''
+        ])->setRules([
+            'field_int'            => '!required|int',
+            'field_int_2'          => '!required|int',
+            'field_required_whith' => 'required_with:field_int,field_int_2'
+        ]);
+
+        $this->assertTrue($this->object->isValid());
+
+        $this->object->setInputs([
+            'field_int'   => 1,
+            'field_int_2' => ''
+        ])->setRules([
+            'field_int'            => '!required|int',
+            'field_int_2'          => '!required|int',
+            'field_required_whith' => 'required_with:field_int,field_int_2'
+        ]);
+
+        $this->assertTrue($this->object->isValid());
+
+        $this->object->setInputs([
+            'field_int'   => 1,
+            'field_int_2' => 1
+        ])->setRules([
+            'field_int'            => '!required|int',
+            'field_int_2'          => '!required|int',
+            'field_required_whith' => 'required_with:field_int,field_int_2'
+        ]);
+
+        $this->assertFalse($this->object->isValid());
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testValidRequiredWithException()
+    {
+        $this->object->setRules([
+            'field_required_whith' => 'required_with:field_error'
+        ])->isValid();
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testValidRequiredWithVoidException()
+    {
+        $this->object->setRules([
+            'field_required_whith' => 'required_with:'
+        ])->isValid();
+    }
+
+    public function testValidRequiredWithout()
+    {
+        $this->object->setInputs([
+            'field_int'   => 1,
+            'field_int_2' => 1
+        ])->setRules([
+            'field_int'            => '!required|int',
+            'field_int_2'          => '!required|int',
+            'field_required_whith' => 'required_without:field_int,field_int_2'
+        ]);
+
+        $this->assertTrue($this->object->isValid());
+
+        $this->object->setInputs([
+            'field_int'   => 1,
+            'field_int_2' => ''
+        ])->setRules([
+            'field_int'            => '!required|int',
+            'field_int_2'          => '!required|int',
+            'field_required_whith' => 'required_without:field_int,field_int_2'
+        ]);
+
+        $this->assertTrue($this->object->isValid());
+
+        $this->object->setInputs([
+            'field_int'   => '',
+            'field_int_2' => ''
+        ])->setRules([
+            'field_int'            => '!required|int',
+            'field_int_2'          => '!required|int',
+            'field_required_whith' => 'required_without:field_int,field_int_2'
+        ]);
+
+        $this->assertFalse($this->object->isValid());
+    }
+    
+    /**
+     * @expectedException Exception
+     */
+    public function testValidRequiredWithoutException()
+    {
+        $this->object->setRules([
+            'field_required_whith' => 'required_without:field_error'
+        ])->isValid();
     }
 
     public function testValidRegex()
@@ -860,13 +1020,15 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_text_required_error'  => '',
             'field_not_text_int_error'   => 10,
             'field_not_text_float_error' => 10.1,
-            'field_not_text_array_error' => [ 1, 2 ]
+            'field_not_text_array_error' => [ 1, 2 ],
+            'field_not_string'           => 'test'
         ])->setRules([
             'field_text_error'           => 'string',
             'field_text_required_error'  => 'required|string',
             'field_not_text_int_error'   => 'string',
             'field_not_text_float_error' => 'string',
-            'field_not_text_array_error' => 'string'
+            'field_not_text_array_error' => 'string',
+            'field_not_string'           => '!string',
         ]);
 
         $this->assertFalse($this->object->isValid());
@@ -1010,20 +1172,8 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
     public function testCustomTest()
     {
-        Validator::addTest('cube', function ($key, $value, $multi, $not = true) {
-            if ($value * $value != $multi && $not) {
-                return ['key' => $key, 'value' => $value, 'msg' => 'La valeur au cube de %s n\'est pas égale à 4.'];
-            } elseif ($value * $value == $multi && !$not) {
-                return ['key' => $key, 'value' => $value, 'msg' => 'La valeur au cube de %s ne doit pas être égale à 4.'];
-            }
-        });
-        Validator::addTest('double', function ($key, $value, $not = true) {
-            if ($value * 2 != 16 && $not) {
-                return ['key' => $key, 'value' => $value, 'msg' => 'Le double de la valeur de %s n\'est pas égale à 16.'];
-            } elseif ($value * 2 == 16 && !$not) {
-                return ['key' => $key, 'value' => $value, 'msg' => 'Le double de la valeur de %s ne doit pas être égale à 16.'];
-            }
-        });
+        Validator::addTest('cube', new Cube());
+        Validator::addTest('double', new DoubleR());
         $this->object->setInputs([
             'field_custom_cube'      => 4,
             'field_custom_not_cube'  => 2,
@@ -1038,16 +1188,10 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
         $this->assertTrue($this->object->isValid());
     }
-    
+
     public function testCustomTestReturn()
     {
-        Validator::addTest('cube', function ($key, $value, $multi, $not = true) {
-            if ($value * $value != $multi && $not) {
-                return ['key' => $key, 'value' => $value, 'msg' => 'La valeur au cube de %s n\'est pas égale à 4.'];
-            } elseif ($value * $value == $multi && !$not) {
-                return ['key' => $key, 'value' => $value, 'msg' => 'La valeur au cube de %s ne doit pas être égale à 4.'];
-            }
-        });
+        Validator::addTest('cube', new Cube());
         $this->object->setInputs([
             'field_custom_cube'     => 5,
             'field_custom_not_cube' => 4
@@ -1058,23 +1202,37 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
         $this->assertFalse($this->object->isValid());
         $this->assertEquals($this->object->getError('field_custom_cube.cube'), 'La valeur au cube de field_custom_cube n\'est pas égale à 4.');
+        
+        $this->object->setInputs([
+            'field_custom_cube2'     => 4,
+            'field_custom_not_cube2' => 2
+        ])->setRules([
+            'field_custom_cube2'     => 'cube:16',
+            'field_custom_not_cube2' => '!cube:16'
+        ]);
+
+        $this->assertTrue($this->object->isValid());
     }
 
     public function testCustomMessage()
     {
+        Validator::setMessages([
+            'string' => [
+                'not' => 'My message custom for :label !'
+            ]
+        ]);
+
         $this->object->setInputs([
             'field' => 'hello world !'
         ])->setRules([
             'field' => '!string'
-        ])->setMessages([
-            'field.string' => 'My message custom for %s !'
         ]);
 
         $this->object->isValid();
 
         $this->assertEquals($this->object->getError('field.string'), 'My message custom for field !');
     }
-    
+
     public function testNoInput()
     {
         $this->object->setInputs([
@@ -1086,16 +1244,64 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
         $this->assertTrue($this->object->isValid());
     }
-    
+
     public function testNoRule()
     {
         $this->object->setInputs([
-            'field'  => 'Lorem ipsum',
+            'field' => 'Lorem ipsum',
         ])->setRules([
-            'field' => 'string',
-            'field2' => 'string'
+            'field'  => 'string',
+            'field2' => 'required|string'
         ]);
 
         $this->assertFalse($this->object->isValid());
+    }
+}
+
+class Cube extends Rule
+{
+    protected function test($key, $value, $arg, $not = true)
+    {
+        if ($value * $value != $arg && $not) {
+            $this->addReturn($key, 'must');
+        } elseif ($value * $value == $arg && !$not) {
+            $this->addReturn($key, 'not');
+        }
+    }
+
+    protected function messages()
+    {
+        return [
+            'must' => 'La valeur au cube de :label n\'est pas égale à 4.',
+            'not'  => 'La valeur au cube de :label ne doit pas être égale à 4.'
+        ];
+    }
+}
+
+class DoubleR extends Rule
+{
+    protected function test($key, $value, $arg, $not = true)
+    {
+        if ($value * 2 != 16 && $not) {
+            $this->addReturn($key, 'must');
+        } elseif ($value * 2 == 16 && !$not) {
+            $this->addReturn($key, 'not');
+        }
+    }
+
+    protected function messages()
+    {
+        return [
+            'must' => 'Le double de la valeur de :label n\'est pas égale à 16.',
+            'not'  => 'Le double de la valeur de :label ne doit pas être égale à 16.'
+        ];
+    }
+}
+
+class ObjectTest
+{
+    public function __toString()
+    {
+        return 'test content';
     }
 }
