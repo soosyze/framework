@@ -1,19 +1,19 @@
 # Soosyze Framework
 
-[![Build Status](https://travis-ci.org/soosyze/framework.svg?branch=master)](https://travis-ci.org/soosyze/framework)
-[![Coverage Status](https://coveralls.io/repos/github/soosyze/framework/badge.svg?branch=master)](https://coveralls.io/github/soosyze/framework?branch=master)
-![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)
-![Packagist](https://img.shields.io/packagist/v/soosyze/framework.svg)
-![PHP from Packagist](https://img.shields.io/packagist/php-v/soosyze/framework.svg)
+[![Build Status](https://travis-ci.org/soosyze/framework.svg?branch=master)](https://travis-ci.org/soosyze/framework "Travis")
+[![Coverage Status](https://coveralls.io/repos/github/soosyze/framework/badge.svg?branch=master)](https://coveralls.io/github/soosyze/framework?branch=master "Coveralls")
+[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/soosyze/framework/blob/master/LICENSE "LICENSE")
+[![Packagist](https://img.shields.io/packagist/v/soosyze/framework.svg)](https://packagist.org/packages/soosyze/framework "Packagist")
+[![PHP from Packagist](https://img.shields.io/packagist/php-v/soosyze/framework.svg)](/README.md#version-php)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/soosyze/framework.svg)
 
 Soosyze Framework est un micro-framework MVC object offrant un socle solide de développement
 
-* ![PSR-2](https://img.shields.io/badge/PSR-2-yellow.svg) L'écriture du code est standardisé,
-* ![PSR-4](https://img.shields.io/badge/PSR-4-yellow.svg) Autoloader, interchangeable avec l'autoloader de compsoser,
-* ![PSR-7](https://img.shields.io/badge/PSR-7-yellow.svg) Requête et Réponse,
-* ![PSR-11](https://img.shields.io/badge/PSR-11-yellow.svg) Container d'injection de dépendance ou CID,
-* ![PSR-17](https://img.shields.io/badge/PSR-17-yellow.svg) Fabriques Http implémentées sans les interfaces qui contraignent les implémentations à PHP7,
+* [![PSR-2](https://img.shields.io/badge/PSR-2-yellow.svg)](https://www.php-fig.org/psr/psr-2 "Coding Style Guide") L'écriture du code est standardisée,
+* [![PSR-4](https://img.shields.io/badge/PSR-4-yellow.svg)](https://www.php-fig.org/psr/psr-4 "Autoloading Standard") Autoloader, interchangeable avec l'autoloader de Composer,
+* [![PSR-7](https://img.shields.io/badge/PSR-7-yellow.svg)](https://www.php-fig.org/psr/psr-7 "HTTP Message Interface") Composant Http (Resquest, Response, Message, Stream...),
+* [![PSR-11](https://img.shields.io/badge/PSR-11-yellow.svg)](https://www.php-fig.org/psr/psr-11 "Container Interface") Container d'injection de dépendance ou CID,
+* [![PSR-17](https://img.shields.io/badge/PSR-17-yellow.svg)](https://www.php-fig.org/psr/psr-17 "HTTP Factories") Fabriques Http implémentées sans les interfaces qui contraignent les implémentations à PHP7,
 * Découpe des fonctionnalitées en modules,
 * Routeur (url),
 * Hook et Middleware,
@@ -32,10 +32,23 @@ Soosyze Framework est un micro-framework MVC object offrant un socle solide de d
 
 # Requirements
 
-* PHP =>5.4, support PHP 5.6, 7.0, 7.1
-* La permission d'écrire et lire les fichiers (Si vous utilisez le composant Util),
-* L'extension `json` activé (Si vous utilisez le composant Util).
+## Version PHP
 
+| Version PHP           | SoosyzeFramework 1.x |
+|-----------------------|----------------------|
+| <= 5.3                | ✗ Non supporté       |
+| 5.4 / 5.5 / 5.6       | ✓ Supporté           |
+| 7.0 / 7.1 / 7.2 / 7.3 | ✓ Supporté           |
+
+## Extensions
+
+* `fileinfo` si vous utilisez les composants Validator.
+* `json` si vous utilisez les composants Config ou Util.
+* `session` si vous utilisez les composants Validator ou FormBuilder.
+
+## Permission des fichiers et répértoire
+
+La permission d'écrire et lire les fichiers.
 
 # Installation
 
