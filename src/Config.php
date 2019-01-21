@@ -50,7 +50,7 @@ class Config
      */
     public function has($strKey)
     {
-        $str  = rtrim($strKey, '.');
+        $str   = rtrim($strKey, '.');
         $split = explode('.', $str);
 
         $file = $this->path . $split[ 0 ] . '.json';
@@ -77,7 +77,7 @@ class Config
      */
     public function get($strKey, $default = null)
     {
-        $str  = rtrim($strKey, '.');
+        $str   = rtrim($strKey, '.');
         $split = explode('.', $str);
 
         $file = $this->path . $split[ 0 ] . '.json';
@@ -114,7 +114,9 @@ class Config
         $str   = rtrim($strKey, '.');
         $split = explode('.', $str);
         if (!isset($split[ 1 ]) || in_array('', $split)) {
-            throw new \InvalidArgumentException("Key " . htmlspecialchars($strKey) . " is invalid, it must be composed of 2 parts separated by a point.");
+            throw new \InvalidArgumentException(htmlspecialchars(
+                "Key $strKey is invalid, it must be composed of 2 parts separated by a point."
+            ));
         }
 
         $path = $this->path;

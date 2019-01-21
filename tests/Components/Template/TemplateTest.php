@@ -4,9 +4,6 @@ namespace Soosyze\Tests\Components\Template;
 
 use Soosyze\Components\Template\Template;
 
-/**
- * @coversDefaultClass \Soosyze\Components\Template\Template
- */
 class TemplateTest extends \PHPUnit\Framework\TestCase
 {
     /**
@@ -15,6 +12,10 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
      */
     protected $object;
 
+    /**
+     *
+     * @var string
+     */
     protected $pathTemplate;
 
     /**

@@ -211,7 +211,7 @@ class ServerRequestTest extends \PHPUnit\Framework\TestCase
             'REQUEST_METHOD' => 'GET'
         ];
         $request = ServerRequest::create();
-        $_FILES = [];
+        $_FILES  = [];
         $this->assertAttributeSame($_SERVER, 'serverParams', $request);
     }
 

@@ -11,6 +11,7 @@
 namespace Soosyze;
 
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Soosyze\Router;
 use Soosyze\Container;
 use Soosyze\Components\Http\Response;
@@ -26,13 +27,13 @@ use Soosyze\Components\Util\Util;
  */
 abstract class App
 {
-
     /**
      * Liste des environnements.
      *
      * @var array
      */
     protected $environnement = [];
+
     /**
      * Instance unique de App.
      *
@@ -71,7 +72,7 @@ abstract class App
     /**
      * Requête courante à la création de la classe.
      *
-     * @var ServerRequest
+     * @var ServerRequestInterface
      */
     private $request;
 
@@ -166,15 +167,15 @@ abstract class App
     public function init()
     {
         $config = new Config($this->getSetting('config'), $this->getEnvironment());
-        
+
         $this->container = (new Container)
             ->setConfig($config)
             ->setInstance('core', $this)
             ->setInstance('config', $config);
-                    
-        $services  = $this->loadServices();
+
+        $services = $this->loadServices();
         $this->container->setServices($services);
-        
+
         $this->modules = $this->loadModules();
         $this->loadRoutesAndServices();
 
@@ -198,42 +199,33 @@ abstract class App
      */
     public function run()
     {
-        $request = clone $this->request;
-        $reponse = new Response(404, new Stream(null));
+        $request  = clone $this->request;
+        $response = new Response(404, new Stream(null));
 
-        $this->container->callHook('app.reponse.before', [ &$request, &$reponse ]);
+        $this->container->callHook('app.response.before', [ &$request, &$response ]);
 
-        if (($route = $this->router->parse($request)) && $reponse->getStatusCode() == 404) {
-            $this->container->callHook(
-                $route[ 'key' ] . '.reponse.before',
-                [
+        if (($route = $this->router->parse($request)) && $response->getStatusCode() == 404) {
+            $this->container->callHook($route[ 'key' ] . '.response.before', [
                 &$request,
-                &$reponse
-            ]
-            );
+                &$response
+            ]);
 
-            $exec    = $this->router->execute($route, $request);
-            $reponse = $this->parseResponse($exec);
+            $exec     = $this->router->execute($route, $request);
+            $response = $this->parseResponse($exec);
 
-            $this->container->callHook(
-                $route[ 'key' ] . '.reponse.after',
-                [
+            $this->container->callHook($route[ 'key' ] . '.response.after', [
                 $this->request,
-                &$reponse
-            ]
-            );
+                &$response
+            ]);
         }
-        $this->container->callHook(
-            'app.' . $reponse->getStatusCode(),
-            [
+        $this->container->callHook('app.' . $response->getStatusCode(), [
             $this->request,
-            &$reponse
-        ]
-        );
+            &$response
+        ]);
 
-        $this->container->callHook('app.reponse.after', [ $this->request, &$reponse ]);
+        $this->container->callHook('app.response.after', [ $this->request, &$response ]);
 
-        return $reponse;
+        return $response;
     }
 
     /**
@@ -293,7 +285,7 @@ abstract class App
 
         return $this;
     }
-    
+
     /**
      * Retourne la requête courante.
      *
@@ -339,9 +331,9 @@ abstract class App
         return isset($this->environnement[ $nameEnv ]) && (
             in_array(gethostname(), $this->environnement[ $nameEnv ]) ||
             in_array($authority, $this->environnement[ $nameEnv ])
-        );
+            );
     }
-    
+
     /**
      * Charge les instances des services hors modules.
      *
@@ -380,14 +372,14 @@ abstract class App
      *
      * Les données doivent pouvoir être prise en charge par le Stream de la réponse.
      *
-     * @param ResponseInterface|bool|float|int|ressource|string|null $reponse
+     * @param ResponseInterface|bool|float|int|ressource|string|null $response
      *
      * @return ResponseInterface
      */
-    protected function parseResponse($reponse)
+    protected function parseResponse($response)
     {
-        return !($reponse instanceof ResponseInterface)
-            ? new Response(200, new Stream($reponse))
-            : $reponse;
+        return !($response instanceof ResponseInterface)
+            ? new Response(200, new Stream($response))
+            : $response;
     }
 }

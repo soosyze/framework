@@ -41,16 +41,16 @@ class Util
         }
         // @codeCoverageIgnoreEnd
         if (!file_exists($file)) {
-            throw new \InvalidArgumentException('The ' . htmlspecialchars($file) . ' file is missing.');
+            throw new \InvalidArgumentException(htmlspecialchars("The $file file is missing."));
         }
         if (strrchr($file, '.') != '.json') {
-            throw new \InvalidArgumentException('The ' . htmlspecialchars($file) . ' is not in JSON format.');
+            throw new \InvalidArgumentException(htmlspecialchars("The $file is not in JSON format."));
         }
-        if (($json   = file_get_contents($file)) === null) {
-            throw new \Exception('The ' . htmlspecialchars($file) . ' file is not readable.');
+        if (($json = file_get_contents($file)) === null) {
+            throw new \Exception(htmlspecialchars("The $file file is not readable."));
         }
         if (($return = json_decode($json, $assoc)) === null) {
-            throw new \Exception('The JSON ' . htmlspecialchars($file) . ' file is invalid.');
+            throw new \Exception(htmlspecialchars("The JSON $file file is invalid."));
         }
 
         return $return;
@@ -73,8 +73,8 @@ class Util
             mkdir($strPath, 0775);
         }
 
-        $pathFile =  $cleanPath . self::DS . $strFileName . '.json';
-        
+        $pathFile = $cleanPath . self::DS . $strFileName . '.json';
+
         if (!file_exists($pathFile)) {
             $file = fopen($pathFile, 'w+');
             fwrite($file, json_encode($data));
@@ -213,7 +213,7 @@ class Util
 
         return $subject;
     }
-    
+
     /**
      * Remplace la dernière occurrence dans une chaine.
      *

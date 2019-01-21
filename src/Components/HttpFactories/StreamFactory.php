@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Soosyze Framework http://soosyze.com
  *
@@ -20,6 +21,7 @@ use Soosyze\Components\Http\Stream;
  */
 class StreamFactory
 {
+
     /**
      * Create a new stream from a string.
      *

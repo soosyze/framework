@@ -43,7 +43,7 @@ class Container implements ContainerInterface
      * @var array
      */
     protected $hooks = [];
-    
+
     /**
      * Composant de configuration.
      *
@@ -152,10 +152,9 @@ class Container implements ContainerInterface
     public function get($key)
     {
         if (!is_string($key)) {
-            throw new \InvalidArgumentException(
-                'Get function only accepts strings. Input was : '
-            . htmlspecialchars($key) . '.'
-            );
+            throw new \InvalidArgumentException(htmlspecialchars(
+                "Get function only accepts strings. Input was : $key."
+            ));
         }
 
         if (isset($this->instances[ $key ])) {
@@ -163,7 +162,7 @@ class Container implements ContainerInterface
         }
 
         if (!isset($this->services[ $key ])) {
-            throw new NotFoundException('Service ' . htmlspecialchars($key) . ' does not exist.');
+            throw new NotFoundException(htmlspecialchars("Service $key does not exist."));
         }
 
         try {
@@ -173,10 +172,10 @@ class Container implements ContainerInterface
              */
             $ref = new \ReflectionClass($this->services[ $key ][ 'class' ]);
         } catch (\ReflectionException $ex) {
-            throw new ContainerException(htmlspecialchars($key) . " is not exist.", $ex->getCode(), $ex);
+            throw new ContainerException(htmlspecialchars("$key is not exist."), $ex->getCode(), $ex);
         }
 
-        $args = $this->matchArgs($key);
+        $args     = $this->matchArgs($key);
         $instance = $ref->newInstanceArgs($args);
         $this->setInstance($key, $instance);
 
@@ -195,10 +194,9 @@ class Container implements ContainerInterface
     public function has($key)
     {
         if (!is_string($key)) {
-            throw new \InvalidArgumentException(
-                'Get function only accepts strings. Input was: '
-            . htmlspecialchars($key) . '.'
-            );
+            throw new \InvalidArgumentException(htmlspecialchars(
+                "Get function only accepts strings. Input was: $key."
+            ));
         }
 
         return isset($this->services[ $key ]) || isset($this->instances[ $key ]);
@@ -256,7 +254,7 @@ class Container implements ContainerInterface
 
         return $return;
     }
-    
+
     /**
      * Ajoute le composant de configuration pour les services.
      *
@@ -267,10 +265,10 @@ class Container implements ContainerInterface
     public function setConfig(Config $config)
     {
         $this->config = $config;
-        
+
         return $this;
     }
-    
+
     /**
      * Alimente les arguments d'un service avec
      * des valeurs, des élements de configuration ou/et d'autres services.
@@ -284,7 +282,7 @@ class Container implements ContainerInterface
         if (!isset($this->services[ $key ][ 'arguments' ])) {
             return [];
         }
-        
+
         $args = $this->services[ $key ][ 'arguments' ];
 
         foreach ($args as &$arg) {

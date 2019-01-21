@@ -18,8 +18,8 @@ class FormTest extends \PHPUnit\Framework\TestCase
     protected function setUp()
     {
         @session_start([
-            'cookie_httponly' => true,
-            'cookie_secure' => true
+                'cookie_httponly' => true,
+                'cookie_secure'   => true
         ]);
         parent::setUp();
         $this->object = new FormBuilder([ 'method' => 'post', 'action' => 'http://localhost/' ]);
@@ -316,7 +316,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->object->text('textName1', 'textId');
         $this->object->getItem('error');
     }
-    
+
     public function testBefore()
     {
         $this->object->text('1', '1')
@@ -339,7 +339,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
             '</form>' . "\r\n"
         );
     }
-    
+
     public function testBeforeSubForm()
     {
         $this->object->group('group', 'div', function ($form) {
@@ -388,7 +388,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
             '</form>' . "\r\n"
         );
     }
-    
+
     /**
      * @expectedException Exception
      */
@@ -397,7 +397,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->object->addBefore('error', function () {
         });
     }
-    
+
     /**
      * @expectedException Exception
      */

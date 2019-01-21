@@ -116,13 +116,11 @@ class FormBuilder
             return call_user_func_array([ $this, 'inputBasic' ], $arg);
         }
 
-        throw new \BadMethodCallException(
-            'The '
-        . htmlspecialchars($type)
-        . ' type field does not exist'
-        );
+        throw new \BadMethodCallException(htmlspecialchars(
+            "The $type type field does not exist"
+        ));
     }
-    
+
     /**
      * Ajoute un ou pluisieurs input avant un élément existant.
      *
@@ -139,7 +137,7 @@ class FormBuilder
             return $this;
         }
 
-        throw new \Exception('The item ' . htmlspecialchars($key) . ' was not found.');
+        throw new \Exception(htmlspecialchars("The item $key was not found."));
     }
 
     /**
@@ -158,7 +156,7 @@ class FormBuilder
             return $this;
         }
 
-        throw new \Exception('The item ' . htmlspecialchars($key) . ' was not found.');
+        throw new \Exception(htmlspecialchars("The item $key was not found."));
     }
 
     /**
@@ -266,6 +264,7 @@ class FormBuilder
      * Enregistre un textarea.
      *
      * @param string $name Clé unique.
+     * @param string $id Selecteur CSS.
      * @param string $content Contenu du textarea.
      * @param array|null $attr Liste d'attributs.
      *
@@ -274,14 +273,16 @@ class FormBuilder
     public function textarea($name, $id, $content = '', array $attr = null)
     {
         $basic = $this->merge_attr([ 'id' => $id ], $attr);
-        
-        return $this->input($name, [ 'id' => $id, 'type' => 'textarea', 'content' => $content, 'attr' => $basic ]);
+
+        return $this->input($name, [ 'id'      => $id, 'type'    => 'textarea', 'content' => $content,
+                'attr'    => $basic ]);
     }
 
     /**
      * Enregistre une liste de sélection.
      *
      * @param string $name Clé unique.
+     * @param string $id Selecteur CSS.
      * @param array $options Liste d'options [ 'value'=>'', 'label'=>'','selected' => 0|1 ].
      * @param array $attr Liste d'attributs.
      *
@@ -290,7 +291,7 @@ class FormBuilder
     public function select($name, $id, $options = [], array $attr = null)
     {
         $basic = $this->merge_attr([ 'id' => $id ], $attr);
-        
+
         return $this->input($name, [ 'type' => 'select', 'options' => $options, 'attr' => $basic ]);
     }
 
@@ -336,8 +337,8 @@ class FormBuilder
     {
         if (session_id() == '') {
             @session_start([
-                'cookie_httponly' => true,
-                'cookie_secure' => true
+                    'cookie_httponly' => true,
+                    'cookie_secure'   => true
             ]);
         }
         /* On génère un token totalement unique. */
@@ -393,8 +394,8 @@ class FormBuilder
      */
     public function form_label($key, array $attrAdd = null)
     {
-        $item = $this->getItem($key);
-        $attr = $this->merge_attr($item[ 'attr' ], $attrAdd);
+        $item  = $this->getItem($key);
+        $attr  = $this->merge_attr($item[ 'attr' ], $attrAdd);
         $label = isset($attr[ 'attr' ][ 'label' ])
             ? $attr[ 'attr' ][ 'label' ]
             : $item[ 'label' ];
@@ -422,8 +423,8 @@ class FormBuilder
      */
     public function form_legend($key, array $attrAdd = null)
     {
-        $item = $this->getItem($key);
-        $attr = $this->merge_attr($item[ 'attr' ], $attrAdd);
+        $item   = $this->getItem($key);
+        $attr   = $this->merge_attr($item[ 'attr' ], $attrAdd);
         $legend = isset($attr[ 'attr' ][ 'label' ])
             ? $attr[ 'attr' ][ 'legend' ]
             : $item[ 'legend' ];
@@ -435,7 +436,7 @@ class FormBuilder
             . $legend
             . "</legend>\r\n";
     }
-    
+
     /**
      * Génère une balise input standard.
      *
@@ -502,8 +503,7 @@ class FormBuilder
         $item = $this->getItem($key);
         $attr = $this->merge_attr($item[ 'attr' ], $attrAdd);
 
-        return '<textarea name="'
-            . $key . '"'
+        return '<textarea name="' . $key . '"'
             . $this->getAttributesCSS($attr)
             . $this->getAttributesInput($attr) . '>'
             . $item[ 'content' ]
@@ -691,7 +691,7 @@ class FormBuilder
             return $this;
         }
 
-        throw new \Exception('The item ' . htmlspecialchars($key) . ' was not found.');
+        throw new \Exception(htmlspecialchars("The item $key was not found."));
     }
 
     /**
@@ -726,7 +726,7 @@ class FormBuilder
             return $find;
         }
 
-        throw new \Exception('The item ' . htmlspecialchars($key) . ' was not found.');
+        throw new \Exception(htmlspecialchars("The item $key was not found."));
     }
 
     /**
@@ -813,12 +813,12 @@ class FormBuilder
     }
 
     /**
-    * Met en forme les attributs CSS pour les balises.
-    *
-    * @param array $attr Listes des attributs enregistrés.
-    *
-    * @return string
-    */
+     * Met en forme les attributs CSS pour les balises.
+     *
+     * @param array $attr Listes des attributs enregistrés.
+     *
+     * @return string
+     */
     protected function getAttributesCSS(array $attr)
     {
         $output = [];
@@ -911,7 +911,7 @@ class FormBuilder
      * @param string $key Clé unique.
      * @param array $attr Liste des attributs à ajouter.
      *
-     * @return $this|bool
+     * @return bool
      */
     protected function addAttrRecurses($key, array $attr)
     {
@@ -959,7 +959,7 @@ class FormBuilder
 
         return null;
     }
-    
+
     /**
      * Fonction PHP array_slice() pour tableau associatif.
      *

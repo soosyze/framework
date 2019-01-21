@@ -21,7 +21,6 @@ use Psr\Http\Message\StreamInterface;
  */
 class Stream implements StreamInterface
 {
-
     /**
      * Modes d'écriture et de lecture d'une ressource.
      *
@@ -47,6 +46,7 @@ class Stream implements StreamInterface
             'x+', 'x+b', 'x+t'
         ]
     ];
+
     /**
      * Flux de données.
      *
@@ -102,7 +102,7 @@ class Stream implements StreamInterface
 
         return ( string ) stream_get_contents($this->stream);
     }
-    
+
     /**
      * Créer un flux à partir d'un fichier.
      *
@@ -116,7 +116,7 @@ class Stream implements StreamInterface
      */
     public static function createStreamFromFile($filename, $mode = 'r')
     {
-        if (!in_array($mode, self::$modes['read'])) {
+        if (!in_array($mode, self::$modes[ 'read' ])) {
             throw new \InvalidArgumentException('The mode is invalid.');
         }
 
@@ -371,7 +371,7 @@ class Stream implements StreamInterface
 
     /**
      * Charge un flux à partir d'une valeur scalaire.
-     * 
+     *
      * @param mixed $scalar Valeur scalaire.
      */
     private function createStreamFromScalar($scalar)

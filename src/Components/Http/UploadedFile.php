@@ -118,8 +118,8 @@ class UploadedFile implements UploadedFileInterface
      *
      * @param array $file Doit contenir la clé 'tmp_name' au minimum.
      *
-     * @return \Soosyze\Components\Http\UploadedFile
-     * 
+     * @return UploadedFileInterface
+     *
      * @throws \InvalidArgumentException La clé tmp_name est requise.
      */
     public static function create(array $file)
@@ -127,7 +127,7 @@ class UploadedFile implements UploadedFileInterface
         if (!isset($file[ 'tmp_name' ])) {
             throw new \InvalidArgumentException('The tmp_name key is required.');
         }
-        
+
         return new UploadedFile(
             $file[ 'tmp_name' ],
             isset($file[ 'name' ])
@@ -205,10 +205,10 @@ class UploadedFile implements UploadedFileInterface
                 : $this->moveToNoSapi($targetPath);
         } else {
             $stream = fopen($targetPath, 'w');
-            
+
             fwrite($stream, $this->stream->getContents());
             fclose($stream);
-            
+
             $this->moved = true;
         }
     }
@@ -272,11 +272,9 @@ class UploadedFile implements UploadedFileInterface
      *
      * @param string|ressource|StreamInterface $file Le fichier.
      *
-     * @return string Fichier filtré.
-     *
-     * @throws \InvalidArgumentException
+     * @throws \InvalidArgumentException La ressource de fichier n'est pas lisible.
      */
-    public function filterFile($file)
+    protected function filterFile($file)
     {
         if (is_string($file)) {
             $this->file = $file;
@@ -357,7 +355,7 @@ class UploadedFile implements UploadedFileInterface
         if (!in_array($error, $this->errors, true)) {
             throw new \InvalidArgumentException('The type of error is invalid.');
         }
-        
+
         return $error;
     }
 

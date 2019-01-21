@@ -39,11 +39,11 @@ class Email
      * @var array
      */
     protected $headers = [
-        'mime-version'              => [ '1.0' ],
+        'mime-version' => [ '1.0' ],
         /* Priorité de 1(du plus important) à 5 */
-        'x-priority'                => [ '3' ],
+        'x-priority'   => [ '3' ],
         /* Type de données attendue par le webmail */
-        'content-type'              => [ 'text/plain; charset="iso-8859-1"' ]
+        'content-type' => [ 'text/plain; charset="iso-8859-1"' ]
     ];
 
     /**
@@ -308,13 +308,13 @@ class Email
      *
      * @return $this
      *
-     * @throws \Exception Le paramètre n'est pas une adresse email valide.
+     * @throws \InvalidArgumentException Le paramètre n'est pas une adresse email valide.
      */
     private function filtreEmail($strEmail)
     {
         $email = trim($strEmail);
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new \Exception(htmlspecialchars($email) . ' is not a valid email.');
+            throw new \InvalidArgumentException(htmlspecialchars("$email is not a valid email."));
         }
 
         return $email;
@@ -328,12 +328,12 @@ class Email
      *
      * @return string Chaine nettoyée.
      *
-     * @throws \Exception Le paramètre n'est pas un nom de destinataire valide.
+     * @throws \InvalidArgumentException Le paramètre n'est pas un nom de destinataire valide.
      */
     private function filtreName($name)
     {
         if (!is_string($name)) {
-            throw new \Exception(htmlspecialchars($name) . ' is not a valid recipient.');
+            throw new \InvalidArgumentException(htmlspecialchars("$name is not a valid recipient."));
         }
 
         return trim(preg_replace('/[\r\n]+/', '', $name));

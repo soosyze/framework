@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Soosyze Framework http://soosyze.com
  *
