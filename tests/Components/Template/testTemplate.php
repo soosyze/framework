@@ -1,4 +1,3 @@
 <?php echo $attr ?>
-<?php if (isset($block[ 'page' ])): ?>
-    <?php echo $block[ 'page' ]; ?>
-<?php endif; ?>
+<?php echo isset_or($block['page']); ?>
+<?php echo isset_or($block['not_block'], ''); ?>

@@ -82,13 +82,16 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($block2, $this->object->getBlock('testBlock2'));
     }
 
-    public function testAddFilter()
+    public function testAddFilterVar()
     {
         $function = function ($html) {
             return strtolower($html);
         };
-        $this->object->addfilter($function);
-        $this->assertAttributeSame([ $function ], 'filters', $this->object);
+
+        $this->object->addVar('attr', 'TEST')->addFilterVar('attr', $function);
+
+        $this->assertAttributeSame([ 'var.attr' => [ $function ] ], 'filters', $this->object);
+        $this->assertEquals('test', $this->object->render());
     }
 
     public function testRenderAttr()
@@ -103,26 +106,35 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
             ->addBlock('page', new Template('testBlock.php', $this->pathTemplate))
             ->addBlock('title');
 
-        $this->assertEquals('Test    Hello world !', $this->object->render());
+        $this->assertEquals('TestHello world !', $this->object->render());
     }
 
-    public function testFilter()
+    public function testAddFilterBlock()
     {
-        $this->object->addVar('attr', 'TEST')
-            ->addfilter(function ($html) {
-                return strtolower($html);
-            });
-        $this->assertEquals('test', $this->object->render());
-    }
+        $function = function ($html) {
+            return strtolower($html);
+        };
 
-    public function testGetName()
-    {
-        $this->assertEquals('testTemplate.php', $this->object->getName());
-    }
+        $this->object->addVar('attr', 'Test')
+            ->addBlock('page', new Template('testBlock.php', $this->pathTemplate))
+            ->addFilterBlock('page', $function);
 
-    public function testGetPath()
+        $this->assertAttributeSame([ 'block.page' => [ $function ] ], 'filters', $this->object);
+        $this->assertEquals('Testhello world !', $this->object->render());
+    }
+    
+    public function testAddFilterOutput()
     {
-        $this->assertEquals($this->pathTemplate, $this->object->getPath());
+        $function = function ($html) {
+            return strtolower($html);
+        };
+
+        $this->object->addVar('attr', 'Test')
+            ->addBlock('page', new Template('testBlock.php', $this->pathTemplate))
+            ->addFilterOutput($function);
+
+        $this->assertAttributeSame([ 'output' => [ $function ] ], 'filters', $this->object);
+        $this->assertEquals('testhello world !', $this->object->render());
     }
 
     public function testToString()
