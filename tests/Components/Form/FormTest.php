@@ -406,4 +406,31 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->object->addAfter('error', function () {
         });
     }
+
+    public function testHtml()
+    {
+        $this->object->html('image', '<img:css:attr />', [
+            'src' => '/files/logo.png',
+            'alt' => 'Logo'
+        ]);
+
+        $this->assertEquals(
+            $this->object->renderForm(),
+            '<form method="post" action="http://localhost/">' . "\r\n" .
+            '<img src="/files/logo.png" alt="Logo" />' . "\r\n" .
+            '</form>' . "\r\n"
+        );
+
+        $this->object->html('image', '<p:css:attr>:_content</p>', [
+            'id' => 'test',
+            '_content' => 'Logo'
+        ]);
+
+        $this->assertEquals(
+            $this->object->renderForm(),
+            '<form method="post" action="http://localhost/">' . "\r\n" .
+            '<p id="test">Logo</p>' . "\r\n" .
+            '</form>' . "\r\n"
+        );
+    }
 }
