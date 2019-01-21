@@ -94,23 +94,21 @@ abstract class App
      * À la construction de notre application ont créé l'objet Request
      * pour le traiter et renvoyer une réponse.
      *
-     * @param ServerRequest|null $request Requête courante de l'application.
+     * @param ServerRequestInterface $request Requête courante de l'application.
      */
-    private function __construct(ServerRequest $request = null)
+    private function __construct(ServerRequestInterface $request)
     {
-        $this->request = $request === null
-            ? ServerRequest::create()
-            : $request;
+        $this->request = $request;
     }
 
     /**
      * Singleton pour une classe abstraite.
      *
-     * @param ServerRequest|null $request Requête courante de l'application.
+     * @param ServerRequestInterface|null $request Requête courante de l'application.
      *
      * @return self Instancte unique de App.
      */
-    public static function getInstance(ServerRequest $request = null)
+    public static function getInstance(ServerRequestInterface $request)
     {
         if (is_null(self::$instance)) {
             $class          = get_called_class();
@@ -145,17 +143,18 @@ abstract class App
     }
 
     /**
-     * Revoie la valeur d'un paramètre du framework ou une chaine vide si absent.
+     * Revoie la valeur d'un paramètre du framework ou le paramètre par défaut.
      *
      * @param string $key
+     * @param mixed $default
      *
      * @return mixed
      */
-    public function getSetting($key)
+    public function getSetting($key, $default = '')
     {
         return isset($this->settings[ $key ])
             ? $this->settings[ $key ]
-            : '';
+            : $default;
     }
 
     /**

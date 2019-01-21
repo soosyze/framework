@@ -29,6 +29,19 @@ class FormBuilder
     ];
 
     /**
+     * Attributs HTML sans clés.
+     *
+     * @var string[]
+     */
+    protected $attributesUnique = [
+        'autofocus',
+        'checked',
+        'disabled',
+        'readonly',
+        'required'
+    ];
+
+    /**
      * Balises autorisées pour les groupes de formulaire.
      *
      * @var string[]
@@ -845,11 +858,12 @@ class FormBuilder
     {
         $output = [];
         foreach ($attr as $key => $values) {
-            if (in_array($key, ['checked', 'required'])) {
-                if (!empty($values)) {
-                    $output[] = $key;
-                }
-            } elseif (!in_array($key, $this->attributesCss) && $values !== '' && $key !== 'selected') {
+            if (empty($values)) {
+                continue;
+            }
+            if (in_array($key, $this->attributesUnique)) {
+                $output[] = $key;
+            } elseif (!in_array($key, $this->attributesCss) && $key !== 'selected') {
                 $output[] = $key . '="' . $values . '"';
             }
         }

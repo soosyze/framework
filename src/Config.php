@@ -134,4 +134,16 @@ class Config
 
         return Util::saveJson($path, $file, $data);
     }
+
+    /**
+     * Retourne le chemin des fichiers de configuration.
+     *
+     * @codeCoverageIgnore getter
+     *
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
+    }
 }

@@ -34,6 +34,13 @@ class AppTest extends \PHPUnit\Framework\TestCase
         $run = $this->object->run();
         $this->assertEquals($run->getBody()->__toString(), 'ok');
     }
+    
+    public function testGetRequest()
+    {
+        $request = $this->object->getRequest();
+        $this->assertInstanceOf('\Psr\Http\Message\RequestInterface', $request);
+        $this->assertEquals('GET', $request->getMethod());
+    }
 
     public function testSetSettings()
     {

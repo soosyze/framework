@@ -111,7 +111,7 @@ class Util
      */
     public static function getFileExtension($pathFile)
     {
-        return strtolower(substr(strrchr($pathFile, '.'), 1));
+        return strtolower(pathinfo($pathFile, PATHINFO_EXTENSION));
     }
 
     /**
