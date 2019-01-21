@@ -21,7 +21,6 @@ use Soosyze\Components\Http\Uri;
  */
 class UriFactory
 {
-
     /**
      * Create a new URI.
      *

@@ -55,7 +55,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
     }
     
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testCreateUriInvalidArgument()
     {
@@ -169,7 +169,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testWithSchemeException()
     {
@@ -188,7 +188,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testWithUserInfoException()
     {
@@ -204,7 +204,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testWithHostException()
     {
@@ -225,7 +225,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testWithPortException()
     {
@@ -241,7 +241,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testWithPathException()
     {
@@ -257,7 +257,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testWithQueryException()
     {
@@ -273,7 +273,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
 
     public function testToString()
     {
-        $this->assertEquals(( string ) $this->object, 'http://username:password@hostname/path?arg=value#anchor');
-        $this->assertEquals(( string ) $this->object->withPath('path'), 'http://username:password@hostname/path?arg=value#anchor');
+        $this->assertEquals((string) $this->object, 'http://username:password@hostname/path?arg=value#anchor');
+        $this->assertEquals((string) $this->object->withPath('path'), 'http://username:password@hostname/path?arg=value#anchor');
     }
 }

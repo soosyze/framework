@@ -19,14 +19,13 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 class Image extends FileMimes
 {
-
     /**
      * Test si un fichier est une image.
      *
-     * @param string $key Clé du test.
+     * @param string                $key   Clé du test.
      * @param UploadedFileInterface $value Valeur à tester.
-     * @param string|bool $arg Liste d'extensions d'images autorisées.
-     * @param bool $not Inverse le test.
+     * @param string|bool           $arg   Liste d'extensions d'images autorisées.
+     * @param bool                  $not   Inverse le test.
      */
     protected function test($key, $value, $arg, $not = true)
     {
@@ -42,9 +41,7 @@ class Image extends FileMimes
      */
     protected function messages()
     {
-        $output = parent::messages();
-
-        return $output;
+        return parent::messages();
     }
 
     /**
@@ -84,8 +81,8 @@ class Image extends FileMimes
     /**
      * Valide si un mimetype est celui d'une image.
      *
-     * @param string $extension
-     * @param string|array $mimes Mimetype ou liste de mimetype.
+     * @param string       $extension
+     * @param string|array $mimes     Mimetype ou liste de mimetype.
      *
      * @throws \InvalidArgumentException L'extension n'est pas une extension d'image.
      */

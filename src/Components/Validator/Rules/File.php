@@ -19,14 +19,13 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 class File extends \Soosyze\Components\Validator\Rule
 {
-
     /**
      * Test si la valeur est un fichier.
      *
-     * @param string $key Clé du test.
+     * @param string                $key   Clé du test.
      * @param UploadedFileInterface $value Valeur à tester.
-     * @param string $arg Argument de test.
-     * @param bool $not Inverse le test.
+     * @param string                $arg   Argument de test.
+     * @param bool                  $not   Inverse le test.
      */
     protected function test($key, $value, $arg, $not = true)
     {

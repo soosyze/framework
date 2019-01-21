@@ -19,14 +19,13 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 class Required extends \Soosyze\Components\Validator\Rule
 {
-
     /**
      * Test si une valeur est requise.
      *
-     * @param string $key Clé du test.
-     * @param mixed $value Valeur à tester.
-     * @param string $arg Argument de test.
-     * @param bool $not Inverse le test.
+     * @param string $key   Clé du test.
+     * @param mixed  $value Valeur à tester.
+     * @param string $arg   Argument de test.
+     * @param bool   $not   Inverse le test.
      */
     protected function test($key, $value, $arg, $not = true)
     {

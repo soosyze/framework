@@ -30,7 +30,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testConstructException()
     {
@@ -49,7 +49,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testWithMethodException()
     {
@@ -86,7 +86,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testWithRequestTargetException()
     {

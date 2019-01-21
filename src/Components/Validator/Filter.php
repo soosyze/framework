@@ -17,13 +17,12 @@ namespace Soosyze\Components\Validator;
  */
 abstract class Filter
 {
-
     /**
      * Exécute le filtre de données.
      *
-     * @param string $key Identifiant de la valeur.
-     * @param mixed $value Valeur à filtrer.
-     * @param string $arg Argument de filtre.
+     * @param string $key   Identifiant de la valeur.
+     * @param mixed  $value Valeur à filtrer.
+     * @param string $arg   Argument de filtre.
      *
      * @return mixed $value Valeur à filtrer.
      */
@@ -35,9 +34,9 @@ abstract class Filter
     /**
      * Défini le filtre.
      *
-     * @param string $key Identifiant de la valeur.
+     * @param string $key   Identifiant de la valeur.
      * @param string $value Valeur à filtrer.
-     * @param string $arg Argument de filtre.
+     * @param string $arg   Argument de filtre.
      */
     abstract protected function filter($key, $value, $arg);
 }

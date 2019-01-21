@@ -10,9 +10,9 @@
 
 namespace Soosyze;
 
-use Soosyze\Exception\Route\RouteNotFoundException;
-use Soosyze\Exception\Route\RouteArgumentException;
 use Psr\Http\Message\RequestInterface;
+use Soosyze\Exception\Route\RouteArgumentException;
+use Soosyze\Exception\Route\RouteNotFoundException;
 
 /**
  * Cherche un objet et une méthode à exécuter en fonction de la requête HTTP.
@@ -51,8 +51,8 @@ class Router
     /**
      * Construit le router avec la liste des routes et les objets à appeler.
      *
-     * @param array $routes Liste des routes.
-     * @param object[] $obj Liste des instances d'objet.
+     * @param array    $routes Liste des routes.
+     * @param object[] $obj    Liste des instances d'objet.
      */
     public function __construct(array $routes, array $obj = [])
     {
@@ -84,7 +84,7 @@ class Router
             /* Rempli un array des paramètres de l'Uri. */
             $query = $this->parseQueryFromRequest($request);
 
-            if (preg_match("/^" . $path . "$/", $query)) {
+            if (preg_match('/^' . $path . '$/', $query)) {
                 /* Ajoute la clé de la route aux données. */
                 $route[ 'key' ] = $key;
 
@@ -98,7 +98,7 @@ class Router
     /**
      * Exécute la méthode d'un contrôleur à partir d'une route et de la requête.
      *
-     * @param array $route
+     * @param array   $route
      * @param Request $request
      *
      * @return mixed Le retour de la méthode appelée.
@@ -142,8 +142,8 @@ class Router
     /**
      * Recherche une route à partir de son nom.
      *
-     * @param string $name Nom de la route.
-     * @param array $params Variables requises par la route.
+     * @param string $name   Nom de la route.
+     * @param array  $params Variables requises par la route.
      *
      * @return string
      */
@@ -163,7 +163,7 @@ class Router
 
         if (!empty($params) && isset($route[ 'with' ])) {
             foreach ($route[ 'with' ] as $key => $value) {
-                if (!preg_match("/^" . $value . "$/", $params[ $key ])) {
+                if (!preg_match('/^' . $value . '$/', $params[ $key ])) {
                     throw new RouteArgumentException($params[ $key ], $value, $path);
                 }
                 $path = str_replace($key, $params[ $key ], $path);
@@ -236,14 +236,13 @@ class Router
      *
      * @param RequestInterface $request
      *
-     * @return string
-     *
      * @throws \InvalidArgumentException
+     * @return string
      */
     protected function parseQueryFromRequest(RequestInterface $request = null)
     {
         if ($request === null && $this->currentRequest === null) {
-            throw new \InvalidArgumentException("No request is provided.");
+            throw new \InvalidArgumentException('No request is provided.');
         }
 
         $req = $request === null
@@ -253,7 +252,7 @@ class Router
         /* Rempli un array des paramètres de l'Uri. */
         parse_str($req->getUri()->getQuery(), $parseQuery);
 
-        /**
+        /*
          * Pour avoir le paramètre non identifié par une clé.
          * Exemple : http://exemple.com/?first_param = 'first_param'
          * Il faut prendre le 1er élément du tableau inversé des paraètres de l'Uri.
@@ -269,15 +268,15 @@ class Router
      *
      * @param string $route Route qui déclenche l'appel au contrôleur.
      * @param string $query Le paramètre de la requête.
-     * @param array $param Clés de comparaison à chercher dans la route.
+     * @param array  $param Clés de comparaison à chercher dans la route.
      *
      * @return array Paramètres présents dans la requête.
      */
     protected function parseParam($route, $query, array $param)
     {
         $paramOutput = [];
-        $paramRoute  = explode("/", $route);
-        $paramQuery  = explode("%2F", $query);
+        $paramRoute  = explode('/', $route);
+        $paramQuery  = explode('%2F', $query);
 
         foreach ($paramRoute as $key => $value) {
             if (array_key_exists($value, $param)) {

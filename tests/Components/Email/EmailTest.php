@@ -38,7 +38,7 @@ class EmailTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testFiltreMailException()
     {

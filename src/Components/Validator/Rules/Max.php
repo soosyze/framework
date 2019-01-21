@@ -19,14 +19,13 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 class Max extends Size
 {
-
     /**
      * Test si une valeur est plus grande que la valeur de comparaison.
      *
-     * @param string $key Clé du test.
+     * @param string                                       $key   Clé du test.
      * @param int|float|string|array|UploadedFileInterface $value Valeur à tester.
-     * @param int|float $arg Valeur de comparraison.
-     * @param bool $not Inverse le test.
+     * @param int|float                                    $arg   Valeur de comparraison.
+     * @param bool                                         $not   Inverse le test.
      *
      * @throws \InvalidArgumentException La valeur max n'est pas numérique.
      */
@@ -54,10 +53,10 @@ class Max extends Size
     /**
      * Test si une valeur est plus grande que la valeur de comparaison.
      *
-     * @param string $key Clé du test.
+     * @param string $key         Clé du test.
      * @param string $lengthValue Taille de la valeur.
-     * @param string $max Valeur de comparraison.
-     * @param bool $not Inverse le test.
+     * @param string $max         Valeur de comparraison.
+     * @param bool   $not         Inverse le test.
      */
     protected function sizeMax($key, $lengthValue, $max, $not = true)
     {

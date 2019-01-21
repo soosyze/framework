@@ -17,13 +17,12 @@ namespace Soosyze\Components\Validator\Filters;
  */
 class Htmlsc extends \Soosyze\Components\Validator\Filter
 {
-
     /**
      * Filtre une valeur avec la méthode htmlspecialchars.
      *
-     * @param string $key Identifiant de la valeur.
+     * @param string $key   Identifiant de la valeur.
      * @param string $value Valeur à filtrer.
-     * @param string $arg Argument de filtre.
+     * @param string $arg   Argument de filtre.
      *
      * @throws \InvalidArgumentException La valeur time n'est pas numérique.
      */

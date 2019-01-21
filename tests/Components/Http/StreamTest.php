@@ -6,7 +6,6 @@ use Soosyze\Components\Http\Stream;
 
 class StreamTest extends \PHPUnit\Framework\TestCase
 {
-
     /**
      * @var resource
      */
@@ -46,7 +45,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testConstructException()
     {
@@ -93,7 +92,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
     }
     
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testCreateStreamFromFileRuntime()
     {
@@ -101,7 +100,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
     }
     
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testCreateStreamFromFileInvalidArgument()
     {
@@ -133,7 +132,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testTellException()
     {
@@ -155,7 +154,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testEofException()
     {
@@ -180,7 +179,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testSeekException()
     {
@@ -217,7 +216,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testWriteException()
     {
@@ -264,7 +263,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testReadLengthException()
     {
@@ -273,7 +272,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testReadStringLengthException()
     {
@@ -282,7 +281,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testReadException()
     {
@@ -298,7 +297,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testGetContentException()
     {

@@ -17,14 +17,13 @@ namespace Soosyze\Components\Validator\Rules;
  */
 class FloatR extends \Soosyze\Components\Validator\Rule
 {
-
     /**
      * Test si une valeur est de type numérique flottant.
      *
-     * @param string $key Clé du test.
-     * @param float $value Valeur à tester.
-     * @param string $arg Argument de test.
-     * @param bool $not Inverse le test.
+     * @param string $key   Clé du test.
+     * @param float  $value Valeur à tester.
+     * @param string $arg   Argument de test.
+     * @param bool   $not   Inverse le test.
      */
     protected function test($key, $value, $arg, $not = true)
     {

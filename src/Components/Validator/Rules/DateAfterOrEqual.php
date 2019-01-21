@@ -17,14 +17,13 @@ namespace Soosyze\Components\Validator\Rules;
  */
 class DateAfterOrEqual extends DateAfter
 {
-
     /**
      * Test si une date est antérieur ou égale à la date de comparaison.
      *
-     * @param string $key Clé du test.
+     * @param string $key   Clé du test.
      * @param string $value Date à tester.
-     * @param string $arg Date de comparaison.
-     * @param bool $not Inverse le test.
+     * @param string $arg   Date de comparaison.
+     * @param bool   $not   Inverse le test.
      *
      * @return int 1 erreur de date.
      */
@@ -37,8 +36,8 @@ class DateAfterOrEqual extends DateAfter
      * {@inheritdoc}
      *
      * @param string $value Date à tester.
-     * @param string $arg Date de comparaison.
-     * @param bool $not Inverse le test.
+     * @param string $arg   Date de comparaison.
+     * @param bool   $not   Inverse le test.
      */
     protected function dateAfter($value, $arg, $not = true)
     {

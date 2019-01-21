@@ -2,8 +2,8 @@
 
 namespace Soosyze\Tests\Components\Validator;
 
-use Soosyze\Components\Validator\Validator;
 use Soosyze\Components\Http\UploadedFile;
+use Soosyze\Components\Validator\Validator;
 
 class ValidatorFileTest extends \PHPUnit\Framework\TestCase
 {
@@ -25,37 +25,31 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
     protected $file_img = 'testUplaodFile.png';
 
     /**
-     *
      * @var resource
      */
     protected $file_js = 'testUploadFileError.js';
     
     /**
-     *
      * @var resource
      */
     protected $file_error = 'testUploadFile.gif';
 
     /**
-     *
      * @var \UploadedFile
      */
     protected $uplaod_txt;
 
     /**
-     *
      * @var \UploadedFile
      */
     protected $uplaod_img;
     
     /**
-     *
      * @var \UploadedFile
      */
     protected $upload_js;
 
     /**
-     *
      * @var \UploadedFile
      */
     protected $uplaod_error;
@@ -368,7 +362,7 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testValidImageException()
     {
@@ -382,7 +376,7 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
     }
     
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testValidImageExceptionMultiple()
     {

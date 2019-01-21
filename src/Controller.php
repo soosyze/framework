@@ -10,9 +10,9 @@
 
 namespace Soosyze;
 
+use Psr\Http\Message\RequestInterface;
 use Soosyze\Components\Http\Response;
 use Soosyze\Components\Http\Stream;
-use Psr\Http\Message\RequestInterface;
 
 /**
  * Les méthodes du contrôleur sont appelées à partir d'une requête http
@@ -53,7 +53,7 @@ class Controller
      * @codeCoverageIgnore Fonction testé directement avec l'objet Container.
      *
      * @param string $name Nom du service.
-     * @param array $arg Paramètres passés à la fonction.
+     * @param array  $arg  Paramètres passés à la fonction.
      *
      * @return object
      */
@@ -113,7 +113,7 @@ class Controller
      *
      * @codeCoverageIgnore Fonction testé directement avec l'objet Response.
      *
-     * @param string $stream
+     * @param string           $stream
      * @param RequestInterface $request
      *
      * @return Response

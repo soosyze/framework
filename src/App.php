@@ -12,12 +12,12 @@ namespace Soosyze;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Soosyze\Router;
-use Soosyze\Container;
 use Soosyze\Components\Http\Response;
 use Soosyze\Components\Http\ServerRequest;
 use Soosyze\Components\Http\Stream;
 use Soosyze\Components\Util\Util;
+use Soosyze\Container;
+use Soosyze\Router;
 
 /**
  * Coeur de l'application, il est le ciment qui unis les modules et les services.
@@ -146,7 +146,7 @@ abstract class App
      * Revoie la valeur d'un paramètre du framework ou le paramètre par défaut.
      *
      * @param string $key
-     * @param mixed $default
+     * @param mixed  $default
      *
      * @return mixed
      */
@@ -264,7 +264,7 @@ abstract class App
      * @codeCoverageIgnore Fonction testé directement avec l'objet Container.
      *
      * @param string $name Nom du hook à déclencher.
-     * @param array $args Arguments de la fonction de rappelle.
+     * @param array  $args Arguments de la fonction de rappelle.
      *
      * @return mixed Résultat final des exécutions des hooks.
      */

@@ -27,10 +27,10 @@ class FileMimes extends FileExtensions
     /**
      * Test si l'extension du fichier est autorisée.
      *
-     * @param string $key Clé du test.
+     * @param string                $key   Clé du test.
      * @param UploadedFileInterface $value Valeur à tester.
-     * @param scalar $arg Liste des extensions autorisées.
-     * @param bool $not Inverse le test.
+     * @param scalar                $arg   Liste des extensions autorisées.
+     * @param bool                  $not   Inverse le test.
      *
      * @return int 1 erreur de fichier.
      */
@@ -69,8 +69,8 @@ class FileMimes extends FileExtensions
     /**
      * Test si l'extension du fichier est autorisée.
      *
-     * @param string $info Information sur le mimetype du fichier.
-     * @param sting $extension L'extension attendu.
+     * @param string $info      Information sur le mimetype du fichier.
+     * @param sting  $extension L'extension attendu.
      *
      * @return int 1 erreur, l'extension n'est pas pris en charge.
      */
@@ -90,7 +90,7 @@ class FileMimes extends FileExtensions
     /**
      * Test si l'extension du fichier ne correspond pas aux extensions autorisées.
      *
-     * @param string $info Information sur le mimetype du fichier.
+     * @param string $info       Information sur le mimetype du fichier.
      * @param string $extensions Liste d'extensions séparées par une virgule.
      */
     protected function validNotMime($info, $extensions)

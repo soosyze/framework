@@ -31,7 +31,7 @@ class Config
      * d'un chemin de base + un chemin en fonction de l'environnements.
      *
      * @param string $pathConfig Chemin de base des fichiers de configuration
-     * @param string $pathEnv Chemin des fichiers de configuration par environnement.
+     * @param string $pathEnv    Chemin des fichiers de configuration par environnement.
      */
     public function __construct($pathConfig, $pathEnv = '')
     {
@@ -69,11 +69,10 @@ class Config
      * Récupère un élément de configuration en fonction
      * de l'emplacement de l'application, l'environnement, du fichier et d'une clé.
      *
-     * @param string $strKey "nom_fichier" OU "nom_fichier.nom_clé".
+     * @param string     $strKey  "nom_fichier" OU "nom_fichier.nom_clé".
      * @param mixed|null $default Valeur par défaut si aucune valeur n'est trouvé.
      *
      * @return array|mixed|null Tableau des paramètres ou le paramètre si la clé est renseignée ou null.
-     *
      */
     public function get($strKey, $default = null)
     {
@@ -103,11 +102,10 @@ class Config
      * Enregistre un élément de configuration.
      *
      * @param string $strKey "nom_fichier.nom_clé".
-     * @param mixed $value Valeur à stocker.
-     *
-     * @return bool L'élément est bien enregistré.
+     * @param mixed  $value  Valeur à stocker.
      *
      * @throws \InvalidArgumentException La clé est invalide, elle doit être composée de 2 parties séparées par un point.
+     * @return bool                      L'élément est bien enregistré.
      */
     public function set($strKey, $value)
     {

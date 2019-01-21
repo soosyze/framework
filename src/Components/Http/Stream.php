@@ -100,19 +100,18 @@ class Stream implements StreamInterface
 
         $this->seek(0);
 
-        return ( string ) stream_get_contents($this->stream);
+        return (string) stream_get_contents($this->stream);
     }
 
     /**
      * Créer un flux à partir d'un fichier.
      *
      * @param type $filename Nom du fichier.
-     * @param type $mode Mode de lecture du fichier.
+     * @param type $mode     Mode de lecture du fichier.
      *
+     * @throws \InvalidArgumentException       Le mode de lecture n'est pas valide.
+     * @throws \RuntimeException               Le fichier ne peut pas être ouvert.
      * @return \Soosyze\Components\Http\Stream
-     *
-     * @throws \InvalidArgumentException Le mode de lecture n'est pas valide.
-     * @throws \RuntimeException Le fichier ne peut pas être ouvert.
      */
     public static function createStreamFromFile($filename, $mode = 'r')
     {
@@ -176,9 +175,8 @@ class Stream implements StreamInterface
     /**
      * Renvoie la position actuelle du pointeur de lecture/écriture du fichier.
      *
-     * @return int Position du pointeur de fichier
-     *
      * @throws \RuntimeException Une erreur est survenue.
+     * @return int               Position du pointeur de fichier
      */
     public function tell()
     {
@@ -193,9 +191,8 @@ class Stream implements StreamInterface
     /**
      * Renvoie true si le flux se trouve à la fin du flux.
      *
-     * @return bool
-     *
      * @throws \RuntimeException Une erreur est survenue.
+     * @return bool
      */
     public function eof()
     {
@@ -225,7 +222,7 @@ class Stream implements StreamInterface
      *
      * @param int $offset Décalage de flux.
      * @param int $whence Spécifie comment la position du curseur sera calculée
-     * basé sur le décalage de recherche.
+     *                    basé sur le décalage de recherche.
      *
      * @throws \RuntimeException Une erreur est survenue.
      */
@@ -267,9 +264,8 @@ class Stream implements StreamInterface
      *
      * @param string $string La chaîne à écrire.
      *
-     * @return int Renvoie le nombre d'octets écrits dans le flux.
-     *
      * @throws \RuntimeException Une erreur est survenue.
+     * @return int               Renvoie le nombre d'octets écrits dans le flux.
      */
     public function write($string)
     {
@@ -299,20 +295,21 @@ class Stream implements StreamInterface
      *
      * @param int $length Longueur d'octet.
      *
-     * @return string Renvoie les données lues dans le flux
-     * ou une chaîne vide si aucun octet n'est disponible.
-     *
      * @throws \RuntimeException La valeur d'octet doit être un nombre entier positif.
      * @throws \RuntimeException Une erreur est survenue.
+     * @return string            Renvoie les données lues dans le flux
+     *                           ou une chaîne vide si aucun octet n'est disponible.
      */
     public function read($length)
     {
         $this->valideAttach()->valideRead();
         if (!is_numeric($length) || $length < 0) {
             throw new \RuntimeException('Byte value must be positive integer.');
-        } elseif ($length === 0) {
+        }
+        if ($length === 0) {
             return '';
-        } elseif (($stream = fread($this->stream, $length)) === false) {
+        }
+        if (($stream = fread($this->stream, $length)) === false) {
             throw new \RuntimeException('An error has occurred.');
         }
 
@@ -322,9 +319,8 @@ class Stream implements StreamInterface
     /**
      * Renvoie le contenu restant.
      *
-     * @return string
-     *
      * @throws \RuntimeException Une erreur c'est produit pendant la lecture du flux.
+     * @return string
      */
     public function getContents()
     {
@@ -345,8 +341,8 @@ class Stream implements StreamInterface
      * @param string $key Métadonnées spécifiques à récupérer.
      *
      * @return array|mixed|null Renvoie un tableau associatif si aucune clé n'est renségné.
-     * renvoie une valeur de clé spécifique si une clé est fournie et trouvé,
-     * ou null si la clé n'est pas trouvée.
+     *                          renvoie une valeur de clé spécifique si une clé est fournie et trouvé,
+     *                          ou null si la clé n'est pas trouvée.
      */
     public function getMetadata($key = null)
     {
@@ -389,9 +385,8 @@ class Stream implements StreamInterface
     /**
      * Déclenche une exception si le flux de données est détaché.
      *
-     * @return $this
-     *
      * @throws \RuntimeException Le flux est détaché.
+     * @return $this
      */
     private function valideAttach()
     {
@@ -405,9 +400,8 @@ class Stream implements StreamInterface
     /**
      * Déclenche une exception si la position du flux ne peut-être modifié.
      *
-     * @return $this
-     *
      * @throws \RuntimeException La position du flux ne peut-être modifié.
+     * @return $this
      */
     private function valideSeekable()
     {
@@ -421,9 +415,8 @@ class Stream implements StreamInterface
     /**
      * Déclenche une exception si le flux ne peut-être lisible.
      *
-     * @return $this
-     *
      * @throws \RuntimeException Impossible de lire à partir d'un flux non lisible.
+     * @return $this
      */
     private function valideRead()
     {
@@ -437,9 +430,8 @@ class Stream implements StreamInterface
     /**
      * Déclenche une exception si le flux est non accessible en écriture.
      *
-     * @return $this
-     *
      * @throws \RuntimeException Impossible d'écrire dans un flux non accessible en écriture.
+     * @return $this
      */
     private function valideWrite()
     {

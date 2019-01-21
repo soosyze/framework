@@ -2,8 +2,8 @@
 
 namespace Soosyze\Tests\Components\Validator;
 
-use Soosyze\Components\Validator\Validator;
 use Soosyze\Components\Validator\Rule;
+use Soosyze\Components\Validator\Validator;
 
 class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
@@ -30,7 +30,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testValidException()
     {
@@ -186,7 +186,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testValidBetweenMissingException()
     {
@@ -197,7 +197,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testValidBetweenExceptionTypeMin()
     {
@@ -208,7 +208,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testValidBetweenExceptionTypeMax()
     {
@@ -219,7 +219,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testValidBetweenMinUpperMax()
     {
@@ -230,7 +230,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testValidBetweenExceptionValue()
     {
@@ -739,7 +739,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testValidMaxExceptionMin()
     {
@@ -750,7 +750,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testValidMaxExceptionValue()
     {
@@ -820,7 +820,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testValidMinExceptionMin()
     {
@@ -831,7 +831,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testValidMinExceptionValue()
     {
@@ -878,7 +878,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testValidRequiredWithException()
     {
@@ -888,7 +888,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testValidRequiredWithVoidException()
     {
@@ -934,7 +934,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     }
     
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testValidRequiredWithoutException()
     {
@@ -1053,7 +1053,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testValidTokenException()
     {
@@ -1139,7 +1139,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testValideHtmlscException()
     {
@@ -1160,7 +1160,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testValideStripTagsException()
     {

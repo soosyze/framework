@@ -17,14 +17,13 @@ namespace Soosyze\Components\Validator\Rules;
  */
 class Equal extends \Soosyze\Components\Validator\Rule
 {
-
     /**
      * Test si 2 valeurs sont identiques.
      *
-     * @param string $key Clé du test.
+     * @param string $key   Clé du test.
      * @param scalar $value Valeur à tester.
-     * @param scalar $arg Valeur de comparaison.
-     * @param bool $not Inverse le test.
+     * @param scalar $arg   Valeur de comparaison.
+     * @param bool   $not   Inverse le test.
      */
     protected function test($key, $value, $arg, $not = true)
     {

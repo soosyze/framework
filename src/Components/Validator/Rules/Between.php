@@ -17,14 +17,13 @@ namespace Soosyze\Components\Validator\Rules;
  */
 class Between extends Size
 {
-
     /**
      * Test si une valeur est entre 2 valeurs de comparaison.
      *
-     * @param string $key Clé du test.
+     * @param string                                                        $key   Clé du test.
      * @param array|float|int|object|ressource|string|UploadedFileInterface $value Valeur à tester.
-     * @param string $arg Liste de 2 valeurs de comparaison séparées par une virgule.
-     * @param bool $not Inverse le test.
+     * @param string                                                        $arg   Liste de 2 valeurs de comparaison séparées par une virgule.
+     * @param bool                                                          $not   Inverse le test.
      */
     protected function test($key, $value, $arg, $not = true)
     {
@@ -48,11 +47,11 @@ class Between extends Size
     /**
      * Teste si une valeur est comprise entre 2 valeurs numériques.
      *
-     * @param string $key Clé du test.
+     * @param string  $key         Clé du test.
      * @param numeric $lengthValue Valeur de la taille.
-     * @param numeric $min Valeur minimum.
-     * @param numeric $max Valeur maximum.
-     * @param bool $not Inverse le test.
+     * @param numeric $min         Valeur minimum.
+     * @param numeric $max         Valeur maximum.
+     * @param bool    $not         Inverse le test.
      */
     protected function sizeBetween($key, $lengthValue, $min, $max, $not = true)
     {

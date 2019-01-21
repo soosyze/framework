@@ -7,13 +7,11 @@ use Soosyze\Components\Template\Template;
 class TemplateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     *
      * @var Template
      */
     protected $object;
 
     /**
-     *
      * @var string
      */
     protected $pathTemplate;
@@ -64,7 +62,7 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testGetBlockException()
     {
@@ -140,6 +138,6 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
     public function testToString()
     {
         $this->object->addVar('attr', 'test');
-        $this->assertEquals('test', ( string ) $this->object);
+        $this->assertEquals('test', (string) $this->object);
     }
 }

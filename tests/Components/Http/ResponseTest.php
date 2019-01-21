@@ -42,7 +42,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         $rep = new Response(404, new Stream('Page not found, sorry'), [ 'Localtion' => ['/error'] ]);
         $this->assertAttributeSame(404, 'code', $rep);
         $this->assertAttributeSame('Not Found', 'reasonPhrase', $rep);
-        $this->assertEquals('Page not found, sorry', ( string ) $rep->getBody());
+        $this->assertEquals('Page not found, sorry', (string) $rep->getBody());
         $this->assertAttributeSame([ 'localtion' => ['/error'] ], 'headers', $rep);
     }
 
@@ -76,7 +76,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testWithStatusException()
     {
@@ -91,7 +91,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testWithStatusAndReasonPhraseException()
     {

@@ -50,7 +50,7 @@ class Email
      * Ajoute un destinataire.
      *
      * @param string $email Email du destinataire.
-     * @param string $name Nom du destinataire.
+     * @param string $name  Nom du destinataire.
      *
      * @return $this
      */
@@ -65,7 +65,7 @@ class Email
      * Ajoute un ou plusieurs déstinataires en copie du email.
      *
      * @param string $email Email en copie.
-     * @param string $name Nom du destinataire.
+     * @param string $name  Nom du destinataire.
      *
      * @return $this
      */
@@ -79,8 +79,8 @@ class Email
     /**
      * Ajoute un ou plusieurs destinataires en copie cachée du email.
      *
-     * @param type $email Email en copie cachée.
-     * @param string $name Nom du destinataire.
+     * @param type   $email Email en copie cachée.
+     * @param string $name  Nom du destinataire.
      *
      * @return $this
      */
@@ -95,7 +95,7 @@ class Email
      * Ajoute une adresse de provenance.
      *
      * @param string $email Email de provenance.
-     * @param string $name Nom du destinataire.
+     * @param string $name  Nom du destinataire.
      *
      * @return $this
      */
@@ -110,7 +110,7 @@ class Email
      * Ajoute une adresse de retour.
      *
      * @param string $email Email de retour.
-     * @param string $name Nom du destinataire.
+     * @param string $name  Nom du destinataire.
      *
      * @return $this
      */
@@ -130,7 +130,7 @@ class Email
      */
     public function subject($subj)
     {
-        $this->subject = mb_convert_encoding($subj, "ASCII");
+        $this->subject = mb_convert_encoding($subj, 'ASCII');
 
         return $this;
     }
@@ -144,7 +144,7 @@ class Email
      */
     public function message($msg)
     {
-        $this->message = mb_convert_encoding($msg, "ASCII");
+        $this->message = mb_convert_encoding($msg, 'ASCII');
 
         return $this;
     }
@@ -195,7 +195,7 @@ class Email
      * @param $name Nom du champ d'en-tête insensible à la casse.
      *
      * @return string Si l'en-tête est trouvé alors il est renvoyé
-     * toutes les valeurs de l'en-tête concaténés par une virgule, sinon une chaine vide.
+     *                toutes les valeurs de l'en-tête concaténés par une virgule, sinon une chaine vide.
      */
     public function getHeaderLine($name)
     {
@@ -210,7 +210,7 @@ class Email
      * @param $name Nom du champ d'en-tête insensible à la casse.
      *
      * @return string[] Si l'en-tête est trouvé alors il est renvoyé
-     * toutes ses valeurs, sinon un tableau vide.
+     *                  toutes ses valeurs, sinon un tableau vide.
      */
     public function getHeader($name)
     {
@@ -252,7 +252,7 @@ class Email
      * Formalise les données d'un email est de son destinataire.
      *
      * @param string $email Email (from, bcc, cc, replayTo...).
-     * @param string $name Nom du destinataire.
+     * @param string $name  Nom du destinataire.
      *
      * @return string
      */
@@ -266,7 +266,7 @@ class Email
     /**
      * Renvoyer une instance avec la valeur fournie en remplaçant l'en-tête spécifié.
      *
-     * @param string $name Nom du champ d'en-tête insensible à la casse.
+     * @param string          $name  Nom du champ d'en-tête insensible à la casse.
      * @param string|string[] $value Valeur(s) de l'en-tête.
      *
      * @return $this
@@ -283,7 +283,7 @@ class Email
     /**
      * Renvoyer une instance avec la valeur fournie en ajoutant l'en-tête spécifié.
      *
-     * @param string $name Nom du champ d'en-tête insensible à la casse.
+     * @param string          $name  Nom du champ d'en-tête insensible à la casse.
      * @param string|string[] $value Valeur(s) de l'en-tête.
      *
      * @return $this
@@ -306,9 +306,8 @@ class Email
      *
      * @param string $strEmail Email à filtrer.
      *
-     * @return $this
-     *
      * @throws \InvalidArgumentException Le paramètre n'est pas une adresse email valide.
+     * @return $this
      */
     private function filtreEmail($strEmail)
     {
@@ -326,9 +325,8 @@ class Email
      *
      * @param string $name Nom d'un destinataire.
      *
-     * @return string Chaine nettoyée.
-     *
      * @throws \InvalidArgumentException Le paramètre n'est pas un nom de destinataire valide.
+     * @return string                    Chaine nettoyée.
      */
     private function filtreName($name)
     {

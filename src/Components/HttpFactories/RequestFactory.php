@@ -22,12 +22,11 @@ use Soosyze\Components\Http\Uri;
  */
 class RequestFactory
 {
-
     /**
      * Create a new request.
      *
-     * @param string $method The HTTP method associated with the request.
-     * @param UriInterface|string $uri The URI associated with the request.
+     * @param string              $method The HTTP method associated with the request.
+     * @param UriInterface|string $uri    The URI associated with the request.
      */
     public function createRequest($method, $uri)
     {

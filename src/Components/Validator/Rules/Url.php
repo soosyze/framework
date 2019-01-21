@@ -17,14 +17,13 @@ namespace Soosyze\Components\Validator\Rules;
  */
 class Url extends \Soosyze\Components\Validator\Rule
 {
-
     /**
      * Test si une valeur est une URL.
      *
-     * @param string $key Clé du test.
+     * @param string $key   Clé du test.
      * @param string $value Valeur à tester.
-     * @param string $arg Argument de test.
-     * @param bool $not Inverse le test.
+     * @param string $arg   Argument de test.
+     * @param bool   $not   Inverse le test.
      */
     protected function test($key, $value, $arg, $not = true)
     {

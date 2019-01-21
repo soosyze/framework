@@ -2,8 +2,8 @@
 
 namespace Soosyze\Tests\Components\HttpFactories;
 
-use Soosyze\Components\HttpFactories\UploadedFileFactory;
 use Soosyze\Components\HttpFactories\StreamFactory;
+use Soosyze\Components\HttpFactories\UploadedFileFactory;
 
 class UploadedFileFactoryTest extends \PHPUnit\Framework\TestCase
 {

@@ -22,16 +22,15 @@ class Util
     /**
      * Lit un fichier de type JSON et retourne un tableau associatif.
      *
-     * @param string $file Chemin + nom du fichier + extension.
-     * @param bool $assoc Si true l'objet retourné sera converti en un tableau associatif.
+     * @param string $file  Chemin + nom du fichier + extension.
+     * @param bool   $assoc Si true l'objet retourné sera converti en un tableau associatif.
      *
-     * @return array|object
-     *
-     * @throws \Exception L'extension JSON n'est pas chargé.
+     * @throws \Exception                L'extension JSON n'est pas chargé.
      * @throws \InvalidArgumentException Le fichier est manquant.
      * @throws \InvalidArgumentException L'extension du fichier n'est pas au format JSON.
-     * @throws \Exception Le fichier JSON n'est pas accessible en lecture.
-     * @throws \Exception Le fichier JSON est invalide.
+     * @throws \Exception                Le fichier JSON n'est pas accessible en lecture.
+     * @throws \Exception                Le fichier JSON est invalide.
+     * @return array|object
      */
     public static function getJson($file, $assoc = true)
     {
@@ -59,9 +58,9 @@ class Util
     /**
      * Créer un fichier au format JSON si celui si n'existe pas.
      *
-     * @param string $strPath Chemin du fichier.
+     * @param string $strPath     Chemin du fichier.
      * @param string $strFileName Nom du fichier.
-     * @param array $data Les données.
+     * @param array  $data        Les données.
      *
      * @return bool|null Si le fichier JSON est créé.
      */
@@ -90,7 +89,7 @@ class Util
      *
      * @param string $path Chemin du fichier.
      * @param string $file Nom du fichier.
-     * @param array $data Les données.
+     * @param array  $data Les données.
      *
      * @return bool Si le fichier JSON a été sauvegardé.
      */
@@ -117,7 +116,7 @@ class Util
     /**
      * Retourne le nom des dossier contenus dans un répertoire.
      *
-     * @param string $dir Nom du répertoire.
+     * @param string   $dir     Nom du répertoire.
      * @param string[] $exclude Liste des repertoire à exclure du retour.
      *
      * @return array Liste des répertoires.
@@ -140,8 +139,8 @@ class Util
     /**
      * Ajoute un préfixe à chaque élément d'un tableau de string.
      *
-     * @param string[] $array Tableau contenant les valeurs à préfixer.
-     * @param string $prefix Préfixe à ajouter.
+     * @param string[] $array  Tableau contenant les valeurs à préfixer.
+     * @param string   $prefix Préfixe à ajouter.
      *
      * @return array Tableau préfixer.
      */
@@ -157,8 +156,8 @@ class Util
     /**
      * Si une valeur insensible à la case est contenue dans un tableau.
      *
-     * @param string $needle Valeur recherché.
-     * @param string[] $array Tableau dans lequel chercher.
+     * @param string   $needle Valeur recherché.
+     * @param string[] $array  Tableau dans lequel chercher.
      *
      * @return bool Si la valeur est trouvé.
      */
@@ -184,7 +183,7 @@ class Util
      * Remplace les barres obliques et barres obliques inversées par le séparateur du système
      * et supprime les espaces et slash en début et fin de chaîne.
      *
-     * @param string $path Chemin nettoyé.
+     * @param string $path           Chemin nettoyé.
      * @param string $character_mask Liste de caractères à supprimer en début et fin de chaîne.
      *
      * @return string Chemin nettoyé.
@@ -199,7 +198,7 @@ class Util
     /**
      * Remplace la première occurrence dans une chaine.
      *
-     * @param string $search Chaîne recherché.
+     * @param string $search  Chaîne recherché.
      * @param string $replace Chaîne de remplacement.
      * @param string $subject Chaîne d'entrée.
      *
@@ -217,7 +216,7 @@ class Util
     /**
      * Remplace la dernière occurrence dans une chaine.
      *
-     * @param string $search Chaîne recherché.
+     * @param string $search  Chaîne recherché.
      * @param string $replace Chaîne de remplacement.
      * @param string $subject Chaîne d'entrée.
      *

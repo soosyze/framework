@@ -17,14 +17,13 @@ namespace Soosyze\Components\Validator\Rules;
  */
 class InArray extends \Soosyze\Components\Validator\Rule
 {
-
     /**
      * Test si une valeur est contenu dans un tableau.
      *
-     * @param string $key Clé du test.
+     * @param string $key   Clé du test.
      * @param scalar $value Valeur à tester.
-     * @param array $arg Tableau de comparaison.
-     * @param bool $not Inverse le test.
+     * @param array  $arg   Tableau de comparaison.
+     * @param bool   $not   Inverse le test.
      */
     protected function test($key, $value, $arg, $not = true)
     {

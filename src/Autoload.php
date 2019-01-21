@@ -20,6 +20,7 @@ namespace Soosyze;
 class Autoload
 {
     const DS             = DIRECTORY_SEPARATOR;
+
     /**
      * Tableau avec comme clés un namespace et en valeur la racine de son arborescence.
      *
@@ -133,7 +134,7 @@ class Autoload
             }
         }
 
-        /**
+        /*
          * Recherche une correspondance entre le namespace fournit en librairie
          * et la classe instanciée.
          */
@@ -145,7 +146,7 @@ class Autoload
             }
         }
 
-        /**
+        /*
          * Si le namespace n'est pas précisé en librairie, on parcoure les répertoires
          * pour chercher une correspondance avec l'arborescence.
          */

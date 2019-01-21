@@ -17,13 +17,12 @@ namespace Soosyze\Components\Validator\Filters;
  */
 class StripTags extends \Soosyze\Components\Validator\Filter
 {
-
     /**
      * Filtre les balises autorisées dans une valeur.
      *
-     * @param string $key Identifiant de la valeur.
+     * @param string $key   Identifiant de la valeur.
      * @param string $value Valeur à filtrer.
-     * @param string $arg Liste des balise HTML autorisés.
+     * @param string $arg   Liste des balise HTML autorisés.
      *
      * @throws \InvalidArgumentException La valeur time n'est pas numérique.
      */

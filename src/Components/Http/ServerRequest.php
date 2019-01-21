@@ -68,14 +68,14 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Construit une requête coté serveur.
      *
-     * @param string $method Méthode HTTP ('GET'|'POST'|...).
-     * @param \Soosyze\Components\Http\UriInterface $uri L'URI de la requête.
-     * @param array $headers Les en-têtes du message.
-     * @param \Soosyze\Components\Http\StreamInterface $body Corp de la requête.
-     * @param string $version La version du protocole HTTP.
-     * @param array $serverParams Paramètres de la requête.
-     * @param array $cookies Les cookies.
-     * @param array $uploadFiles Fichiers transmis au serveur.
+     * @param string                                   $method       Méthode HTTP ('GET'|'POST'|...).
+     * @param \Soosyze\Components\Http\UriInterface    $uri          L'URI de la requête.
+     * @param array                                    $headers      Les en-têtes du message.
+     * @param \Soosyze\Components\Http\StreamInterface $body         Corp de la requête.
+     * @param string                                   $version      La version du protocole HTTP.
+     * @param array                                    $serverParams Paramètres de la requête.
+     * @param array                                    $cookies      Les cookies.
+     * @param array                                    $uploadFiles  Fichiers transmis au serveur.
      */
     public function __construct(
     $method,
@@ -196,7 +196,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * Renvoie une instance avec les arguments de chaîne de requête spécifiés.
      *
      * @param array $query Tableau d'arguments de chaîne de requête, généralement de
-     * $_GET.
+     *                     $_GET.
      *
      * @return static
      */
@@ -215,7 +215,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * instanciation, ou PEUT être injecté via withUploadedFiles().
      *
      * @return array Arbre de tableau des instances de UploadedFileInterface; un vide
-     * Le tableau DOIT être retourné si aucune donnée n'est présente.
+     *               Le tableau DOIT être retourné si aucune donnée n'est présente.
      */
     public function getUploadedFiles()
     {
@@ -227,9 +227,8 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @param array $uploadedFiles Arbre de tableau des instances de UploadedFileInterface.
      *
-     * @return static
-     *
      * @throws \InvalidArgumentException Les contenus doivent être tous des instance d'UploadedFileInterface.
+     * @return static
      */
     public function withUploadedFiles(array $uploadedFiles)
     {
@@ -243,7 +242,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * Récupérer tous les paramètres fournis dans le corps de la requête.
      *
      * @return null|array|object Les paramètres de corps désérialisés, le cas échéant.
-     * Ceux-ci seront généralement un tableau ou un objet.
+     *                           Ceux-ci seront généralement un tableau ou un objet.
      */
     public function getParsedBody()
     {
@@ -259,10 +258,9 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @param null|array|object $data Données du corps désérialisées.
      *
-     * @return static
-     *
      * @throws \InvalidArgumentException Si un type d'argument non pris en charge est
-     * à condition de.
+     *                                   à condition de.
+     * @return static
      */
     public function withParsedBody($data)
     {
@@ -297,8 +295,8 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @see getAttributes()
      *
-     * @param string $name Nom de l'attribut.
-     * @param mixed $default Valeur par défaut à renvoyer si l'attribut n'existe pas.
+     * @param string $name    Nom de l'attribut.
+     * @param mixed  $default Valeur par défaut à renvoyer si l'attribut n'existe pas.
      *
      * @return mélangé
      */
@@ -321,8 +319,8 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @see getAttributes()
      *
-     * @param string $name Nom de l'attribut.
-     * @param mixed $value Valeur de l'attribut.
+     * @param string $name  Nom de l'attribut.
+     * @param mixed  $value Valeur de l'attribut.
      *
      * @return static
      */
@@ -433,8 +431,8 @@ class ServerRequest extends Request implements ServerRequestInterface
      * pour remplir par référence la variable output et regrouper les éléments par fichier.
      *
      * @param array|mixed $output Tableau qui sera rempli par référence.
-     * @param array $array Informations contenus dans l'une des clés standards.
-     * @param string $name Clés standards de la variable superglobale $_FILES.
+     * @param array       $array  Informations contenus dans l'une des clés standards.
+     * @param string      $name   Clés standards de la variable superglobale $_FILES.
      */
     private static function normaliseFile(&$output, array $array, $name)
     {

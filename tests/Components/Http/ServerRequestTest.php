@@ -107,7 +107,6 @@ class ServerRequestTest extends \PHPUnit\Framework\TestCase
     ];
 
     /**
-     *
      * @var array
      */
     protected $resultFiles = [
@@ -286,7 +285,7 @@ class ServerRequestTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testWithUploadedFilesException()
     {

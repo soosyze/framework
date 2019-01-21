@@ -66,11 +66,11 @@ class Request extends Message implements RequestInterface
      * Pendant la construction, les implémentations DOIVENT essayer de définir l'en-tête Host à partir de
      * un URI fourni si aucun en-tête Host n'est fourni.
      *
-     * @param string $method Méthode HTTP ('GET'|'POST'|...).
-     * @param UriInterface $uri L'URI de la requête.
-     * @param array $headers Les en-têtes du message.
-     * @param StreamInterface $body Le corps du message.
-     * @param type $version La version du protocole HTTP.
+     * @param string          $method  Méthode HTTP ('GET'|'POST'|...).
+     * @param UriInterface    $uri     L'URI de la requête.
+     * @param array           $headers Les en-têtes du message.
+     * @param StreamInterface $body    Le corps du message.
+     * @param type            $version La version du protocole HTTP.
      */
     public function __construct(
         $method,
@@ -131,7 +131,7 @@ class Request extends Message implements RequestInterface
      * @link http://tools.ietf.org/html/rfc3986#section-4.3
      *
      * @return UriInterface Renvoie une instance d'UriInterface
-     * représentant l'URI de la requête.
+     *                      représentant l'URI de la requête.
      */
     public function getUri()
     {
@@ -143,9 +143,8 @@ class Request extends Message implements RequestInterface
      *
      * @param string $method Nom de la méthode (sensible à la casse).
      *
-     * @return static
-     *
      * @throws \InvalidArgumentException pour les méthodes HTTP invalides.
+     * @return static
      */
     public function withMethod($method)
     {
@@ -181,8 +180,8 @@ class Request extends Message implements RequestInterface
      *
      * @link http://tools.ietf.org/html/rfc3986#section-4.3
      *
-     * @param UriInterface $uri Nouvelle requête URI à utiliser.
-     * @param bool $preserveHost Préserve l'état d'origine de l'en-tête Host.
+     * @param UriInterface $uri          Nouvelle requête URI à utiliser.
+     * @param bool         $preserveHost Préserve l'état d'origine de l'en-tête Host.
      *
      * @return static
      */
@@ -210,10 +209,9 @@ class Request extends Message implements RequestInterface
      *
      * @param string $method Méthode HTTP ('GET'|'POST'|...).
      *
-     * @return string Méthode HTTP filtré.
-     *
      * @throws \InvalidArgumentException La méthode doit être une chaine de caractère.
      * @throws \InvalidArgumentException La méthode n'est pas prise en charge par la requête.
+     * @return string                    Méthode HTTP filtré.
      */
     protected function filterMethod($method)
     {

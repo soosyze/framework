@@ -6,7 +6,6 @@ use Soosyze\Components\Http\Message;
 
 class MessageTest extends \PHPUnit\Framework\TestCase
 {
-
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
@@ -31,7 +30,7 @@ class MessageTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testWithProtocolVersionTypeException()
     {
@@ -40,7 +39,7 @@ class MessageTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testWithProtocolVersionValueException()
     {

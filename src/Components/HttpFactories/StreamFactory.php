@@ -21,7 +21,6 @@ use Soosyze\Components\Http\Stream;
  */
 class StreamFactory
 {
-
     /**
      * Create a new stream from a string.
      *
@@ -43,9 +42,9 @@ class StreamFactory
      * The `$filename` MAY be any string supported by `fopen()`.
      *
      * @param string $filename The filename or stream URI to use as basis of stream.
-     * @param string $mode The mode with which to open the underlying filename/stream.
+     * @param string $mode     The mode with which to open the underlying filename/stream.
      *
-     * @throws \RuntimeException If the file cannot be opened.
+     * @throws \RuntimeException         If the file cannot be opened.
      * @throws \InvalidArgumentException If the mode is invalid.
      */
     public function createStreamFromFile($filename, $mode = 'r')

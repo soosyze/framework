@@ -106,7 +106,7 @@ class Message implements MessageInterface
      * @param $name Nom du champ d'en-tête insensible à la casse.
      *
      * @return string[] Si l'en-tête est trouvé alors il est renvoyé
-     * toutes ses valeurs, sinon un tableau vide.
+     *                  toutes ses valeurs, sinon un tableau vide.
      */
     public function getHeader($name)
     {
@@ -121,7 +121,7 @@ class Message implements MessageInterface
      * @param $name Nom du champ d'en-tête insensible à la casse.
      *
      * @return string Si l'en-tête est trouvé alors il est renvoyé
-     * toutes les valeurs de l'en-tête concaténés par une virgule, sinon une chaine vide.
+     *                toutes les valeurs de l'en-tête concaténés par une virgule, sinon une chaine vide.
      */
     public function getHeaderLine($name)
     {
@@ -133,7 +133,7 @@ class Message implements MessageInterface
     /**
      * Renvoyer une instance avec la valeur fournie en remplaçant l'en-tête spécifié.
      *
-     * @param string $name Nom du champ d'en-tête insensible à la casse.
+     * @param string          $name  Nom du champ d'en-tête insensible à la casse.
      * @param string|string[] $value Valeur(s) de l'en-tête.
      *
      * @return $this
@@ -151,7 +151,7 @@ class Message implements MessageInterface
     /**
      * Renvoyer une instance avec la valeur fournie en ajoutant l'en-tête spécifié.
      *
-     * @param string $name Nom du champ d'en-tête insensible à la casse.
+     * @param string          $name  Nom du champ d'en-tête insensible à la casse.
      * @param string|string[] $value Valeur(s) de l'en-tête.
      *
      * @return $this
@@ -217,9 +217,8 @@ class Message implements MessageInterface
      *
      * @param string $version
      *
-     * @return string Le protocole si celui-ci est conforme.
-     *
      * @throws \InvalidArgumentException Le protocole spécifié n'est pas valide.
+     * @return string                    Le protocole si celui-ci est conforme.
      */
     protected function filterProtocolVersion($version)
     {

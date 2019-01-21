@@ -11,8 +11,8 @@
 namespace Soosyze;
 
 use Psr\Container\ContainerInterface;
-use Soosyze\Exception\Container\NotFoundException;
 use Soosyze\Exception\Container\ContainerException;
+use Soosyze\Exception\Container\NotFoundException;
 
 /**
  * Conteneur d'injection de dépendances et middleware.
@@ -55,7 +55,7 @@ class Container implements ContainerInterface
      * Appel un service comme une fonction.
      *
      * @param string $name Nom du service.
-     * @param array $arg Paramètres passés à la fonction.
+     * @param array  $arg  Paramètres passés à la fonction.
      *
      * @return object
      */
@@ -67,9 +67,9 @@ class Container implements ContainerInterface
     /**
      * Charges un service.
      *
-     * @param string $key Nom du service.
+     * @param string $key   Nom du service.
      * @param string $class Objet à instancier.
-     * @param array $arg Arguments d'instanciation.
+     * @param array  $arg   Arguments d'instanciation.
      *
      * @return $this
      */
@@ -111,7 +111,7 @@ class Container implements ContainerInterface
     /**
      * Ajoute une instance de service.
      *
-     * @param string $key Nom du service.
+     * @param string $key      Nom du service.
      * @param object $instance Instance du service.
      *
      * @return $this
@@ -143,11 +143,10 @@ class Container implements ContainerInterface
      *
      * @param string $key Nom du service.
      *
-     * @return object
-     *
      * @throws \InvalidArgumentException La fonction get accepte uniquement les chaînes de caractères.
-     * @throws NotFoundException Le service appelé n'existe pas.
-     * @throws ContainerException La classe n'est pas instanciable.
+     * @throws NotFoundException         Le service appelé n'existe pas.
+     * @throws ContainerException        La classe n'est pas instanciable.
+     * @return object
      */
     public function get($key)
     {
@@ -187,9 +186,8 @@ class Container implements ContainerInterface
      *
      * @param string $key Nom du service.
      *
-     * @return bool
-     *
      * @throws \InvalidArgumentException La fonction get accepte uniquement les chaînes de caractères.
+     * @return bool
      */
     public function has($key)
     {
@@ -205,7 +203,7 @@ class Container implements ContainerInterface
     /**
      * Ajoute une fonction pour qu'elle puisse être utilisée par le container.
      *
-     * @param string $name Clé pour appeler la fonction.
+     * @param string   $name Clé pour appeler la fonction.
      * @param callable $func Fonction à exécuter.
      *
      * @return $this
@@ -222,7 +220,7 @@ class Container implements ContainerInterface
      * Utilise le container pour l'ajout des hooks depuis les fichier de services.
      *
      * @param string $name Clé pour appeler la fonction.
-     * @param array $args Paramètres passés à la fonction.
+     * @param array  $args Paramètres passés à la fonction.
      *
      * @return mixed|void le résultat des fonctions appelées ou rien
      */

@@ -29,7 +29,7 @@ class UriFactoryTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @covers Soosyze\Components\HttpFactories\UriFactory::createUri
+     * @covers \Soosyze\Components\HttpFactories\UriFactory::createUri
      * @todo   Implement testCreateUri().
      */
     public function testCreateUri()

@@ -17,14 +17,13 @@ namespace Soosyze\Components\Validator\Rules;
  */
 class ImageDimensionsWidth extends Image
 {
-
     /**
      * Test la largeur d'une image.
      *
-     * @param string $key Clé du test.
+     * @param string                $key   Clé du test.
      * @param UploadedFileInterface $value Valeur à tester.
-     * @param string $arg Argument de test.
-     * @param bool $not Inverse le test.
+     * @param string                $arg   Argument de test.
+     * @param bool                  $not   Inverse le test.
      *
      * @return int 1 erreur de fichier.
      */
@@ -45,10 +44,10 @@ class ImageDimensionsWidth extends Image
     /**
      * Test la largeur d'une image.
      *
-     * @param int $lengthValue Largeur de l'image en pixel.
-     * @param numeric $min Largeur minimum autorisée.
-     * @param numeric $max Largeur maximum autorisée.
-     * @param bool $not Inverse le test.
+     * @param int     $lengthValue Largeur de l'image en pixel.
+     * @param numeric $min         Largeur minimum autorisée.
+     * @param numeric $max         Largeur maximum autorisée.
+     * @param bool    $not         Inverse le test.
      */
     protected function sizeBetween($lengthValue, $min, $max, $not = true)
     {

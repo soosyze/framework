@@ -115,11 +115,10 @@ class FormBuilder
      * Enregistre un input s'il est dans la liste des inputs standards.
      *
      * @param string $type Type de l'input.
-     * @param array $arg [$name, id, array attr = null]
-     *
-     * @return $this
+     * @param array  $arg  [$name, id, array attr = null]
      *
      * @throws \BadMethodCallException Le type de champ d'existe pas.
+     * @return $this
      */
     public function __call($type, $arg)
     {
@@ -137,12 +136,11 @@ class FormBuilder
     /**
      * Ajoute un ou pluisieurs input avant un élément existant.
      *
-     * @param string $key Clé unique.
+     * @param string   $key      Clé unique.
      * @param callable $callback Fonction de création du sous-formulaire.
      *
-     * @return $this
-     *
      * @throws \Exception L'élément n'a pas été trouvé.
+     * @return $this
      */
     public function addBefore($key, callable $callback)
     {
@@ -156,12 +154,11 @@ class FormBuilder
     /**
      * Ajoute un ou pluisieurs input après un élément existant.
      *
-     * @param string $key Clé unique.
+     * @param string   $key      Clé unique.
      * @param callable $callback Fonction de création du sous-formulaire.
      *
-     * @return $this
-     *
      * @throws \Exception L'élément n'a pas été trouvé.
+     * @return $this
      */
     public function addAfter($key, callable $callback)
     {
@@ -217,7 +214,7 @@ class FormBuilder
      *
      * @param string $name Clé unique.
      * @param string $html La balise HTML à utiliser.
-     * @param array $attr Liste d'attributs.
+     * @param array  $attr Liste d'attributs.
      *
      * @return $this
      */
@@ -229,10 +226,10 @@ class FormBuilder
     /**
      * Enregistre un groupe d'input.
      *
-     * @param string $name Nom du groupe.
-     * @param string $balise Type de balise (div|span|fieldset).
-     * @param callable $callback Fonction de création du sous-formulaire.
-     * @param array|null $attr Liste d'attributs.
+     * @param string     $name     Nom du groupe.
+     * @param string     $balise   Type de balise (div|span|fieldset).
+     * @param callable   $callback Fonction de création du sous-formulaire.
+     * @param array|null $attr     Liste d'attributs.
      *
      * @return $this
      */
@@ -248,9 +245,9 @@ class FormBuilder
     /**
      * Enregistre un label.
      *
-     * @param string $name Clé unique.
-     * @param string $label Texte à afficher.
-     * @param array|null $attr Liste d'attributs.
+     * @param string     $name  Clé unique.
+     * @param string     $label Texte à afficher.
+     * @param array|null $attr  Liste d'attributs.
      *
      * @return $this
      */
@@ -262,9 +259,9 @@ class FormBuilder
     /**
      * Enregistre une legende.
      *
-     * @param string $name Clé unique.
-     * @param string $legend Texte à afficher.
-     * @param array|null $attr Liste d'attributs.
+     * @param string     $name   Clé unique.
+     * @param string     $legend Texte à afficher.
+     * @param array|null $attr   Liste d'attributs.
      *
      * @return $this
      */
@@ -276,10 +273,10 @@ class FormBuilder
     /**
      * Enregistre un textarea.
      *
-     * @param string $name Clé unique.
-     * @param string $id Selecteur CSS.
-     * @param string $content Contenu du textarea.
-     * @param array|null $attr Liste d'attributs.
+     * @param string     $name    Clé unique.
+     * @param string     $id      Selecteur CSS.
+     * @param string     $content Contenu du textarea.
+     * @param array|null $attr    Liste d'attributs.
      *
      * @return $this
      */
@@ -294,10 +291,10 @@ class FormBuilder
     /**
      * Enregistre une liste de sélection.
      *
-     * @param string $name Clé unique.
-     * @param string $id Selecteur CSS.
-     * @param array $options Liste d'options [ 'value'=>'', 'label'=>'','selected' => 0|1 ].
-     * @param array $attr Liste d'attributs.
+     * @param string $name    Clé unique.
+     * @param string $id      Selecteur CSS.
+     * @param array  $options Liste d'options [ 'value'=>'', 'label'=>'','selected' => 0|1 ].
+     * @param array  $attr    Liste d'attributs.
      *
      * @return $this
      */
@@ -311,9 +308,9 @@ class FormBuilder
     /**
      * Enregistre un input standard.
      *
-     * @param string $type Type d'input.
-     * @param string $name Clé unique.
-     * @param string $id Selecteur CSS.
+     * @param string     $type Type d'input.
+     * @param string     $name Clé unique.
+     * @param string     $id   Selecteur CSS.
      * @param array|null $attr Liste d'attributs.
      *
      * @return $this
@@ -328,9 +325,9 @@ class FormBuilder
     /**
      * Enregistre un submit.
      *
-     * @param string $name Clé unique.
-     * @param string $value Texte à afficher.
-     * @param array|null $attr Liste d'attributs.
+     * @param string     $name  Clé unique.
+     * @param string     $value Texte à afficher.
+     * @param array|null $attr  Liste d'attributs.
      *
      * @return $this
      */
@@ -400,7 +397,7 @@ class FormBuilder
     /**
      * Génère une balise label.
      *
-     * @param string $key Clé unique.
+     * @param string     $key     Clé unique.
      * @param array|null $attrAdd Liste d'attributs additionnels.
      *
      * @return string HTML
@@ -429,7 +426,7 @@ class FormBuilder
     /**
      * Génère une balise legend.
      *
-     * @param string $key Clé unique.
+     * @param string     $key     Clé unique.
      * @param array|null $attrAdd Liste d'attributs additionnels.
      *
      * @return string HTML
@@ -453,7 +450,7 @@ class FormBuilder
     /**
      * Génère une balise input standard.
      *
-     * @param string $key Clé unique.
+     * @param string     $key     Clé unique.
      * @param array|null $attrAdd Liste des attributs additionnels.
      *
      * @return string HTML
@@ -472,7 +469,7 @@ class FormBuilder
     /**
      * Génère une balise select.
      *
-     * @param string $key Clé unique.
+     * @param string     $key     Clé unique.
      * @param array|null $attrAdd Liste des attributs additionnels.
      *
      * @return string HTML
@@ -506,7 +503,7 @@ class FormBuilder
     /**
      * Génère une balise textarea.
      *
-     * @param string $key Clé unique.
+     * @param string     $key     Clé unique.
      * @param array|null $attrAdd Liste des attributs additionnels.
      *
      * @return string HTML
@@ -526,7 +523,7 @@ class FormBuilder
     /**
      * Génère une balise group.
      *
-     * @param string $key Clé unique.
+     * @param string     $key     Clé unique.
      * @param array|null $attrAdd Liste des attributs additionnels.
      *
      * @return string HTML
@@ -548,7 +545,7 @@ class FormBuilder
     /**
      * Génère une balise HTML.
      *
-     * @param string $key Clé unique.
+     * @param string     $key     Clé unique.
      * @param array|null $attrAdd Liste des attributs additionnels.
      *
      * @return string HTML
@@ -691,12 +688,11 @@ class FormBuilder
     /**
      * Ajoute à un élément du formulaire une liste d'attributs.
      *
-     * @param string $key Clé unique.
-     * @param array $attr Liste des attributs.
-     *
-     * @return $this
+     * @param string $key  Clé unique.
+     * @param array  $attr Liste des attributs.
      *
      * @throws \Exception L'élément n'a pas été trouvé.
+     * @return $this
      */
     public function addAttr($key, array $attr)
     {
@@ -711,7 +707,7 @@ class FormBuilder
      * Ajoute à plusieurs éléments une liste d'attributs.
      *
      * @param string $keys Liste de clé.
-     * @param array $attr Liste des attributs.
+     * @param array  $attr Liste des attributs.
      *
      * @return $this
      */
@@ -729,9 +725,8 @@ class FormBuilder
      *
      * @param string $key Clé unique.
      *
-     * @return array Les données de l'élément.
-     *
      * @throws \Exception L'élément n'a pas été trouvé.
+     * @return array      Les données de l'élément.
      */
     public function getItem($key)
     {
@@ -749,7 +744,7 @@ class FormBuilder
      */
     protected function renderSubForm()
     {
-        $html = "";
+        $html = '';
         foreach ($this->form as $key => $input) {
             $html .= $this->renderInput($key, $input);
         }
@@ -760,8 +755,8 @@ class FormBuilder
     /**
      * Génère les inputs.
      *
-     * @param string $key Clé unique.
-     * @param array $input Paramètres du champ.
+     * @param string $key   Clé unique.
+     * @param array  $input Paramètres du champ.
      *
      * @return string HTML
      */
@@ -806,7 +801,7 @@ class FormBuilder
      * Enregistre un input.
      *
      * @param string $name Clé unique.
-     * @param array $attr Options des champs et attributs de la balise.
+     * @param array  $attr Options des champs et attributs de la balise.
      *
      * @return $this
      */
@@ -879,7 +874,7 @@ class FormBuilder
      *
      * @param array|null $tab1
      * @param array|null $tab2
-     * @param bool $crushed
+     * @param bool       $crushed
      *
      * @return array Fusion des 2 tableaux.
      */
@@ -890,9 +885,11 @@ class FormBuilder
     ) {
         if ($tab1 == null && $tab2 != null) {
             return $tab2;
-        } elseif ($tab1 != null && $tab2 == null) {
+        }
+        if ($tab1 != null && $tab2 == null) {
             return $tab1;
-        } elseif ($tab1 != null && $tab2 != null) {
+        }
+        if ($tab1 != null && $tab2 != null) {
             $intersect = array_intersect_key($tab1, $tab2);
             if ($intersect && !$crushed) {
                 foreach ($intersect as $key => $value) {
@@ -922,15 +919,15 @@ class FormBuilder
      * Recherche récursive d'un élément du formulaire à partir de sa clé
      * et lui ajoute une liste des attributs.
      *
-     * @param string $key Clé unique.
-     * @param array $attr Liste des attributs à ajouter.
+     * @param string $key  Clé unique.
+     * @param array  $attr Liste des attributs à ajouter.
      *
      * @return bool
      */
     protected function addAttrRecurses($key, array $attr)
     {
         if (isset($this->form[ $key ])) {
-            $this->form [ $key ][ 'attr' ] = $this->merge_attr($this->form[ $key ][ 'attr' ], $attr);
+            $this->form[ $key ][ 'attr' ] = $this->merge_attr($this->form[ $key ][ 'attr' ], $attr);
 
             return true;
         }
@@ -979,11 +976,11 @@ class FormBuilder
      *
      * @see http://php.net/manual/fr/function.array-slice.php
      *
-     * @param array $input Tableau associatif.
+     * @param array      $input       Tableau associatif.
      * @param int|string $offset
      * @param int|string $length
-     * @param array $replacement
-     * @param bool $after Si le tableau de remplacement doit être intègré après.
+     * @param array      $replacement
+     * @param bool       $after       Si le tableau de remplacement doit être intègré après.
      */
     private function array_splice_assoc(
         array &$input,
@@ -1009,9 +1006,9 @@ class FormBuilder
     /**
      * Ajoute un nouvel élément de formulaire avant ou après un élément existant.
      *
-     * @param string $key Clé unique.
+     * @param string   $key      Clé unique.
      * @param callable $callback Fonction de création du sous-formulaire.
-     * @param bool $after Si l'item doit être placé après l'élément représenter par la clé.
+     * @param bool     $after    Si l'item doit être placé après l'élément représenter par la clé.
      *
      * @return bool
      */

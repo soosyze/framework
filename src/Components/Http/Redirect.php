@@ -31,10 +31,10 @@ class Redirect extends Response
     /**
      * Construit une réponse de redirection.
      *
-     * @param string $location Url de redirection.
-     * @param int $code Code de redirection.
-     * @param \Psr\Http\Message\StreamInterface $body Corp du message.
-     * @param array $headers En-tête de la réponse.
+     * @param string                            $location Url de redirection.
+     * @param int                               $code     Code de redirection.
+     * @param \Psr\Http\Message\StreamInterface $body     Corp du message.
+     * @param array                             $headers  En-tête de la réponse.
      */
     public function __construct(
         $location,

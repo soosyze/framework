@@ -77,7 +77,7 @@ class Template
     /**
      * Ajoute une fonction pour filtrer une variable.
      *
-     * @param string $key Nom de la variable.
+     * @param string   $key      Nom de la variable.
      * @param callable $function Fonction de filtre.
      *
      * @return $this
@@ -90,7 +90,7 @@ class Template
     /**
      * Ajoute une fonction pour filtrer un block.
      *
-     * @param string $key Nom du block.
+     * @param string   $key      Nom du block.
      * @param callable $function Fonction de filtre.
      *
      * @return $this
@@ -116,7 +116,7 @@ class Template
      * Ajoute une variable pour la template.
      *
      * @param string $key Clé unique de la variable.
-     * @param mixed $var Valeur de la variable.
+     * @param mixed  $var Valeur de la variable.
      *
      * @return $this
      */
@@ -146,7 +146,7 @@ class Template
     /**
      * Ajoute un bloc sous template avec la variable id_block par défaut.
      *
-     * @param string $key Clé unique du bloc.
+     * @param string   $key Clé unique du bloc.
      * @param Template $tpl Sous template.
      *
      * @return $this
@@ -191,9 +191,8 @@ class Template
      *
      * @param string $key nom de la template recherchée
      *
-     * @return Template
-     *
      * @throws \Exception Le bloc n'existe pas.
+     * @return Template
      */
     public function getBlock($key)
     {
@@ -281,7 +280,7 @@ class Template
     /**
      * Ajoute une fonction de filtre pour le rendu de la template.
      *
-     * @param string $key Description
+     * @param string   $key      Description
      * @param callable $function
      *
      * @return $this
@@ -318,7 +317,7 @@ class Template
     /**
      * Exécute les fonctions de filtre.
      *
-     * @param string $key Nom du filtre.
+     * @param string $key   Nom du filtre.
      * @param string $value Valeur à filtrer.
      *
      * @return string

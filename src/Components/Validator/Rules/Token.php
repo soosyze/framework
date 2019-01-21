@@ -17,16 +17,15 @@ namespace Soosyze\Components\Validator\Rules;
  */
 class Token extends \Soosyze\Components\Validator\Rule
 {
-
     /**
      * Test la validité d'un token ($_SESSION['token']) à une valeur de comparaison
      * et son rapport au temps ($_SESSION['token_time'])
      *
-     * @param string $key Clé du test.
+     * @param string $key   Clé du test.
      * @param string $value Valeur à tester.
-     * @param int $arg Nombre de seconde ou le token est valide (défaut 15 minutes),
-     * si la valeur du time = 0 alors le test du temps de validation n'est pas effectif.
-     * @param bool $not Inverse le test.
+     * @param int    $arg   Nombre de seconde ou le token est valide (défaut 15 minutes),
+     *                      si la valeur du time = 0 alors le test du temps de validation n'est pas effectif.
+     * @param bool   $not   Inverse le test.
      *
      * @throws \InvalidArgumentException La valeur time n'est pas numérique.
      */

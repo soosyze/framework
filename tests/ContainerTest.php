@@ -30,12 +30,12 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     {
         $this->object->SetServices([
             'service1' => [
-                "class" => "Soosyze\\Test\\service1"
+                'class' => 'Soosyze\\Test\\service1'
             ],
             'service2' => [
-                "class"     => "Soosyze\\Test\\service2",
-                "arguments" => [
-                    "@service1"
+                'class'     => 'Soosyze\\Test\\service2',
+                'arguments' => [
+                    '@service1'
                 ]
             ]
         ]);
@@ -48,8 +48,8 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     public function testSetService()
     {
         $this->object
-            ->SetService('service2', "Soosyze\\Test\\service2", [ '@service1' ])
-            ->SetService('service1', "Soosyze\\Test\\service1");
+            ->SetService('service2', 'Soosyze\\Test\\service2', [ '@service1' ])
+            ->SetService('service1', 'Soosyze\\Test\\service1');
 
         $isOk = $this->object->get('service2')->isOk();
 
@@ -59,8 +59,8 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     public function testSetServiceParam()
     {
         $this->object
-            ->SetService('service3', "Soosyze\\Test\\service3", [ '@service1', '\@service1' ])
-            ->SetService('service1', "Soosyze\\Test\\service1");
+            ->SetService('service3', 'Soosyze\\Test\\service3', [ '@service1', '\@service1' ])
+            ->SetService('service1', 'Soosyze\\Test\\service1');
 
         $str = $this->object->get('service3')->getStr();
 
@@ -72,8 +72,8 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $config = new \Soosyze\Config('tests/config', 'local');
         $this->object
             ->setConfig($config)
-            ->SetService('service3', "Soosyze\\Test\\service3", [ '@service1', '#testConfig.key1' ])
-            ->SetService('service1', "Soosyze\\Test\\service1");
+            ->SetService('service3', 'Soosyze\\Test\\service3', [ '@service1', '#testConfig.key1' ])
+            ->SetService('service1', 'Soosyze\\Test\\service1');
 
         $str = $this->object->get('service3')->getStr();
 
@@ -92,7 +92,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     public function testSetInstances()
     {
         $service1 = new Service1;
-        $service2 = new Service2($service1, "");
+        $service2 = new Service2($service1, '');
 
         $this->object->setInstances([ 'service1' => $service1, 'service2' => $service2 ]);
 
@@ -112,7 +112,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testGetInvalidArgumentException()
     {
@@ -120,7 +120,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testGetNotFoundException()
     {
@@ -128,11 +128,11 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testGetContainerException()
     {
-        $this->object->SetService('service', "Soosyze\\Test")->get('service');
+        $this->object->SetService('service', 'Soosyze\\Test')->get('service');
     }
 
     public function testHas()
@@ -143,7 +143,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testHasException()
     {
@@ -166,8 +166,8 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     {
         $this->object->SetServices([
             'service1' => [
-                "class" => "Soosyze\\Test\\service1",
-                "hooks" => [ "hook.double" => "hookDouble" ]
+                'class' => 'Soosyze\\Test\\service1',
+                'hooks' => [ 'hook.double' => 'hookDouble' ]
             ]
         ]);
 
@@ -209,6 +209,7 @@ class service2
 class service3
 {
     protected $service;
+
     protected $str;
 
     public function __construct(Service1 $arg1, $arg2)

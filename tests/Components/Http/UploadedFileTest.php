@@ -52,7 +52,7 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testConstructFileException()
     {
@@ -60,7 +60,7 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testConstructNameException()
     {
@@ -68,7 +68,7 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testConstructSizeException()
     {
@@ -76,7 +76,7 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testConstructTypeException()
     {
@@ -84,7 +84,7 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testConstructErrorException()
     {
@@ -109,7 +109,7 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
     }
     
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testCreateInvalidArgument()
     {
@@ -119,7 +119,7 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
     public function testGetStream()
     {
         $stream = $this->object->getStream();
-        $this->assertEquals(( string ) $stream, 'test content');
+        $this->assertEquals((string) $stream, 'test content');
         /* Si nous ne fermons pas le flux le fichier sera vérouillé pour le reste des opérations */
         $stream->close();
     }
@@ -134,7 +134,7 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
     }
     
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testMoveExceptionMoved()
     {
@@ -146,7 +146,7 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testMoveExceptionTarget()
     {
@@ -154,7 +154,7 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testMoveExceptionFileError()
     {
@@ -163,7 +163,7 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testGetStreamException()
     {

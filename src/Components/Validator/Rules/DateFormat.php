@@ -17,16 +17,15 @@ namespace Soosyze\Components\Validator\Rules;
  */
 class DateFormat extends Date
 {
-
     /**
      * Test si une date correspond au format.
      *
      * @see http://php.net/manual/fr/datetime.createfromformat.php
      *
-     * @param string $key Clé du test.
+     * @param string $key   Clé du test.
      * @param string $value Valeur à tester.
-     * @param string $arg Format de la date (ex: Y-m-d).
-     * @param bool $not Inverse le test.
+     * @param string $arg   Format de la date (ex: Y-m-d).
+     * @param bool   $not   Inverse le test.
      *
      * @return int 1 erreur de date.
      */

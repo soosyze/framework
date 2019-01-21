@@ -92,7 +92,7 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testSetException()
     {
@@ -100,7 +100,7 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testSetExceptionKey()
     {

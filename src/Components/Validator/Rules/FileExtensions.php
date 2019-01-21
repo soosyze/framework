@@ -17,14 +17,13 @@ namespace Soosyze\Components\Validator\Rules;
  */
 class FileExtensions extends File
 {
-
     /**
      * Test si un fichier possède l'une des extensions fournit dans les arguments.
      *
-     * @param string $key Clé du test.
+     * @param string                $key   Clé du test.
      * @param UploadedFileInterface $value Valeur à tester.
-     * @param string $arg Liste d'extensions séparé par une virgule.
-     * @param bool $not Inverse le test.
+     * @param string                $arg   Liste d'extensions séparé par une virgule.
+     * @param bool                  $not   Inverse le test.
      *
      * @return int 1 erreur de fichier.
      */

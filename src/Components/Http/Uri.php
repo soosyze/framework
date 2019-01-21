@@ -94,14 +94,14 @@ class Uri implements UriInterface
     /**
      * Construit une URI à partir de chacun de ses attributs.
      *
-     * @param string $scheme $_SERVER['REQUEST_SCHEME']
-     * @param string $host $_SERVER['HTTP_HOST']
-     * @param string $path $_SERVER['PHP_SELF']
-     * @param int|null $port $_SERVER['SERVER_PORT']
-     * @param string $query $_SERVER['QUERY_STRING']
-     * @param string $fragment
-     * @param string $user
-     * @param string $password
+     * @param string   $scheme   $_SERVER['REQUEST_SCHEME']
+     * @param string   $host     $_SERVER['HTTP_HOST']
+     * @param string   $path     $_SERVER['PHP_SELF']
+     * @param int|null $port     $_SERVER['SERVER_PORT']
+     * @param string   $query    $_SERVER['QUERY_STRING']
+     * @param string   $fragment
+     * @param string   $user
+     * @param string   $password
      */
     public function __construct(
         $scheme = '',
@@ -189,7 +189,7 @@ class Uri implements UriInterface
      * ou une chaine vide s'il n'y a aucune information.
      *
      * @return string Informations de l'utilisateur de l'URI,
-     * au format "nom d'utilisateur[:mot de passe]".
+     *                au format "nom d'utilisateur[:mot de passe]".
      */
     public function getUserInfo()
     {
@@ -272,9 +272,8 @@ class Uri implements UriInterface
      *
      * @param string $scheme Schéma à utiliser avec la nouvelle instance.
      *
-     * @return static Nouvelle instance avec le schéma spécifié.
-     *
      * @throws \InvalidArgumentException pour les schémas invalides ou non pris en charge.
+     * @return static                    Nouvelle instance avec le schéma spécifié.
      */
     public function withScheme($scheme)
     {
@@ -287,7 +286,7 @@ class Uri implements UriInterface
     /**
      * Renvoyer une instance avec les informations utilisateur spécifiées.
      *
-     * @param string $user Nom d'utilisateur à utiliser pour l'autorité.
+     * @param string      $user     Nom d'utilisateur à utiliser pour l'autorité.
      * @param null|string $password Mot de passe associé à $user.
      *
      * @return static Nouvelle instance avec les informations utilisateur spécifiées.
@@ -309,9 +308,8 @@ class Uri implements UriInterface
      *
      * @param string $host Nom d'hôte à utiliser avec la nouvelle instance.
      *
-     * @return static Nouvelle instance avec l'hôte spécifié.
-     *
      * @throws \InvalidArgumentException Noms d'hôtes non valides.
+     * @return static                    Nouvelle instance avec l'hôte spécifié.
      */
     public function withHost($host)
     {
@@ -327,11 +325,10 @@ class Uri implements UriInterface
      * Les gammes de ports TCP et UDP établies.
      *
      * @param null|int $port Port à utiliser avec la nouvelle instance; Une valeur nulle
-     * Supprime les informations du port.
-     *
-     * @return static Nouvelle instance avec le port spécifié.
+     *                       Supprime les informations du port.
      *
      * @throws \InvalidArgumentException Ports non valides.
+     * @return static                    Nouvelle instance avec le port spécifié.
      */
     public function withPort($port)
     {
@@ -346,9 +343,8 @@ class Uri implements UriInterface
      *
      * @param string $path Chemin d'accès à utiliser avec la nouvelle instance.
      *
-     * @return static Nouvelle instance avec le chemin spécifié.
-     *
      * @throws \InvalidArgumentException Chemins d'accès non valides.
+     * @return static                    Nouvelle instance avec le chemin spécifié.
      */
     public function withPath($path)
     {
@@ -363,9 +359,8 @@ class Uri implements UriInterface
      *
      * @param string $query Chaîne de requête à utiliser avec la nouvelle instance.
      *
-     * @return static Nouvelle instance avec la chaîne de requête spécifiée.
-     *
      * @throws \InvalidArgumentException Chaînes de requêtes non valides.
+     * @return static                    Nouvelle instance avec la chaîne de requête spécifiée.
      */
     public function withQuery($query)
     {
@@ -424,14 +419,13 @@ class Uri implements UriInterface
      *
      * @param string $uri
      *
-     * @return static Nouvelle instance d'URI.
-     *
      * @throws \InvalidArgumentException
+     * @return static                    Nouvelle instance d'URI.
      */
     public static function create($uri)
     {
         if (($parse = parse_url($uri)) === false) {
-            throw new \InvalidArgumentException("Unable to parse URI");
+            throw new \InvalidArgumentException('Unable to parse URI');
         }
 
         return new Uri(
@@ -467,9 +461,8 @@ class Uri implements UriInterface
      *
      * @param string|null $sch Schéma à filtrer.
      *
-     * @return string Schéma normalisé.
-     *
      * @throws \InvalidArgumentException Le schéma n'est pas pris en compte.
+     * @return string                    Schéma normalisé.
      */
     protected function filterScheme($sch = '')
     {
@@ -493,9 +486,8 @@ class Uri implements UriInterface
      *
      * @param string|int|null $port Port à filtrer.
      *
-     * @return int|null Port normalisé.
-     *
      * @throws \InvalidArgumentException Le port n'est pas dans la gamme des ports TCP/UDP.
+     * @return int|null                  Port normalisé.
      */
     protected function filterPort($port)
     {
@@ -508,7 +500,7 @@ class Uri implements UriInterface
         }
 
         return $this->scheme !== '' && !$this->validPortStandard($port)
-            ? ( int ) $port
+            ? (int) $port
             : null;
     }
 
@@ -604,10 +596,10 @@ class Uri implements UriInterface
      */
     protected function validPortStandard($port)
     {
-        return (
+        return
             in_array($port, $this->ports) &&
             $this->scheme === array_keys($this->ports, $port)[ 0 ]
-            );
+            ;
     }
 
     /**

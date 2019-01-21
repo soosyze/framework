@@ -116,8 +116,8 @@ class Validator
     /**
      * Ajoute un test personnalisé.
      *
-     * @param string $key Clé du test.
-     * @param Rule $rule Function de test.
+     * @param string $key  Clé du test.
+     * @param Rule   $rule Function de test.
      *
      * @return $this
      */
@@ -145,8 +145,8 @@ class Validator
     /**
      * Ajoute un champ à tester.
      *
-     * @param string $key Nom du champ.
-     * @param mixed $value Valeur du champ.
+     * @param string $key   Nom du champ.
+     * @param mixed  $value Valeur du champ.
      *
      * @return $this
      */
@@ -162,7 +162,7 @@ class Validator
      *
      * @codeCoverageIgnore add
      *
-     * @param string $key Nom de du champ.
+     * @param string $key  Nom de du champ.
      * @param string $rule Règles à suivre.
      *
      * @return $this
@@ -360,11 +360,11 @@ class Validator
                 continue;
             }
             /* Si la valeur est requise uniquement en l'absence de certains champs. */
-            elseif ($this->isRequiredWhithout($key) && !$this->isAllVoidValue($key)) {
+            if ($this->isRequiredWhithout($key) && !$this->isAllVoidValue($key)) {
                 continue;
             }
             /* Si la valeur n'est pas requise et vide. */
-            elseif ($this->isNotRequired($key) && $this->isVoidValue($key)) {
+            if ($this->isNotRequired($key) && $this->isVoidValue($key)) {
                 continue;
             }
             /* Pour chaque règle cherche les fonctions séparées par un pipe. */
@@ -463,7 +463,7 @@ class Validator
     /**
      * Analyse et exécute une règle de validation.
      *
-     * @param string $key Nom du champ.
+     * @param string $key     Nom du champ.
      * @param string $strRule Règle de validation.
      *
      * @throws \BadMethodCallException The function does not exist.
@@ -526,12 +526,11 @@ class Validator
     /**
      * Si une des références d'une règle est vide.
      *
-     * @param string $key Nom du champ.
+     * @param string $key  Nom du champ.
      * @param string $rule Règle par défaut à utiliser cette méthode.
      *
-     * @return bool
-     *
      * @throws \InvalidArgumentException Le champ fourni n'existe pas.
+     * @return bool
      */
     protected function isOneVoidValue($key, $rule = 'required_with')
     {
@@ -556,12 +555,11 @@ class Validator
     /**
      * Si toutes les références d'une régle sont vides.
      *
-     * @param string $key Nom du champ.
+     * @param string $key  Nom du champ.
      * @param string $rule Règle par défaut à utiliser cette méthode.
      *
-     * @return bool
-     *
      * @throws \InvalidArgumentException
+     * @return bool
      */
     protected function isAllVoidValue($key, $rule = 'required_without')
     {
@@ -586,11 +584,10 @@ class Validator
      * Retourne les paramètres d'une règle d'un ensemble de règles.
      *
      * @param string $rules Ensemble de règles.
-     * @param string $rule Règle recherchée.
-     *
-     * @return array Paramètre de la règle.
+     * @param string $rule  Règle recherchée.
      *
      * @throws \InvalidArgumentException Un champ doit être fourni pour la règle required_with.
+     * @return array                     Paramètre de la règle.
      */
     protected function getParamField($rules, $rule)
     {

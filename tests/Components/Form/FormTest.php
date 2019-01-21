@@ -133,7 +133,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
     public function testInputTextarea()
     {
-        $this->object->textarea('textareaName', "idInputTextarea", 'lorem ipsum');
+        $this->object->textarea('textareaName', 'idInputTextarea', 'lorem ipsum');
 
         $form   = $this->object->form_textarea('textareaName');
         $result = '<textarea name="textareaName" id="idInputTextarea">lorem ipsum</textarea>' . "\r\n";
@@ -142,7 +142,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testInputException()
     {
@@ -165,7 +165,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($form, $result);
     }
 
-    public function testForm_token()
+    public function testFormToken()
     {
         $this->object->token();
 
@@ -175,7 +175,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($form, $result);
     }
 
-    public function testForm_open()
+    public function testFormOpen()
     {
         $form   = $this->object->form_open();
         $result = '<form method="post" action="http://localhost/">' . "\r\n";
@@ -183,7 +183,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($form, $result);
     }
 
-    public function testForm_close()
+    public function testFormClose()
     {
         $form   = $this->object->form_close();
         $result = '</form>' . "\r\n";
@@ -191,7 +191,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($form, $result);
     }
 
-    public function testForm_label()
+    public function testFormLabel()
     {
         $this->object->label('label-test', 'lorem ipsum');
 
@@ -201,7 +201,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($form, $result);
     }
 
-    public function testForm_label_for()
+    public function testFormLabelFor()
     {
         $this->object->label('label-test-require', 'lorem ipsum')
             ->text('name', 'name');
@@ -212,7 +212,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($form, $result);
     }
 
-    public function testForm_label_forManuel()
+    public function testFormLabelForManuel()
     {
         $this->object->label('label-test-require', 'lorem ipsum', [ 'for' => 'id-for' ])
             ->text('name', 'id-for');
@@ -223,7 +223,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($form, $result);
     }
 
-    public function testForm_label_forRequire()
+    public function testFormLabelForRequire()
     {
         $this->object->label('label-test-require', 'lorem ipsum')
             ->text('name', 'name', [ 'required' => 'required' ]);
@@ -234,7 +234,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($form, $result);
     }
 
-    public function testForm_legend()
+    public function testFormLegend()
     {
         $this->object->legend('legend-test', 'lorem ipsum');
 
@@ -278,7 +278,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testAddAttrException()
     {
@@ -309,7 +309,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testGetItemException()
     {
@@ -390,7 +390,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testBeforeException()
     {
@@ -399,7 +399,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testAfterException()
     {

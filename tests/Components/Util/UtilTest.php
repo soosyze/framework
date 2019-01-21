@@ -64,7 +64,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testGetJsonExceptionContent()
     {
@@ -73,7 +73,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testGetJsonExceptionFile()
     {
@@ -81,7 +81,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testGetJsonExceptionExtension()
     {

@@ -36,7 +36,7 @@ class UploadedFileRessourceTest extends \PHPUnit\Framework\TestCase
     public function testGetStream()
     {
         $stream = $this->object->getStream();
-        $this->assertEquals(( string ) $stream, 'test content ressource');
+        $this->assertEquals((string) $stream, 'test content ressource');
         /* Si nous ne fermons pas le flux le fichier sera vérouillé pour le reste des opérations */
         $stream->close();
     }
@@ -51,7 +51,7 @@ class UploadedFileRessourceTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testMoveExceptionMoved()
     {
@@ -63,7 +63,7 @@ class UploadedFileRessourceTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testMoveExceptionTarget()
     {
@@ -71,7 +71,7 @@ class UploadedFileRessourceTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testGetStreamException()
     {

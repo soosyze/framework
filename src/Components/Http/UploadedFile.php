@@ -10,8 +10,8 @@
 
 namespace Soosyze\Components\Http;
 
-use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UploadedFileInterface;
 
 /**
  * Objet de valeur représentant un fichier téléchargé via une requête HTTP.
@@ -92,10 +92,10 @@ class UploadedFile implements UploadedFileInterface
      * Construit un fichier.
      *
      * @param string|ressource|StreamInterface $file
-     * @param string|null $name
-     * @param int|null $size
-     * @param string|null $type
-     * @param int $error
+     * @param string|null                      $name
+     * @param int|null                         $size
+     * @param string|null                      $type
+     * @param int                              $error
      */
     public function __construct(
         $file,
@@ -118,9 +118,8 @@ class UploadedFile implements UploadedFileInterface
      *
      * @param array $file Doit contenir la clé 'tmp_name' au minimum.
      *
-     * @return UploadedFileInterface
-     *
      * @throws \InvalidArgumentException La clé tmp_name est requise.
+     * @return UploadedFileInterface
      */
     public static function create(array $file)
     {
@@ -151,10 +150,9 @@ class UploadedFile implements UploadedFileInterface
      * Cette méthode DOIT renvoyer une instance StreamInterface, représentant le
      * fichier téléchargé.
      *
-     * @return StreamInterface Stream représentation du fichier téléchargé.
-     *
      * @throws \RuntimeException Dans les cas où aucun flux n'est disponible ou peut être
-     * créé.
+     *                           créé.
+     * @return StreamInterface   Stream représentation du fichier téléchargé.
      */
     public function getStream()
     {
@@ -183,8 +181,8 @@ class UploadedFile implements UploadedFileInterface
      *
      * @param string $targetPath Chemin vers lequel déplacer le fichier téléchargé.
      *
-     * @throws \RuntimeException sur toute erreur lors de l'opération de déplacement, ou sur
-     * le deuxième ou suivant appel à la méthode.
+     * @throws \RuntimeException         sur toute erreur lors de l'opération de déplacement, ou sur
+     *                                   le deuxième ou suivant appel à la méthode.
      * @throws \InvalidArgumentException Si le $targetPath spécifié n'est pas valide.
      * @throws \InvalidArgumentException Une erreur est survenue.
      */
@@ -245,7 +243,7 @@ class UploadedFile implements UploadedFileInterface
      * application.
      *
      * @return string|null Nom de fichier envoyé par le client ou null si aucun.
-     * a été fourni.
+     *                     a été fourni.
      */
     public function getClientFilename()
     {
@@ -260,7 +258,7 @@ class UploadedFile implements UploadedFileInterface
      * application.
      *
      * @return string|null Le type de média envoyé par le client ou null si aucun
-     * a été fourni.
+     *                     a été fourni.
      */
     public function getClientMediaType()
     {
@@ -283,7 +281,7 @@ class UploadedFile implements UploadedFileInterface
         } elseif ($file instanceof StreamInterface) {
             $this->stream = $file;
         } else {
-            throw new \InvalidArgumentException("The file resource is not readable.");
+            throw new \InvalidArgumentException('The file resource is not readable.');
         }
     }
 
@@ -292,9 +290,8 @@ class UploadedFile implements UploadedFileInterface
      *
      * @param string $name Nom du fichier
      *
-     * @return string Nom du fichier filtré.
-     *
      * @throws \InvalidArgumentException Le nom du fichier doit être une chaine de caractère ou null.
+     * @return string                    Nom du fichier filtré.
      */
     protected function filterName($name)
     {
@@ -310,9 +307,8 @@ class UploadedFile implements UploadedFileInterface
      *
      * @param int $size Taille du fichier.
      *
-     * @return int Taille du fichier filtré.
-     *
      * @throws \InvalidArgumentException La taille du fichier doit-être un nombre entier ou null
+     * @return int                       Taille du fichier filtré.
      */
     protected function filterSize($size)
     {
@@ -328,9 +324,8 @@ class UploadedFile implements UploadedFileInterface
      *
      * @param string $type Type du fichier
      *
-     * @return string Type du fichier filtré.
-     *
      * @throws \InvalidArgumentException Le type du fichier doit être une chaine de caractère ou null.
+     * @return string                    Type du fichier filtré.
      */
     protected function filterType($type)
     {
@@ -346,9 +341,8 @@ class UploadedFile implements UploadedFileInterface
      *
      * @param int $error Type d'erreur.
      *
-     * @return int Type d'erreur filtré.
-     *
      * @throws \InvalidArgumentException Le type d'erreur n'est pas valide.
+     * @return int                       Type d'erreur filtré.
      */
     protected function filterError($error)
     {
@@ -376,10 +370,9 @@ class UploadedFile implements UploadedFileInterface
      *
      * @param type $targetPath Cible du fichier.
      *
-     * @return bool
-     *
      * @throws \RuntimeException Le fichier n'a pas été téléchargé par HTTP POST.
      * @throws \RuntimeException Une erreur est survenue dans le déplacement du fichier.
+     * @return bool
      */
     private function moveToNoSapi($targetPath)
     {

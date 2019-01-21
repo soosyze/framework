@@ -2,8 +2,8 @@
 
 namespace Soosyze\Test;
 
-use \Soosyze\Components\Http\Request;
-use \Soosyze\Components\Http\Uri;
+use Soosyze\Components\Http\Request;
+use Soosyze\Components\Http\Uri;
 
 class RoutingTest extends \PHPUnit\Framework\TestCase
 {
@@ -19,22 +19,22 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
     protected function setUp()
     {
         $routes = [
-            "test.index" => [
-                "methode" => "GET",
-                "path" => "/",
-                "uses" => "\Soosyze\Test\TestController@index"
+            'test.index' => [
+                'methode' => 'GET',
+                'path' => '/',
+                'uses' => "\Soosyze\Test\TestController@index"
             ],
-            "test.post" => [
-                "methode" => "POST",
-                "path" => "/",
-                "uses" => "\Soosyze\Test\TestController@indexPost"
+            'test.post' => [
+                'methode' => 'POST',
+                'path' => '/',
+                'uses' => "\Soosyze\Test\TestController@indexPost"
             ],
-            "test.page"  => [
-                "methode" => "GET",
-                "path" => "page/:item",
-                "uses" => "TestController@page",
-                "with" => [
-                    ":item" => "[0-9]+"
+            'test.page'  => [
+                'methode' => 'GET',
+                'path' => 'page/:item',
+                'uses' => 'TestController@page',
+                'with' => [
+                    ':item' => '[0-9]+'
                 ],
             ]
         ];
@@ -58,10 +58,10 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
 
         $route  = $this->object->parse($request);
         $result = [
-            "methode" => "GET",
-            'path' => "/",
-            "uses" => "\Soosyze\Test\TestController@index",
-            'key'  => "test.index"
+            'methode' => 'GET',
+            'path' => '/',
+            'uses' => "\Soosyze\Test\TestController@index",
+            'key'  => 'test.index'
         ];
 
         $this->assertEquals($route, $result);
@@ -81,7 +81,7 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
         $route  = $this->object->parse($request);
         $result = $this->object->execute($route, $request);
 
-        $this->assertEquals($result, "hello world !");
+        $this->assertEquals($result, 'hello world !');
     }
     
     public function testExecuteSetRequest()
@@ -92,7 +92,7 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
         $route  = $this->object->parse($request);
         $result = $this->object->setRequest($request)->execute($route);
 
-        $this->assertEquals($result, "hello world !");
+        $this->assertEquals($result, 'hello world !');
     }
 
     public function testExecuteParam()
@@ -103,11 +103,11 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
         $route  = $this->object->parse($request);
         $result = $this->object->execute($route, $request);
 
-        $this->assertEquals($result, "hello page 1");
+        $this->assertEquals($result, 'hello page 1');
     }
     
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testExecuteExceptionNotRequest()
     {
@@ -120,10 +120,10 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
 
     public function testRelplaceSlash()
     {
-        $str    = "/index/page/1/edit";
+        $str    = '/index/page/1/edit';
         $result = $this->object->relplaceSlash($str);
 
-        $this->assertEquals($result, "%2Findex%2Fpage%2F1%2Fedit");
+        $this->assertEquals($result, '%2Findex%2Fpage%2F1%2Fedit');
     }
 
     public function testGetRoute()
@@ -134,7 +134,7 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
         $this->object->setRequest($request);
         $result = $this->object->getRoute('test.index');
 
-        $this->assertEquals($result, "http://test.com/?/");
+        $this->assertEquals($result, 'http://test.com/?/');
     }
 
     public function testGetRouteParam()
@@ -145,11 +145,11 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
         $this->object->setRequest($request);
         $result = $this->object->getRoute('test.page', [ ':item' => '1' ]);
 
-        $this->assertEquals($result, "http://test.com/?page/1");
+        $this->assertEquals($result, 'http://test.com/?page/1');
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testGetRouteException()
     {
@@ -161,7 +161,7 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      */
     public function testGetRouteRouteArgumentException()
     {
@@ -183,7 +183,7 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($this->object->isRewrite());
 
         $result = $this->object->getRoute('test.page', [ ':item' => '1' ]);
-        $this->assertEquals($result, "http://test.com/page/1");
+        $this->assertEquals($result, 'http://test.com/page/1');
     }
 }
 
@@ -191,12 +191,12 @@ class TestController
 {
     public function index()
     {
-        return "hello world !";
+        return 'hello world !';
     }
 
     public function page($item)
     {
-        return "hello page " . $item;
+        return 'hello page ' . $item;
     }
 }
 
@@ -204,6 +204,6 @@ class TestControllerOther
 {
     public function index()
     {
-        return "hello world !";
+        return 'hello world !';
     }
 }

@@ -75,11 +75,11 @@ abstract class Rule
     /**
      * Exécute le test de validation.
      *
-     * @param string $keyRule Clé du test.
+     * @param string $keyRule  Clé du test.
      * @param string $keyValue Identifiant de la valeur.
-     * @param mixed $value Valeur à tester.
-     * @param string $arg Argument de test.
-     * @param bool $not Inverse le test.
+     * @param mixed  $value    Valeur à tester.
+     * @param string $arg      Argument de test.
+     * @param bool   $not      Inverse le test.
      *
      * @return $this
      */
@@ -96,10 +96,10 @@ abstract class Rule
     /**
      * Défini le test.
      *
-     * @param string $key Clé du test.
+     * @param string $key   Clé du test.
      * @param string $value Valeur à tester.
-     * @param string $arg Argument de test.
-     * @param bool $not Inverse le test.
+     * @param string $arg   Argument de test.
+     * @param bool   $not   Inverse le test.
      */
     abstract protected function test($key, $value, $arg, $not = true);
 
@@ -113,9 +113,9 @@ abstract class Rule
     /**
      * Ajoute une valeur de retour formatées en cas d'erreur de validation.
      *
-     * @param string $keyRule Clé du test.
-     * @param string $keyMessage Identifiant du message à formater avec la valeur de test.
-     * @param string[] $value Liste d'arguments de remplacements pour personnaliser le message.
+     * @param string   $keyRule    Clé du test.
+     * @param string   $keyMessage Identifiant du message à formater avec la valeur de test.
+     * @param string[] $value      Liste d'arguments de remplacements pour personnaliser le message.
      */
     protected function addReturn($keyRule, $keyMessage, array $value = [])
     {
@@ -134,12 +134,11 @@ abstract class Rule
      *
      * @param string $arg Chaine de paramétre.
      *
-     * @return numeric[] Tableau des valeurs min et max.
-     *
      * @throws \InvalidArgumentException Between values are invalid.
      * @throws \InvalidArgumentException The minimum value of between must be numeric.
      * @throws \InvalidArgumentException The maximum value of entry must be numeric.
      * @throws \InvalidArgumentException The minimum value must not be greater than the maximum value.
+     * @return numeric[]                 Tableau des valeurs min et max.
      */
     protected function getParamMinMax($arg)
     {
@@ -153,9 +152,11 @@ abstract class Rule
 
         if (!is_numeric($min)) {
             throw new \InvalidArgumentException('The minimum value of between must be numeric.');
-        } elseif (!is_numeric($max)) {
+        }
+        if (!is_numeric($max)) {
             throw new \InvalidArgumentException('The maximum value of entry must be numeric.');
-        } elseif ($min > $max) {
+        }
+        if ($min > $max) {
             throw new \InvalidArgumentException('The minimum value must not be greater than the maximum value.');
         }
 
