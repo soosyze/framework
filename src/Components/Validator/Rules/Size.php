@@ -10,6 +10,8 @@
 
 namespace Soosyze\Components\Validator\Rules;
 
+use Psr\Http\Message\UploadedFileInterface;
+
 /**
  * {@inheritdoc}
  *
@@ -21,7 +23,7 @@ abstract class Size extends \Soosyze\Components\Validator\Rule
     /**
      * Retourne la longueur de valeur en fonction de son type.
      *
-     * @param array|float|int|object|ressource|string $value Valeur à tester.
+     * @param array|float|int|object|ressource|string|UploadedFileInterface $value Valeur à tester.
      *
      * @return int|float Longueur.
      *
@@ -35,6 +37,12 @@ abstract class Size extends \Soosyze\Components\Validator\Rule
             return strlen($value);
         } elseif (is_array($value)) {
             return count($value);
+        } elseif ($value instanceof UploadedFileInterface) {
+            if ($value->getError() !== UPLOAD_ERR_OK) {
+                return 0;
+            }
+
+            return $value->getStream()->getSize();
         } elseif (is_resource($value)) {
             $stats = fstat($value);
 
