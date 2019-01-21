@@ -212,7 +212,7 @@ class Container implements ContainerInterface
      */
     public function addHook($name, callable $func)
     {
-        $this->hooks[ $name ][] = $func;
+        $this->hooks[ strtolower($name) ][] = $func;
 
         return $this;
     }
@@ -222,33 +222,33 @@ class Container implements ContainerInterface
      * Utilise le container pour l'ajout des hooks depuis les fichier de services.
      *
      * @param string $name Clé pour appeler la fonction.
-     * @param array args Paramètres passés à la fonction.
+     * @param array $args Paramètres passés à la fonction.
      *
      * @return mixed|void le résultat des fonctions appelées ou rien
      */
     public function callHook($name, array $args = [])
     {
-        $return = "";
+        $return = '';
+        $key    = strtolower($name);
         /* Si mes hooks existent, ils sont exécutés. */
-        if (isset($this->hooks[ $name ])) {
-            foreach ($this->hooks[ $name ] as $func) {
+        if (isset($this->hooks[ $key ])) {
+            foreach ($this->hooks[ $key ] as $func) {
                 $return = call_user_func_array($func, $args);
             }
         } else {
             /* Je regarde dans les hooks de mes services. */
-            foreach ($this->services as $key => $value) {
+            foreach ($this->services as $service => $value) {
                 /* Si le hook que je recherche existe alors je le charge. */
-                if (isset($value[ 'hooks' ][ $name ])) {
-                    $obj = $this->get($key);
-                    $this->addHook($name, [
+                if (isset($value[ 'hooks' ][ $key ])) {
+                    $this->addHook($key, [
                         /* L'instance de mon service. */
-                        $obj,
+                        $this->get($service),
                         /* La fonction à exécuter. */
-                        $value[ 'hooks' ][ $name ] ]);
+                        $value[ 'hooks' ][ $key ] ]);
                 }
             }
-            if (isset($this->hooks[ $name ])) {
-                $return = $this->callHook($name, $args);
+            if (isset($this->hooks[ $key ])) {
+                $return = $this->callHook($key, $args);
             }
         }
 

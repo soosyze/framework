@@ -152,7 +152,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
 
     public function testHook()
     {
-        $this->object->addHook('hook.double', function (&$output) {
+        $this->object->addHook('hook.Double', function (&$output) {
             $output *= 2;
         });
 
@@ -172,7 +172,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $var = 2;
-        $this->object->callHook('hook.double', [ &$var ]);
+        $this->object->callHook('hook.Double', [ &$var ]);
 
         $this->assertEquals(4, $var);
     }
