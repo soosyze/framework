@@ -134,7 +134,7 @@ class FormBuilder
     }
 
     /**
-     * Ajoute un ou pluisieurs input avant un élément existant.
+     * Ajoute un ou plusieurs inputs avant un élément existant.
      *
      * @param string   $key      Clé unique.
      * @param callable $callback Fonction de création du sous-formulaire.
@@ -152,7 +152,7 @@ class FormBuilder
     }
 
     /**
-     * Ajoute un ou pluisieurs input après un élément existant.
+     * Ajoute un ou plusieurs inputs après un élément existant.
      *
      * @param string   $key      Clé unique.
      * @param callable $callback Fonction de création du sous-formulaire.
