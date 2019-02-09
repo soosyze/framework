@@ -145,6 +145,7 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     public function testValidFileError()
@@ -168,6 +169,7 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(7, $this->object->getErrors());
     }
 
     public function testValidMax()
@@ -216,6 +218,7 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     public function testValidBetween()
@@ -245,6 +248,7 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     public function testValiExtensions()
@@ -274,6 +278,7 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(3, $this->object->getErrors());
     }
 
     public function testValiMimetypes()
@@ -303,6 +308,7 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(3, $this->object->getErrors());
     }
 
     public function testValidMimes()
@@ -334,6 +340,7 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(4, $this->object->getErrors());
     }
 
     public function testValidImage()
@@ -361,10 +368,11 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
         ])->setRules([
             'field_image'          => 'image',
             'field_not_image'      => '!image',
-            'field_image_required' => 'required|image'
+            'field_image_required' => 'image'
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(3, $this->object->getErrors());
     }
 
     /**
@@ -420,6 +428,7 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(3, $this->object->getErrors());
     }
 
     public function testImageDimensionsWidth()
@@ -447,5 +456,6 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(3, $this->object->getErrors());
     }
 }

@@ -65,6 +65,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     public function testValidAlphaNumText()
@@ -92,6 +93,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     public function testValidArray()
@@ -119,6 +121,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     public function testValidBetween()
@@ -180,6 +183,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
         $this->assertArraySubset($this->object->getKeyInputErrors(), [
             'field_text_between_min', 'field_text_between_max'
         ]);
@@ -287,6 +291,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     public function testValidDate()
@@ -314,6 +319,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     public function testValidDateFormat()
@@ -343,6 +349,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(3, $this->object->getErrors());
     }
 
     public function testValidDateAfter()
@@ -374,6 +381,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(4, $this->object->getErrors());
     }
 
     public function testValidDateAfterOrEqual()
@@ -401,6 +409,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     public function testValidDateBefore()
@@ -432,6 +441,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(4, $this->object->getErrors());
     }
 
     public function testValidDateBeforeOrEqual()
@@ -459,6 +469,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     public function testValidDir()
@@ -486,6 +497,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     public function testValidEqual()
@@ -515,6 +527,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     public function testValidFloat()
@@ -546,6 +559,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     public function testValidEmail()
@@ -573,6 +587,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     public function testValidIp()
@@ -600,6 +615,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     public function testValidInt()
@@ -633,6 +649,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     public function testValidJson()
@@ -662,6 +679,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     public function testValidInArray()
@@ -689,6 +707,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     public function testValidMax()
@@ -736,6 +755,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     /**
@@ -816,6 +836,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
         fclose($stream);
     }
 
@@ -875,6 +896,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(1, $this->object->getErrors());
     }
 
     /**
@@ -931,6 +953,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(1, $this->object->getErrors());
     }
     
     /**
@@ -968,6 +991,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     public function testValidSlug()
@@ -995,6 +1019,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     public function testValidString()
@@ -1032,6 +1057,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(6, $this->object->getErrors());
     }
 
     public function testValidToken()
@@ -1074,6 +1100,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->addRule('field_token', 'token');
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(1, $this->object->getErrors());
     }
 
     public function testValidTokenErrorSessionTime()
@@ -1086,6 +1113,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->addRule('field_token', 'token');
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(1, $this->object->getErrors());
     }
 
     public function testValidTokenErrorSessionToken()
@@ -1099,6 +1127,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->isValid();
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(1, $this->object->getErrors());
     }
 
     public function testValidUrl()
@@ -1126,6 +1155,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     public function testValideHtmlsc()
@@ -1255,6 +1285,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
+        $this->assertCount(1, $this->object->getErrors());
     }
 }
 
