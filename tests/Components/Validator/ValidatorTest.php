@@ -348,15 +348,15 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     public function testValidDateAfter()
     {
         $this->object->setInputs([
-            'field_date'              => '10/01/1994',
-            'field_not_date'          => '10/01/1994',
-            'field_date_required'     => '10/01/1994',
+            'field_date'              => '10/02/1994',
+            'field_not_date'          => '09/01/1994',
+            'field_date_required'     => '10/02/1994',
             'field_date_not_required' => ''
         ])->setRules([
-            'field_date'              => 'date_after:10/02/1994',
-            'field_not_date'          => '!date_after:09/01/1994',
-            'field_date_required'     => 'required|date_after:10/02/1994',
-            'field_date_not_required' => '!required|date_after:10/02/1994',
+            'field_date'              => 'date_after:10/01/1994',
+            'field_not_date'          => '!date_after:10/01/1994',
+            'field_date_required'     => 'required|date_after:10/01/1994',
+            'field_date_not_required' => '!required|date_after:10/01/1994',
         ]);
 
         $this->assertTrue($this->object->isValid());
@@ -365,7 +365,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_date_error'  => 'not date',
             'field_date_error2' => '10/01/1994',
             'field_date'        => '10/01/1994',
-            'field_not_date'    => '09/01/1994',
+            'field_not_date'    => '10/02/1994',
         ])->setRules([
             'field_date_error'  => 'date_after:10/01/1994',
             'field_date_error2' => 'date_after:error',
@@ -380,23 +380,23 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     {
         $this->object->setInputs([
             'field_date'              => '10/01/1994',
-            'field_not_date'          => '10/01/1994',
-            'field_date_required'     => '10/01/1994',
+            'field_not_date'          => '09/01/1994',
+            'field_date_required'     => '10/02/1994',
             'field_date_not_required' => ''
         ])->setRules([
             'field_date'              => 'date_after_or_equal:10/01/1994',
-            'field_not_date'          => '!date_after_or_equal:09/01/1994',
+            'field_not_date'          => '!date_after_or_equal:10/01/1994',
             'field_date_required'     => 'required|date_after_or_equal:10/01/1994',
-            'field_date_not_required' => '!required|date_after_or_equal:10/02/1994'
+            'field_date_not_required' => '!required|date_after_or_equal:10/01/1994'
         ]);
 
         $this->assertTrue($this->object->isValid());
 
         $this->object->setInputs([
-            'field_date'     => '10/01/1994',
+            'field_date'     => '09/01/1994',
             'field_not_date' => '10/01/1994'
         ])->setRules([
-            'field_date'     => 'date_after_or_equal:09/01/1994',
+            'field_date'     => 'date_after_or_equal:10/01/1994',
             'field_not_date' => '!date_after_or_equal:10/01/1994'
         ]);
 
@@ -406,15 +406,15 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     public function testValidDateBefore()
     {
         $this->object->setInputs([
-            'field_date'              => '10/01/1994',
+            'field_date'              => '09/01/1994',
             'field_not_date'          => '10/01/1994',
-            'field_date_required'     => '10/01/1994',
+            'field_date_required'     => '09/01/1994',
             'field_date_not_required' => ''
         ])->setRules([
-            'field_date'              => 'date_before:09/01/1994',
-            'field_not_date'          => '!date_before:10/02/1994',
-            'field_date_required'     => 'required|date_before:09/01/1994',
-            'field_date_not_required' => '!required|date_before:09/01/1994',
+            'field_date'              => 'date_before:10/01/1994',
+            'field_not_date'          => '!date_before:10/01/1994',
+            'field_date_required'     => 'required|date_before:10/01/1994',
+            'field_date_not_required' => '!required|date_before:10/01/1994',
         ]);
 
         $this->assertTrue($this->object->isValid());
@@ -422,13 +422,13 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->object->setInputs([
             'field_date_error'  => 'not date',
             'field_date_error2' => '10/01/1994',
-            'field_date'        => '10/01/1994',
-            'field_not_date'    => '10/01/1994',
+            'field_date'        => '11/01/1994',
+            'field_not_date'    => '09/01/1994',
         ])->setRules([
             'field_date_error'  => 'date_before:10/01/1994',
             'field_date_error2' => 'date_before:error',
-            'field_date'        => 'date_before:11/01/1994',
-            'field_not_date'    => '!date_before:09/01/1994'
+            'field_date'        => 'date_before:10/01/1994',
+            'field_not_date'    => '!date_before:10/01/1994'
         ]);
 
         $this->assertFalse($this->object->isValid());
@@ -443,7 +443,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_date_not_required' => ''
         ])->setRules([
             'field_date'              => 'date_before_or_equal:10/01/1994',
-            'field_not_date'          => '!date_before_or_equal:10/02/1994',
+            'field_not_date'          => '!date_before_or_equal:09/01/1994',
             'field_date_required'     => 'required|date_before_or_equal:10/01/1994',
             'field_date_not_required' => '!required|date_before_or_equal:09/01/1994',
         ]);
@@ -454,7 +454,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_date'     => '10/01/1994',
             'field_not_date' => '10/01/1994'
         ])->setRules([
-            'field_date'     => 'date_before_or_equal:11/01/1994',
+            'field_date'     => 'date_before_or_equal:09/01/1994',
             'field_not_date' => '!date_before_or_equal:10/01/1994'
         ]);
 

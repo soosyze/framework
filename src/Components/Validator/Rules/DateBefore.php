@@ -48,10 +48,10 @@ class DateBefore extends Date
      */
     protected function dateBefore($value, $arg, $not = true)
     {
-        if (!($value > $arg) && $not) {
-            $this->addReturn('date_before', 'must', [ ':datebefore' => $value ]);
-        } elseif (($value > $arg) && !$not) {
-            $this->addReturn('date_before', 'not', [ ':datebefore' => $value ]);
+        if (!($value < $arg) && $not) {
+            $this->addReturn('date_before', 'before', [ ':datebefore' => $arg ]);
+        } elseif (($value < $arg) && !$not) {
+            $this->addReturn('date_before', 'not_before', [ ':datebefore' => $arg ]);
         }
     }
 
@@ -60,9 +60,9 @@ class DateBefore extends Date
      */
     protected function messages()
     {
-        $output           = parent::messages();
-        $output[ 'must' ] = 'La date de :label doit être inférieur à :datebefore.';
-        $output[ 'not' ]  = 'La date de :label ne doit pas être inferieur à :datebefore.';
+        $output                 = parent::messages();
+        $output[ 'before' ]     = 'La date de :label doit être inférieur à :datebefore.';
+        $output[ 'not_before' ] = 'La date de :label ne doit pas être inferieur à :datebefore.';
 
         return $output;
     }

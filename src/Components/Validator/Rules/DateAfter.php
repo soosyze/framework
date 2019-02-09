@@ -48,10 +48,10 @@ class DateAfter extends Date
      */
     protected function dateAfter($value, $arg, $not = true)
     {
-        if (!($value < $arg) && $not) {
-            $this->addReturn('date_after', 'must', [ ':dateafter' => $value ]);
-        } elseif (($value < $arg) && !$not) {
-            $this->addReturn('date_after', 'not', [ ':dateafter' => $value ]);
+        if (!($value > $arg) && $not) {
+            $this->addReturn('date_after', 'after', [ ':dateafter' => $arg ]);
+        } elseif (($value > $arg) && !$not) {
+            $this->addReturn('date_after', 'not_after', [ ':dateafter' => $arg ]);
         }
     }
 
@@ -60,9 +60,9 @@ class DateAfter extends Date
      */
     protected function messages()
     {
-        $output           = parent::messages();
-        $output[ 'must' ] = 'La date de :label doit être supérieur à :dateafter.';
-        $output[ 'not' ]  = 'La date de :label ne doit pas être supérieur à :dateafter.';
+        $output                = parent::messages();
+        $output[ 'after' ]     = 'La date de :label doit être supérieur à :dateafter.';
+        $output[ 'not_after' ] = 'La date de :label ne doit pas être supérieur à :dateafter.';
 
         return $output;
     }
