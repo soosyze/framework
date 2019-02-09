@@ -52,11 +52,15 @@ class ImageDimensionsHeight extends Image
     protected function sizeBetween($lengthValue, $min, $max, $not = true)
     {
         if (!($lengthValue <= $max && $lengthValue >= $min) && $not) {
-            $this->addReturn('image_dimensions_height', 'must', [ ':min' => $min,
-                ':max' => $max ]);
+            $this->addReturn('image_dimensions_height', 'height', [
+                ':min' => $min,
+                ':max' => $max
+            ]);
         } elseif ($lengthValue <= $max && $lengthValue >= $min && !$not) {
-            $this->addReturn('image_dimensions_height', 'not', [ ':min' => $min,
-                ':max' => $max ]);
+            $this->addReturn('image_dimensions_height', 'not_height', [
+                ':min' => $min,
+                ':max' => $max
+            ]);
         }
     }
 
@@ -65,9 +69,9 @@ class ImageDimensionsHeight extends Image
      */
     protected function messages()
     {
-        $output           = parent::messages();
-        $output[ 'must' ] = 'La hauteur de l\'image :label doit être comprise entre les valeurs :minpx et :maxpx.';
-        $output[ 'not' ]  = 'La hauteur de l\'image :label ne doit pas être comprise entre les valeurs :minpx et :maxpx.';
+        $output                 = parent::messages();
+        $output[ 'height' ]     = 'La hauteur de l\'image :label doit être comprise entre les valeurs :minpx et :maxpx.';
+        $output[ 'not_height' ] = 'La hauteur de l\'image :label ne doit pas être comprise entre les valeurs :minpx et :maxpx.';
 
         return $output;
     }

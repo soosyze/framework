@@ -27,7 +27,7 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
     /**
      * @var resource
      */
-    protected $file_js = 'testUploadFileError.js';
+    protected $file_xml = 'testUploadFileError.xml';
     
     /**
      * @var resource
@@ -47,7 +47,7 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
     /**
      * @var \UploadedFile
      */
-    protected $upload_js;
+    protected $upload_xml;
 
     /**
      * @var \UploadedFile
@@ -66,8 +66,14 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
         fwrite($stream, 'test content');
         fclose($stream);
         
-        $stream_js = fopen($this->file_js, 'w');
-        fwrite($stream_js, 'var test = "test";');
+        $stream_js = fopen($this->file_xml, 'w');
+        fwrite($stream_js, '<?xml version="1.0" encoding="UTF-8"?>'
+            . '<note>'
+            . '<to>Tove</to>'
+            . '<from>Jani</from>'
+            . '<heading>Reminder</heading>'
+            . '<body>Don\'t forget me this weekend!</body>'
+            . '</note>');
         fclose($stream_js);
 
         $data = 'iVBORw0KGgoAAAANSUhEUgAAABwAAAASCAMAAAB/2U7WAAAABl'
@@ -85,7 +91,7 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
         /* Indroduction volontaire d'erreur dans la taille et le mine type. */
         $this->uplaod_txt   = new UploadedFile($this->file_txt, 'test.txt', 1024, 'error/mine');
         $this->uplaod_img   = new UploadedFile($this->file_img, 'test.png', 1, 'error/mine');
-        $this->upload_js    = new UploadedFile($this->file_js, 'test.js', 1, 'error/mine');
+        $this->upload_xml    = new UploadedFile($this->file_xml, 'test.xml', 1, 'error/mine');
         $this->uplaod_error = new UploadedFile($this->file_error, 'test.gif', 1, 'error/mine');
     }
 
@@ -104,9 +110,9 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
             $this->uplaod_img->getStream()->close();
             unlink($this->file_img);
         }
-        if (file_exists($this->file_js)) {
-            $this->upload_js->getStream()->close();
-            unlink($this->file_js);
+        if (file_exists($this->file_xml)) {
+            $this->upload_xml->getStream()->close();
+            unlink($this->file_xml);
         }
         if (file_exists($this->file_error)) {
             $this->uplaod_error->getStream()->close();
@@ -381,9 +387,9 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
     public function testValidImageExceptionMultiple()
     {
         $this->object->setInputs([
-            'field_image'               => $this->upload_js
+            'field_image'               => $this->upload_xml
         ])->setRules([
-            'field_image'               => 'image:js'
+            'field_image'               => 'image:xml'
         ]);
 
         $this->object->isValid();

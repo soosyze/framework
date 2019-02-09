@@ -39,9 +39,9 @@ class FileMimetypes extends File
         $info  = $this->getMime($value);
 
         if (!in_array($info, $mines) && $not) {
-            $this->addReturn('', 'must');
+            $this->addReturn($key, 'mime_types');
         } elseif (in_array($info, $mines) && !$not) {
-            $this->addReturn('', 'not');
+            $this->addReturn($key, 'not_mime_types');
         }
     }
 
@@ -50,9 +50,9 @@ class FileMimetypes extends File
      */
     protected function messages()
     {
-        $output           = parent::messages();
-        $output[ 'must' ] = 'La valeur :label n\'est pas dans la liste.';
-        $output[ 'not' ]  = 'La valeur de :label ne doit pas être dans la liste.';
+        $output                     = parent::messages();
+        $output[ 'mime_types' ]     = 'La valeur :label n\'est pas dans la liste.';
+        $output[ 'not_mime_types' ] = 'La valeur de :label ne doit pas être dans la liste.';
 
         return $output;
     }

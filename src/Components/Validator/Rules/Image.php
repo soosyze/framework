@@ -33,6 +33,11 @@ class Image extends FileMimes
             ? 'jpe,jpg,jpeg,png,gif,svg'
             : $arg;
         parent::test('file_mimes', $value, $extensions, $not);
+
+        if ($this->hasErrors()) {
+            return 1;
+        }
+
         $this->validMimeImageByExtension($extensions);
     }
 

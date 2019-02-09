@@ -38,7 +38,7 @@ class File extends \Soosyze\Components\Validator\Rule
         }
 
         if ($value instanceof UploadedFileInterface) {
-            $this->checkErrorFile($value);
+            $this->checkErrorFile($key, $value);
         }
     }
 
@@ -63,37 +63,38 @@ class File extends \Soosyze\Components\Validator\Rule
     /**
      * Vérifie si le fichier ne contient pas d'erreur.
      *
+     * @param string                $key   Clé du test.
      * @param UploadedFileInterface $value
      */
-    protected function checkErrorFile(UploadedFileInterface $value)
+    protected function checkErrorFile($key, UploadedFileInterface $value)
     {
         switch ($value->getError()) {
             case UPLOAD_ERR_INI_SIZE:
-                $this->addReturn('', 'ini_size');
+                $this->addReturn($key, 'ini_size');
 
                 break;
             case UPLOAD_ERR_FORM_SIZE:
-                $this->addReturn('', 'form_size');
+                $this->addReturn($key, 'form_size');
 
                 break;
             case UPLOAD_ERR_PARTIAL:
-                $this->addReturn('', 'err_partial');
+                $this->addReturn($key, 'err_partial');
 
                 break;
             case UPLOAD_ERR_NO_FILE:
-                $this->addReturn('', 'no_file');
+                $this->addReturn($key, 'no_file');
 
                 break;
             case UPLOAD_ERR_NO_TMP_DIR:
-                $this->addReturn('', 'no_tmp_dir');
+                $this->addReturn($key, 'no_tmp_dir');
 
                 break;
             case UPLOAD_ERR_CANT_WRITE:
-                $this->addReturn('', 'cant_write');
+                $this->addReturn($key, 'cant_write');
 
                 break;
             case UPLOAD_ERR_EXTENSION:
-                $this->addReturn('', 'extension');
+                $this->addReturn($key, 'extension');
 
                 break;
         }
