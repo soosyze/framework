@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <phpdoc>
-    <title>Soosyze</title>
+    <title>SoosyzeFramework</title>
     <parser>
         <target>build/phpDocumentor/cache</target>
         <extensions>

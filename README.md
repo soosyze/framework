@@ -4,8 +4,8 @@
 [![Coverage Status](https://coveralls.io/repos/github/soosyze/framework/badge.svg?branch=master)](https://coveralls.io/github/soosyze/framework?branch=master "Coveralls")
 [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/soosyze/framework/blob/master/LICENSE "LICENSE")
 [![Packagist](https://img.shields.io/packagist/v/soosyze/framework.svg)](https://packagist.org/packages/soosyze/framework "Packagist")
-[![PHP from Packagist](https://img.shields.io/packagist/php-v/soosyze/framework.svg)](/README.md#version-php)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/soosyze/framework.svg)
+[![PHP from Packagist](https://img.shields.io/packagist/php-v/soosyze/framework.svg)](#version-php)
+![GitHub code size in bytes](https://img.shields.io/github/repo-size/soosyze/framework.svg)
 
 Soosyze Framework est un micro-framework MVC object offrant un socle solide de développement
 
@@ -26,9 +26,9 @@ Soosyze Framework est un micro-framework MVC object offrant un socle solide de d
 
 # Sommaire
 
-* [Requirements](/README.md#requirements)
-* [Installation](/README.md#installation)
-* [License](/README.md#license)
+* [Requirements](#requirements)
+* [Installation](#installation)
+* [License](#license)
 
 # Requirements
 
@@ -42,9 +42,13 @@ Soosyze Framework est un micro-framework MVC object offrant un socle solide de d
 
 ## Extensions
 
-* `fileinfo` si vous utilisez les composants Validator.
+* `fileinfo` si vous utilisez le composant Validator.
+* `gd` si vous utilisez le composant Validator.
 * `json` si vous utilisez les composants Config ou Util.
+* `mbstring` si vous utilisez le composant Email.
 * `session` si vous utilisez les composants Validator ou FormBuilder.
+
+Ces extensions sont généralement actives par défauts.
 
 ## Permission des fichiers et répértoire
 
