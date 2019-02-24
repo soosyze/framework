@@ -30,6 +30,7 @@ class Validator
      * @var string[]
      */
     protected $tests = [
+        'accepted'                => 'Rules\Accepted',
         'alphanum'                => 'Rules\AlphaNum',
         'alphanumtext'            => 'Rules\AlphaNumText',
         'array'                   => 'Rules\ArrayR',

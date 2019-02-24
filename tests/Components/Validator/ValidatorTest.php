@@ -39,6 +39,40 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->addRule('field_between', 'exception')
             ->isValid();
     }
+    
+    public function testAccepted()
+    {
+        $this->object->setInputs([
+            /* true */
+            'field_accepted_true'            => true,
+            'field_accepted_true_text'       => 'true',
+            'field_accepted_true_one'        => 1,
+            'field_accepted_true_one_text'   => '1',
+            'field_accepted_true_on'         => 'on',
+            'field_accepted_true_yes'        => 'yes'
+        ])->setRules([
+            /* true */
+            'field_accepted_true'            => 'accepted',
+            'field_accepted_true_text'       => 'accepted',
+            'field_accepted_true_one'        => 'accepted',
+            'field_accepted_true_one_text'   => 'accepted',
+            'field_accepted_true_on'         => 'accepted',
+            'field_accepted_true_yes'        => 'accepted'
+        ]);
+
+        $this->assertTrue($this->object->isValid());
+
+        $this->object->setInputs([
+            'field_accepted'     => 'not bool',
+            'field_not_accepted' => true
+        ])->setRules([
+            'field_accepted'     => 'accepted',
+            'field_not_accepted' => '!accepted'
+        ]);
+
+        $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
+    }
 
     public function testValidAlphaNum()
     {
