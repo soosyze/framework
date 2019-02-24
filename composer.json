@@ -16,7 +16,9 @@
         "email": "mathieu@soosyze.com"
     },
     "require": {
+        "ext-date": "*",
         "ext-fileinfo": "*",
+        "ext-filter": "*",
         "ext-gd": "*",
         "ext-json": "*",
         "ext-mbstring": "*",

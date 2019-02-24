@@ -42,7 +42,9 @@ Soosyze Framework est un micro-framework MVC object offrant un socle solide de d
 
 ## Extensions
 
+* `date` si vous utilisez le composant Validator.
 * `fileinfo` si vous utilisez le composant Validator.
+* `filter` si vous utilisez le composant Validator.
 * `gd` si vous utilisez le composant Validator.
 * `json` si vous utilisez les composants Config ou Util.
 * `mbstring` si vous utilisez le composant Email.
