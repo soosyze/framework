@@ -31,7 +31,7 @@ class Router
     /**
      * Objets à appeler.
      *
-     * @var array
+     * @var object[]
      */
     protected $objects = [];
 
@@ -96,8 +96,8 @@ class Router
     /**
      * Exécute la méthode d'un contrôleur à partir d'une route et de la requête.
      *
-     * @param array   $route
-     * @param Request $request
+     * @param array            $route
+     * @param RequestInterface $request
      *
      * @return mixed Le retour de la méthode appelée.
      */
@@ -126,7 +126,7 @@ class Router
     }
 
     /**
-     * remplace les / par sa valeur encodé.
+     * Remplace les / par sa valeur encodé.
      *
      * @param string $str
      *
@@ -174,7 +174,7 @@ class Router
     /**
      * Retourne la base de votre URL.
      *
-     * @return string L'url.
+     * @return string L'URL.
      */
     public function getBasePath()
     {
@@ -188,6 +188,8 @@ class Router
      * Les configurations possibles pour le router.
      *
      * @param array $settings
+     *
+     * @return $this
      */
     public function setSettings(array $settings)
     {
@@ -200,6 +202,8 @@ class Router
      * Ajout des objets à instancier lors de l'appel.
      *
      * @param object[] $obj
+     *
+     * @return $this
      */
     public function setObjects(array $obj)
     {
@@ -212,6 +216,8 @@ class Router
      * Ajoute une nouvelle requête courante.
      *
      * @param RequestInterface $request
+     *
+     * @return $this
      */
     public function setRequest(RequestInterface $request)
     {

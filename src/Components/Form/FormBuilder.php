@@ -981,6 +981,8 @@ class FormBuilder
      * @param int|string $length
      * @param array      $replacement
      * @param bool       $after       Si le tableau de remplacement doit être intègré après.
+     *
+     * @return void
      */
     private function array_splice_assoc(
         array &$input,

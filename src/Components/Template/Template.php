@@ -189,7 +189,7 @@ class Template
     /**
      * Retourne un bloc de la template à partir de sa clé.
      *
-     * @param string $key nom de la template recherchée
+     * @param string $key Nom de la template recherchée
      *
      * @throws \Exception Le bloc n'existe pas.
      * @return Template

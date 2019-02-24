@@ -27,6 +27,8 @@ class StreamFactory
      * The stream SHOULD be created with a temporary resource.
      *
      * @param string $content String content with which to populate the stream.
+     *
+     * @return \Psr\Http\Message\StreamInterface
      */
     public function createStream($content = '')
     {
@@ -44,8 +46,9 @@ class StreamFactory
      * @param string $filename The filename or stream URI to use as basis of stream.
      * @param string $mode     The mode with which to open the underlying filename/stream.
      *
-     * @throws \RuntimeException         If the file cannot be opened.
-     * @throws \InvalidArgumentException If the mode is invalid.
+     * @throws \RuntimeException                 If the file cannot be opened.
+     * @throws \InvalidArgumentException         If the mode is invalid.
+     * @return \Psr\Http\Message\StreamInterface
      */
     public function createStreamFromFile($filename, $mode = 'r')
     {
@@ -58,6 +61,8 @@ class StreamFactory
      * The stream MUST be readable and may be writable.
      *
      * @param resource $resource The PHP resource to use as the basis for the stream.
+     *
+     * @return \Psr\Http\Message\StreamInterface
      */
     public function createStreamFromResource($resource)
     {

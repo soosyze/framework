@@ -433,6 +433,8 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @param array|mixed $output Tableau qui sera rempli par référence.
      * @param array       $array  Informations contenus dans l'une des clés standards.
      * @param string      $name   Clés standards de la variable superglobale $_FILES.
+     *
+     * @return void
      */
     private static function normaliseFile(&$output, array $array, $name)
     {

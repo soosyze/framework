@@ -108,7 +108,9 @@ class Autoload
      *
      * @see http://www.php-fig.org/psr/psr-4/
      *
-     * @param string|bool $class le nom de la classe appelée
+     * @param string $class Nom de la classe appelée.
+     *
+     * @return string|bool Nom de la classe appelée ou FALSE.
      */
     public function autoload($class)
     {
@@ -162,8 +164,8 @@ class Autoload
     }
 
     /**
-     * Si le fichier existe alors l'appel et retourne true,
-     * sinon retourne false.
+     * Si le fichier existe alors l'appel et retourne TRUE,
+     * sinon retourne FALSE.
      *
      * @param string $file Chemin d'un fichier.
      *

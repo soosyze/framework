@@ -38,7 +38,8 @@ class UploadedFileFactory
      * @param string          $clientFilename  The filename as provided by the client, if any.
      * @param string          $clientMediaType The media type as provided by the client, if any.
      *
-     * @throws \InvalidArgumentException If the file resource is not readable.
+     * @throws \InvalidArgumentException               If the file resource is not readable.
+     * @return \Psr\Http\Message\UploadedFileInterface
      */
     public function createUploadedFile(
         StreamInterface $stream,

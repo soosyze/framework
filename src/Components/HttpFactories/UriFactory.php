@@ -26,7 +26,8 @@ class UriFactory
      *
      * @param string $uri The URI to parse.
      *
-     * @throws \InvalidArgumentException If the given URI cannot be parsed.
+     * @throws \InvalidArgumentException      If the given URI cannot be parsed.
+     * @return \Psr\Http\Message\UriInterface
      */
     public function createUri($uri = '')
     {

@@ -66,6 +66,8 @@ class Controller
      * Ajoute le container d'injection de dépendance au contrôleur.
      *
      * @param Container $container CID.
+     *
+     * @return $this
      */
     public function setContainer($container)
     {

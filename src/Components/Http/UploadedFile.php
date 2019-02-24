@@ -61,6 +61,7 @@ class UploadedFile implements UploadedFileInterface
      * Codes d'erreurs approprié dans le tableau de fichier.
      *
      * @see http://php.net/manual/fr/features.file-upload.errors.php
+     *
      * @var int[]
      */
     protected $errors = [

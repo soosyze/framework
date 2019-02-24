@@ -24,8 +24,9 @@ class Stream implements StreamInterface
     /**
      * Modes d'écriture et de lecture d'une ressource.
      *
-     * @var array
      * @see http://php.net/manual/function.fopen.php
+     *
+     * @var array
      */
     protected static $modes = [
         'read'  => [
@@ -225,6 +226,7 @@ class Stream implements StreamInterface
      *                    basé sur le décalage de recherche.
      *
      * @throws \RuntimeException Une erreur est survenue.
+     * @return void
      */
     public function seek($offset, $whence = SEEK_SET)
     {
@@ -238,6 +240,7 @@ class Stream implements StreamInterface
      * Replace le pointeur au début du flux.
      *
      * @throws \RuntimeException Une erreur est survenue.
+     * @return void
      */
     public function rewind()
     {

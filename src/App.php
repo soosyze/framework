@@ -277,6 +277,8 @@ abstract class App
      * Ajoute les environnements à l'application (clé=>machine).
      *
      * @param array $env Liste des environnements.
+     *
+     * @return $this
      */
     public function setEnvironnement(array $env)
     {
@@ -349,6 +351,8 @@ abstract class App
 
     /**
      * Cherche les routes des modules et les charge dans l'application.
+     *
+     * @return void
      */
     protected function loadRoutesAndServices()
     {

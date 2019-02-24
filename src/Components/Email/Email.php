@@ -32,9 +32,7 @@ class Email
     protected $message;
 
     /**
-     * Les paramètres d'entête.
-     *
-     * Pré-remplis par défaut pour un email basique.
+     * Les paramètres d'entête. Pré-remplis par défaut pour un email basique.
      *
      * @var array
      */
