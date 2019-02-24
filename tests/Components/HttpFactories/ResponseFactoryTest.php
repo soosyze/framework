@@ -20,14 +20,6 @@ class ResponseFactoryTest extends \PHPUnit\Framework\TestCase
         $this->object = new ResponseFactory;
     }
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-    }
-
     public function testCreateResponse()
     {
         $response = $this->object->createResponse();

@@ -21,14 +21,6 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         $this->object = new Response;
     }
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-    }
-
     public function testSetUpResponse()
     {
         $this->assertAttributeSame(200, 'code', $this->object);

@@ -2,6 +2,8 @@
 
 namespace Soosyze\Test;
 
+use Soosyze\Autoload;
+
 class AutoloadTest extends \PHPUnit\Framework\TestCase
 {
     /**
@@ -15,7 +17,7 @@ class AutoloadTest extends \PHPUnit\Framework\TestCase
      */
     protected function setUp()
     {
-        $this->object = new \Soosyze\Autoload([
+        $this->object = new Autoload([
             'Soosyze\Tests'            => __DIR__,
             'Soosyze\Tests\Components' => __DIR__ . '\Components'
         ]);
@@ -23,14 +25,6 @@ class AutoloadTest extends \PHPUnit\Framework\TestCase
         $this->object->register();
     }
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-    }
-    
     public function testSetPrefix()
     {
         $this->object->setPrefix([]);
@@ -87,7 +81,7 @@ class AutoloadTest extends \PHPUnit\Framework\TestCase
 
     public function testAutoloadMap()
     {
-        $auto = new \Soosyze\Autoload;
+        $auto = new Autoload;
         $auto->setMap([
             __DIR__
         ]);
@@ -99,7 +93,7 @@ class AutoloadTest extends \PHPUnit\Framework\TestCase
 
     public function testAutoloadMapError()
     {
-        $auto = new \Soosyze\Autoload;
+        $auto = new Autoload;
         $auto->setMap([
             __DIR__ . '\error'
         ]);

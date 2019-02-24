@@ -25,14 +25,6 @@ class UploadedFileRessourceTest extends \PHPUnit\Framework\TestCase
         $this->object = new UploadedFile($resource);
     }
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-    }
-
     public function testGetStream()
     {
         $stream = $this->object->getStream();

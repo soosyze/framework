@@ -22,14 +22,6 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-    }
-
-    /**
      * @expectedException \Exception
      */
     public function testConstructException()

@@ -7,7 +7,7 @@ use Soosyze\Components\Http\Redirect;
 class RedirectTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Response
+     * @var Redirect
      */
     protected $object;
 
@@ -18,14 +18,6 @@ class RedirectTest extends \PHPUnit\Framework\TestCase
     protected function setUp()
     {
         $this->object = new Redirect('http://exemple.com');
-    }
-
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
     }
 
     public function testSetUpResponse()

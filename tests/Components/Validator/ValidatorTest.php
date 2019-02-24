@@ -22,17 +22,9 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-    }
-
-    /**
      * @expectedException \Exception
      */
-    public function testValidException()
+    public function testxception()
     {
         $this->object
             ->addInput('field_between', 4)
@@ -74,7 +66,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testValidAlphaNum()
+    public function testAlphaNum()
     {
         $this->object->setInputs([
             'field_alpha_num'              => 'hello2000',
@@ -102,7 +94,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testValidAlphaNumText()
+    public function testAlphaNumText()
     {
         $this->object->setInputs([
             'field_alpha_num'              => 'hello2000.',
@@ -130,7 +122,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testValidArray()
+    public function testArray()
     {
         $this->object->setInputs([
             'field_array'              => [ 0, 1, 2 ],
@@ -158,7 +150,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testValidBetween()
+    public function testBetween()
     {
         $this->object->setInputs([
             /* Text */
@@ -226,7 +218,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \Exception
      */
-    public function testValidBetweenMissingException()
+    public function testBetweenMissingException()
     {
         $this->object
             ->addInput('field_between', 4)
@@ -237,7 +229,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \Exception
      */
-    public function testValidBetweenExceptionTypeMin()
+    public function testBetweenExceptionTypeMin()
     {
         $this->object
             ->addInput('field_between', 4)
@@ -248,7 +240,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \Exception
      */
-    public function testValidBetweenExceptionTypeMax()
+    public function testBetweenExceptionTypeMax()
     {
         $this->object
             ->addInput('field_between', 4)
@@ -259,7 +251,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \Exception
      */
-    public function testValidBetweenMinUpperMax()
+    public function testBetweenMinUpperMax()
     {
         $this->object
             ->addInput('field_between', 4)
@@ -270,7 +262,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \Exception
      */
-    public function testValidBetweenExceptionValue()
+    public function testBetweenExceptionValue()
     {
         $this->object
             ->addInput('field_between', new \stdClass())
@@ -278,7 +270,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->isValid();
     }
 
-    public function testValidBool()
+    public function testBool()
     {
         $this->object->setInputs([
             /* true */
@@ -328,7 +320,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testValidDate()
+    public function testDate()
     {
         $this->object->setInputs([
             'field_date'              => '10/01/1994',
@@ -356,7 +348,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testValidDateFormat()
+    public function testDateFormat()
     {
         $this->object->setInputs([
             'field_date'              => '10/01/1994',
@@ -386,7 +378,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(3, $this->object->getErrors());
     }
 
-    public function testValidDateAfter()
+    public function testDateAfter()
     {
         $this->object->setInputs([
             'field_date'              => '10/02/1994',
@@ -418,7 +410,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(4, $this->object->getErrors());
     }
 
-    public function testValidDateAfterOrEqual()
+    public function testDateAfterOrEqual()
     {
         $this->object->setInputs([
             'field_date'              => '10/01/1994',
@@ -446,7 +438,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testValidDateBefore()
+    public function testDateBefore()
     {
         $this->object->setInputs([
             'field_date'              => '09/01/1994',
@@ -478,7 +470,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(4, $this->object->getErrors());
     }
 
-    public function testValidDateBeforeOrEqual()
+    public function testDateBeforeOrEqual()
     {
         $this->object->setInputs([
             'field_date'              => '10/01/1994',
@@ -506,7 +498,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testValidDir()
+    public function testDir()
     {
         $this->object->setInputs([
             'field_dir'              => __DIR__,
@@ -534,7 +526,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testValidEqual()
+    public function testEqual()
     {
         $this->object->setInputs([
             'field_equals'              => 'hello',
@@ -564,7 +556,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testValidFloat()
+    public function testFloat()
     {
         $this->object->setInputs([
             'field_float'              => 10.1,
@@ -596,7 +588,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testValidEmail()
+    public function testEmail()
     {
         $this->object->setInputs([
             'field_email'              => 'my-mail@mail.fr',
@@ -624,7 +616,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testValidIp()
+    public function testIp()
     {
         $this->object->setInputs([
             'field_ip'              => '127.0.0.1',
@@ -652,7 +644,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testValidInt()
+    public function testInt()
     {
         $this->object->setInputs([
             'field_int'              => 10,
@@ -686,7 +678,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testValidJson()
+    public function testJson()
     {
         $json = '{"key":"value"}';
 
@@ -699,7 +691,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_json'              => 'json',
             'field_not_json'          => '!json',
             'field_json_required'     => 'required|json',
-            'field_json_not_required' => '!required|jsonF'
+            'field_json_not_required' => '!required|json'
         ]);
 
         $this->assertTrue($this->object->isValid());
@@ -716,7 +708,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testValidInArray()
+    public function testInArray()
     {
         $this->object->setInputs([
             'field_inArray'              => '1',
@@ -744,7 +736,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testValidMax()
+    public function testMax()
     {
         $this->object->setInputs([
             /* Text */
@@ -803,7 +795,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \Exception
      */
-    public function testValidMaxExceptionMin()
+    public function testMaxExceptionMin()
     {
         $this->object
             ->addInput('field_text_max', 4)
@@ -814,7 +806,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \Exception
      */
-    public function testValidMaxExceptionValue()
+    public function testMaxExceptionValue()
     {
         $this->object
             ->addInput('field_text_max', new \stdClass())
@@ -822,7 +814,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->isValid();
     }
 
-    public function testValidMin()
+    public function testMin()
     {
         $stream = fopen('php://temp', 'r+');
         fwrite($stream, 'test content');
@@ -901,7 +893,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \Exception
      */
-    public function testValidMinExceptionMin()
+    public function testMinExceptionMin()
     {
         $this->object
             ->addInput('field_text_min', 4)
@@ -912,7 +904,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \Exception
      */
-    public function testValidMinExceptionValue()
+    public function testMinExceptionValue()
     {
         $this->object
             ->addInput('field_text_min', new \stdClass())
@@ -920,7 +912,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->isValid();
     }
 
-    public function testValidRequiredWith()
+    public function testRequiredWith()
     {
         $this->object->setInputs([
             'field_int'   => '',
@@ -960,7 +952,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \Exception
      */
-    public function testValidRequiredWithException()
+    public function testRequiredWithException()
     {
         $this->object->setRules([
             'field_required_whith' => 'required_with:field_error'
@@ -970,14 +962,14 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \Exception
      */
-    public function testValidRequiredWithVoidException()
+    public function testRequiredWithVoidException()
     {
         $this->object->setRules([
             'field_required_whith' => 'required_with:'
         ])->isValid();
     }
 
-    public function testValidRequiredWithout()
+    public function testRequiredWithout()
     {
         $this->object->setInputs([
             'field_int'   => 1,
@@ -1017,14 +1009,14 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \Exception
      */
-    public function testValidRequiredWithoutException()
+    public function testRequiredWithoutException()
     {
         $this->object->setRules([
             'field_required_whith' => 'required_without:field_error'
         ])->isValid();
     }
 
-    public function testValidRegex()
+    public function testRegex()
     {
         $this->object->setInputs([
             'field_regex'              => 'hello world',
@@ -1052,7 +1044,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testValidSlug()
+    public function testSlug()
     {
         $this->object->setInputs([
             'field_slug'              => 'hello-world',
@@ -1080,7 +1072,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testValidString()
+    public function testString()
     {
         $this->object->setInputs([
             'field_text'           => 'Lorem ipsum',
@@ -1118,7 +1110,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(6, $this->object->getErrors());
     }
 
-    public function testValidToken()
+    public function testToken()
     {
         $_SESSION[ 'token' ]      = 'Lorem ipsum dolor sit amet';
         $_SESSION[ 'token_time' ] = time();
@@ -1139,7 +1131,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \Exception
      */
-    public function testValidTokenException()
+    public function testTokenException()
     {
         $_SESSION[ 'token' ]      = 'Lorem ipsum dolor sit amet';
         $_SESSION[ 'token_time' ] = time();
@@ -1150,7 +1142,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->isValid();
     }
 
-    public function testValidTokenErrorSession()
+    public function testTokenErrorSession()
     {
         @session_destroy();
         $this->object
@@ -1161,7 +1153,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(1, $this->object->getErrors());
     }
 
-    public function testValidTokenErrorSessionTime()
+    public function testTokenErrorSessionTime()
     {
         $_SESSION[ 'token' ]      = 'Lorem ipsum dolor sit amet';
         $_SESSION[ 'token_time' ] = time() - 1000;
@@ -1174,7 +1166,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(1, $this->object->getErrors());
     }
 
-    public function testValidTokenErrorSessionToken()
+    public function testTokenErrorSessionToken()
     {
         $_SESSION[ 'token' ]      = 'Lorem ipsum dolor sit amet';
         $_SESSION[ 'token_time' ] = time();
@@ -1188,7 +1180,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(1, $this->object->getErrors());
     }
 
-    public function testValidUrl()
+    public function testUrl()
     {
         $this->object->setInputs([
             'field_url'              => 'http://localhost.fr',
@@ -1216,7 +1208,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testValideHtmlsc()
+    public function testHtmlsc()
     {
         $this->object
             ->addInput('field_html', '<p>bonjour</p>')
@@ -1229,7 +1221,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \Exception
      */
-    public function testValideHtmlscException()
+    public function testHtmlscException()
     {
         $this->object
             ->addInput('field_html', 1)
@@ -1237,7 +1229,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->isValid();
     }
 
-    public function testValideStripTags()
+    public function testStripTags()
     {
         $this->object
             ->addInput('field_html', '<p>bonjour <a href="#">lien</a></p>')
@@ -1250,7 +1242,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \Exception
      */
-    public function testValideStripTagsException()
+    public function testStripTagsException()
     {
         $this->object
             ->addInput('field_html', 1)

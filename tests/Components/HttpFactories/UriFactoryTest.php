@@ -20,18 +20,6 @@ class UriFactoryTest extends \PHPUnit\Framework\TestCase
         $this->object = new UriFactory;
     }
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-    }
-
-    /**
-     * @covers \Soosyze\Components\HttpFactories\UriFactory::createUri
-     * @todo   Implement testCreateUri().
-     */
     public function testCreateUri()
     {
         $uri = $this->object->createUri('http://username:password@hostname:80/path?arg=value#anchor');

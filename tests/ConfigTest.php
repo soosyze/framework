@@ -1,6 +1,8 @@
 <?php
 
-namespace Soosyze;
+namespace Soosyze\Test;
+
+use Soosyze\Config;
 
 class ConfigTest extends \PHPUnit\Framework\TestCase
 {
@@ -25,14 +27,6 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
     protected function setUp()
     {
         $this->object = new Config('tests/config', 'local');
-    }
-
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
     }
 
     public function testhas()

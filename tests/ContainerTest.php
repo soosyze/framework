@@ -2,6 +2,8 @@
 
 namespace Soosyze\Test;
 
+use Soosyze\Container;
+
 class ContainerTest extends \PHPUnit\Framework\TestCase
 {
     /**

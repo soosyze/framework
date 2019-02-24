@@ -4,11 +4,12 @@ namespace Soosyze\Test;
 
 use Soosyze\Components\Http\Request;
 use Soosyze\Components\Http\Uri;
+use Soosyze\Router;
 
 class RoutingTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Routing
+     * @var Router
      */
     protected $object;
 
@@ -39,7 +40,7 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
             ]
         ];
 
-        $this->object = new \Soosyze\Router($routes);
+        $this->object = new Router($routes);
         $this->object->setObjects([ 'TestController' => new TestController() ]);
     }
 
@@ -105,7 +106,7 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals($result, 'hello page 1');
     }
-    
+
     /**
      * @expectedException \Exception
      */
