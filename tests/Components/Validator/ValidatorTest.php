@@ -757,6 +757,10 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_not_int_max'           => 6,
             'field_int_max_required'      => 5,
             'field_int_max_not_required'  => '',
+            /* Numeric */
+            'field_numeric_max'           => '5',
+            'field_not_numeric_max'       => '6',
+            'field_numeric_max_required'  => '5',
             /* Tableau */
             'field_array_max'             => [ 1, 2, 3, 4, 5 ],
             'field_not_array_max'         => [ 1, 2, 3, 4, 5, 6 ]
@@ -771,7 +775,11 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_not_int_max'           => '!max:5',
             'field_int_max_required'      => 'required|max:5',
             'field_int_max_not_required'  => '!required|max:5',
-            /* Entier */
+            /* Numeric */
+            'field_numeric_max'           => 'max:5',
+            'field_not_numeric_max'       => '!max:5',
+            'field_numeric_max_required'  => 'required|max:5',
+            /* Tableau */
             'field_array_max'             => 'max:5',
             'field_not_array_max'         => '!max:5'
         ]);
@@ -821,40 +829,56 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
         $this->object->setInputs([
             /* Text */
-            'field_text_min'              => 'Lorem ipsum',
-            'field_not_text_min'          => 'Lore',
-            'field_text_min_required'     => 'Lorem ipsum',
-            'field_text_min_not_required' => '',
+            'field_text_min'                   => 'Lorem ipsum',
+            'field_not_text_min'               => 'Lore',
+            'field_text_min_required'          => 'Lorem ipsum',
+            'field_text_min_not_required'      => '',
             /* Entier */
-            'field_int_min'               => 5,
-            'field_not_int_min'           => 4,
-            'field_int_min_required'      => 5,
-            'field_int_min_not_required'  => '',
+            'field_int_min'                    => 5,
+            'field_not_int_min'                => 4,
+            'field_int_min_required'           => 5,
+            'field_int_min_not_required'       => '',
+            /* Numeric entier */
+            'field_numeric_int_min'            => '5',
+            'field_not_numeric_int_min'        => '4',
+            'field_numeric_int_min_required'   => '5',
+            /* Numeric flottant */
+            'field_numeric_float_min'          => '5.5',
+            'field_not_numeric_float_min'      => '4.5',
+            'field_numeric_int_float_required' => '5.5',
             /* Tableau */
-            'field_array_min'             => [ 1, 2, 3, 4, 5 ],
-            'field_not_array_min'         => [ 1, 2, 3, 4 ],
+            'field_array_min'                  => [ 1, 2, 3, 4, 5 ],
+            'field_not_array_min'              => [ 1, 2, 3, 4 ],
             /* Ressource */
-            'field_ressource_min'         => $stream,
+            'field_ressource_min'              => $stream,
             /* Object */
-            'field_object_min'            => new ObjectTest
+            'field_object_min'                 => new ObjectTest
         ])->setRules([
             /* Text */
-            'field_text_min'              => 'min:5',
-            'field_not_text_min'          => '!min:5',
-            'field_text_min_required'     => 'required|min:5',
-            'field_text_min_not_required' => '!required|min:5',
+            'field_text_min'                   => 'min:5',
+            'field_not_text_min'               => '!min:5',
+            'field_text_min_required'          => 'required|min:5',
+            'field_text_min_not_required'      => '!required|min:5',
             /* Entier */
-            'field_int_min'               => 'min:5',
-            'field_not_int_min'           => '!min:5',
-            'field_int_min_required'      => 'required|min:5',
-            'field_int_min_not_required'  => '!required|min:5',
-            /* Entier */
-            'field_array_min'             => 'min:5',
-            'field_not_array_min'         => '!min:5',
+            'field_int_min'                    => 'min:5',
+            'field_not_int_min'                => '!min:5',
+            'field_int_min_required'           => 'required|min:5',
+            'field_int_min_not_required'       => '!required|min:5',
+            /* Numeric entier */
+            'field_numeric_int_min'            => 'min:5',
+            'field_not_numeric_int_min'        => '!min:5',
+            'field_numeric_int_min_required'   => 'required|min:5',
+            /* Numeric flottant */
+            'field_numeric_float_min'          => 'min:5.5',
+            'field_not_numeric_float_min'      => '!min:5.0',
+            'field_numeric_int_float_required' => 'required|min:5.5',
+            /* Tableau */
+            'field_array_min'                  => 'min:5',
+            'field_not_array_min'              => '!min:5',
             /* Ressource */
-            'field_ressource_min'         => 'min:5',
+            'field_ressource_min'              => 'min:5',
             /* Object */
-            'field_object_min'            => 'min:5'
+            'field_object_min'                 => 'min:5'
         ]);
 
         $this->assertTrue($this->object->isValid());
