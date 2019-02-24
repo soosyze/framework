@@ -230,4 +230,22 @@ class Util
 
         return $subject;
     }
+    
+    /**
+     * Génère une chaine aléatoire.
+     *
+     * @param int    $length Longueur de la chaîne à générer.
+     * @param string $chars  Liste de caractères utilisés pour la génération aléatoire.
+     *
+     * @return string
+     */
+    public static function strRandom($length = 20, $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_')
+    {
+        $str = '';
+        for ($i = 0; $i < $length; $i++) {
+            $str .= $chars[ rand(0, strlen($chars) - 1) ];
+        }
+
+        return $str;
+    }
 }
