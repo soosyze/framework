@@ -69,6 +69,8 @@ class Router
      */
     public function parse(RequestInterface $request)
     {
+        /* Rempli un array des paramètres de l'Uri. */
+        $query = $this->parseQueryFromRequest($request);
         foreach ($this->routes as $key => $route) {
             if (strtoupper($route[ 'methode' ]) !== $request->getMethod()) {
                 continue;
@@ -76,19 +78,15 @@ class Router
             $path = $this->relplaceSlash($route[ 'path' ]);
 
             if (isset($route[ 'with' ])) {
-                foreach ($route[ 'with' ] as $flag => $value) {
-                    $path = str_replace($flag, $value, $path);
+                $key = array_keys($route[ 'with' ]);
+                $path = str_replace($key, $route[ 'with' ], $path);
+
+                if (preg_match('/^' . $path . '$/', $query)) {
+                    return array_merge($route, [ 'key' => $key ]);
                 }
-            }
-
-            /* Rempli un array des paramètres de l'Uri. */
-            $query = $this->parseQueryFromRequest($request);
-
-            if (preg_match('/^' . $path . '$/', $query)) {
+            } elseif ($path === $query) {
                 /* Ajoute la clé de la route aux données. */
-                $route[ 'key' ] = $key;
-
-                return $route;
+                return array_merge($route, [ 'key' => $key ]);
             }
         }
 
@@ -180,7 +178,10 @@ class Router
      */
     public function getBasePath()
     {
-        return $this->currentRequest->getUri()->getBasePath();
+        $uri = $this->currentRequest->getUri();
+
+        return $uri->getScheme() . '://' . $uri->getHost() .
+            substr($uri->getPath(), 0, strrpos($uri->getPath(), '/') + 1);
     }
 
     /**
@@ -274,16 +275,15 @@ class Router
      */
     protected function parseParam($route, $query, array $param)
     {
-        $paramOutput = [];
-        $paramRoute  = explode('/', $route);
-        $paramQuery  = explode('%2F', $query);
+        $output     = [];
+        $paramQuery = explode('%2F', $query);
 
-        foreach ($paramRoute as $key => $value) {
-            if (array_key_exists($value, $param)) {
-                $paramOutput[] = $paramQuery[ $key ];
+        foreach (explode('/', $route) as $key => $value) {
+            if (isset($param[ $value ])) {
+                $output[] = $paramQuery[ $key ];
             }
         }
 
-        return $paramOutput;
+        return $output;
     }
 }
