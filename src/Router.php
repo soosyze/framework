@@ -78,8 +78,8 @@ class Router
             $path = $this->relplaceSlash($route[ 'path' ]);
 
             if (isset($route[ 'with' ])) {
-                $key = array_keys($route[ 'with' ]);
-                $path = str_replace($key, $route[ 'with' ], $path);
+                $key_route = array_keys($route[ 'with' ]);
+                $path      = str_replace($key_route, $route[ 'with' ], $path);
 
                 if (preg_match('/^' . $path . '$/', $query)) {
                     return array_merge($route, [ 'key' => $key ]);
