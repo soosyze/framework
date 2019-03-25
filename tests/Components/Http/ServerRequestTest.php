@@ -198,12 +198,14 @@ class ServerRequestTest extends \PHPUnit\Framework\TestCase
     {
         $_SERVER = [
             'HTTP_HOST'      => 'exemple.com',
-            'REQUEST_URI'    => '/test',
-            'REQUEST_METHOD' => 'GET'
+            'REQUEST_URI'    => '/test/index.php/other',
+            'REQUEST_METHOD' => 'GET',
+            'SCRIPT_NAME'    => '/test/index.php'
         ];
         $request = ServerRequest::create();
         $_FILES  = [];
         $this->assertAttributeSame($_SERVER, 'serverParams', $request);
+        $this->assertEquals('http://exemple.com/test/', $request->getBasePath());
     }
 
     public function testAttributes()
