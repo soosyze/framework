@@ -319,6 +319,60 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($this->object->isValid());
         $this->assertCount(2, $this->object->getErrors());
     }
+    
+    public function testColorHex()
+    {
+        $this->object->setInputs([
+            'field_color3_default'     => '#FFF',
+            'field_color6_default'     => '#FFFFFF',
+            'field_color3'             => '#FFF',
+            'field_not_color3'         => 'not color',
+            'field_color6'             => '#FFFFFF',
+            'field_not_color6'         => 'not color',
+            'field_color_required'     => '#FFF',
+            'field_color_not_required' => ''
+        ])->setRules([
+            'field_color3_default'     => 'colorhex',
+            'field_color6_default'     => 'colorhex',
+            'field_color3'             => 'colorhex:3',
+            'field_not_color3'         => '!colorhex:3',
+            'field_color6'             => 'colorhex:6',
+            'field_not_color6'         => '!colorhex:6',
+            'field_color_required'     => 'required|colorhex',
+            'field_color_not_required' => '!required|colorhex',
+        ]);
+
+        $this->assertTrue($this->object->isValid());
+
+        $this->object->setInputs([
+            'field_color6_symbol' => 'FFFFFF',
+            'field_color6_letter' => '#FFFFFM',
+            'field_color6_length' => '#FFFFFFF',
+            'field_color3_symbol' => 'FFF',
+            'field_color3_letter' => '#FFM',
+            'field_color3_length' => '#FFFF',
+        ])->setRules([
+            'field_color6_symbol' => 'colorhex:6',
+            'field_color6_letter' => 'colorhex:6',
+            'field_color6_length' => 'colorhex:6',
+            'field_color3_symbol' => 'colorhex:3',
+            'field_color3_letter' => 'colorhex:3',
+            'field_color3_length' => 'colorhex:3',
+        ]);
+
+        $this->assertFalse($this->object->isValid());
+        $this->assertCount(6, $this->object->getErrors());
+    }
+    
+    /**
+     * @expectedException \Exception
+     */
+    public function testColorHexException()
+    {
+        $this->object->addInput('field_color3_default', '#FFF')
+            ->addRule('field_color3_default', 'colorhex:4')
+            ->isValid();
+    }
 
     public function testDate()
     {

@@ -36,6 +36,7 @@ class Validator
         'array'                   => 'Rules\ArrayR',
         'between'                 => 'Rules\Between',
         'bool'                    => 'Rules\BoolR',
+        'colorhex'                => 'Rules\ColorHex',
         'date'                    => 'Rules\Date',
         'date_after'              => 'Rules\DateAfter',
         'date_after_or_equal'     => 'Rules\DateAfterOrEqual',
