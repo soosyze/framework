@@ -90,6 +90,7 @@ class Container implements ContainerInterface
     public function setServices(array $services)
     {
         $this->services = $services;
+        $this->loadHooks($services);
 
         return $this;
     }
@@ -104,6 +105,7 @@ class Container implements ContainerInterface
     public function addServices(array $services)
     {
         $this->services += $services;
+        $this->loadHooks($services);
 
         return $this;
     }
@@ -226,28 +228,15 @@ class Container implements ContainerInterface
      */
     public function callHook($name, array $args = [])
     {
-        $return = '';
-        $key    = strtolower($name);
+        $key = strtolower($name);
         /* Si mes hooks existent, ils sont exécutés. */
-        if (isset($this->hooks[ $key ])) {
-            foreach ($this->hooks[ $key ] as $func) {
-                $return = call_user_func_array($func, $args);
-            }
-        } else {
-            /* Je regarde dans les hooks de mes services. */
-            foreach ($this->services as $service => $value) {
-                /* Si le hook que je recherche existe alors je le charge. */
-                if (isset($value[ 'hooks' ][ $key ])) {
-                    $this->addHook($key, [
-                        /* L'instance de mon service. */
-                        $this->get($service),
-                        /* La fonction à exécuter. */
-                        $value[ 'hooks' ][ $key ] ]);
-                }
-            }
-            if (isset($this->hooks[ $key ])) {
-                $return = $this->callHook($key, $args);
-            }
+        if (!isset($this->hooks[ $key ])) {
+            return '';
+        }
+        foreach ($this->hooks[ $key ] as $services => $func) {
+            $return = \is_string($func)
+                ? call_user_func_array([ $this->get($services), $func ], $args)
+                : call_user_func_array($func, $args);
         }
 
         return $return;
@@ -265,6 +254,23 @@ class Container implements ContainerInterface
         $this->config = $config;
 
         return $this;
+    }
+
+    /**
+     * Charge les hooks contenus dans les services.
+     *
+     * @param array $services
+     */
+    protected function loadHooks(array $services)
+    {
+        foreach ($services as $service => $value) {
+            if (!isset($value[ 'hooks' ])) {
+                continue;
+            }
+            foreach ($value[ 'hooks' ] as $key => $hook) {
+                $this->hooks[ $key ][ $service ] = $hook;
+            }
+        }
     }
 
     /**
