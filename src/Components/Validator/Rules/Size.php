@@ -31,7 +31,7 @@ abstract class Size extends \Soosyze\Components\Validator\Rule
     {
         if (is_numeric($value)) {
             /* numeric+0 = int|float */
-            return $value+0;
+            return $value + 0;
         }
         if (is_string($value)) {
             return strlen($value);

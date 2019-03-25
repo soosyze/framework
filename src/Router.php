@@ -37,6 +37,7 @@ class Router
 
     /**
      * Requête courante
+     *
      * @var RequestInterface
      */
     protected $currentRequest = null;
@@ -264,7 +265,7 @@ class Router
      * @throws \InvalidArgumentException
      * @return string
      */
-    protected function parseQueryFromRequest(RequestInterface $request = null)
+    public function parseQueryFromRequest(RequestInterface $request = null)
     {
         if ($request === null && $this->currentRequest === null) {
             throw new \InvalidArgumentException('No request is provided.');
@@ -297,7 +298,7 @@ class Router
      *
      * @return array Paramètres présents dans la requête.
      */
-    protected function parseParam($route, $query, array $param)
+    public function parseParam($route, $query, array $param)
     {
         $output     = [];
         $paramQuery = explode('%2F', $query);

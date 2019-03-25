@@ -64,7 +64,7 @@ class Uri implements UriInterface
      * @var string
      */
     protected $path = '';
-
+    
     /**
      * Requête encodée.
      *
@@ -176,9 +176,9 @@ class Uri implements UriInterface
         $authority = $this->getUserInfo()
             ? $this->getUserInfo() . '@'
             : '';
-        $authority .= $this->getHost();
-        $authority .= $this->getPort()
-            ? ':' . $this->getPort()
+        $authority .= $this->host;
+        $authority .= $this->port
+            ? ':' . $this->port
             : '';
 
         return $authority;
@@ -583,10 +583,8 @@ class Uri implements UriInterface
      */
     protected function validPortStandard($port)
     {
-        return
-            in_array($port, $this->ports) &&
-            $this->scheme === array_keys($this->ports, $port)[ 0 ]
-            ;
+        return in_array($port, $this->ports) &&
+            $this->scheme === array_keys($this->ports, $port)[ 0 ];
     }
 
     /**

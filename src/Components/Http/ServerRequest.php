@@ -100,6 +100,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public static function create()
     {
+        $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
         $scheme = isset($_SERVER[ 'HTTPS' ]) && ($_SERVER[ 'HTTPS' ] == 'on' || $_SERVER[ 'HTTPS' ] == 1) ||
             isset($_SERVER[ 'HTTP_X_FORWARDED_PROTO' ]) && $_SERVER[ 'HTTP_X_FORWARDED_PROTO' ] == 'https'
             ? 'https'
@@ -115,7 +116,7 @@ class ServerRequest extends Request implements ServerRequestInterface
             : '1.1';
 
         $request = new ServerRequest(
-            $_SERVER[ 'REQUEST_METHOD' ],
+            $method,
             $uri,
             $headers,
             new Stream(),

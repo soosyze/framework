@@ -27,7 +27,7 @@ class Accepted extends \Soosyze\Components\Validator\Rule
      */
     protected function test($key, $value, $arg, $not = true)
     {
-        if (!filter_var($value, FILTER_VALIDATE_BOOLEAN)&& $not) {
+        if (!filter_var($value, FILTER_VALIDATE_BOOLEAN) && $not) {
             $this->addReturn($key, 'must');
         } elseif (filter_var($value, FILTER_VALIDATE_BOOLEAN) && !$not) {
             $this->addReturn($key, 'not');

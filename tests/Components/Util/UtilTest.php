@@ -139,7 +139,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
     {
         $output = Util::strRandom();
         $this->assertEquals(20, strlen($output));
-        
+
         $output2 = Util::strRandom(30);
         $this->assertEquals(30, strlen($output2));
     }

@@ -230,7 +230,7 @@ class Util
 
         return $subject;
     }
-    
+
     /**
      * Génère une chaine aléatoire.
      *
