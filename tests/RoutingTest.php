@@ -132,7 +132,7 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
         $uri     = Uri::create('http://test.com/?test');
         $request = new Request('GET', $uri);
 
-        $this->object->setRequest($request);
+        $this->object->setRequest($request)->setBasePath('http://test.com/');
         $result = $this->object->getRoute('test.index');
 
         $this->assertEquals($result, 'http://test.com/?/');
@@ -143,7 +143,7 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
         $uri     = Uri::create('http://test.com/?test');
         $request = new Request('GET', $uri);
 
-        $this->object->setRequest($request);
+        $this->object->setRequest($request)->setBasePath('http://test.com/');
         $result = $this->object->getRoute('test.page', [ ':item' => '1' ]);
 
         $this->assertEquals($result, 'http://test.com/?page/1');
@@ -179,12 +179,22 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
         $request = new Request('GET', $uri, [ 'HTTP_MOD_REWRITE' => 'On' ]);
 
         $this->object->setRequest($request)
+            ->setBasePath('http://test.com/')
             ->setSettings([ 'RewriteEngine' => 'on' ]);
 
         $this->assertTrue($this->object->isRewrite());
 
         $result = $this->object->getRoute('test.page', [ ':item' => '1' ]);
         $this->assertEquals($result, 'http://test.com/page/1');
+    }
+    
+    public function testGetBasePath()
+    {
+        $uri     = Uri::create('http://test.com/');
+        $request = new Request('GET', $uri, [ 'HTTP_MOD_REWRITE' => 'On' ]);
+
+        $this->object->setRequest($request);
+        $this->assertEquals($this->object->getBasePath(), '');
     }
 }
 

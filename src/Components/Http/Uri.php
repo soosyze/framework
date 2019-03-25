@@ -386,19 +386,6 @@ class Uri implements UriInterface
     }
 
     /**
-     * Retourne l'URL contenu dans l'URI.
-     *
-     * Cette méthode ne fait pas partie de la norme PSR-7
-     *
-     * @return string L'URL.
-     */
-    public function getBasePath()
-    {
-        return $this->scheme . '://' . $this->host .
-            substr($this->getPath(), 0, strrpos($this->getPath(), '/') + 1);
-    }
-
-    /**
      * Retourne si le port est dans la gamme des ports TCP / UDP.
      *
      * Cette méthode ne fait pas partie de la norme PSR-7

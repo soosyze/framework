@@ -130,6 +130,29 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
+     * Retourne la base de l'URI (schéma + host + path - script_name).
+     *
+     * Cette méthode ne fait pas partie de la norme PSR-7.
+     *
+     * @param string $scriptName Nom du script (optionnel).
+     *
+     * @return string
+     */
+    public function getBasePath($scriptName = '')
+    {
+        $scriptName = $scriptName === ''
+            ? $_SERVER['SCRIPT_NAME']
+            : $scriptName;
+
+        $output = $this->uri->getScheme() . '://' . $this->uri->getHost();
+        $output .= $this->uri->getPort()
+            ? ':' . $this->uri->getPort()
+            : '';
+
+        return $output . str_replace(basename($scriptName), '', $scriptName);
+    }
+
+    /**
      * Récupérer les paramètres du serveur.
      *
      * Récupère les données liées à l'environnement de demande entrante,

@@ -47,6 +47,13 @@ class Router
      * @var array
      */
     protected $settings = [];
+    
+    /**
+     * La base de l'URL de vos routes.
+     *
+     * @var string 
+     */
+    protected $basePath = '';
 
     /**
      * Construit le router avec la liste des routes et les objets à appeler.
@@ -168,7 +175,21 @@ class Router
             }
         }
 
-        return $this->getBasePath() . $prefix . $path;
+        return $this->basePath . $prefix . $path;
+    }
+
+    /**
+     * Ajoute la base de l'URL de vos routes (schéma + host + path - script_name).
+     *
+     * @param string $basePath
+     *
+     * @return $this
+     */
+    public function setBasePath($basePath)
+    {
+        $this->basePath = $basePath;
+
+        return $this;
     }
 
     /**
@@ -178,10 +199,7 @@ class Router
      */
     public function getBasePath()
     {
-        $uri = $this->currentRequest->getUri();
-
-        return $uri->getScheme() . '://' . $uri->getHost() .
-            substr($uri->getPath(), 0, strrpos($uri->getPath(), '/') + 1);
+        return $this->basePath;
     }
 
     /**
