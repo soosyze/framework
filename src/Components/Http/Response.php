@@ -136,10 +136,12 @@ class Response extends Message implements ResponseInterface
      */
     public function __toString()
     {
-        header('HTTP/' . $this->protocolVersion . ' ' . $this->code . ' ' . $this->reasonPhrase);
+        header('HTTP/' . $this->protocolVersion . ' ' . $this->code . ' ' . $this->reasonPhrase, true, $this->code);
 
-        foreach ($this->getHeaders() as $name => $values) {
-            header("$name: " . implode(', ', $values));
+        foreach ($this->headers as $name => $values) {
+            foreach ($values as $value) {
+                header("$name: $value", false);
+            }
         }
 
         return (string) $this->getBody();
