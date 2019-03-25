@@ -143,4 +143,13 @@ class UtilTest extends \PHPUnit\Framework\TestCase
         $output2 = Util::strRandom(30);
         $this->assertEquals(30, strlen($output2));
     }
+
+    public function testStrSlug()
+    {
+        $str = 'L\'amBiguïTé PhoNétiQue ';
+        $this->assertEquals('l-ambiguite_phonetique', Util::strSlug($str));
+
+        $str = ' StœcHioméTRie';
+        $this->assertEquals('stoechiometrie', Util::strSlug($str));
+    }
 }
