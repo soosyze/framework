@@ -248,8 +248,20 @@ class Validator
     public function getInputsWithout()
     {
         $without = func_get_args();
+        foreach ($without as $value) {
+            /* Dans le cas ou les colonnes sont normales. */
+            if (!\is_array($value)) {
+                $inputs[] = $value;
 
-        return array_diff_key($this->inputs, array_flip($without));
+                continue;
+            }
+            /* Dans le cas ou les colonnes sont dans un tableau. */
+            foreach ($value as $fields) {
+                $inputs[] = $fields;
+            }
+        }
+
+        return array_diff_key($this->inputs, array_flip($inputs));
     }
 
     /**
