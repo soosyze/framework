@@ -189,6 +189,29 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertTrue($this->object->isValid());
+        
+        $this->object->setInputs([
+            'field_file_max_size'     => $this->uplaod_txt,
+            'field_not_file_max_size' => $this->uplaod_img
+        ])->setRules([
+            'field_file_max_size'     => 'max:15B',
+            'field_not_file_max_size' => '!max:15B'
+        ]);
+
+        $this->assertTrue($this->object->isValid());
+
+        $this->object->setInputs([
+            /* Text */
+            'field_file_max'     => $this->uplaod_img,
+            'field_not_file_max' => $this->uplaod_txt,
+        ])->setRules([
+            /* Text */
+            'field_file_max'     => 'max:15',
+            'field_not_file_max' => '!max:15',
+        ]);
+
+        $this->assertFalse($this->object->isValid());
+        $this->assertCount(2, $this->object->getErrors());
     }
 
     public function testValidMin()
