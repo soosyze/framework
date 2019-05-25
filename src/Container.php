@@ -71,12 +71,14 @@ class Container implements ContainerInterface
      * @param string $key   Nom du service.
      * @param string $class Objet à instancier.
      * @param array  $arg   Arguments d'instanciation.
+     * @param array  $hooks Liste des hooks.
      *
      * @return $this
      */
-    public function setService($key, $class, array $arg = null)
+    public function setService($key, $class, array $arg = [], array $hooks = [])
     {
-        $this->services[ $key ] = [ 'class' => $class, 'arguments' => $arg ];
+        $this->services[ $key ] = [ 'class' => $class, 'arguments' => $arg, 'hooks' => $hooks ];
+        $this->loadHooks([$this->services[ $key ]]);
 
         return $this;
     }

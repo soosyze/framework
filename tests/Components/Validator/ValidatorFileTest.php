@@ -312,10 +312,10 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
             'field_file_minetypes_required'     => $this->uplaod_img,
             'field_file_minetypes_not_required' => ''
         ])->setRules([
-            'field_file_minetypes'              => 'file_mimetypes:image/png',
-            'field_not_file_minetypes'          => '!file_mimetypes:image/png',
-            'field_file_minetypes_required'     => 'required|file_mimetypes:image/png',
-            'field_file_minetypes_not_required' => '!required|file_mimetypes:image/png'
+            'field_file_minetypes'              => 'file_mimetypes:image',
+            'field_not_file_minetypes'          => '!file_mimetypes:image',
+            'field_file_minetypes_required'     => 'required|file_mimetypes:image',
+            'field_file_minetypes_not_required' => '!required|file_mimetypes:image'
         ]);
 
         $this->assertTrue($this->object->isValid());
@@ -325,9 +325,9 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
             'field_not_file_minetypes'   => $this->uplaod_txt,
             'field_file_minetypes_error' => new UploadedFile($this->file_txt, '', 1, '', UPLOAD_ERR_INI_SIZE)
         ])->setRules([
-            'field_file_minetypes'       => 'file_mimetypes:text/plain',
-            'field_not_file_minetypes'   => '!file_mimetypes:text/plain',
-            'field_file_minetypes_error' => '!file_mimetypes:text/plain'
+            'field_file_minetypes'       => 'file_mimetypes:text',
+            'field_not_file_minetypes'   => '!file_mimetypes:text',
+            'field_file_minetypes_error' => '!file_mimetypes:text'
         ]);
 
         $this->assertFalse($this->object->isValid());

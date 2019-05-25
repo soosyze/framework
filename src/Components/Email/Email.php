@@ -170,11 +170,9 @@ class Email
      */
     public function send()
     {
-        $to      = $this->getHeaderLine('to');
-        $subject = $this->subject;
-        $message = $this->message;
+        $to = $this->getHeaderLine('to');
 
-        return mail($to, $subject, $message, $this->parseHeaders());
+        return mail($to, $this->subject, $this->message, $this->parseHeaders());
     }
 
     /**
@@ -236,14 +234,14 @@ class Email
      */
     public function parseHeaders()
     {
-        $headers = '';
+        $strHeader = '';
         foreach ($this->headers as $key => $value) {
             if ($key !== 'to') {
-                $headers .= $key . ': ' . $this->getHeaderLine($key) . "\r\n";
+                $strHeader .= $key . ': ' . $this->getHeaderLine($key) . "\r\n";
             }
         }
 
-        return $headers;
+        return $strHeader;
     }
 
     /**
@@ -256,7 +254,7 @@ class Email
      */
     protected function parseMail($email, $name = '')
     {
-        return $output = $name !== ''
+        return $name !== ''
             ? '"' . $name . '" <' . $email . '>'
             : $email;
     }

@@ -123,7 +123,7 @@ class File extends \Soosyze\Components\Validator\Rule
      */
     protected function getExtension(UploadedFileInterface $upload)
     {
-        $filename = $filename = $upload->getClientFilename();
+        $filename = $upload->getClientFilename();
 
         return strtolower(pathinfo($filename, PATHINFO_EXTENSION));
     }

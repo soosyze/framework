@@ -36,7 +36,7 @@ class DateBefore extends Date
             return 1;
         }
 
-        $this->dateBefore($value, $arg, $not);
+        $this->testDateBefore($value, $arg, $not);
     }
 
     /**
@@ -46,7 +46,7 @@ class DateBefore extends Date
      * @param string $arg   Date de comparaison.
      * @param bool   $not   Inverse le test.
      */
-    protected function dateBefore($value, $arg, $not = true)
+    protected function testDateBefore($value, $arg, $not = true)
     {
         if (!($value < $arg) && $not) {
             $this->addReturn('date_before', 'before', [ ':datebefore' => $arg ]);

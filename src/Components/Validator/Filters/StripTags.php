@@ -26,7 +26,7 @@ class StripTags extends \Soosyze\Components\Validator\Filter
      *
      * @throws \InvalidArgumentException La valeur time n'est pas numérique.
      */
-    protected function filter(
+    protected function clean(
         $key,
         $value,
         $arg = '<h1><h2><h3><h4><h5><h6><p><span><b><i><u><a><table><thead><tbody><tfoot><tr><th><td><ul><ol><li><dl><dt><dd><img><br><hr>'

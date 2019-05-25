@@ -172,8 +172,8 @@ abstract class App
             ->setInstance('core', $this)
             ->setInstance('config', $config);
 
-        $services = $this->loadServices();
-        $this->container->setServices($services);
+        $this->services = $this->loadServices();
+        $this->container->setServices($this->services);
 
         $this->modules = $this->loadModules();
         $this->loadRoutesAndServices();
@@ -360,13 +360,11 @@ abstract class App
     {
         foreach ($this->modules as $module) {
             if ($module->getPathRoutes()) {
-                $routesConfig = Util::getJson($module->getPathRoutes());
-                $this->routes += $routesConfig;
+                $this->routes += Util::getJson($module->getPathRoutes());
             }
 
             if ($module->getPathServices()) {
-                $servicesConfig = Util::getJson($module->getPathServices());
-                $this->services += $servicesConfig;
+                $this->services += Util::getJson($module->getPathServices());
             }
         }
     }

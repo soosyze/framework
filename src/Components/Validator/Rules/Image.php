@@ -42,31 +42,6 @@ class Image extends FileMimes
     }
 
     /**
-     * {@inheritdoc}
-     */
-    protected function messages()
-    {
-        return parent::messages();
-    }
-
-    /**
-     * Retourne les dimensions d'une image.
-     *
-     * @param UploadedFileInterface $upload Image
-     *
-     * @return int[] Dimensions
-     */
-    protected function getDimensions(UploadedFileInterface $upload)
-    {
-        $dimension = getimagesize($upload->getStream()->getMetadata('uri'));
-
-        return [
-            'width'  => $dimension[ 0 ],
-            'height' => $dimension[ 1 ]
-        ];
-    }
-
-    /**
      * Valide si une liste d'extensions correspond à un mimetype d'image.
      *
      * @param string $extensions Liste d'extensions d'images autorisées.

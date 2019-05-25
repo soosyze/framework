@@ -53,7 +53,7 @@ class Router
     /**
      * La base de l'URL de vos routes.
      *
-     * @var string 
+     * @var string
      */
     protected $basePath = '';
 

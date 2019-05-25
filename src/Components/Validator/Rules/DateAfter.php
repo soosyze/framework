@@ -36,7 +36,7 @@ class DateAfter extends Date
             return 1;
         }
 
-        $this->dateAfter($value, $arg, $not);
+        $this->testDateAfter($value, $arg, $not);
     }
 
     /**
@@ -46,7 +46,7 @@ class DateAfter extends Date
      * @param string $arg   Date de comparaison.
      * @param bool   $not   Inverse le test.
      */
-    protected function dateAfter($value, $arg, $not = true)
+    protected function testDateAfter($value, $arg, $not = true)
     {
         if (!($value > $arg) && $not) {
             $this->addReturn('date_after', 'after', [ ':dateafter' => $arg ]);

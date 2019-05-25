@@ -86,24 +86,24 @@ class Util
      * @throws \Exception                Le fichier JSON est invalide.
      * @return array|object
      */
-    public static function getJson($file, $assoc = true)
+    public static function getJson($strFile, $assoc = true)
     {
         // @codeCoverageIgnoreStart
         if (!extension_loaded('json')) {
             throw new \Exception('The JSON extension is not loaded.');
         }
         // @codeCoverageIgnoreEnd
-        if (!file_exists($file)) {
-            throw new \InvalidArgumentException(htmlspecialchars("The $file file is missing."));
+        if (!file_exists($strFile)) {
+            throw new \InvalidArgumentException(htmlspecialchars("The $strFile file is missing."));
         }
-        if (strrchr($file, '.') != '.json') {
-            throw new \InvalidArgumentException(htmlspecialchars("The $file is not in JSON format."));
+        if (strrchr($strFile, '.') != '.json') {
+            throw new \InvalidArgumentException(htmlspecialchars("The $strFile is not in JSON format."));
         }
-        if (($json = file_get_contents($file)) === null) {
-            throw new \Exception(htmlspecialchars("The $file file is not readable."));
+        if (($json = file_get_contents($strFile)) === null) {
+            throw new \Exception(htmlspecialchars("The $strFile file is not readable."));
         }
         if (($return = json_decode($json, $assoc)) === null) {
-            throw new \Exception(htmlspecialchars("The JSON $file file is invalid."));
+            throw new \Exception(htmlspecialchars("The JSON $strFile file is invalid."));
         }
 
         return $return;
@@ -141,15 +141,15 @@ class Util
     /**
      * Sauvegarde des données dans un fichier au format JSON.
      *
-     * @param string $path Chemin du fichier.
-     * @param string $file Nom du fichier.
-     * @param array  $data Les données.
+     * @param string $strPath     Chemin du fichier.
+     * @param string $strFileName Nom du fichier.
+     * @param array  $data        Les données.
      *
      * @return bool Si le fichier JSON a été sauvegardé.
      */
-    public static function saveJson($path, $file, array $data)
+    public static function saveJson($strPath, $strFileName, array $data)
     {
-        $fp = fopen(self::cleanPath($path) . self::DS . $file . '.json', 'w');
+        $fp = fopen(self::cleanPath($strPath) . self::DS . $strFileName . '.json', 'w');
         fwrite($fp, json_encode($data));
 
         return fclose($fp);
@@ -177,14 +177,11 @@ class Util
      */
     public static function getFolder($dir, $exclude = [ '.', '..' ])
     {
-        $folder = [];
-        if (($dh     = opendir($dir))) {
-            while (($file = readdir($dh)) !== false) {
-                if (!in_array($file, $exclude) && self::getFileExtension($file) === '') {
-                    $folder[] = $file;
-                }
+        $folder       = [];
+        foreach (new \DirectoryIterator($dir) as $file) {
+            if ($file->isDir() && !in_array($file->getBasename(), $exclude)) {
+                $folder[] = $file->getBasename();
             }
-            closedir($dh);
         }
 
         return $folder;
@@ -200,9 +197,9 @@ class Util
      */
     public static function arrayPrefixValue($array, $prefix)
     {
-        array_walk($array, function (&$item1, $key, $prefix) {
-            $item1 = $prefix . $item1;
-        }, $prefix);
+        foreach ($array as &$value) {
+            $value = $prefix . $value;
+        }
 
         return $array;
     }

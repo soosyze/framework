@@ -200,7 +200,7 @@ class Template
             return $find;
         }
 
-        throw new \Exception(htmlspecialchars("The block $key does not exist."));
+        throw new \OutOfBoundsException(htmlspecialchars("The block $key does not exist."));
     }
 
     /**

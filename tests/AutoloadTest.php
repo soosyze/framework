@@ -34,7 +34,7 @@ class AutoloadTest extends \PHPUnit\Framework\TestCase
     public function testPrefix()
     {
         $this->object->setPrefix(['Soosyze\Tests' => __DIR__ ]);
-        $class = $this->object->autoload('Soosyze\Tests\AppTest');
+        $class = $this->object->loader('Soosyze\Tests\AppTest');
 
         $file  = __DIR__ . '\AppTest.php';
         $this->assertEquals($class, str_replace('\\', DIRECTORY_SEPARATOR, $file));
@@ -44,7 +44,7 @@ class AutoloadTest extends \PHPUnit\Framework\TestCase
     {
         $this->object->setPrefix(['Soosyze\Tests' => __DIR__ ]);
         
-        $class = $this->object->autoload('Soosyze\Tests\Error');
+        $class = $this->object->loader('Soosyze\Tests\Error');
         $this->assertFalse($class);
     }
 
@@ -64,18 +64,18 @@ class AutoloadTest extends \PHPUnit\Framework\TestCase
 
     public function testAutoloadLib()
     {
-        $class = $this->object->autoload('Soosyze\Tests\AppTest');
+        $class = $this->object->loader('Soosyze\Tests\AppTest');
         $file  = __DIR__ . '\AppTest.php';
         $this->assertEquals($class, str_replace('\\', DIRECTORY_SEPARATOR, $file));
 
-        $class = $this->object->autoload('Soosyze\Tests\Components\Http\MessageTest');
+        $class = $this->object->loader('Soosyze\Tests\Components\Http\MessageTest');
         $file  = __DIR__ . '\Components\Http\MessageTest.php';
         $this->assertEquals($class, str_replace('\\', DIRECTORY_SEPARATOR, $file));
     }
 
     public function testAutoloadLibError()
     {
-        $class = $this->object->autoload('Soosyze\Tests\Components\Http\Error');
+        $class = $this->object->loader('Soosyze\Tests\Components\Http\Error');
         $this->assertFalse($class);
     }
 
@@ -86,7 +86,7 @@ class AutoloadTest extends \PHPUnit\Framework\TestCase
             __DIR__
         ]);
 
-        $class = $auto->autoload('Components\Http\MessageTest');
+        $class = $auto->loader('Components\Http\MessageTest');
         $file  = __DIR__ . '\Components\Http\MessageTest.php';
         $this->assertEquals($class, str_replace('\\', DIRECTORY_SEPARATOR, $file));
     }
@@ -98,7 +98,7 @@ class AutoloadTest extends \PHPUnit\Framework\TestCase
             __DIR__ . '\error'
         ]);
 
-        $class = $auto->autoload('Soosyze\Tests\Components\Http\MessageTest');
+        $class = $auto->loader('Soosyze\Tests\Components\Http\MessageTest');
         $this->assertFalse($class);
     }
 }

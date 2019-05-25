@@ -99,7 +99,7 @@ class Autoload
      */
     public function register()
     {
-        spl_autoload_register([ __CLASS__, 'autoload' ]);
+        spl_autoload_register([ __CLASS__, 'loader' ]);
     }
 
     /**
@@ -112,7 +112,7 @@ class Autoload
      *
      * @return string|bool Nom de la classe appelée ou FALSE.
      */
-    public function autoload($class)
+    public function loader($class)
     {
         /* On explose la classe par '\' */
         $parts = preg_split('#\\\#', $class);

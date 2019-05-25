@@ -28,7 +28,7 @@ abstract class Filter
      */
     public function execute($key, $value, $arg)
     {
-        return $this->filter($key, $value, $arg);
+        return $this->clean($key, $value, $arg);
     }
 
     /**
@@ -38,5 +38,5 @@ abstract class Filter
      * @param string $value Valeur à filtrer.
      * @param string $arg   Argument de filtre.
      */
-    abstract protected function filter($key, $value, $arg);
+    abstract protected function clean($key, $value, $arg);
 }

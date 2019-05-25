@@ -61,32 +61,25 @@ abstract class Size extends \Soosyze\Components\Validator\Rule
     {
         if (is_numeric($value)) {
             /* numeric+0 = int|float */
-            return $value + 0;
-        }
-        if (is_string($value)) {
-            return strlen($value);
-        }
-        if (is_array($value)) {
-            return count($value);
-        }
-        if ($value instanceof UploadedFileInterface) {
-            if ($value->getError() !== UPLOAD_ERR_OK) {
-                return 0;
-            }
-
-            return $value->getStream()->getSize();
-        }
-        if (is_resource($value)) {
+            $size = $value + 0;
+        } elseif (is_string($value) || method_exists($value, '__toString')) {
+            $size = strlen((string) $value);
+        } elseif (is_array($value)) {
+            $size = count($value);
+        } elseif ($value instanceof UploadedFileInterface) {
+            $size = $value->getError() === UPLOAD_ERR_OK
+                ? $value->getStream()->getSize()
+                : 0;
+        } elseif (is_resource($value)) {
             $stats = fstat($value);
 
-            return isset($stats[ 'size' ])
+            $size = isset($stats[ 'size' ])
                 ? $stats[ 'size' ]
                 : 0;
-        }
-        if (is_object($value) && method_exists($value, '__toString')) {
-            return strlen((string) $value);
+        } else {
+            throw new \InvalidArgumentException('The between function can not test this type of value.');
         }
 
-        throw new \InvalidArgumentException('The between function can not test this type of value.');
+        return $size;
     }
 }

@@ -26,7 +26,7 @@ class Htmlsc extends \Soosyze\Components\Validator\Filter
      *
      * @throws \InvalidArgumentException La valeur time n'est pas numérique.
      */
-    protected function filter($key, $value, $arg)
+    protected function clean($key, $value, $arg)
     {
         if (!is_string($value)) {
             throw new \InvalidArgumentException(htmlspecialchars(

@@ -463,12 +463,10 @@ class Validator
      */
     protected function getRuleArgs($rule)
     {
-        if (($arg = substr(strstr($rule, ':'), 1)) !== false) {
-            /* Si l'argument fait référence à un autre champ. */
-            if ($arg[ 0 ] == '@') {
-                $keyArg = substr($arg, 1);
-                $arg    = $this->inputs[ $keyArg ];
-            }
+        /* Si l'argument fait référence à un autre champ. */
+        if (($arg = substr(strstr($rule, ':'), 1)) !== false && $arg[ 0 ] == '@') {
+            $keyArg = substr($arg, 1);
+            $arg    = $this->inputs[ $keyArg ];
         }
 
         return $arg;
@@ -620,7 +618,7 @@ class Validator
     private function correctInputs()
     {
         if (($diff = array_diff_key($this->rules, $this->inputs))) {
-            foreach ($diff as $key => $value) {
+            foreach (array_keys($diff) as $key) {
                 $this->inputs[ $key ] = '';
             }
         }

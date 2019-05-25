@@ -118,6 +118,7 @@ class FormBuilder
      * @param array  $arg  [$name, id, array attr = null]
      *
      * @throws \BadMethodCallException Le type de champ d'existe pas.
+     *
      * @return $this
      */
     public function __call($type, $arg)
@@ -139,7 +140,8 @@ class FormBuilder
      * @param string   $key      Clé unique.
      * @param callable $callback Fonction de création du sous-formulaire.
      *
-     * @throws \Exception L'élément n'a pas été trouvé.
+     * @throws \OutOfBoundsException L'élément n'a pas été trouvé.
+     *
      * @return $this
      */
     public function addBefore($key, callable $callback)
@@ -148,7 +150,7 @@ class FormBuilder
             return $this;
         }
 
-        throw new \Exception(htmlspecialchars("The item $key was not found."));
+        throw new \OutOfBoundsException(htmlspecialchars("The item $key was not found."));
     }
 
     /**
@@ -157,7 +159,8 @@ class FormBuilder
      * @param string   $key      Clé unique.
      * @param callable $callback Fonction de création du sous-formulaire.
      *
-     * @throws \Exception L'élément n'a pas été trouvé.
+     * @throws \OutOfBoundsException L'élément n'a pas été trouvé.
+     *
      * @return $this
      */
     public function addAfter($key, callable $callback)
@@ -166,7 +169,7 @@ class FormBuilder
             return $this;
         }
 
-        throw new \Exception(htmlspecialchars("The item $key was not found."));
+        throw new \OutOfBoundsException(htmlspecialchars("The item $key was not found."));
     }
 
     /**
@@ -186,11 +189,7 @@ class FormBuilder
      */
     public function renderForm()
     {
-        $html = $this->form_open();
-        $html .= $this->renderSubForm();
-        $html .= $this->form_close();
-
-        return $html;
+        return $this->form_open() . $this->renderSubForm() . $this->form_close();
     }
 
     /**
@@ -235,11 +234,11 @@ class FormBuilder
      */
     public function group($name, $balise, callable $callback, $attr = null)
     {
-        $form  = new FormBuilder([]);
-        call_user_func_array($callback, [ &$form ]);
+        $subform  = new FormBuilder([]);
+        call_user_func_array($callback, [ &$subform ]);
         $group = $this->merge_attr([ 'balise' => $balise ], $attr);
 
-        return $this->input($name, [ 'type' => 'group', 'subform' => $form, 'attr' => $group ]);
+        return $this->input($name, [ 'type' => 'group', 'subform' => $subform, 'attr' => $group ]);
     }
 
     /**
@@ -418,9 +417,8 @@ class FormBuilder
         $html .= isset($attr[ 'for' ]) && $this->isRequired($attr[ 'for' ])
             ? '<span class="form-required">*</span>'
             : '';
-        $html .= "</label>\r\n";
 
-        return $html;
+        return $html . "</label>\r\n";
     }
 
     /**
@@ -495,9 +493,8 @@ class FormBuilder
                 . $option[ 'label' ]
                 . "</option>\r\n";
         }
-        $html .= "</select>\r\n";
 
-        return $html;
+        return $html . "</select>\r\n";
     }
 
     /**
@@ -691,7 +688,8 @@ class FormBuilder
      * @param string $key  Clé unique.
      * @param array  $attr Liste des attributs.
      *
-     * @throws \Exception L'élément n'a pas été trouvé.
+     * @throws \OutOfBoundsException L'élément n'a pas été trouvé.
+     *
      * @return $this
      */
     public function addAttr($key, array $attr)
@@ -700,7 +698,7 @@ class FormBuilder
             return $this;
         }
 
-        throw new \Exception(htmlspecialchars("The item $key was not found."));
+        throw new \OutOfBoundsException(htmlspecialchars("The item $key was not found."));
     }
 
     /**
@@ -725,8 +723,9 @@ class FormBuilder
      *
      * @param string $key Clé unique.
      *
-     * @throws \Exception L'élément n'a pas été trouvé.
-     * @return array      Les données de l'élément.
+     * @throws \OutOfBoundsException L'élément n'a pas été trouvé.
+     *
+     * @return array Les données de l'élément.
      */
     public function getItem($key)
     {
@@ -734,7 +733,7 @@ class FormBuilder
             return $find;
         }
 
-        throw new \Exception(htmlspecialchars("The item $key was not found."));
+        throw new \OutOfBoundsException(htmlspecialchars("The item $key was not found."));
     }
 
     /**
@@ -898,9 +897,9 @@ class FormBuilder
             }
 
             return array_merge($tab1, $tab2);
-        } else {
-            return [];
         }
+
+        return [];
     }
 
     /**
@@ -1017,9 +1016,9 @@ class FormBuilder
     private function addItem($key, callable $callback, $after = false)
     {
         if (isset($this->form[ $key ])) {
-            $form = new FormBuilder([]);
-            call_user_func_array($callback, [ &$form ]);
-            $this->array_splice_assoc($this->form, $key, ($after ? $key : 0), $form->getForm(), $after);
+            $subform = new FormBuilder([]);
+            call_user_func_array($callback, [ &$subform ]);
+            $this->array_splice_assoc($this->form, $key, ($after ? $key : 0), $subform->getForm(), $after);
 
             return true;
         }

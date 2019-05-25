@@ -18,11 +18,11 @@ namespace Soosyze\Components\Validator\Rules;
 class FileMimetypes extends File
 {
     /**
-     * Test si un fichier possède l'un des mimetypes fournit dans les arguments.
+     * Test si un fichier est d'un type de mime(application, image, font, text, video...)
      *
      * @param string                $key   Clé du test.
      * @param UploadedFileInterface $value Valeur à tester.
-     * @param string                $arg   Liste de mimetypes.
+     * @param string                $arg   Mine exacte ou le type du mime du fichier.
      * @param bool                  $not   Inverse le test.
      *
      * @return int 1 erreur de fichier.
@@ -35,12 +35,11 @@ class FileMimetypes extends File
             return 1;
         }
 
-        $mines = explode(',', $arg);
-        $info  = $this->getMime($value);
+        $mtype = $this->getMime($value);
 
-        if (!in_array($info, $mines) && $not) {
+        if (!(strpos($mtype, $arg) === 0) && $not) {
             $this->addReturn($key, 'mime_types');
-        } elseif (in_array($info, $mines) && !$not) {
+        } elseif (strpos($mtype, $arg) === 0 && !$not) {
             $this->addReturn($key, 'not_mime_types');
         }
     }
