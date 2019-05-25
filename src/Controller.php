@@ -129,4 +129,19 @@ class Controller
 
         return new Response(404, new Stream($stream_output));
     }
+
+    /**
+     * Retourne une réponse au format JSON.
+     *
+     * @param int   $code    Le statut de la réponse.
+     * @param array $content Le contenu à retourner.
+     *
+     * @return Response
+     */
+    protected function json($code = 200, array $content = [])
+    {
+        $stream = new Stream(json_encode($content));
+
+        return (new Response($code, $stream))->withHeader('content-type', 'application/json');
+    }
 }

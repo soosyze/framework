@@ -3,5 +3,10 @@
         "methode": "GET",
         "path": "index",
         "uses": "Test@index"
+    },
+    "test.json": {
+        "methode": "GET",
+        "path": "json",
+        "uses": "Test@outputJson"
     }
 }

@@ -34,6 +34,15 @@ class AppTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('GET', $request->getMethod());
     }
 
+    public function testRunJson()
+    {
+        $this->object->addHook('app.response.before', function (&$request, $response) {
+            $uri     = \Soosyze\Components\Http\Uri::create('http://test.com?q=json');
+            $request = new \Soosyze\Components\Http\ServerRequest('GET', $uri);
+        });
+        $this->assertEquals($this->object->run()->getBody()->__toString(), '{"a":1,"b":2,"c":3,"d":4,"e":5}');
+    }
+
     public function testSetSettings()
     {
         $this->object->setSettings([ 'app' => 'tests', 'config' => 'tests/config' ]);
@@ -106,5 +115,10 @@ class TestModule extends \Soosyze\Controller
     public function index()
     {
         return 'ok';
+    }
+    
+    public function outputJson()
+    {
+        return $this->json(200, ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5]);
     }
 }
