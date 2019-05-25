@@ -178,6 +178,14 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(4, $var);
     }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testSetConfigInvalidArgumentException()
+    {
+        $this->object->setConfig('error');
+    }
 }
 
 class service1
