@@ -431,6 +431,50 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(3, $this->object->getErrors());
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testImageDimensionsMissingException()
+    {
+        $this->object
+            ->addInput('field_image_dimensions', $this->uplaod_img)
+            ->addRule('field_image_dimensions', 'image_dimensions_height')
+            ->isValid();
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testImageDimensionsTypeMin()
+    {
+        $this->object
+            ->addInput('field_image_dimensions', $this->uplaod_img)
+            ->addRule('field_image_dimensions', 'image_dimensions_height:error,5')
+            ->isValid();
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testImageDimensionsTypeMax()
+    {
+        $this->object
+            ->addInput('field_image_dimensions', $this->uplaod_img)
+            ->addRule('field_image_dimensions', 'image_dimensions_height:5,error')
+            ->isValid();
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testImageDimensionsUpperMax()
+    {
+        $this->object
+            ->addInput('field_image_dimensions', $this->uplaod_img)
+            ->addRule('field_image_dimensions', 'image_dimensions_height:10,5')
+            ->isValid();
+    }
+
     public function testImageDimensionsWidth()
     {
         $this->object->setInputs([
