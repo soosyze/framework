@@ -146,10 +146,18 @@ class UtilTest extends \PHPUnit\Framework\TestCase
 
     public function testStrSlug()
     {
-        $str = 'L\'amBiguïTé PhoNétiQue ';
-        $this->assertEquals('l-ambiguite_phonetique', Util::strSlug($str));
+        $str = '-_L\'amBiguïTé PhoNétiQue- ';
+        $this->assertEquals('l_ambiguite_phonetique', Util::strSlug($str));
 
-        $str = ' StœcHioméTRie';
-        $this->assertEquals('stoechiometrie', Util::strSlug($str));
+        $str = ' StœcHioméTRie-cHiMIE';
+        $this->assertEquals('stoechiometrie-chimie', Util::strSlug($str));
+    }
+    
+    public function testStrFileSizeFormatted()
+    {
+        $this->assertEquals('1 Kb', Util::strFileSizeFormatted(1024));
+        $this->assertEquals('1 023 b', Util::strFileSizeFormatted(1023));
+        $this->assertEquals('2.43 Kb', Util::strFileSizeFormatted(2487));
+        $this->assertEquals('2.429 Kb', Util::strFileSizeFormatted(2487, 3));
     }
 }

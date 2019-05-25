@@ -18,12 +18,66 @@ namespace Soosyze\Components\Util;
 class Util
 {
     const DS = DIRECTORY_SEPARATOR;
+    
+    /**
+     * Liste non exaustive des caractères accentués.
+     *
+     * @var string[]
+     */
+    protected static $search  = [
+            '°', '₀', '¹', '₁', '²', '₂', '³', '₃', '⁴', '₄', '⁵', '₅', '⁶', '₆',
+            '⁷', '₇', '⁸', '₈', '⁹', '₉',
+            'á', 'à', 'â', 'ä', 'ą', 'ⱥ', 'ǎ', 'ȧ', 'ạ', 'ā', 'ã',
+            'ć', 'ĉ', 'ç', 'č', 'ċ',
+            'é', 'è', 'ê', 'ë', 'ȩ', 'ę', 'ɇ', 'ě', 'ė', 'ẹ', 'ē', 'ẽ',
+            'ĝ', 'ğ', 'ġ', 'ģ', 'ĥ',
+            'í', 'ì', 'ĩ', 'ị', 'î', 'ï', 'ī', 'į', 'ɨ', 'ǐ', 'ĭ', 'ỉ',
+            'ĵ', 'ɉ', 'ǰ',
+            'ķ', 'ĸ', 'к', 'κ',
+            'ĺ', 'ļ', 'ł', 'ƚ', 'ľ', 'ḷ',
+            'ń', 'ǹ', 'ņ', 'ň', 'ṅ', 'ṇ', 'ñ',
+            'ɵ', 'ǫ', 'ó', 'ò', 'ỏ', 'õ', 'ȯ', 'ọ', 'ô', 'ố', 'ồ', 'ổ', 'ỗ', 'ộ',
+            'ơ', 'ớ', 'ờ', 'ở', 'ỡ', 'ợ', 'ø', 'ō', 'ő', 'ŏ', 'ο', 'ὀ', 'ὁ', 'ὂ',
+            'ὃ', 'ὄ', 'ὅ', 'ὸ', 'ό', 'о', 'ǒ', 'ǿ',
+            'ś', 'ŝ', 'ş', 'š', 'ṡ', 'ṣ',
+            'ẗ', 'ţ', 'ⱦ', 'ŧ', 'ť', 'ṫ', 'ṭ',
+            'ú', 'ù', 'û', 'ü', 'ų', 'ʉ', 'ǔ', 'ụ', 'ū', 'ũ',
+            'ý', 'ỳ', 'ŷ', 'ÿ', 'ɏ', 'ẏ', 'ỵ', 'ȳ', 'ỹ',
+            'ź', 'ẑ', 'ƶ', 'ž', 'ż', 'ẓ',
+            'æ', 'ǽ', 'œ' ];
+
+    /**
+     * Liste des caractères de remplacement pour les caractères accentués.
+     *
+     * @var string[]
+     */
+    protected static $replace = [
+            '0', '0', '1', '1', '2', '2', '3', '3', '4', '4', '5', '5', '6', '6',
+            '7', '7', '8', '8', '9', '9',
+            'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a',
+            'c', 'c', 'c', 'c', 'c',
+            'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+            'g', 'g', 'g', 'g', 'h',
+            'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i',
+            'j', 'j', 'j',
+            'k', 'k', 'k', 'k', 
+            'l', 'l', 'l', 'l', 'l', 'l',
+            'n', 'n', 'n', 'n', 'n', 'n', 'n',
+            'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
+            'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
+            'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
+            's', 's', 's', 's', 's', 's',
+            't', 't', 't', 't', 't', 't', 't',
+            'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u',
+            'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y',
+            'z', 'z', 'z', 'z', 'z', 'z',
+            'ae', 'ae', 'oe' ];
 
     /**
      * Lit un fichier de type JSON et retourne un tableau associatif.
      *
-     * @param string $file  Chemin + nom du fichier + extension.
-     * @param bool   $assoc Si true l'objet retourné sera converti en un tableau associatif.
+     * @param string $strFile Chemin + nom du fichier + extension.
+     * @param bool   $assoc   Si true l'objet retourné sera converti en un tableau associatif.
      *
      * @throws \Exception                L'extension JSON n'est pas chargé.
      * @throws \InvalidArgumentException Le fichier est manquant.
@@ -248,10 +302,11 @@ class Util
 
         return $str;
     }
-
+    
     /**
-     * Remplace les caractères accentués par leurs équivalent sans accent
-     * et remplace les caractères non alphanumériques par le caractère de séparation.
+     * Remplace les caractères accentués par leurs équivalent sans accent,
+     * remplace les caractères non alphanumériques hors le tiret par le caractère de séparation
+     * et supprime au début et à la fin de la chaine les caractères de séparation et tirets.
      *
      * @param string $str       Chaîne de caractère à traiter.
      * @param char   $separator Caractère de remplacement.
@@ -260,51 +315,29 @@ class Util
      */
     public static function strSlug($str, $separator = '_')
     {
-        $output  = mb_strtolower(trim($str), 'UTF-8');
-        $search  = [
-            '°', '₀', '¹', '₁', '²', '₂', '³', '₃', '⁴', '₄', '⁵', '₅', '⁶', '₆',
-            '⁷', '₇', '⁸', '₈', '⁹', '₉',
-            'á', 'à', 'â', 'ä', 'ą', 'ⱥ', 'ǎ', 'ȧ', 'ạ', 'ā', 'ã',
-            'ć', 'ĉ', 'ç', 'č', 'ċ',
-            'é', 'è', 'ê', 'ë', 'ȩ', 'ę', 'ɇ', 'ě', 'ė', 'ẹ', 'ē', 'ẽ',
-            'ĝ', 'ğ', 'ġ', 'ģ', 'ĥ',
-            'í', 'ì', 'ĩ', 'ị', 'î', 'ï', 'ī', 'į', 'ɨ', 'ǐ', 'ĭ', 'ỉ',
-            'ĵ', 'ɉ', 'ǰ',
-            'ķ', 'ĸ', 'к', 'κ',
-            'ĺ', 'ļ', 'ł', 'ƚ', 'ľ', 'ḷ',
-            'ń', 'ǹ', 'ņ', 'ň', 'ṅ', 'ṇ', 'ñ',
-            'ɵ', 'ǫ', 'ó', 'ò', 'ỏ', 'õ', 'ȯ', 'ọ', 'ô', 'ố', 'ồ', 'ổ', 'ỗ', 'ộ',
-            'ơ', 'ớ', 'ờ', 'ở', 'ỡ', 'ợ', 'ø', 'ō', 'ő', 'ŏ', 'ο', 'ὀ', 'ὁ', 'ὂ',
-            'ὃ', 'ὄ', 'ὅ', 'ὸ', 'ό', 'о', 'ǒ', 'ǿ',
-            'ś', 'ŝ', 'ş', 'š', 'ṡ', 'ṣ',
-            'ẗ', 'ţ', 'ⱦ', 'ŧ', 'ť', 'ṫ', 'ṭ',
-            'ú', 'ù', 'û', 'ü', 'ų', 'ʉ', 'ǔ', 'ụ', 'ū', 'ũ',
-            'ý', 'ỳ', 'ŷ', 'ÿ', 'ɏ', 'ẏ', 'ỵ', 'ȳ', 'ỹ',
-            'ź', 'ẑ', 'ƶ', 'ž', 'ż', 'ẓ',
-            'æ', 'ǽ', 'œ' ];
-        $replace = [
-            '0', '0', '1', '1', '2', '2', '3', '3', '4', '4', '5', '5', '6', '6',
-            '7', '7', '8', '8', '9', '9',
-            'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a',
-            'c', 'c', 'c', 'c', 'c',
-            'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-            'g', 'g', 'g', 'g', 'h',
-            'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i',
-            'j', 'j', 'j',
-            'k', 'k', 'k', 'k', 'l', 'l', 'l', 'l', 'l', 'l',
-            'n', 'n', 'n', 'n', 'n', 'n', 'n',
-            'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
-            'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
-            'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
-            's', 's', 's', 's', 's', 's',
-            't', 't', 't', 't', 't', 't', 't',
-            'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u',
-            'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y',
-            'z', 'z', 'z', 'z', 'z', 'z',
-            'ae', 'ae', 'oe' ];
-        $output  = str_replace($search, $replace, $output);
-        $output  = str_replace(' ', $separator, $output);
+        $output = mb_strtolower($str, 'UTF-8');
+        $output = str_replace(self::$search, self::$replace, $output);
+        $output = preg_replace('/([^\w-]+)/i', $separator, $output);
 
-        return preg_replace('/([^.a-z0-9_]+)/i', '-', $output);
+        return trim($output, $separator . '-');
+    }
+
+    /**
+     * À partir d'une valeur numérique, calcul et retourne son équivalent en taille de fichier.
+     *
+     * @param int $size      Valeur numértique.
+     * @param int $precision Le nombre de zéro après la virgule.
+     *
+     * @return string
+     */
+    public static function strFileSizeFormatted($size, $precision = 2)
+    {
+        $units  = [ 'b', 'Kb', 'Mb', 'Gb', 'Tb', 'Pb', 'Eb', 'Zb', 'Yb' ];
+        $power  = $size > 0
+            ? floor(log($size, 1024))
+            : 0;
+        $number = number_format($size / pow(1024, $power), $precision, '.', ' ');
+
+        return rtrim($number, '.00') . ' ' . $units[ $power ];
     }
 }
