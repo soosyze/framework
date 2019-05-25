@@ -31,10 +31,6 @@ class Min extends Size
      */
     protected function test($key, $value, $arg, $not = true)
     {
-        if (!is_numeric($arg)) {
-            throw new \InvalidArgumentException('The min value must be numeric.');
-        }
-
         $length = $this->getSize($value);
         $this->sizeMin($key, $length, $arg, $not);
     }
@@ -60,9 +56,11 @@ class Min extends Size
      */
     protected function sizeMin($key, $lengthValue, $min, $not = true)
     {
-        if ($lengthValue < $min && $not) {
+        $sizeMin = $this->getComparator($min);
+
+        if ($lengthValue < $sizeMin && $not) {
             $this->addReturn($key, 'must', [ ':min' => $min ]);
-        } elseif (!($lengthValue < $min) && !$not) {
+        } elseif (!($lengthValue < $sizeMin) && !$not) {
             $this->addReturn($key, 'not', [ ':min' => $min ]);
         }
     }

@@ -55,10 +55,44 @@ class Between extends Size
      */
     protected function sizeBetween($key, $lengthValue, $min, $max, $not = true)
     {
-        if (!($lengthValue <= $max && $lengthValue >= $min) && $not) {
-            $this->addReturn($key, 'must', [ ':min' => $min, ':max' => $max ]);
-        } elseif ($lengthValue <= $max && $lengthValue >= $min && !$not) {
-            $this->addReturn($key, 'not', [ ':min' => $min, ':max' => $max ]);
+        if (!($lengthValue <= $max['size'] && $lengthValue >= $min['size']) && $not) {
+            $this->addReturn($key, 'must', [ ':min' => $min['value'], ':max' => $max['value'] ]);
+        } elseif ($lengthValue <= $max['size'] && $lengthValue >= $min['size'] && !$not) {
+            $this->addReturn($key, 'not', [ ':min' => $min['value'], ':max' => $max['value'] ]);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param type $arg
+     *
+     * @throws \InvalidArgumentException
+     * @return type
+     */
+    protected function getParamMinMax($arg)
+    {
+        $explode = explode(',', $arg);
+        if (!isset($explode[ 0 ], $explode[ 1 ])) {
+            throw new \InvalidArgumentException('Between values are invalid.');
+        }
+
+        $min = $this->getComparator($explode[ 0 ]);
+        $max = $this->getComparator($explode[ 1 ]);
+
+        if ($min > $max) {
+            throw new \InvalidArgumentException('The minimum value must not be greater than the maximum value.');
+        }
+
+        return [
+            'min' => [
+                'value' => $explode[ 0 ],
+                'size'  => $min
+            ],
+            'max' => [
+                'value' => $explode[ 1 ],
+                'size'  => $max
+            ]
+        ];
     }
 }

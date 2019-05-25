@@ -31,10 +31,6 @@ class Max extends Size
      */
     protected function test($key, $value, $arg, $not = true)
     {
-        if (!is_numeric($arg)) {
-            throw new \InvalidArgumentException('The max value must be numeric.');
-        }
-
         $length = $this->getSize($value);
         $this->sizeMax($key, $length, $arg, $not);
     }
@@ -60,9 +56,11 @@ class Max extends Size
      */
     protected function sizeMax($key, $lengthValue, $max, $not = true)
     {
-        if (($lengthValue > $max) && $not) {
+        $sizeMax = $this->getComparator($max);
+        
+        if (($lengthValue > $sizeMax) && $not) {
             $this->addReturn($key, 'must', [ ':max' => $max ]);
-        } elseif (!($lengthValue > $max) && !$not) {
+        } elseif (!($lengthValue > $sizeMax) && !$not) {
             $this->addReturn($key, 'not', [ ':max' => $max ]);
         }
     }
