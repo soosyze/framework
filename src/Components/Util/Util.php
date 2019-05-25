@@ -239,11 +239,12 @@ class Util
      *
      * @return string Chemin nettoyé.
      */
-    public static function cleanPath($path, $character_mask = "\// \t\n\r\0\x0B/")
+    public static function cleanPath($path, $character_mask = "/ \t\n\r\0\x0B")
     {
-        $str = str_replace([ '\\', '/' ], self::DS, $path);
+        $str = str_replace('\\', '/', $path);
+        $str = preg_replace('/\/+/', '/', $str);
 
-        return rtrim($str, $character_mask);
+        return trim($str, $character_mask);
     }
 
     /**
