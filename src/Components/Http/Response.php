@@ -205,10 +205,10 @@ class Response extends Message implements ResponseInterface
      */
     protected function filtreCode($code)
     {
-        if (is_numeric($code)) {
+        if (is_numeric($code) && is_int($code)) {
             $code = (int) $code;
         }
-        if (!isset($this->reasonPhraseDefault[ $code ])) {
+        if (!is_int($code) || !isset($this->reasonPhraseDefault[ $code ])) {
             throw new \InvalidArgumentException('Status code is invalid.');
         }
 

@@ -24,7 +24,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertAttributeSame('http', 'scheme', $this->object);
         $this->assertAttributeSame('username', 'user', $this->object);
-        $this->assertAttributeSame('password', 'password', $this->object);
+        $this->assertAttributeSame('password', 'pass', $this->object);
         $this->assertAttributeSame('hostname', 'host', $this->object);
         $this->assertAttributeSame(null, 'port', $this->object);
         $this->assertAttributeSame('/path', 'path', $this->object);
@@ -38,7 +38,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
 
         $this->assertAttributeSame('http', 'scheme', $uri);
         $this->assertAttributeSame('username', 'user', $uri);
-        $this->assertAttributeSame('password', 'password', $uri);
+        $this->assertAttributeSame('password', 'pass', $uri);
         $this->assertAttributeSame('hostname', 'host', $uri);
         $this->assertAttributeSame(null, 'port', $uri);
         $this->assertAttributeSame('/path', 'path', $uri);
@@ -54,43 +54,52 @@ class UriTest extends \PHPUnit\Framework\TestCase
         Uri::create('http:///www.error.org');
     }
 
-    public function testGetScheme()
+    public function testScheme()
     {
-        $this->assertEquals($this->object->getScheme(), 'http');
+        $this->assertSame('', Uri::create('/')->getScheme());
+        $this->assertEquals('https', Uri::create('https://foo.com/')->getScheme());
+
+        $this->assertEquals('http', Uri::create('')->withScheme('http')->getScheme());
+    }
+
+    /**
+     * @dataProvider getInvalidSchemaArguments
+     * @expectedException \Exception
+     */
+    public function testWithSchemeException($schema)
+    {
+        $this->object->withScheme($schema);
+    }
+
+    public function getInvalidSchemaArguments()
+    {
+        return [
+            [ 'error' ],
+            [ true ],
+            [ [ 'error' ] ],
+            [ 1 ],
+            [ new \stdClass() ],
+        ];
     }
 
     public function testGetAuthority()
     {
-        $uri = Uri::create('http://hostname');
-        $this->assertEquals($uri->getAuthority(), 'hostname');
-    }
-
-    public function testGetAuthorityWithUser()
-    {
-        $uri = Uri::create('http://username@hostname');
-        $this->assertEquals($uri->getAuthority(), 'username@hostname');
-    }
-
-    public function testGetAuthorityWithUserAndPassword()
-    {
-        $this->assertEquals($this->object->getAuthority(), 'username:password@hostname');
-    }
-
-    public function testGetAuthorityWithUserAndPasswordAndPort()
-    {
-        $uri = Uri::create('http://username:password@hostname:1');
-        $this->assertEquals($uri->getAuthority(), 'username:password@hostname:1');
+        $this->assertEquals('', Uri::create('/')->getAuthority());
+        $this->assertEquals('foo@bar.com', Uri::create('http://foo@bar.com:80/')->getAuthority());
+        $this->assertEquals('foo@bar.com:81', Uri::create('http://foo@bar.com:81/')->getAuthority());
+        $this->assertEquals('user:foo@bar.com', Uri::create('http://user:foo@bar.com/')->getAuthority());
     }
 
     public function testUserInfo()
     {
-        $uri = Uri::create('http://username@hostname');
-        $this->assertEquals($uri->getUserInfo(), 'username');
-    }
-
-    public function testUserInfoWithPassword()
-    {
-        $this->assertEquals($this->object->getUserInfo(), 'username:password');
+        $this->assertEquals('', Uri::create('/')->getUserInfo());
+        $this->assertEquals('user:foo', Uri::create('http://user:foo@bar.com/')->getUserInfo());
+        $this->assertEquals('foo', Uri::create('http://foo@bar.com/')->getUserInfo());
+        
+        $this->assertEquals('', $this->object->withUserInfo('')->getUserInfo());
+        $this->assertEquals('', $this->object->withUserInfo(null)->getUserInfo());
+        $this->assertEquals('user:foo', $this->object->withUserInfo('user', 'foo')->getUserInfo());
+        $this->assertEquals('foo', $this->object->withUserInfo('foo')->getUserInfo());
     }
 
     public function testGetHost()
@@ -101,11 +110,26 @@ class UriTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($uri->getHost(), 'hostname');
     }
 
-    public function testGetPort()
+    public function testPort()
     {
-        $this->assertNull($this->object->getPort());
-        $uri = Uri::create('http://username:password@hostname:1');
-        $this->assertEquals($uri->getPort(), 1);
+        $this->assertNull(Uri::create('http://www.foo.com/')->getPort());
+        $this->assertNull(Uri::create('http://www.foo.com:80/')->getPort());
+        $this->assertNull(Uri::create('https://www.foo.com:443/')->getPort());
+        $this->assertSame(1, Uri::create('http://www.foo.com:1/')->getPort());
+
+        $this->assertNull($this->object->withPort('')->getPort());
+        $this->assertNull($this->object->withPort('80')->getPort());
+        $this->assertNull(Uri::create('https://www.foo.com/')->withPort('443')->getPort());
+        $this->assertSame(1, $this->object->withPort('1')->getPort());
+    }
+    
+    /**
+     * @expectedException \Exception
+     */
+    public function testWithPortException()
+    {
+        $uri = new Uri();
+        $uri->withPort('error');
     }
 
     public function testGetPath()
@@ -163,25 +187,6 @@ class UriTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \Exception
      */
-    public function testWithSchemeException()
-    {
-        $uri = new Uri();
-        $uri->withScheme('error');
-    }
-
-    public function testWithUserInfo()
-    {
-        $uri = new Uri();
-        $uri = $uri->withUserInfo('username');
-        $this->assertAttributeSame('username', 'user', $uri);
-        $this->assertAttributeSame('', 'password', $uri);
-        $uri = $uri->withUserInfo('username', 'password');
-        $this->assertAttributeSame('password', 'password', $uri);
-    }
-
-    /**
-     * @expectedException \Exception
-     */
     public function testWithUserInfoException()
     {
         $uri = new Uri();
@@ -202,27 +207,6 @@ class UriTest extends \PHPUnit\Framework\TestCase
     {
         $uri = new Uri();
         $uri->withHost(1);
-    }
-
-    public function testWithPort()
-    {
-        $uri = new Uri();
-        $this->assertAttributeSame(null, 'port', $uri->withPort('80'));
-        $uri = new Uri('http');
-        $this->assertAttributeSame(null, 'port', $uri->withPort('80'));
-        $uri = new Uri('ftp');
-        $this->assertAttributeSame(80, 'port', $uri->withPort('80'));
-        $uri = new Uri('ftp');
-        $this->assertAttributeSame(80, 'port', $uri->withPort(80));
-    }
-
-    /**
-     * @expectedException \Exception
-     */
-    public function testWithPortException()
-    {
-        $uri = new Uri();
-        $uri->withPort('error');
     }
 
     public function testWithPath()

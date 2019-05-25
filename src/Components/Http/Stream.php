@@ -182,17 +182,16 @@ class Stream implements StreamInterface
     public function tell()
     {
         $this->valideAttach();
-        if (($stream = ftell($this->stream)) === false) {
+        if (($handle = ftell($this->stream)) === false) {
             throw new \RuntimeException('An error has occurred.');
         }
 
-        return $stream;
+        return $handle;
     }
 
     /**
      * Renvoie true si le flux se trouve à la fin du flux.
      *
-     * @throws \RuntimeException Une erreur est survenue.
      * @return bool
      */
     public function eof()
@@ -205,15 +204,13 @@ class Stream implements StreamInterface
     /**
      * Renvoie si la position du flux peut-être modifié.
      *
-     * @return bool|array
+     * @return bool
      */
     public function isSeekable()
     {
         $seekable = $this->getMetadata('seekable');
 
-        return $seekable !== null
-            ? $seekable
-            : false;
+        return  $seekable !== null && $seekable !== false;
     }
 
     /**
@@ -244,7 +241,7 @@ class Stream implements StreamInterface
      */
     public function rewind()
     {
-        $this->valideAttach();
+        $this->valideAttach()->valideSeekable();
         if (!rewind($this->stream)) {
             throw new \RuntimeException('An error has occurred.');
         }
@@ -257,9 +254,7 @@ class Stream implements StreamInterface
      */
     public function isWritable()
     {
-        $meta = $this->getMetadata('mode');
-
-        return in_array($meta, self::$modes[ 'write' ]);
+        return in_array($this->getMetadata('mode'), self::$modes[ 'write' ]);
     }
 
     /**
@@ -273,11 +268,11 @@ class Stream implements StreamInterface
     public function write($string)
     {
         $this->valideAttach()->valideWrite();
-        if (($stream = fwrite($this->stream, $string)) === false) {
+        if (($handle = fwrite($this->stream, $string)) === false) {
             throw new \RuntimeException('An error has occurred.');
         }
 
-        return $stream;
+        return $handle;
     }
 
     /**
@@ -287,9 +282,7 @@ class Stream implements StreamInterface
      */
     public function isReadable()
     {
-        $meta = $this->getMetadata('mode');
-
-        return in_array($meta, self::$modes[ 'read' ]);
+        return in_array($this->getMetadata('mode'), self::$modes[ 'read' ]);
     }
 
     /**
@@ -312,11 +305,11 @@ class Stream implements StreamInterface
         if ($length === 0) {
             return '';
         }
-        if (($stream = fread($this->stream, $length)) === false) {
+        if (($handle = fread($this->stream, $length)) === false) {
             throw new \RuntimeException('An error has occurred.');
         }
 
-        return $stream;
+        return $handle;
     }
 
     /**
@@ -328,11 +321,11 @@ class Stream implements StreamInterface
     public function getContents()
     {
         $this->valideAttach()->valideRead();
-        if (($stream = stream_get_contents($this->stream)) === false) {
+        if (($handle = stream_get_contents($this->stream)) === false) {
             throw new \RuntimeException('An error occurred while reading the stream.');
         }
 
-        return $stream;
+        return $handle;
     }
 
     /**
@@ -375,14 +368,14 @@ class Stream implements StreamInterface
      */
     private function createStreamFromScalar($scalar)
     {
-        $stream = fopen('php://temp', 'r+');
+        $handle = fopen('php://temp', 'r+');
 
         if ($scalar !== '') {
-            fwrite($stream, $scalar);
-            fseek($stream, 0);
+            fwrite($handle, $scalar);
+            fseek($handle, 0);
         }
 
-        $this->stream = $stream;
+        $this->stream = $handle;
     }
 
     /**

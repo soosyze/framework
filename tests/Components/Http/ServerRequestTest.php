@@ -283,7 +283,7 @@ class ServerRequestTest extends \PHPUnit\Framework\TestCase
      */
     public function testWithUploadedFilesException()
     {
-        $this->object->withUploadedFiles([ '' ]);
+        $this->object->withUploadedFiles([ 'tmp_name' => '' ]);
     }
 
     public function testGetParseBody()
@@ -323,5 +323,25 @@ class ServerRequestTest extends \PHPUnit\Framework\TestCase
 
         $clone2 = $clone->withoutAttribute('key');
         $this->assertAttributeSame([ 'key2' => 'value2' ], 'attributes', $clone2);
+    }
+    
+    /**
+     * @dataProvider invalidParsedBodyParams
+     * @expectedException \Exception
+     */
+    public function testParsedBodyException($value)
+    {
+        $clone = $this->object->withParsedBody($value);
+        $this->assertEquals($value, $clone->getParsedBody());
+    }
+
+    public function invalidParsedBodyParams()
+    {
+        return [
+            [4711],
+            [47.11],
+            ['foobar'],
+            [true],
+        ];
     }
 }

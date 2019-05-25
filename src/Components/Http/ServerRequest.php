@@ -108,6 +108,19 @@ class ServerRequest extends Request implements ServerRequestInterface
 
         /* Construit le Uri de la requête */
         $uri      = Uri::create($scheme . '://' . $_SERVER[ 'HTTP_HOST' ] . $_SERVER[ 'REQUEST_URI' ]);
+        $hasQuery = false;
+        if (isset($_SERVER['REQUEST_URI'])) {
+            $requestUriParts = explode('?', $_SERVER['REQUEST_URI'], 2);
+            $uri = $uri->withPath($requestUriParts[0]);
+            if (isset($requestUriParts[1])) {
+                $hasQuery = true;
+                $uri = $uri->withQuery($requestUriParts[1]);
+            }
+        }
+        if (!$hasQuery && isset($_SERVER['QUERY_STRING'])) {
+            $uri = $uri->withQuery($_SERVER['QUERY_STRING']);
+        }
+        
         $headers  = function_exists('getallheaders')
             ? getallheaders()
             : [];
@@ -119,7 +132,7 @@ class ServerRequest extends Request implements ServerRequestInterface
             $method,
             $uri,
             $headers,
-            new Stream(),
+            new Stream(fopen('php://input', 'r+')),
             $protocol,
             $_SERVER,
             $_COOKIE,
@@ -288,6 +301,10 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function withParsedBody($data)
     {
+        if (!\is_array($data) && !\is_object($data) && null !== $data) {
+            throw new \InvalidArgumentException('First parameter to withParsedBody MUST be object, array or null');
+        }
+
         $clone            = clone $this;
         $clone->parseBody = $data;
 
@@ -491,8 +508,6 @@ class ServerRequest extends Request implements ServerRequestInterface
                 $output[ $key ] = UploadedFile::create($value);
             } elseif (is_array($value)) {
                 $output[ $key ] = self::normaliseUplaod($value);
-            } else {
-                throw new \InvalidArgumentException('The input parameter is not in the correct format.');
             }
         }
 

@@ -23,6 +23,10 @@ use Psr\Http\Message\UriInterface;
  */
 class Uri implements UriInterface
 {
+    const CHAR_UNRESERVED = 'a-zA-Z0-9_\-\.~';
+
+    const CHAR_SUB_DELIMS = '!\$&\'\(\)\*\+,;=';
+
     /**
      * Schéma de l'URI (http(s)|ftp|mailto|file...).
      *
@@ -42,7 +46,7 @@ class Uri implements UriInterface
      *
      * @var string
      */
-    protected $password = '';
+    protected $pass = '';
 
     /**
      * Nom d'hôte, nom enregistré ou une adresse IP (partie de l'authority).
@@ -120,7 +124,7 @@ class Uri implements UriInterface
         $this->port     = $this->filterPort($port);
         $this->fragment = $this->filterFragment($fragment);
         $this->user     = $this->filterString($user);
-        $this->password = $this->filterString($password);
+        $this->pass     = $this->filterString($password);
     }
 
     /**
@@ -138,17 +142,16 @@ class Uri implements UriInterface
         $uri .= $this->getAuthority() !== ''
             ? '//' . $this->getAuthority()
             : '';
-        $uri .= preg_match('/^(\/).*/', $this->path)
+        $uri .= preg_match('/^\/.*/', $this->path)
             ? $this->path
             : '/' . $this->path;
         $uri .= $this->query !== ''
             ? '?' . $this->query
             : '';
-        $uri .= $this->fragment !== ''
+
+        return $uri .= $this->fragment !== ''
             ? '#' . $this->fragment
             : '';
-
-        return $uri;
     }
 
     /**
@@ -177,11 +180,10 @@ class Uri implements UriInterface
             ? $this->getUserInfo() . '@'
             : '';
         $authority .= $this->host;
-        $authority .= $this->port
+
+        return $authority .= $this->port
             ? ':' . $this->port
             : '';
-
-        return $authority;
     }
 
     /**
@@ -193,9 +195,9 @@ class Uri implements UriInterface
      */
     public function getUserInfo()
     {
-        if (!empty($this->user)) {
-            return $this->user . (!empty($this->password)
-                ? ':' . $this->password
+        if ($this->user !== '') {
+            return $this->user . ($this->pass !== ''
+                ? ':' . $this->pass
                 : '');
         }
 
@@ -295,7 +297,7 @@ class Uri implements UriInterface
     {
         $clone           = clone $this;
         $clone->user     = $this->filterString($user);
-        $clone->password = $password !== null
+        $clone->pass = $password !== null
             ? $this->filterString($password)
             : '';
 
@@ -459,10 +461,10 @@ class Uri implements UriInterface
 
         $str = $this->filterStringToLower($sch);
 
-        $schStr = str_replace(':', '', $str);
+        $schStr = trim($str, ':');
 
         if (!isset($this->ports[ $schStr ])) {
-            throw new \InvalidArgumentException('The schema is not supported (only ' . implode('|', $this->ports) . ').');
+            throw new \InvalidArgumentException('The schema is not supported (only ' . implode('|', array_keys($this->ports)) . ').');
         }
 
         return $schStr;
@@ -486,7 +488,7 @@ class Uri implements UriInterface
             throw new \InvalidArgumentException('The port is not in the TCP/UDP port.');
         }
 
-        return $this->scheme !== '' && !$this->validPortStandard($port)
+        return !$this->validPortStandard($port)
             ? (int) $port
             : null;
     }
@@ -501,9 +503,8 @@ class Uri implements UriInterface
     protected function filterQuery($query)
     {
         $queryStr    = $this->filterString($query);
-        $queryDecode = rawurldecode($queryStr);
 
-        return $this->rawurldecodeValue(ltrim($queryDecode, '?'));
+        return $this->rawurldecodeValue(ltrim($queryStr, '?'));
     }
 
     /**
@@ -516,9 +517,8 @@ class Uri implements UriInterface
     protected function filterFragment($fragment)
     {
         $fragmentStr    = $this->filterString($fragment);
-        $fragmentDecode = rawurldecode($fragmentStr);
-
-        return rawurlencode(ltrim($fragmentDecode, '#'));
+        
+        return $this->rawurldecodeValue(ltrim($fragmentStr, '#'));
     }
 
     /**
@@ -531,35 +531,27 @@ class Uri implements UriInterface
     protected function filterPath($path)
     {
         $pathStr    = $this->filterString($path);
-        $pathDecode = rawurldecode($pathStr);
 
-        $dataPath = array_map(
-            function ($value) {
-                return rawurlencode($value);
-            },
-            explode('/', $pathDecode)
-        );
-
-        return implode('/', $dataPath);
+        return $this->rawurldecodeValue($pathStr);
     }
 
     /**
      * Filtre une chaine de caractère.
      *
-     * @param string $value Chaine de caractère à filtrer.
+     * @param string|object $value Chaine de caractère à filtrer.
      *
      * @return string Chaine de caractère normalisée.
      */
     protected function filterString($value)
     {
-        if ($value === null || $value === '') {
+        if ($value === null) {
             return '';
         }
-        if (!is_string($value)) {
+        if (!is_string($value) && !method_exists($value, '__toString')) {
             throw new \InvalidArgumentException('The value must be a string.');
         }
 
-        return $value;
+        return (string) $value;
     }
 
     /**
@@ -597,7 +589,7 @@ class Uri implements UriInterface
     protected function rawurldecodeValue($query)
     {
         return preg_replace_callback(
-            '/(?:[^' . 'a-zA-Z0-9_\-\.~' . '!\$&\'\(\)\*\+,;=' . '%:@\/\?]++|%(?![A-Fa-f0-9]{2}))/',
+            '/(?:[^' . self::CHAR_UNRESERVED . self::CHAR_SUB_DELIMS . '%:@\/]++|%(?![A-Fa-f0-9]{2}))/',
             function ($match) {
                 return rawurlencode($match[ 0 ]);
             },

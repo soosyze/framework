@@ -203,10 +203,10 @@ class UploadedFile implements UploadedFileInterface
                 ? $this->moveToSapi($targetPath)
                 : $this->moveToNoSapi($targetPath);
         } else {
-            $stream = fopen($targetPath, 'w');
+            $handle = fopen($targetPath, 'w');
 
-            fwrite($stream, $this->stream->getContents());
-            fclose($stream);
+            fwrite($handle, $this->stream->getContents());
+            fclose($handle);
 
             $this->moved = true;
         }

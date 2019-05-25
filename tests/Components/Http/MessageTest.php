@@ -28,7 +28,7 @@ class MessageTest extends \PHPUnit\Framework\TestCase
      */
     public function testWithProtocolVersionTypeException()
     {
-        $clone = $this->object->withProtocolVersion(1.1);
+        $this->object->withProtocolVersion(1.1);
     }
 
     /**
@@ -48,17 +48,17 @@ class MessageTest extends \PHPUnit\Framework\TestCase
     public function testWithHeader()
     {
         $clone = $this->object->withHeader('Location', 'http://www.example.com/');
-        $this->assertAttributeSame([ 'location' => [ 'http://www.example.com/' ] ], 'headers', $clone);
+        $this->assertAttributeSame([ 'Location' => [ 'http://www.example.com/' ] ], 'headers', $clone);
 
         $clone2 = $this->object->withHeader('Location', ['http://www.example.com/']);
-        $this->assertAttributeSame([ 'location' => [ 'http://www.example.com/' ] ], 'headers', $clone2);
+        $this->assertAttributeSame([ 'Location' => [ 'http://www.example.com/' ] ], 'headers', $clone2);
     }
 
     public function testGetHeaders()
     {
         $this->assertArraySubset($this->object->getHeaders(), []);
         $clone = $this->object->withHeader('Location', 'http://www.example.com/');
-        $this->assertArraySubset($clone->getHeaders(), [ 'location' => [ 'http://www.example.com/' ] ]);
+        $this->assertArraySubset($clone->getHeaders(), [ 'Location' => [ 'http://www.example.com/' ] ]);
     }
 
     public function testHasHeader()
@@ -91,7 +91,7 @@ class MessageTest extends \PHPUnit\Framework\TestCase
     public function testWithAddedHeader()
     {
         $clone = $this->object->withAddedHeader('Location', 'http://www.example.com/');
-        $this->assertArraySubset($clone->getHeader('Location'), [ 'http://www.example.com/' ]);
+        $this->assertArraySubset($clone->getHeader('location'), [ 'http://www.example.com/' ]);
     }
 
     public function testWithAddedHeaderMultiple()
@@ -99,11 +99,8 @@ class MessageTest extends \PHPUnit\Framework\TestCase
         $clone = $this->object
             ->withAddedHeader('Location', 'http://www.example.com/')
             ->withAddedHeader('Location', 'http://www.example.com/');
-        $this->assertAttributeSame([ 'location' =>
-            [
-                'http://www.example.com/',
-                'http://www.example.com/'
-            ]
+        $this->assertAttributeSame([
+            'Location' => [ 'http://www.example.com/', 'http://www.example.com/' ]
             ], 'headers', $clone);
     }
 
@@ -115,13 +112,13 @@ class MessageTest extends \PHPUnit\Framework\TestCase
 
         $cloneError = $clone->withoutHeader('ErrorHeader');
         $this->assertAttributeSame([
-            'testheader1' => [ 'ValueTest1' ],
-            'testheader2' => [ 'ValueTest2' ]
+            'TestHeader1' => [ 'ValueTest1' ],
+            'TestHeader2' => [ 'ValueTest2' ]
             ], 'headers', $cloneError);
 
-        $cloneSuccess = $clone->withoutHeader('TestHeader1');
+        $cloneSuccess = $clone->withoutHeader('testheader1');
         $this->assertAttributeSame([
-            'testheader2' => [ 'ValueTest2' ]
+            'TestHeader2' => [ 'ValueTest2' ]
             ], 'headers', $cloneSuccess);
     }
 
@@ -131,5 +128,28 @@ class MessageTest extends \PHPUnit\Framework\TestCase
         $clone  = $this->object->withBody($stream);
 
         $this->assertAttributeSame($stream, 'body', $clone);
+    }
+    
+    /**
+     * @dataProvider getInvalidHeaderArguments
+     * @expectedException \InvalidArgumentException
+     */
+    public function testWithHeaderInvalidArguments($name, $value)
+    {
+        $this->object->withHeader($name, $value);
+    }
+    
+    public function getInvalidHeaderArguments()
+    {
+        return [
+            [[], 'foo'],
+            ['foo', []],
+            ['', ''],
+            ['foo', false],
+            [false, 'foo'],
+            ['foo', new \stdClass()],
+            [new \stdClass(), 'foo'],
+            ['foo', [new \stdClass()]]
+        ];
     }
 }

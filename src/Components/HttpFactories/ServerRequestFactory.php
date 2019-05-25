@@ -36,7 +36,7 @@ class ServerRequestFactory
      *
      * @return \Psr\Http\Message\ServerRequestInterface
      */
-    public function createServerRequest($method, $uri, $serverParams = [])
+    public function createServerRequest($method, $uri, array $serverParams = [])
     {
         $method = empty($method) && !empty($serverParams[ 'REQUEST_METHOD' ])
             ? $serverParams[ 'REQUEST_METHOD' ]

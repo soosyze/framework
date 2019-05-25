@@ -31,8 +31,10 @@ class RequestTest extends \PHPUnit\Framework\TestCase
 
     public function testWithMethod()
     {
-        $clone = $this->object->withMethod('post');
+        $clone = $this->object->withMethod('POST');
         $this->assertAttributeSame('POST', 'method', $clone);
+        $clone = $this->object->withMethod('post');
+        $this->assertAttributeSame('post', 'method', $clone);
     }
 
     public function testGetMethod()
@@ -41,11 +43,24 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @dataProvider getInvalidMethods
      * @expectedException \Exception
      */
-    public function testWithMethodException()
+    public function testWithMethodException($code)
     {
-        $this->object->withMethod(1);
+        $this->object->withMethod($code);
+    }
+    
+    public function getInvalidMethods()
+    {
+        return [
+            [null],
+            [1],
+            [1.01],
+            [false],
+            [['foo']],
+            [new \stdClass()],
+        ];
     }
 
     public function testGetRequestTargetVoid()
@@ -97,9 +112,10 @@ class RequestTest extends \PHPUnit\Framework\TestCase
         $uri = Uri::create('http://hostname/path');
 
         $clone = $this->object->withUri($uri, true);
-        $this->assertAttributeSame([ 'host' => [ 'hostname' ] ], 'headers', $clone);
+        $this->assertAttributeSame([ 'Host' => [ 'hostname' ] ], 'headers', $clone);
+        $this->assertEquals('hostname', $clone->getHeaderLine('host'));
 
         $clone = $this->object->withHeader('Host', 'other')->withUri($uri, true);
-        $this->assertAttributeSame([ 'host' => [ 'other' ] ], 'headers', $clone);
+        $this->assertAttributeSame([ 'Host' => [ 'other' ] ], 'headers', $clone);
     }
 }

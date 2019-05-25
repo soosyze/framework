@@ -47,6 +47,13 @@ class Message implements MessageInterface
     protected $headers = [];
 
     /**
+     * Les noms des entêtes.
+     *
+     * @var string[] 
+     */
+    protected $name = [];
+
+    /**
      * Protocoles pris en charges.
      *
      * @var string[]
@@ -97,7 +104,7 @@ class Message implements MessageInterface
      */
     public function hasHeader($name)
     {
-        return isset($this->headers[ strtolower($name) ]);
+        return isset($this->name[ strtolower($name) ]);
     }
 
     /**
@@ -111,7 +118,7 @@ class Message implements MessageInterface
     public function getHeader($name)
     {
         return $this->hasHeader($name)
-            ? $this->headers[ strtolower($name) ]
+            ? $this->headers[ $this->name[ strtolower($name) ] ]
             : [];
     }
 
@@ -126,7 +133,7 @@ class Message implements MessageInterface
     public function getHeaderLine($name)
     {
         return $this->hasHeader($name)
-            ? implode(',', $this->headers[ strtolower($name) ])
+            ? implode(',', $this->getHeader($name))
             : '';
     }
 
@@ -140,10 +147,10 @@ class Message implements MessageInterface
      */
     public function withHeader($name, $value)
     {
-        $clone                               = clone $this;
-        $clone->headers[ strtolower($name) ] = is_array($value)
-            ? $value
-            : [ $value ];
+        $clone                            = clone $this;
+        $values                           = $clone->validateAndTrimHeader($name, $value);
+        $clone->headers[ $name ]          = $values;
+        $clone->name[ strtolower($name) ] = $name;
 
         return $clone;
     }
@@ -158,13 +165,15 @@ class Message implements MessageInterface
      */
     public function withAddedHeader($name, $value)
     {
-        $clone = clone $this;
-        if (!is_array($value)) {
-            $value = [ $value ];
+        $clone  = clone $this;
+        $values = $this->validateAndTrimHeader($name, $value);
+
+        if (!$this->hasHeader($name)) {
+            $clone->name[ strtolower($name) ] = $name;
         }
         /* Pour ne pas écraser les valeurs avec le array merge utilise une boucle simple. */
-        foreach ($value as $head) {
-            $clone->headers[ strtolower($name) ][] = $head;
+        foreach ($values as $head) {
+            $clone->headers[ $clone->name[ strtolower($name) ] ][] = $head;
         }
 
         return $clone;
@@ -181,7 +190,7 @@ class Message implements MessageInterface
     {
         $clone = clone $this;
         if ($clone->hasHeader($name)) {
-            unset($clone->headers[ strtolower($name) ]);
+            unset($clone->headers[ $this->name[ strtolower($name) ] ], $clone->name[ strtolower($name) ]);
         }
 
         return $clone;
@@ -242,5 +251,58 @@ class Message implements MessageInterface
                 ? $value
                 : [ $value ];
         }
+    }
+
+    /**
+     * Assurez-vous que l'en-tête est conforme à la norme RFC 7230.
+     *
+     * Les noms d'en-tête doivent être une chaîne non vide composée de caractères de jeton.
+     *
+     * Les valeurs d'en-tête doivent être des chaînes composées de caractères visibles, tous optionnels.
+     * Les espaces blancs de début et de fin sont supprimés. Cette méthode va toujours dépouiller ces
+     * espaces optionnels. Notez que la méthode ne permet pas de replier les espaces au sein de
+     * Les valeurs étant obsolètes dans presque toutes les instances par la RFC.
+     *
+     * header-field = field-name ":" OWS field-value OWS
+     * field-name   = 1*( "!" / "#" / "$" / "%" / "&" / "'" / "*" / "+" / "-" / "." / "^"
+     *              / "_" / "`" / "|" / "~" / %x30-39 / ( %x41-5A / %x61-7A ) )
+     * OWS          = *( SP / HTAB )
+     * field-value  = *( ( %x21-7E / %x80-FF ) [ 1*( SP / HTAB ) ( %x21-7E / %x80-FF ) ] )
+     *
+     * @see https://tools.ietf.org/html/rfc7230#section-3.2.4
+     *
+     * @param string       $header
+     * @param array|string $values
+     *
+     * @throws InvalidArgumentException;
+     *
+     * @return array
+     */
+    private function validateAndTrimHeader($header, $values)
+    {
+        if (!\is_string($header) || 1 !== \preg_match('@^[!#$%&\'*+.^_`|~0-9A-Za-z-]+$@', $header)) {
+            throw new \InvalidArgumentException('Header name must be an RFC 7230 compatible string.');
+        }
+        if (!\is_array($values)) {
+            // This is simple, just one value.
+            if ((!\is_numeric($values) && !\is_string($values)) || 1 !== \preg_match("@^[ \t\x21-\x7E\x80-\xFF]*$@", (string) $values)) {
+                throw new \InvalidArgumentException('Header values must be RFC 7230 compatible strings.');
+            }
+
+            return [ \trim((string) $values, " \t") ];
+        }
+        if (empty($values)) {
+            throw new \InvalidArgumentException('Header values must be a string or an array of strings, empty array given.');
+        }
+        // Assert Non empty array
+        $returnValues = [];
+        foreach ($values as $v) {
+            if ((!\is_numeric($v) && !\is_string($v)) || 1 !== \preg_match("@^[ \t\x21-\x7E\x80-\xFF]*$@", (string) $v)) {
+                throw new \InvalidArgumentException('Header values must be RFC 7230 compatible strings.');
+            }
+            $returnValues[] = \trim((string) $v, " \t");
+        }
+
+        return $returnValues;
     }
 }

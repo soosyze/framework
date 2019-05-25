@@ -116,11 +116,10 @@ class Request extends Message implements RequestInterface
         $target = $this->uri->getPath() != ''
             ? $this->uri->getPath()
             : '/';
-        $target .= $this->uri->getQuery() != ''
+
+        return $target .= $this->uri->getQuery() != ''
             ? '?' . $this->uri->getQuery()
             : '';
-
-        return $target;
     }
 
     /**
@@ -189,16 +188,12 @@ class Request extends Message implements RequestInterface
     {
         $clone      = clone $this;
         $clone->uri = $uri;
-
-        if ($preserveHost) {
-            /**
-             * Si l'en-tête Host est manquant ou vide, et que le nouvel URI contient
-             * un composant hôte, cette méthode DOIT mettre à jour l'en-tête Host dans le retour.
-             */
-            $headerHost = $this->getHeader('Host');
-            if (empty($headerHost) && $uri->getHost() !== '') {
-                return $clone->withHeader('Host', $uri->getHost());
-            }
+        /*
+         * Si l'en-tête Host est manquant ou vide, et que le nouvel URI contient
+         * un composant hôte, cette méthode DOIT mettre à jour l'en-tête Host dans le retour.
+         */
+        if (!$preserveHost || !$this->hasHeader('Host') && $uri->getHost() !== '') {
+            return $clone->withHeader('Host', $uri->getHost());
         }
 
         return $clone;
@@ -225,6 +220,6 @@ class Request extends Message implements RequestInterface
             throw new \InvalidArgumentException('The method is not valid (only ' . implode('|', $this->methods) . ').');
         }
 
-        return $methodUp;
+        return $method;
     }
 }
