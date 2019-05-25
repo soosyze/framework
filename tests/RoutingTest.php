@@ -37,6 +37,15 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
                 'with' => [
                     ':item' => '[0-9]+'
                 ],
+            ],
+            'test.page.format'  => [
+                'methode' => 'GET',
+                'path' => 'page/:item.:ext',
+                'uses' => 'TestController@format',
+                'with' => [
+                    ':item' => '[0-9]+',
+                    ':ext' => 'json|xml'
+                ],
             ]
         ];
 
@@ -98,7 +107,7 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
 
     public function testExecuteParam()
     {
-        $uri     = Uri::create('http://test.com/?page/1');
+        $uri     = Uri::create('http://test.com/?q=page/1');
         $request = new Request('GET', $uri);
 
         $route  = $this->object->parse($request);
@@ -107,46 +116,56 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($result, 'hello page 1');
     }
 
+    public function testExecuteParamMultiple()
+    {
+        $uri     = Uri::create('http://test.com/?q=page/1.json');
+        $request = new Request('GET', $uri);
+
+        $route  = $this->object->parse($request);
+        $result = $this->object->execute($route, $request);
+        $this->assertEquals($result, 'hello json 1');
+    }
+
     /**
      * @expectedException \Exception
      */
     public function testExecuteExceptionNotRequest()
     {
-        $uri     = Uri::create('http://test.com/?page/1');
+        $uri     = Uri::create('http://test.com/?q=page/1');
         $request = new Request('GET', $uri);
 
         $route  = $this->object->parse($request);
         $this->object->execute($route);
     }
 
-    public function testRelplaceSlash()
+    public function testRelplaceRegex()
     {
-        $str    = '/index/page/1/edit';
-        $result = $this->object->relplaceSlash($str);
+        $str    = 'index/page/:id/edit';
+        $result = $this->object->getRegexForPath($str, [':id'=>'\d+']);
 
-        $this->assertEquals($result, '%2Findex%2Fpage%2F1%2Fedit');
+        $this->assertEquals($result, 'index\/page\/\d+\/edit');
     }
 
     public function testGetRoute()
     {
-        $uri     = Uri::create('http://test.com/?test');
+        $uri     = Uri::create('http://test.com/?q=test');
         $request = new Request('GET', $uri);
 
         $this->object->setRequest($request)->setBasePath('http://test.com/');
         $result = $this->object->getRoute('test.index');
 
-        $this->assertEquals($result, 'http://test.com/?/');
+        $this->assertEquals($result, 'http://test.com/?q=/');
     }
 
     public function testGetRouteParam()
     {
-        $uri     = Uri::create('http://test.com/?test');
+        $uri     = Uri::create('http://test.com/?q=test');
         $request = new Request('GET', $uri);
 
         $this->object->setRequest($request)->setBasePath('http://test.com/');
         $result = $this->object->getRoute('test.page', [ ':item' => '1' ]);
 
-        $this->assertEquals($result, 'http://test.com/?page/1');
+        $this->assertEquals($result, 'http://test.com/?q=page/1');
     }
 
     /**
@@ -171,6 +190,18 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
 
         $this->object->setRequest($request);
         $this->object->getRoute('test.page', [ ':item' => 'error' ]);
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testGetRouteInvalidArgumentException()
+    {
+        $uri     = Uri::create('http://test.com/');
+        $request = new Request('GET', $uri);
+
+        $this->object->setRequest($request);
+        $this->object->getRoute('test.page', [ ':error' => 1 ]);
     }
 
     public function testIsRewrite()
@@ -211,6 +242,11 @@ class TestController
     public function index()
     {
         return 'hello world !';
+    }
+    
+    public function format($item, $ext)
+    {
+        return "hello $ext $item";
     }
 
     public function page($item)

@@ -84,21 +84,19 @@ class Router
             if (strtoupper($route[ 'methode' ]) !== $request->getMethod()) {
                 continue;
             }
-            $path = $this->relplaceSlash($route[ 'path' ]);
 
             if (isset($route[ 'with' ])) {
-                $key_route = array_keys($route[ 'with' ]);
-                $path      = str_replace($key_route, $route[ 'with' ], $path);
+                $path = $this->getRegexForPath($route[ 'path' ], $route[ 'with' ]);
 
                 if (preg_match('/^' . $path . '$/', $query)) {
                     return array_merge($route, [ 'key' => $key ]);
                 }
-            } elseif ($path === $query) {
+            } elseif ($route[ 'path' ] === $query) {
                 /* Ajoute la clé de la route aux données. */
                 return array_merge($route, [ 'key' => $key ]);
             }
         }
-
+        
         return null;
     }
 
@@ -135,15 +133,19 @@ class Router
     }
 
     /**
-     * Remplace les / par sa valeur encodé.
+     * Créer une expression régulière à partir du chemin et des arguments d'une route.
      *
-     * @param string $str
+     * @param string $path Chemin de la route.
+     * @param array  $with Arguments de la route.
      *
      * @return string
      */
-    public function relplaceSlash($str)
+    public function getRegexForPath($path, array $with)
     {
-        return str_replace('/', '%2F', $str);
+        $str = str_replace(['\\', '/'], [ '//', '\/'], $path);
+        $key = array_keys($with);
+        
+        return str_replace($key, $with, $str);
     }
 
     /**
@@ -161,21 +163,24 @@ class Router
         }
 
         $route = $this->routes[ $name ];
+        $path  = $route[ 'path' ];
 
-        $prefix = !$this->isRewrite()
-            ? '?'
-            : '';
-
-        $path = $route[ 'path' ];
-
-        if (!empty($params) && isset($route[ 'with' ])) {
+        if (isset($route[ 'with' ])) {
             foreach ($route[ 'with' ] as $key => $value) {
+                if (!isset($params[$key])) {
+                    throw new \InvalidArgumentException(htmlspecialchars(
+                        "the argument $key is missing"
+                    ));
+                }
                 if (!preg_match('/^' . $value . '$/', $params[ $key ])) {
                     throw new RouteArgumentException($params[ $key ], $value, $path);
                 }
                 $path = str_replace($key, $params[ $key ], $path);
             }
         }
+        $prefix = !$this->isRewrite()
+            ? '?q='
+            : '';
 
         return $this->basePath . $prefix . $path;
     }
@@ -274,21 +279,16 @@ class Router
             throw new \InvalidArgumentException('No request is provided.');
         }
 
-        $req = $request === null
-            ? $this->currentRequest
-            : $request;
+        $uri = $request === null
+            ? $this->currentRequest->getUri()
+            : $request->getUri();
 
         /* Rempli un array des paramètres de l'Uri. */
-        parse_str($req->getUri()->getQuery(), $parseQuery);
+        parse_str($uri->getQuery(), $parseQuery);
 
-        /*
-         * Pour avoir le paramètre non identifié par une clé.
-         * Exemple : http://exemple.com/?first_param = 'first_param'
-         * Il faut prendre le 1er élément du tableau inversé des paraètres de l'Uri.
-         */
-        return !empty($parseQuery)
-            ? rawurlencode(array_keys($parseQuery)[ 0 ])
-            : '%2F';
+        return !empty($parseQuery['q'])
+            ? $parseQuery['q']
+            : '/';
     }
 
     /**
@@ -303,15 +303,18 @@ class Router
      */
     public function parseParam($route, $query, array $param)
     {
-        $output     = [];
-        $paramQuery = explode('%2F', $query);
+        array_walk($param, function (&$with) {
+            $with = "($with)";
+        });
+       
+        $path = $this->getRegexForPath($route, $param);
 
-        foreach (explode('/', $route) as $key => $value) {
-            if (isset($param[ $value ])) {
-                $output[] = $paramQuery[ $key ];
-            }
+        if (preg_match("/$path/", $query, $matches)) {
+            array_shift($matches);
+
+            return $matches;
         }
 
-        return $output;
+        return [];
     }
 }

@@ -15,7 +15,7 @@ class AppTest extends \PHPUnit\Framework\TestCase
      */
     protected function setUp()
     {
-        $uri     = \Soosyze\Components\Http\Uri::create('http://test.com?index');
+        $uri     = \Soosyze\Components\Http\Uri::create('http://test.com?q=index');
         $request = new \Soosyze\Components\Http\ServerRequest('GET', $uri);
 
         $this->object = AppCore::getInstance($request)->init();
