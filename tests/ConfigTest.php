@@ -6,19 +6,10 @@ use Soosyze\Config;
 
 class ConfigTest extends \PHPUnit\Framework\TestCase
 {
-    public static $pathFile = 'tests/config/local/testConfig2.json';
-
     /**
      * @var Config
      */
     protected $object;
-
-    public static function tearDownAfterClass()
-    {
-        if (file_exists(self::$pathFile)) {
-            unlink(self::$pathFile);
-        }
-    }
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -42,6 +33,14 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
 
         $this->assertFalse($out3);
         $this->assertFalse($out4);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testHasInvalidArgumentException()
+    {
+        $this->object->has(1);
     }
 
     public function testGet()
@@ -75,29 +74,78 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
 
     public function testSet()
     {
-        $data = $this->object->set('testConfig.key1', 'value1');
-        $this->assertEquals($data, true);
+        $this->object->set('testConfig.key3', 'value3');
+        $data = $this->object->get('testConfig.key3');
+        
+        $this->assertEquals($data, 'value3');
     }
 
-    public function testSetNew()
+    public function testSetNewFile()
     {
-        $data = $this->object->set('testConfig2.key1', 'value1');
-        $this->assertEquals($data, true);
+        $this->object->set('testConfig2.key1', 'value1');
+        $data = $this->object->get('testConfig2.key1');
+        
+        $this->assertEquals($data, 'value1');
+    }
+    
+    public function testSetFile()
+    {
+        $this->object->set('testConfig2', 'value1');
+        $data = $this->object->get('testConfig2');
+
+        $this->assertEquals($data, [ 'value1' ]);
+        
+        $this->object->set('testConfig2', ['value2']);
+        $data2 = $this->object->get('testConfig2');
+
+        $this->assertEquals($data2, [ 'value2' ]);
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testSetException()
+    public function testDel()
     {
-        $this->object->set('testConfig', 'value1');
+        $this->object->del('testConfig.key3');
+        
+        $this->assertNull($this->object->get('testConfig.key3'));
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testSetExceptionKey()
+    public function testDelFile()
     {
-        $this->object->set('testConfig.', 'value1');
+        $this->object->del('testConfig2');
+        
+        $this->assertNull($this->object->get('testConfig2.key1'));
+    }
+    
+    public function testDelVoid()
+    {
+        $this->assertNull($this->object->get('void'));
+        $this->object->del('void');
+        $this->assertNull($this->object->get('void'));
+    }
+    
+    public function testHasArrayAccess()
+    {
+        $this->assertTrue(isset($this->object['testConfig.key1']));
+    }
+    
+    public function testGetArrayAccess()
+    {
+        $data = $this->object['testConfig.key1'];
+
+        $this->assertEquals($data, 'value1');
+    }
+    
+    public function testSetArrayAccess()
+    {
+        $this->object[ 'testConfig.key3' ] = 'value3';
+        $data                            = $this->object[ 'testConfig.key3' ];
+
+        $this->assertEquals($data, 'value3');
+    }
+    
+    public function testDelArrayAccess()
+    {
+        unset($this->object[ 'testConfig.key3' ]);
+
+        $this->assertNull($this->object[ 'testConfig.key3' ]);
     }
 }

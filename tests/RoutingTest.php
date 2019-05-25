@@ -180,7 +180,7 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
 
         $this->object->setRequest($request)
             ->setBasePath('http://test.com/')
-            ->setSettings([ 'RewriteEngine' => 'on' ]);
+            ->setConfig([ 'settings.rewrite_engine' => 'on' ]);
 
         $this->assertTrue($this->object->isRewrite());
 
@@ -195,6 +195,14 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
 
         $this->object->setRequest($request);
         $this->assertEquals($this->object->getBasePath(), '');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testSetConfigInvalidArgumentException()
+    {
+        $this->object->setConfig('error');
     }
 }
 

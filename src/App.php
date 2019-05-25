@@ -180,6 +180,7 @@ abstract class App
 
         $this->router = (new Router($this->routes, $this->modules))
             ->setRequest($this->request)
+            ->setConfig($config)
             ->setBasePath($this->request->getBasePath());
 
         $this->container->addServices($this->services)

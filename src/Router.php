@@ -10,6 +10,7 @@
 
 namespace Soosyze;
 
+use ArrayAccess;
 use Psr\Http\Message\RequestInterface;
 use Soosyze\Exception\Route\RouteArgumentException;
 use Soosyze\Exception\Route\RouteNotFoundException;
@@ -45,9 +46,9 @@ class Router
     /**
      * Configuration des routes.
      *
-     * @var array
+     * @var array|ArrayAccess
      */
-    protected $settings = [];
+    protected $config = [];
     
     /**
      * La base de l'URL de vos routes.
@@ -204,15 +205,19 @@ class Router
     }
 
     /**
-     * Les configurations possibles pour le router.
+     * Les configurations pour le router :
+     * (bool)settings.rewrite_engine Si les routes doivent tenir compte de la réécriture d'URL.
      *
-     * @param array $settings
+     * @param array|ArrayAccess $config
      *
      * @return $this
      */
-    public function setSettings(array $settings)
+    public function setConfig($config)
     {
-        $this->settings = $settings;
+        if (!\is_array($config) && !($config instanceof \ArrayAccess)) {
+            throw new \InvalidArgumentException('The configuration must be an ArrayAccess array or instance.');
+        }
+        $this->config = $config;
 
         return $this;
     }
@@ -252,9 +257,7 @@ class Router
      */
     public function isRewrite()
     {
-        return !empty($this->settings[ 'RewriteEngine' ]) &&
-            $this->settings[ 'RewriteEngine' ] == 'on' &&
-            in_array('On', $this->currentRequest->getHeader('HTTP_MOD_REWRITE'));
+        return !empty($this->config[ 'settings.rewrite_engine' ]);
     }
 
     /**

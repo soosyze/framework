@@ -10,6 +10,7 @@
 
 namespace Soosyze;
 
+use ArrayAccess;
 use Psr\Container\ContainerInterface;
 use Soosyze\Exception\Container\ContainerException;
 use Soosyze\Exception\Container\NotFoundException;
@@ -47,7 +48,7 @@ class Container implements ContainerInterface
     /**
      * Composant de configuration.
      *
-     * @var Config
+     * @var array|ArrayAccess
      */
     protected $config;
 
@@ -245,12 +246,15 @@ class Container implements ContainerInterface
     /**
      * Ajoute le composant de configuration pour les services.
      *
-     * @param Config $config
+     * @param array|ArrayAccess $config
      *
      * @return $this
      */
-    public function setConfig(Config $config)
+    public function setConfig($config)
     {
+        if (!\is_array($config) && !($config instanceof \ArrayAccess)) {
+            throw new \InvalidArgumentException('The configuration must be an ArrayAccess array or instance.');
+        }
         $this->config = $config;
 
         return $this;
@@ -296,7 +300,7 @@ class Container implements ContainerInterface
             }
             /* Injecte un parmètre comme argument d'instantiation du service appelé. */
             elseif (strpos($arg, '#') === 0) {
-                $arg = $this->config->get(substr($arg, 1));
+                $arg = $this->config[substr($arg, 1)];
             }
             /* Dans le cas ou ont souhaites échaper l'appel à un autre service ou un paramètre. */
             elseif (strpos($arg, '\@') === 0 || strpos($arg, '\#') === 0) {
