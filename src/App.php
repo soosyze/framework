@@ -276,6 +276,19 @@ abstract class App
     }
 
     /**
+     * Ajoute une fonction pour qu'elle puisse être utilisée par le container.
+     *
+     * @param string   $name Clé pour appeler la fonction.
+     * @param callable $func Fonction à exécuter.
+     *
+     * @return $this
+     */
+    public function addHook($name, callable $func)
+    {
+        return $this->container->addHook($name, $func);
+    }
+
+    /**
      * Ajoute les environnements à l'application (clé=>machine).
      *
      * @param array $env Liste des environnements.
