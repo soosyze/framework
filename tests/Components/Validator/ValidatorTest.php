@@ -676,12 +676,24 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_ip'              => '127.0.0.1',
             'field_not_ip'          => 'no ip',
             'field_ip_required'     => '127.0.0.1',
-            'field_ip_not_required' => ''
+            'field_ip_not_required' => '',
+            /* IPv4 */
+            'field_ip_v4'           => '127.0.0.1',
+            'field_not_ip_v4'       => '2001:db8::85a3::ac1f:8001',
+            /* IPv6 */
+            'field_ip_v6'           => '2001:db8:0:85a3::ac1f:8001',
+            'field_not_ip_v6'       => '2001:db8::85a3::ac1f:8001',
         ])->setRules([
             'field_ip'              => 'ip',
             'field_not_ip'          => '!ip',
             'field_ip_required'     => 'required|ip',
-            'field_ip_not_required' => '!required|ip'
+            'field_ip_not_required' => '!required|ip',
+            /* IPv4 */
+            'field_ip_v4'           => 'ip:4',
+            'field_not_ip_v4'       => '!ip:4',
+            /* IPv6 */
+            'field_ip_v6'           => 'ip:6',
+            'field_not_ip_v6'       => '!ip:6',
         ]);
 
         $this->assertTrue($this->object->isValid());
@@ -696,6 +708,17 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
         $this->assertFalse($this->object->isValid());
         $this->assertCount(2, $this->object->getErrors());
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testIpException()
+    {
+        $this->object
+            ->setInputs([ 'field_ip' => '127.0.0.1' ])
+            ->setRules([ 'field_ip' => 'ip:7' ])
+            ->isValid();
     }
 
     public function testInt()
