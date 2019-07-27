@@ -1166,8 +1166,14 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
     public function testToken()
     {
-        $_SESSION[ 'token' ]      = 'Lorem ipsum dolor sit amet';
-        $_SESSION[ 'token_time' ] = time();
+        $_SESSION[ 'token' ]      = [
+            'field_token'          => 'Lorem ipsum dolor sit amet',
+            'field_token_required' => 'Lorem ipsum dolor sit amet'
+        ];
+        $_SESSION[ 'token_time' ]= [
+            'field_token'          => time(),
+            'field_token_required' => time()
+        ];
 
         $this->object->setInputs([
             'field_token'              => 'Lorem ipsum dolor sit amet',

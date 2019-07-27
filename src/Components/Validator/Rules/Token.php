@@ -44,12 +44,14 @@ class Token extends \Soosyze\Components\Validator\Rule
         if (!is_numeric($arg)) {
             throw new \InvalidArgumentException('The time value must be numeric.');
         }
+        
+        $name = $this->getKeyValue();
 
-        if (!isset($_SESSION[ 'token' ]) && !isset($_SESSION[ 'token_time' ])) {
+        if (!isset($_SESSION[ 'token' ][ $name ]) && !isset($_SESSION[ 'token_time' ][ $name ])) {
             $this->addReturn($key, 'error');
-        } elseif ($_SESSION[ 'token' ] != $value) {
+        } elseif ($_SESSION[ 'token' ][ $name ] != $value) {
             $this->addReturn($key, 'invalid');
-        } elseif ($_SESSION[ 'token_time' ] <= (time() - intval($arg))) {
+        } elseif ($_SESSION[ 'token_time' ][ $name ] <= (time() - intval($arg))) {
             $this->addReturn($key, 'time');
         }
     }

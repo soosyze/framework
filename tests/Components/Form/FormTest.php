@@ -159,10 +159,10 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
     public function testFormToken()
     {
-        $this->object->token();
+        $this->object->token('test');
 
-        $form   = $this->object->form_token();
-        $result = '<input name="token" type="hidden" value="' . $_SESSION[ 'token' ] . '">' . "\r\n";
+        $form   = $this->object->form_token('test');
+        $result = '<input name="test" type="hidden" value="' . $_SESSION[ 'token' ]['test'] . '">' . "\r\n";
 
         $this->assertEquals($form, $result);
     }

@@ -340,26 +340,27 @@ class FormBuilder
     /**
      * Enregistre un token pour protéger des failles CRSF.
      *
+     * @param string $name Clé unique.
+     *
      * @return $this
      */
-    public function token()
+    public function token($name)
     {
         if (session_id() == '') {
             @session_start([
-                    'cookie_httponly' => true,
-                    'cookie_secure'   => true
+                'cookie_httponly' => true,
+                'cookie_secure'   => true
             ]);
         }
         /* On génère un token totalement unique. */
-        $token                    = uniqid(rand(), true);
-        //Et on le stocke
-        $_SESSION[ 'token' ]      = $token;
+        $token                             = uniqid(rand(), true);
+        /* Et on le stocke. */
+        $_SESSION[ 'token' ][ $name ]      = $token;
         /* On enregistre aussi le timestamp correspondant au moment de la création du token. */
-        $_SESSION[ 'token_time' ] = time();
+        $_SESSION[ 'token_time' ][ $name ] = time();
 
-        $this->input('token', [
+        $this->input($name, [
             'type' => 'hidden',
-            'id'   => 'token',
             'attr' => [ 'value' => $token ]
         ]);
 
@@ -569,11 +570,13 @@ class FormBuilder
     /**
      * Génère une balise input hidden pour le token.
      *
+     * @param string $name Clé unique.
+     *
      * @return string HTML
      */
-    public function form_token()
+    public function form_token($name)
     {
-        return $this->form_input('token');
+        return $this->form_input($name);
     }
 
     /**
