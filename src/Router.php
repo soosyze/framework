@@ -153,10 +153,11 @@ class Router
      *
      * @param string $name   Nom de la route.
      * @param array  $params Variables requises par la route.
+     * @param bool   $strict Autorise la construction de routes partielles.
      *
      * @return string
      */
-    public function getRoute($name, array $params = null)
+    public function getRoute($name, array $params = null, $strict = true)
     {
         if (!isset($this->routes[ $name ])) {
             throw new RouteNotFoundException('The path does not exist.');
@@ -167,12 +168,15 @@ class Router
 
         if (isset($route[ 'with' ])) {
             foreach ($route[ 'with' ] as $key => $value) {
-                if (!isset($params[$key])) {
+                if ($strict && !isset($params[$key])) {
                     throw new \InvalidArgumentException(htmlspecialchars(
                         "the argument $key is missing"
                     ));
                 }
-                if (!preg_match('/^' . $value . '$/', $params[ $key ])) {
+                if (!$strict && !isset($params[$key])) {
+                    continue;
+                }
+                if ($strict && !preg_match('/^' . $value . '$/', $params[ $key ])) {
                     throw new RouteArgumentException($params[ $key ], $value, $path);
                 }
                 $path = str_replace($key, $params[ $key ], $path);

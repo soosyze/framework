@@ -157,7 +157,7 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($result, 'http://test.com/?q=/');
     }
 
-    public function testGetRouteParam()
+    public function testGetRouteStrictParam()
     {
         $uri     = Uri::create('http://test.com/?q=test');
         $request = new Request('GET', $uri);
@@ -167,7 +167,17 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals($result, 'http://test.com/?q=page/1');
     }
+    
+    public function testGetRouteParam()
+    {
+        $uri     = Uri::create('http://test.com/?q=test');
+        $request = new Request('GET', $uri);
 
+        $this->object->setRequest($request)->setBasePath('http://test.com/');
+        $result = $this->object->getRoute('test.page.format', [ ':ext' => 'json' ], false);
+
+        $this->assertEquals($result, 'http://test.com/?q=page/:item.json');
+    }
     /**
      * @expectedException \Exception
      */
