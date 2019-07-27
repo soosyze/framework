@@ -23,7 +23,7 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
     protected function setUp()
     {
         $this->pathTemplate = __DIR__ . DIRECTORY_SEPARATOR;
-        $this->object = new Template('testTemplate.php', $this->pathTemplate);
+        $this->object       = new Template('testTemplate.php', $this->pathTemplate);
     }
 
     public function testAddVar()
@@ -42,7 +42,7 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
     {
         $block = new Template('testBlock', $this->pathTemplate);
         $this->object->addBlock('test', $block);
-        $this->assertAttributeSame([ 'test' => $block ], 'blocks', $this->object);
+        $this->assertAttributeSame([ 'test' => $block ], 'sections', $this->object);
     }
 
     public function testGetBlock()
@@ -131,5 +131,36 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
     {
         $this->object->addVar('attr', 'test');
         $this->assertEquals('test', (string) $this->object);
+    }
+
+    public function testOverride()
+    {
+        /* Override PATH */
+        $page = new Template('testBlock.php', $this->pathTemplate);
+        $page->pathOverride($this->pathTemplate . 'theme/');
+        $this->object->addVar('attr', 'Test')
+            ->addBlock('page', $page)
+            ->addBlock('title');
+
+        $this->assertEquals('TestHello world PathOverride !', $this->object->render());
+
+        /* Override NAME */
+        $page = new Template('testBlock.php', $this->pathTemplate);
+        $page->nameOverride('testBlock_1.php');
+        $this->object->addVar('attr', 'Test')
+            ->addBlock('page', $page)
+            ->addBlock('title');
+
+        $this->assertEquals('TestHello world NameOverride !', $this->object->render());
+
+        /* Override PATH & NAME */
+        $page = new Template('testBlock.php', $this->pathTemplate);
+        $page->pathOverride($this->pathTemplate . 'theme/')
+            ->nameOverride('testBlock_1.php');
+        $this->object->addVar('attr', 'Test')
+            ->addBlock('page', $page)
+            ->addBlock('title');
+
+        $this->assertEquals('TestHello world NameOverride & PathOverride !', $this->object->render());
     }
 }

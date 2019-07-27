@@ -34,9 +34,9 @@ class Template
     /**
      * Les sous templates.
      *
-     * @var array
+     * @var \Template[]
      */
-    protected $blocks = [];
+    protected $sections = [];
 
     /**
      * Les variables.
@@ -48,9 +48,23 @@ class Template
     /**
      * Les fonctions de filtre.
      *
-     * @var array
+     * @var callable[]
      */
     protected $filters = [];
+
+    /**
+     * Les noms des templates pouvant supplanter celle par défaut.
+     *
+     * @var string[]
+     */
+    protected $nameOverride = [];
+
+    /**
+     * Les noms des templates pouvant supplanter celle par défaut.
+     *
+     * @var string[]
+     */
+    protected $pathOverride = [];
 
     /**
      * Charge une template à partir de son nom et son chemin.
@@ -153,7 +167,7 @@ class Template
      */
     public function addBlock($key, Template $tpl = null)
     {
-        $this->blocks[ $key ] = $tpl !== null
+        $this->sections[ $key ] = $tpl !== null
             ? $tpl->addVar('id_block', "block-$key")
             : null;
 
@@ -212,7 +226,7 @@ class Template
      */
     public function getBlocks()
     {
-        return $this->blocks;
+        return $this->sections;
     }
 
     /**
@@ -259,9 +273,9 @@ class Template
     public function render()
     {
         require_once 'functions_include.php';
-        $block = [];
-        foreach ($this->blocks as $key => &$subTpl) {
-            $block[ $key ] = !is_null($subTpl)
+        $section = [];
+        foreach ($this->sections as $key => &$subTpl) {
+            $section[ $key ] = !is_null($subTpl)
                 ? $this->filter('block.' . $key, $subTpl->render())
                 : '';
         }
@@ -271,10 +285,38 @@ class Template
         }
 
         ob_start();
-        require $this->path . $this->name;
+        require $this->requireFile();
         $html = ob_get_clean();
 
         return $this->filter('output', $html);
+    }
+
+    /**
+     * Ajoute un nom de fichier.
+     *
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function nameOverride($name)
+    {
+        $this->nameOverride[] = $name;
+
+        return $this;
+    }
+
+    /**
+     * Ajoute un chemin.
+     *
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function pathOverride($name)
+    {
+        $this->pathOverride[] = $name;
+
+        return $this;
     }
 
     /**
@@ -293,6 +335,32 @@ class Template
     }
 
     /**
+     * Calcule en fonction des noms et chemins quel fichier appeler.
+     *
+     * @return string Chemin du template.
+     */
+    private function requireFile()
+    {
+        foreach ($this->pathOverride as $path) {
+            foreach ($this->nameOverride as $name) {
+                if (is_file($path . $name)) {
+                    return $path . $name;
+                }
+            }
+            if (is_file($path . $this->name)) {
+                return $path . $this->name;
+            }
+        }
+        foreach ($this->nameOverride as $name) {
+            if (is_file($this->path . $name)) {
+                return $this->path . $name;
+            }
+        }
+
+        return $this->path . $this->name;
+    }
+
+    /**
      * Recherche récursive d'un bloc de la template à partir de sa clé.
      *
      * @param string $key Clé unique.
@@ -301,11 +369,11 @@ class Template
      */
     private function searchBlock($key)
     {
-        if (!empty($this->blocks[ $key ])) {
-            return $this->blocks[ $key ];
+        if (!empty($this->sections[ $key ])) {
+            return $this->sections[ $key ];
         }
 
-        foreach ($this->blocks as $block) {
+        foreach ($this->sections as $block) {
             if (($find = $block->searchBlock($key)) !== null) {
                 return $find;
             }
