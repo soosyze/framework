@@ -88,7 +88,7 @@ class Router
             if (isset($route[ 'with' ])) {
                 $path = $this->getRegexForPath($route[ 'path' ], $route[ 'with' ]);
 
-                if (preg_match('/^' . $path . '$/', $query)) {
+                if (preg_match('/^(' . $path . ')$/', $query)) {
                     return array_merge($route, [ 'key' => $key ]);
                 }
             } elseif ($route[ 'path' ] === $query) {
@@ -135,17 +135,21 @@ class Router
     /**
      * Créer une expression régulière à partir du chemin et des arguments d'une route.
      *
-     * @param string $path Chemin de la route.
-     * @param array  $with Arguments de la route.
+     * @param string $path  Chemin de la route.
+     * @param array  $param Arguments de la route.
      *
      * @return string
      */
-    public function getRegexForPath($path, array $with)
+    public function getRegexForPath($path, array $param)
     {
-        $str = str_replace(['\\', '/'], [ '//', '\/'], $path);
-        $key = array_keys($with);
+        array_walk($param, function (&$with) {
+            $with = "($with)";
+        });
         
-        return str_replace($key, $with, $str);
+        $str = str_replace(['\\', '/'], [ '//', '\/'], $path);
+        $key = array_keys($param);
+        
+        return str_replace($key, $param, $str);
     }
 
     /**
@@ -307,10 +311,6 @@ class Router
      */
     public function parseParam($route, $query, array $param)
     {
-        array_walk($param, function (&$with) {
-            $with = "($with)";
-        });
-       
         $path = $this->getRegexForPath($route, $param);
 
         if (preg_match("/$path/", $query, $matches)) {

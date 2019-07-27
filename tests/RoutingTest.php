@@ -143,7 +143,7 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
         $str    = 'index/page/:id/edit';
         $result = $this->object->getRegexForPath($str, [':id'=>'\d+']);
 
-        $this->assertEquals($result, 'index\/page\/\d+\/edit');
+        $this->assertEquals($result, 'index\/page\/(\d+)\/edit');
     }
 
     public function testGetRoute()
