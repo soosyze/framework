@@ -178,6 +178,7 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals($result, 'http://test.com/?q=page/:item.json');
     }
+
     /**
      * @expectedException \Exception
      */

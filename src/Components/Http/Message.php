@@ -49,7 +49,7 @@ class Message implements MessageInterface
     /**
      * Les noms des entêtes.
      *
-     * @var string[] 
+     * @var string[]
      */
     protected $name = [];
 

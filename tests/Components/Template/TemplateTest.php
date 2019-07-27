@@ -112,7 +112,7 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
         $this->assertAttributeSame([ 'block.page' => [ $function ] ], 'filters', $this->object);
         $this->assertEquals('Testhello world !', $this->object->render());
     }
-    
+
     public function testAddFilterOutput()
     {
         $function = function ($html) {

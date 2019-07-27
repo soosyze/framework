@@ -162,4 +162,14 @@ abstract class Rule
 
         return [ 'min' => $min, 'max' => $max ];
     }
+
+    /**
+     * Retourne la clé unique du test.
+     *
+     * @return string
+     */
+    protected function getKeyValue()
+    {
+        return $this->keyValue;
+    }
 }

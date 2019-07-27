@@ -19,7 +19,16 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 abstract class ImageDimensions extends FileMimetypes
 {
-    public function test($key, $value, $arg, $not = true){
+    /**
+     * {@inheritdoc}
+     *
+     * @param string                                  $key   Clé du test.
+     * @param \Psr\Http\Message\UploadedFileInterface $value Valeur à tester.
+     * @param string                                  $arg   Argument de test.
+     * @param bool                                    $not   Inverse le test.
+     */
+    public function test($key, $value, $arg, $not = true)
+    {
         parent::test('file_mimetypes', $value, 'image');
 
         if ($this->hasErrors()) {
@@ -53,6 +62,7 @@ abstract class ImageDimensions extends FileMimetypes
     /**
      * Test la taille d'une image.
      *
+     * @param string  $key         Clé du test.
      * @param int     $lengthValue Hauteur de l'image en pixel.
      * @param numeric $min         Hauteur minimum autorisée.
      * @param numeric $max         Hauteur maximum autorisée.
