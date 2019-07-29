@@ -248,6 +248,7 @@ class Validator
     public function getInputsWithout()
     {
         $without = func_get_args();
+        $inputs  = [];
         foreach ($without as $value) {
             /* Dans le cas ou les colonnes sont normales. */
             if (!\is_array($value)) {
