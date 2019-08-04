@@ -27,46 +27,46 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
     public function testInputBasic()
     {
-        $this->object->inputBasic('text', 'textName', 'textId', [
+        $this->object->inputBasic('text', 'textName', [
             'required' => 'required',
             'value'    => 'lorem ipsum'
         ]);
 
         $form   = $this->object->form_input('textName');
-        $result = '<input name="textName" type="text" id="textId" required value="lorem ipsum">' . "\r\n";
+        $result = '<input name="textName" type="text" id="textName" required value="lorem ipsum">' . "\r\n";
 
         $this->assertEquals($form, $result);
     }
 
     public function testInputText()
     {
-        $this->object->text('textName', 'textId', [
+        $this->object->text('textName', [
             'required' => 'required',
             'value'    => 'lorem ipsum'
         ]);
 
         $form   = $this->object->form_input('textName');
-        $result = '<input name="textName" type="text" id="textId" required value="lorem ipsum">' . "\r\n";
+        $result = '<input name="textName" type="text" id="textName" required value="lorem ipsum">' . "\r\n";
 
         $this->assertEquals($form, $result);
     }
 
     public function testInputPassword()
     {
-        $this->object->password('passwordName', 'passwordId', [
+        $this->object->password('passwordName', [
             'required' => 'required',
             'value'    => 'lorem ipsum'
         ]);
 
         $form   = $this->object->form_input('passwordName');
-        $result = '<input name="passwordName" type="password" id="passwordId" required value="lorem ipsum">' . "\r\n";
+        $result = '<input name="passwordName" type="password" id="passwordName" required value="lorem ipsum">' . "\r\n";
 
         $this->assertEquals($form, $result);
     }
 
     public function testInputEmail()
     {
-        $this->object->email('email', 'email', [
+        $this->object->email('email', [
             'required' => 'required',
             'value'    => 'lorem ipsum'
         ]);
@@ -79,20 +79,20 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
     public function testInputCheckbox()
     {
-        $this->object->checkbox('checkboxName', 'checkboxId');
+        $this->object->checkbox('checkboxName');
 
         $form   = $this->object->form_input('checkboxName');
-        $result = '<input name="checkboxName" type="checkbox" id="checkboxId">' . "\r\n";
+        $result = '<input name="checkboxName" type="checkbox" id="checkboxName">' . "\r\n";
 
         $this->assertEquals($form, $result);
     }
 
     public function testInputRadio()
     {
-        $this->object->radio('radioName', 'radioId');
+        $this->object->radio('radioName');
 
         $form   = $this->object->form_input('radioName');
-        $result = '<input name="radioName" type="radio" id="radioId">' . "\r\n";
+        $result = '<input name="radioName" type="radio" id="radioName">' . "\r\n";
 
         $this->assertEquals($form, $result);
     }
@@ -102,20 +102,20 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->object->submit('inputSubmit', 'Enregistrer');
 
         $form   = $this->object->form_input('inputSubmit');
-        $result = '<input name="inputSubmit" type="submit" value="Enregistrer">' . "\r\n";
+        $result = '<input name="inputSubmit" type="submit" id="inputSubmit" value="Enregistrer">' . "\r\n";
 
         $this->assertEquals($form, $result);
     }
 
     public function testInputSelect()
     {
-        $this->object->select('inputSelect', 'idInputSelect', [
+        $this->object->select('inputSelect', [
             [ 'value' => 0, 'label' => 'hello' ],
             [ 'value' => 1, 'label' => 'world' ]
             ], [ 'selected' => 0 ]);
 
         $form   = $this->object->form_select('inputSelect');
-        $result = '<select name="inputSelect" id="idInputSelect">' . "\r\n"
+        $result = '<select name="inputSelect" id="inputSelect">' . "\r\n"
             . '<option value="0" selected>hello</option>' . "\r\n"
             . '<option value="1" >world</option>' . "\r\n"
             . '</select>' . "\r\n";
@@ -125,10 +125,10 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
     public function testInputTextarea()
     {
-        $this->object->textarea('textareaName', 'idInputTextarea', 'lorem ipsum');
+        $this->object->textarea('textareaName', 'lorem ipsum');
 
         $form   = $this->object->form_textarea('textareaName');
-        $result = '<textarea name="textareaName" id="idInputTextarea">lorem ipsum</textarea>' . "\r\n";
+        $result = '<textarea name="textareaName" id="textareaName">lorem ipsum</textarea>' . "\r\n";
 
         $this->assertEquals($form, $result);
     }
@@ -196,7 +196,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     public function testFormLabelFor()
     {
         $this->object->label('label-test-require', 'lorem ipsum')
-            ->text('name', 'name');
+            ->text('name');
 
         $form   = $this->object->form_label('label-test-require');
         $result = '<label for="name">lorem ipsum</label>' . "\r\n";
@@ -207,7 +207,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     public function testFormLabelForManuel()
     {
         $this->object->label('label-test-require', 'lorem ipsum', [ 'for' => 'id-for' ])
-            ->text('name', 'id-for');
+            ->text('name');
 
         $form   = $this->object->form_label('label-test-require');
         $result = '<label for="id-for">lorem ipsum</label>' . "\r\n";
@@ -218,7 +218,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     public function testFormLabelForRequire()
     {
         $this->object->label('label-test-require', 'lorem ipsum')
-            ->text('name', 'name', [ 'required' => 'required' ]);
+            ->text('name', [ 'required' => 'required' ]);
 
         $form   = $this->object->form_label('label-test-require');
         $result = '<label for="name">lorem ipsum<span class="form-required">*</span></label>' . "\r\n";
@@ -238,20 +238,21 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
     public function testAddAttr()
     {
-        $this->object->text('textName1', 'textId');
-        $this->object->text('textName2', 'textId');
-        $this->object->addAttr('textName1', [ 'required' => 'required' ]);
+        $this->object
+            ->text('textName1')
+            ->text('textName2')
+            ->addAttr('textName1', [ 'required' => 'required' ]);
 
         $input1  = $this->object->form_input('textName1');
-        $result1 = '<input name="textName1" type="text" id="textId" required>' . "\r\n";
+        $result1 = '<input name="textName1" type="text" id="textName1" required>' . "\r\n";
         $this->assertEquals($input1, $result1);
 
         $this->object->addAttrs([ 'textName1', 'textName2' ], [ 'value' => 'lorem ipsum' ]);
 
         $input1  = $this->object->form_input('textName1');
         $input2  = $this->object->form_input('textName2');
-        $result1 = '<input name="textName1" type="text" id="textId" required value="lorem ipsum">' . "\r\n";
-        $result2 = '<input name="textName2" type="text" id="textId" value="lorem ipsum">' . "\r\n";
+        $result1 = '<input name="textName1" type="text" id="textName1" required value="lorem ipsum">' . "\r\n";
+        $result2 = '<input name="textName2" type="text" id="textName2" value="lorem ipsum">' . "\r\n";
 
         $this->assertEquals($input1, $result1);
         $this->assertEquals($input2, $result2);
@@ -260,12 +261,12 @@ class FormTest extends \PHPUnit\Framework\TestCase
     public function testAddAttrGroup()
     {
         $this->object->group('group', 'div', function ($form) {
-            $form->text('textName1', 'textId');
+            $form->text('textName1');
         });
         $this->object->addAttr('textName1', [ 'required' => 'required' ]);
 
         $input1  = $this->object->form_input('textName1');
-        $result1 = '<input name="textName1" type="text" id="textId" required>' . "\r\n";
+        $result1 = '<input name="textName1" type="text" id="textName1" required>' . "\r\n";
         $this->assertEquals($input1, $result1);
     }
 
@@ -274,29 +275,30 @@ class FormTest extends \PHPUnit\Framework\TestCase
      */
     public function testAddAttrException()
     {
-        $this->object->text('textName1', 'textId');
+        $this->object->text('textName1');
         $this->object->addAttr('error', [ 'required' => 'required' ]);
     }
 
     public function testGetItem()
     {
-        $this->object->text('textName1', 'textId');
+        $this->object->text('textName1');
         $item = $this->object->getItem('textName1');
 
-        $this->assertEquals([ 'type' => 'text',
-            'attr' => [ 'id' => 'textId' ]
-            ], $item);
+        $this->assertEquals(
+            [ 'type' => 'text', 'attr' => [ 'id' => 'textName1' ] ],
+            $item
+        );
     }
 
     public function testGetItemGroup()
     {
         $this->object->group('group', 'div', function ($form) {
-            $form->text('textName1', 'textId');
+            $form->text('textName1');
         });
         $item = $this->object->getItem('textName1');
 
         $this->assertEquals([ 'type' => 'text',
-            'attr' => [ 'id' => 'textId' ]
+            'attr' => [ 'id' => 'textName1' ]
             ], $item);
     }
 
@@ -305,20 +307,21 @@ class FormTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetItemException()
     {
-        $this->object->text('textName1', 'textId');
+        $this->object->text('textName1');
         $this->object->getItem('error');
     }
 
     public function testBefore()
     {
-        $this->object->text('1', '1')
-            ->text('2', '2');
+        $this->object
+            ->text('1')
+            ->text('2');
 
         $this->object->addBefore('2', function ($form) {
-            $form->text('3', '3');
+            $form->text('3');
         });
         $this->object->addBefore('3', function ($form) {
-            $form->text('4', '4');
+            $form->text('4');
         });
 
         $this->assertEquals(
@@ -335,15 +338,15 @@ class FormTest extends \PHPUnit\Framework\TestCase
     public function testBeforeSubForm()
     {
         $this->object->group('group', 'div', function ($form) {
-            $form->text('1', '1')
-                ->text('2', '2');
+            $form->text('1')
+                ->text('2');
         });
 
         $this->object->addBefore('2', function ($form) {
-            $form->text('3', '3');
+            $form->text('3');
         });
         $this->object->addBefore('3', function ($form) {
-            $form->text('4', '4');
+            $form->text('4');
         });
 
         $this->assertEquals(
@@ -361,13 +364,13 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
     public function testAfter()
     {
-        $this->object->text('1', '1')->text('2', '2');
+        $this->object->text('1')->text('2');
 
         $this->object->addAfter('1', function ($form) {
-            $form->text('3', '3');
+            $form->text('3');
         });
         $this->object->addAfter('1', function ($form) {
-            $form->text('4', '4');
+            $form->text('4');
         });
 
         $this->assertEquals(
@@ -401,7 +404,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
     public function testHtml()
     {
-        $this->object->html('image', '<img:css:attr />', [
+        $this->object->html('image', '<img:css:attr/>', [
             'src' => '/files/logo.png',
             'alt' => 'Logo'
         ]);
@@ -409,7 +412,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(
             $this->object->renderForm(),
             '<form method="post" action="http://localhost/">' . "\r\n" .
-            '<img src="/files/logo.png" alt="Logo" />' . "\r\n" .
+            '<img id="image" src="/files/logo.png" alt="Logo"/>' . "\r\n" .
             '</form>' . "\r\n"
         );
 

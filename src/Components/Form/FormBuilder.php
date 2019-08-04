@@ -19,6 +19,8 @@ namespace Soosyze\Components\Form;
  */
 class FormBuilder
 {
+    const EOL = PHP_EOL;
+
     /**
      * Attributs CSS.
      *
@@ -29,7 +31,9 @@ class FormBuilder
     ];
 
     /**
-     * Attributs HTML sans clés.
+     * Attributs Boolean HTML.
+     *
+     * @see https://www.w3.org/TR/html52/infrastructure.html#sec-boolean-attributes
      *
      * @var string[]
      */
@@ -199,7 +203,7 @@ class FormBuilder
      *
      * @return $this
      */
-    public function openForm(array $attr = null)
+    public function openForm(array $attr = [])
     {
         $this->form[ 'open' ] = [ 'attr' => $attr, 'type' => 'open' ];
 
@@ -217,9 +221,11 @@ class FormBuilder
      *
      * @return $this
      */
-    public function html($name, $html, array $attr = null)
+    public function html($name, $html, array $attr = [])
     {
-        return $this->input($name, [ 'type' => 'html', 'html' => $html, 'attr' => $attr ]);
+        $basic = array_merge([ 'id' => $name ], $attr);
+
+        return $this->input($name, [ 'type' => 'html', 'html' => $html, 'attr' => $basic ]);
     }
 
     /**
@@ -232,11 +238,11 @@ class FormBuilder
      *
      * @return $this
      */
-    public function group($name, $balise, callable $callback, $attr = null)
+    public function group($name, $balise, callable $callback, $attr = [])
     {
-        $subform  = new FormBuilder([]);
-        call_user_func_array($callback, [ &$subform ]);
-        $group = $this->merge_attr([ 'balise' => $balise ], $attr);
+        $subform = new FormBuilder([]);
+        $callback($subform);
+        $group   = array_merge([ 'balise' => $balise ], $attr);
 
         return $this->input($name, [ 'type' => 'group', 'subform' => $subform, 'attr' => $group ]);
     }
@@ -264,7 +270,7 @@ class FormBuilder
      *
      * @return $this
      */
-    public function legend($name, $legend, array $attr = null)
+    public function legend($name, $legend, array $attr = [])
     {
         return $this->input($name, [ 'type' => 'legend', 'legend' => $legend, 'attr' => $attr ]);
     }
@@ -273,33 +279,30 @@ class FormBuilder
      * Enregistre un textarea.
      *
      * @param string     $name    Clé unique.
-     * @param string     $id      Selecteur CSS.
      * @param string     $content Contenu du textarea.
      * @param array|null $attr    Liste d'attributs.
      *
      * @return $this
      */
-    public function textarea($name, $id, $content = '', array $attr = null)
+    public function textarea($name, $content = '', array $attr = [])
     {
-        $basic = $this->merge_attr([ 'id' => $id ], $attr);
+        $basic = array_merge([ 'id' => $name ], $attr);
 
-        return $this->input($name, [ 'id'      => $id, 'type'    => 'textarea', 'content' => $content,
-                'attr'    => $basic ]);
+        return $this->input($name, [ 'type' => 'textarea', 'content' => $content, 'attr' => $basic ]);
     }
 
     /**
      * Enregistre une liste de sélection.
      *
      * @param string $name    Clé unique.
-     * @param string $id      Selecteur CSS.
      * @param array  $options Liste d'options [ 'value'=>'', 'label'=>'','selected' => 0|1 ].
      * @param array  $attr    Liste d'attributs.
      *
      * @return $this
      */
-    public function select($name, $id, $options = [], array $attr = null)
+    public function select($name, $options = [], array $attr = [])
     {
-        $basic = $this->merge_attr([ 'id' => $id ], $attr);
+        $basic = array_merge([ 'id' => $name ], $attr);
 
         return $this->input($name, [ 'type' => 'select', 'options' => $options, 'attr' => $basic ]);
     }
@@ -309,14 +312,13 @@ class FormBuilder
      *
      * @param string     $type Type d'input.
      * @param string     $name Clé unique.
-     * @param string     $id   Selecteur CSS.
      * @param array|null $attr Liste d'attributs.
      *
      * @return $this
      */
-    public function inputBasic($type, $name, $id, array $attr = null)
+    public function inputBasic($type, $name, array $attr = [])
     {
-        $basic = $this->merge_attr([ 'id' => $id ], $attr);
+        $basic = array_merge([ 'id' => $name ], $attr);
 
         return $this->input($name, [ 'type' => $type, 'attr' => $basic ]);
     }
@@ -330,9 +332,9 @@ class FormBuilder
      *
      * @return $this
      */
-    public function submit($name, $value, array $attr = null)
+    public function submit($name, $value, array $attr = [])
     {
-        $basic = $this->merge_attr([ 'value' => $value ], $attr);
+        $basic = array_merge([ 'id' => $name, 'value' => $value ], $attr);
 
         return $this->input($name, [ 'type' => 'submit', 'attr' => $basic ]);
     }
@@ -374,14 +376,13 @@ class FormBuilder
      *
      * @return string HTML
      */
-    public function form_open(array $attrAdd = null)
+    public function form_open(array $attrAdd = [])
     {
         $attr = $this->merge_attr($this->form[ 'open' ][ 'attr' ], $attrAdd);
 
         return '<form'
-            . $this->getAttributesInput($attr)
-            . $this->getAttributesCSS($attr)
-            . ">\r\n";
+            . $this->renderAttrInput($attr) . $this->renderAttrCSS($attr)
+            . '>' . self::EOL;
     }
 
     /**
@@ -391,7 +392,7 @@ class FormBuilder
      */
     public function form_close()
     {
-        return "</form>\r\n";
+        return '</form>' . self::EOL;
     }
 
     /**
@@ -402,7 +403,7 @@ class FormBuilder
      *
      * @return string HTML
      */
-    public function form_label($key, array $attrAdd = null)
+    public function form_label($key, array $attrAdd = [])
     {
         $item  = $this->getItem($key);
         $attr  = $this->merge_attr($item[ 'attr' ], $attrAdd);
@@ -412,14 +413,13 @@ class FormBuilder
         unset($attr[ 'attr' ][ 'label' ]);
 
         $html = '<label'
-            . $this->getAttributesCSS($attr)
-            . $this->getAttributesInput($attr) . '>'
+            . $this->renderAttrCSS($attr) . $this->renderAttrInput($attr) . '>'
             . $label;
         $html .= isset($attr[ 'for' ]) && $this->isRequired($attr[ 'for' ])
             ? '<span class="form-required">*</span>'
             : '';
 
-        return $html . "</label>\r\n";
+        return $html . '</label>' . self::EOL;
     }
 
     /**
@@ -430,7 +430,7 @@ class FormBuilder
      *
      * @return string HTML
      */
-    public function form_legend($key, array $attrAdd = null)
+    public function form_legend($key, array $attrAdd = [])
     {
         $item   = $this->getItem($key);
         $attr   = $this->merge_attr($item[ 'attr' ], $attrAdd);
@@ -440,10 +440,9 @@ class FormBuilder
         unset($attr[ 'attr' ][ 'legend' ]);
 
         return '<legend'
-            . $this->getAttributesCSS($attr)
-            . $this->getAttributesInput($attr) . '>'
-            . $legend
-            . "</legend>\r\n";
+            . $this->renderAttrCSS($attr) . $this->renderAttrInput($attr) . '>'
+            . htmlspecialchars($legend)
+            . '</legend>' . self::EOL;
     }
 
     /**
@@ -454,15 +453,14 @@ class FormBuilder
      *
      * @return string HTML
      */
-    public function form_input($key, array $attrAdd = null)
+    public function form_input($key, array $attrAdd = [])
     {
         $item = $this->getItem($key);
         $attr = $this->merge_attr($item[ 'attr' ], $attrAdd);
 
-        return '<input name="' . $key . '" type="' . $item[ 'type' ] . '"'
-            . $this->getAttributesCSS($attr)
-            . $this->getAttributesInput($attr)
-            . ">\r\n";
+        return '<input name="' . htmlspecialchars($key) . '" type="' . $item[ 'type' ] . '"'
+            . $this->renderAttrCSS($attr) . $this->renderAttrInput($attr)
+            . '>' . self::EOL;
     }
 
     /**
@@ -473,29 +471,25 @@ class FormBuilder
      *
      * @return string HTML
      */
-    public function form_select($key, array $attrAdd = null)
+    public function form_select($key, array $attrAdd = [])
     {
         $item = $this->getItem($key);
         $attr = $this->merge_attr($item[ 'attr' ], $attrAdd);
 
-        $html = '<select name="' . $key . '"'
-            . $this->getAttributesCSS($attr)
-            . $this->getAttributesInput($attr)
-            . ">\r\n";
+        $html = '<select name="' . htmlspecialchars($key) . '"'
+            . $this->renderAttrCSS($attr) . $this->renderAttrInput($attr)
+            . '>' . self::EOL;
         foreach ($item[ 'options' ] as $option) {
-            $selected = isset($option[ 'selected' ])
+            $selected = isset($option[ 'selected' ]) || (isset($attr[ 'selected' ]) && $attr[ 'selected' ] == $option[ 'value' ])
                 ? 'selected'
                 : '';
-            if (isset($attr[ 'selected' ]) && $attr[ 'selected' ] == $option[ 'value' ]) {
-                $selected = 'selected';
-            }
 
-            $html .= '<option value="' . $option[ 'value' ] . '" ' . $selected . '>'
-                . $option[ 'label' ]
-                . "</option>\r\n";
+            $html .= '<option value="' . htmlspecialchars($option[ 'value' ]) . '" ' . $selected . '>'
+                . htmlspecialchars($option[ 'label' ])
+                . '</option>' . self::EOL;
         }
 
-        return $html . "</select>\r\n";
+        return $html . '</select>' . self::EOL;
     }
 
     /**
@@ -506,16 +500,15 @@ class FormBuilder
      *
      * @return string HTML
      */
-    public function form_textarea($key, array $attrAdd = null)
+    public function form_textarea($key, array $attrAdd = [])
     {
         $item = $this->getItem($key);
         $attr = $this->merge_attr($item[ 'attr' ], $attrAdd);
 
-        return '<textarea name="' . $key . '"'
-            . $this->getAttributesCSS($attr)
-            . $this->getAttributesInput($attr) . '>'
-            . $item[ 'content' ]
-            . "</textarea>\r\n";
+        return '<textarea name="' . htmlspecialchars($key) . '"'
+            . $this->renderAttrCSS($attr) . $this->renderAttrInput($attr) . '>'
+            . htmlentities($item[ 'content' ])
+            . '</textarea>' . self::EOL;
     }
 
     /**
@@ -526,7 +519,7 @@ class FormBuilder
      *
      * @return string HTML
      */
-    public function form_group($key, array $attrAdd = null)
+    public function form_group($key, array $attrAdd = [])
     {
         $item = $this->getItem($key);
         $attr = $this->merge_attr($item[ 'attr' ], $attrAdd);
@@ -535,9 +528,9 @@ class FormBuilder
             ? $attr[ 'balise' ]
             : 'div';
 
-        return '<' . $balise . $this->getAttributesCSS($attr) . ">\r\n"
+        return '<' . $balise . $this->renderAttrCSS($attr) . ">\r\n"
             . $item[ 'subform' ]->renderSubForm()
-            . '</' . $balise . ">\r\n";
+            . '</' . $balise . '>' . self::EOL;
     }
 
     /**
@@ -548,7 +541,7 @@ class FormBuilder
      *
      * @return string HTML
      */
-    public function form_html($key, array $attrAdd = null)
+    public function form_html($key, array $attrAdd = [])
     {
         $item = $this->getItem($key);
         $attr = $this->merge_attr($item[ 'attr' ], $attrAdd);
@@ -560,11 +553,10 @@ class FormBuilder
         }
 
         return str_replace(
-                [ ':css', ':attr', ':_content' ],
-            [ $this->getAttributesCSS($attr),
-                $this->getAttributesInput($attr), $content ],
+            [ ':css', ':attr', ':_content' ],
+            [ $this->renderAttrCSS($attr), $this->renderAttrInput($attr), $content ],
             $item[ 'html' ]
-            ) . "\r\n";
+        ) . self::EOL;
     }
 
     /**
@@ -765,35 +757,20 @@ class FormBuilder
     protected function renderInput($key, array $input)
     {
         $html = '';
-        switch ($input[ 'type' ]) {
-            case 'label':
-                $html .= $this->form_label($key);
-
-                break;
-            case 'legend':
-                $html .= $this->form_legend($key);
-
-                break;
-            case 'select':
-                $html .= $this->form_select($key);
-
-                break;
-            case 'textarea':
-                $html .= $this->form_textarea($key);
-
-                break;
-            case 'group':
-                $html .= $this->form_group($key);
-
-                break;
-            case 'html':
-                $html .= $this->form_html($key);
-
-                break;
-            default:
-                if (in_array($input[ 'type' ], $this->typeInputBasic)) {
-                    $html .= $this->form_input($key);
-                }
+        if (in_array($input[ 'type' ], $this->typeInputBasic)) {
+            $html .= $this->form_input($key);
+        } elseif ($input[ 'type' ] === 'label') {
+            $html .= $this->form_label($key);
+        } elseif ($input[ 'type' ] === 'group') {
+            $html .= $this->form_group($key);
+        } elseif ($input[ 'type' ] === 'legend') {
+            $html .= $this->form_legend($key);
+        } elseif ($input[ 'type' ] === 'select') {
+            $html .= $this->form_select($key);
+        } elseif ($input[ 'type' ] === 'textarea') {
+            $html .= $this->form_textarea($key);
+        } elseif ($input[ 'type' ] === 'html') {
+            $html .= $this->form_html($key);
         }
 
         return $html;
@@ -829,19 +806,16 @@ class FormBuilder
      *
      * @return string
      */
-    protected function getAttributesCSS(array $attr)
+    protected function renderAttrCSS(array $attr)
     {
-        $output = [];
+        $html = '';
         foreach ($attr as $key => $values) {
             if (in_array($key, $this->attributesCss) && $values !== '') {
-                $output[] = $key . '="' . $values . '"';
+                $html .= ' ' . htmlspecialchars($key) . '="' . htmlspecialchars($values) . '"';
             }
         }
-        $implode = implode(' ', $output);
 
-        return $implode
-            ? " $implode"
-            : '';
+        return $html;
     }
 
     /**
@@ -851,24 +825,21 @@ class FormBuilder
      *
      * @return string
      */
-    protected function getAttributesInput(array $attr)
+    protected function renderAttrInput(array $attr)
     {
-        $output = [];
+        $html = '';
         foreach ($attr as $key => $values) {
             if (empty($values)) {
                 continue;
             }
             if (in_array($key, $this->attributesUnique)) {
-                $output[] = $key;
+                $html .= ' ' . $key;
             } elseif (!in_array($key, $this->attributesCss) && $key !== 'selected') {
-                $output[] = $key . '="' . $values . '"';
+                $html .= ' ' . htmlspecialchars($key) . '="' . htmlentities($values) . '"';
             }
         }
-        $implode = implode(' ', $output);
 
-        return $implode
-            ? " $implode"
-            : '';
+        return $html;
     }
 
     /**
@@ -885,13 +856,13 @@ class FormBuilder
         array $tab2 = null,
         $crushed = false
     ) {
-        if ($tab1 == null && $tab2 != null) {
+        if (!$tab1 && $tab2) {
             return $tab2;
         }
-        if ($tab1 != null && $tab2 == null) {
+        if ($tab1 && !$tab2) {
             return $tab1;
         }
-        if ($tab1 != null && $tab2 != null) {
+        if ($tab1 && $tab2) {
             $intersect = array_intersect_key($tab1, $tab2);
             if ($intersect && !$crushed) {
                 foreach ($intersect as $key => $value) {
@@ -1006,7 +977,7 @@ class FormBuilder
             + $replacement
             + array_slice($input, $offset + $length, null, true);
     }
-    
+
     /**
      * Ajoute un nouvel élément de formulaire avant ou après un élément existant.
      *
@@ -1020,7 +991,7 @@ class FormBuilder
     {
         if (isset($this->form[ $key ])) {
             $subform = new FormBuilder([]);
-            call_user_func_array($callback, [ &$subform ]);
+            $callback($subform);
             $this->array_splice_assoc($this->form, $key, ($after ? $key : 0), $subform->getForm(), $after);
 
             return true;
