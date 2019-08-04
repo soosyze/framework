@@ -143,6 +143,7 @@ class Router
     public function getRegexForPath($path, array $param)
     {
         array_walk($param, function (&$with) {
+            $with = str_replace('(', '(?:', $with);
             $with = "($with)";
         });
         

@@ -141,9 +141,12 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
     public function testRelplaceRegex()
     {
         $str    = 'index/page/:id/edit';
-        $result = $this->object->getRegexForPath($str, [':id'=>'\d+']);
 
+        $result = $this->object->getRegexForPath($str, [':id'=>'\d+']);
         $this->assertEquals($result, 'index\/page\/(\d+)\/edit');
+
+        $result2 = $this->object->getRegexForPath($str, [':id'=>'(\d+)']);
+        $this->assertEquals($result2, 'index\/page\/((?:\d+))\/edit');
     }
 
     public function testGetRoute()
