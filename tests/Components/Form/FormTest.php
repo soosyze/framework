@@ -428,4 +428,19 @@ class FormTest extends \PHPUnit\Framework\TestCase
             '</form>' . "\r\n"
         );
     }
+    
+    public function testSubformInLabel()
+    {
+        $this->object->label('test', function ($form) {
+            $form->checkbox('check');
+        }, [ 'id' => 'test' ]);
+
+        $this->assertEquals(
+            $this->object->renderForm(),
+            '<form method="post" action="http://localhost/">' . "\r\n" .
+            '<label id="test"><input name="check" type="checkbox" id="check">' . "\r\n" .
+            '</label>' . "\r\n" .
+            '</form>' . "\r\n"
+        );
+    }
 }

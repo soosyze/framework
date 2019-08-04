@@ -114,6 +114,11 @@ class FormBuilder
     {
         $this->openForm($attributes);
     }
+    
+    public function __toString()
+    {
+        return $this->renderSubForm();
+    }
 
     /**
      * Enregistre un input s'il est dans la liste des inputs standards.
@@ -256,8 +261,14 @@ class FormBuilder
      *
      * @return $this
      */
-    public function label($name, $label, array $attr = null)
+    public function label($name, $label, array $attr = [])
     {
+        if (\is_callable($label)) {
+            $subform = new FormBuilder([]);
+            $label($subform);
+            $label = $subform;
+        }
+
         return $this->input($name, [ 'type' => 'label', 'label' => $label, 'attr' => $attr ]);
     }
 
