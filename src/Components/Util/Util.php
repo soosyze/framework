@@ -246,7 +246,14 @@ class Util
         $str = str_replace('\\', '/', $path);
         $str = preg_replace('/\/+/', '/', $str);
 
-        return trim($str, $character_mask);
+        return rtrim($str, $character_mask);
+    }
+
+    public static function cleanDir($dir, $character_mask = "/ \t\n\r\0\x0B")
+    {
+        $str = self::cleanPath($dir, $character_mask);
+
+        return str_replace('/', DIRECTORY_SEPARATOR, $str);
     }
 
     /**

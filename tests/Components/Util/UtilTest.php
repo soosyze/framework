@@ -114,7 +114,13 @@ class UtilTest extends \PHPUnit\Framework\TestCase
     public function testCleanPath()
     {
         $output = Util::cleanPath('\path//test\\file/');
-        $this->assertEquals($output, 'path/test/file');
+        $this->assertEquals($output, '/path/test/file');
+    }
+    
+    public function testcleanDir()
+    {
+        $output = Util::cleanDir('\path//test\\file/');
+        $this->assertEquals($output, DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'test' . DIRECTORY_SEPARATOR . 'file');
     }
 
     public function testStrReplaceFirst()
