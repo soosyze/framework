@@ -196,14 +196,14 @@ class ServerRequestTest extends \PHPUnit\Framework\TestCase
 
     public function testCreate()
     {
-        $_SERVER = [
-            'HTTP_HOST'      => 'exemple.com',
-            'REQUEST_URI'    => '/test/index.php/other',
-            'REQUEST_METHOD' => 'GET',
-            'SCRIPT_NAME'    => '/test/index.php'
-        ];
+        $_SERVER[ 'HTTP_HOST' ]     = 'exemple.com';
+        $_SERVER[ 'REQUEST_URI' ]   = '/test/index.php/other';
+        $_SERVER[ 'REQUEST_METHOD' ]  = 'GET';
+        $_SERVER[ 'SCRIPT_FILENAME' ] = '/test/index.php';
+        $_SERVER[ 'SCRIPT_NAME' ]     = '/test/index.php';
+
         $request = ServerRequest::create();
-        $_FILES  = [];
+
         $this->assertAttributeSame($_SERVER, 'serverParams', $request);
         $this->assertEquals('http://exemple.com/test/', $request->getBasePath());
     }
@@ -246,7 +246,7 @@ class ServerRequestTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals([], $this->object->getUploadedFiles());
     }
-    
+
     public function testParseFiles()
     {
         $output = ServerRequest::parseFiles($this->filesTest);
@@ -324,7 +324,7 @@ class ServerRequestTest extends \PHPUnit\Framework\TestCase
         $clone2 = $clone->withoutAttribute('key');
         $this->assertAttributeSame([ 'key2' => 'value2' ], 'attributes', $clone2);
     }
-    
+
     /**
      * @dataProvider invalidParsedBodyParams
      * @expectedException \Exception
@@ -338,10 +338,10 @@ class ServerRequestTest extends \PHPUnit\Framework\TestCase
     public function invalidParsedBodyParams()
     {
         return [
-            [4711],
-            [47.11],
-            ['foobar'],
-            [true],
+            [ 4711 ],
+            [ 47.11 ],
+            [ 'foobar' ],
+            [ true ],
         ];
     }
 }

@@ -100,7 +100,9 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public static function create()
     {
-        $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
+        $method = isset($_SERVER[ 'REQUEST_METHOD' ])
+            ? $_SERVER[ 'REQUEST_METHOD' ]
+            : 'GET';
         $scheme = isset($_SERVER[ 'HTTPS' ]) && ($_SERVER[ 'HTTPS' ] == 'on' || $_SERVER[ 'HTTPS' ] == 1) ||
             isset($_SERVER[ 'HTTP_X_FORWARDED_PROTO' ]) && $_SERVER[ 'HTTP_X_FORWARDED_PROTO' ] == 'https'
             ? 'https'
@@ -109,18 +111,18 @@ class ServerRequest extends Request implements ServerRequestInterface
         /* Construit le Uri de la requête */
         $uri      = Uri::create($scheme . '://' . $_SERVER[ 'HTTP_HOST' ] . $_SERVER[ 'REQUEST_URI' ]);
         $hasQuery = false;
-        if (isset($_SERVER['REQUEST_URI'])) {
-            $requestUriParts = explode('?', $_SERVER['REQUEST_URI'], 2);
-            $uri = $uri->withPath($requestUriParts[0]);
-            if (isset($requestUriParts[1])) {
+        if (isset($_SERVER[ 'REQUEST_URI' ])) {
+            $requestUriParts = explode('?', $_SERVER[ 'REQUEST_URI' ], 2);
+            $uri             = $uri->withPath($requestUriParts[ 0 ]);
+            if (isset($requestUriParts[ 1 ])) {
                 $hasQuery = true;
-                $uri = $uri->withQuery($requestUriParts[1]);
+                $uri      = $uri->withQuery($requestUriParts[ 1 ]);
             }
         }
-        if (!$hasQuery && isset($_SERVER['QUERY_STRING'])) {
-            $uri = $uri->withQuery($_SERVER['QUERY_STRING']);
+        if (!$hasQuery && isset($_SERVER[ 'QUERY_STRING' ])) {
+            $uri = $uri->withQuery($_SERVER[ 'QUERY_STRING' ]);
         }
-        
+
         $headers  = function_exists('getallheaders')
             ? getallheaders()
             : [];
@@ -154,16 +156,14 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function getBasePath($scriptName = '')
     {
-        $scriptName = $scriptName === ''
-            ? $_SERVER['SCRIPT_NAME']
-            : $scriptName;
-
-        $output = $this->uri->getScheme() . '://' . $this->uri->getHost();
-        $output .= $this->uri->getPort()
+        $filename = $this->getScriptName($scriptName);
+        $baseUrl  = $this->uri->getScheme() . '://' . $this->uri->getHost();
+        $baseUrl  .= $this->uri->getPort()
             ? ':' . $this->uri->getPort()
             : '';
+        $baseUrl  .= str_replace(basename($filename), '', $filename);
 
-        return $output . str_replace(basename($scriptName), '', $scriptName);
+        return str_replace('\\', '/', $baseUrl);
     }
 
     /**
@@ -446,6 +446,30 @@ class ServerRequest extends Request implements ServerRequestInterface
         $filesParse = self::parseFiles($files);
 
         return self::normaliseUplaod($filesParse);
+    }
+
+    protected function getScriptName($default = '/')
+    {
+        $filename = basename(!empty($this->serverParams[ 'SCRIPT_FILENAME' ])
+            ? $this->serverParams[ 'SCRIPT_FILENAME' ]
+            : '');
+        if (basename(!empty($this->serverParams[ 'SCRIPT_NAME' ])
+                    ? $this->serverParams[ 'SCRIPT_NAME' ]
+                    : null) === $filename) {
+            return $this->serverParams[ 'SCRIPT_NAME' ];
+        }
+        if (basename(!empty($this->serverParams[ 'PHP_SELF' ])
+                    ? $this->serverParams[ 'PHP_SELF' ]
+                    : null) === $filename) {
+            return $this->serverParams[ 'PHP_SELF' ];
+        }
+        if (basename(!empty($this->serverParams[ 'ORIG_SCRIPT_NAME' ])
+                    ? $this->serverParams[ 'ORIG_SCRIPT_NAME' ]
+                    : null) === $filename) {
+            return $this->serverParams[ 'ORIG_SCRIPT_NAME' ];
+        }
+
+        return $default;
     }
 
     /**
