@@ -15,8 +15,11 @@ class AppTest extends \PHPUnit\Framework\TestCase
      */
     protected function setUp()
     {
-        $uri     = \Soosyze\Components\Http\Uri::create('http://test.com?q=index');
-        $request = new \Soosyze\Components\Http\ServerRequest('GET', $uri);
+        $uri     = \Soosyze\Components\Http\Uri::create('http://test.com/?q=index');
+        $request = new \Soosyze\Components\Http\ServerRequest('GET', $uri, [], null, '1.1', [
+            'SCRIPT_FILENAME' => '\index.php',
+            'SCRIPT_NAME'     => '\index.php'
+        ]);
 
         $this->object = AppCore::getInstance($request)->init();
     }
@@ -71,7 +74,7 @@ class AppTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals($this->object->getEnvironment(), 'local');
     }
-    
+
     public function testGetEnvironnementAuthority()
     {
         $this->object->setEnvironnement([
@@ -86,6 +89,53 @@ class AppTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertFalse($this->object->isEnvironnement('prod'));
         $this->assertTrue($this->object->isEnvironnement('local'));
+    }
+
+    public function testGetDir()
+    {
+        $this->object->setSettings([
+            'root'  => __DIR__,
+            'files' => 'files/public'
+        ])->setEnvironnement([
+            'prod'  => [ gethostname() ],
+            'local' => [ '' ]
+        ]);
+
+        $test = str_replace('/', DIRECTORY_SEPARATOR, __DIR__ . '/files/public/prod');
+        $this->assertEquals($this->object->getDir('files'), $test);
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testGetDirException()
+    {
+        $this->object->setSettings([
+            'files' => [ 'files/public' ]
+        ])->getDir('files');
+    }
+
+    public function testGetPath()
+    {
+        $this->object->setSettings([
+            'root'  => __DIR__,
+            'files' => 'files/public'
+        ])->setEnvironnement([
+            'prod'  => [ '' ],
+            'local' => [ gethostname() ]
+        ]);
+
+        $this->assertEquals($this->object->getPath('files'), 'http://test.com/files/public/local');
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testGetPathException()
+    {
+        $this->object->setSettings([
+            'files' => [ 'files/public' ]
+        ])->getPath('files');
     }
 }
 
@@ -111,14 +161,14 @@ class TestModule extends \Soosyze\Controller
         $this->pathRoutes   = __DIR__ . '/config/testRouting.json';
         $this->pathServices = __DIR__ . '/config/testService.json';
     }
-    
+
     public function index()
     {
         return 'ok';
     }
-    
+
     public function outputJson()
     {
-        return $this->json(200, ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5]);
+        return $this->json(200, [ 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ]);
     }
 }

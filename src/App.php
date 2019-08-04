@@ -351,6 +351,50 @@ abstract class App
     }
 
     /**
+     * Retourne le répertoire d'une ressource en fonction
+     * du chemin de base du serveur, d'un paramètre des configurations et de l'environnement.
+     *
+     * @param string $key     Paramètres du framework.
+     * @param string $default Valeur par défaut.
+     *
+     * @throws \InvalidArgumentException The framework parameter must return a string.
+     * @return string
+     */
+    public function getDir($key, $default = '')
+    {
+        $root = $this->getSetting('root', '');
+        $dir  = $this->getSetting($key, $default);
+        if (!\is_string($dir)) {
+            throw new \InvalidArgumentException('The framework parameter must return a string.');
+        }
+        $env = $this->getEnvironment();
+        
+        return Util::cleanDir("$root/$dir/$env");
+    }
+
+    /**
+     * Retourne le répertoire d'une ressource en fonction
+     * du chemin de base de la requête, d'un paramètre des configurations et de l'environnement.
+     *
+     * @param string $key     Paramètres du framework.
+     * @param string $default Valeur par défaut.
+     *
+     * @throws \InvalidArgumentException The framework parameter must return a string.
+     * @return string
+     */
+    public function getPath($key, $default = '')
+    {
+        $root = $this->request->getBasePath();
+        $dir  = $this->getSetting($key, $default);
+        if (!\is_string($dir)) {
+            throw new \InvalidArgumentException('The framework parameter must return a string.');
+        }
+        $env = $this->getEnvironment();
+
+        return $root . Util::cleanPath("$dir/$env");
+    }
+
+    /**
      * Charge les instances des services hors modules.
      *
      * @return array
