@@ -539,7 +539,7 @@ class FormBuilder
             ? $attr[ 'balise' ]
             : 'div';
 
-        return '<' . $balise . $this->renderAttrCSS($attr) . ">\r\n"
+        return '<' . $balise . $this->renderAttrCSS($attr) . '>' . self::EOL
             . $item[ 'subform' ]->renderSubForm()
             . '</' . $balise . '>' . self::EOL;
     }
