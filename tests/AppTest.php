@@ -17,8 +17,8 @@ class AppTest extends \PHPUnit\Framework\TestCase
     {
         $uri     = \Soosyze\Components\Http\Uri::create('http://test.com/?q=index');
         $request = new \Soosyze\Components\Http\ServerRequest('GET', $uri, [], null, '1.1', [
-            'SCRIPT_FILENAME' => '\index.php',
-            'SCRIPT_NAME'     => '\index.php'
+            'SCRIPT_FILENAME' => '/index.php',
+            'SCRIPT_NAME'     => '/index.php'
         ]);
 
         $this->object = AppCore::getInstance($request)->init();
