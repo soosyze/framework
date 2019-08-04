@@ -33,7 +33,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $form   = $this->object->form_input('textName');
-        $result = '<input name="textName" type="text" id="textName" required value="lorem ipsum">' . "\r\n";
+        $result = '<input name="textName" type="text" id="textName" required value="lorem ipsum">' . PHP_EOL;
 
         $this->assertEquals($form, $result);
     }
@@ -46,7 +46,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $form   = $this->object->form_input('textName');
-        $result = '<input name="textName" type="text" id="textName" required value="lorem ipsum">' . "\r\n";
+        $result = '<input name="textName" type="text" id="textName" required value="lorem ipsum">' . PHP_EOL;
 
         $this->assertEquals($form, $result);
     }
@@ -59,7 +59,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $form   = $this->object->form_input('passwordName');
-        $result = '<input name="passwordName" type="password" id="passwordName" required value="lorem ipsum">' . "\r\n";
+        $result = '<input name="passwordName" type="password" id="passwordName" required value="lorem ipsum">' . PHP_EOL;
 
         $this->assertEquals($form, $result);
     }
@@ -72,7 +72,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $form   = $this->object->form_input('email');
-        $result = '<input name="email" type="email" id="email" required value="lorem ipsum">' . "\r\n";
+        $result = '<input name="email" type="email" id="email" required value="lorem ipsum">' . PHP_EOL;
 
         $this->assertEquals($form, $result);
     }
@@ -82,7 +82,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->object->checkbox('checkboxName');
 
         $form   = $this->object->form_input('checkboxName');
-        $result = '<input name="checkboxName" type="checkbox" id="checkboxName">' . "\r\n";
+        $result = '<input name="checkboxName" type="checkbox" id="checkboxName">' . PHP_EOL;
 
         $this->assertEquals($form, $result);
     }
@@ -92,7 +92,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->object->radio('radioName');
 
         $form   = $this->object->form_input('radioName');
-        $result = '<input name="radioName" type="radio" id="radioName">' . "\r\n";
+        $result = '<input name="radioName" type="radio" id="radioName">' . PHP_EOL;
 
         $this->assertEquals($form, $result);
     }
@@ -102,7 +102,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->object->submit('inputSubmit', 'Enregistrer');
 
         $form   = $this->object->form_input('inputSubmit');
-        $result = '<input name="inputSubmit" type="submit" id="inputSubmit" value="Enregistrer">' . "\r\n";
+        $result = '<input name="inputSubmit" type="submit" id="inputSubmit" value="Enregistrer">' . PHP_EOL;
 
         $this->assertEquals($form, $result);
     }
@@ -115,10 +115,10 @@ class FormTest extends \PHPUnit\Framework\TestCase
             ], [ 'selected' => 0 ]);
 
         $form   = $this->object->form_select('inputSelect');
-        $result = '<select name="inputSelect" id="inputSelect">' . "\r\n"
-            . '<option value="0" selected>hello</option>' . "\r\n"
-            . '<option value="1" >world</option>' . "\r\n"
-            . '</select>' . "\r\n";
+        $result = '<select name="inputSelect" id="inputSelect">' . PHP_EOL
+            . '<option value="0" selected>hello</option>' . PHP_EOL
+            . '<option value="1" >world</option>' . PHP_EOL
+            . '</select>' . PHP_EOL;
 
         $this->assertEquals($form, $result);
     }
@@ -128,7 +128,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->object->textarea('textareaName', 'lorem ipsum');
 
         $form   = $this->object->form_textarea('textareaName');
-        $result = '<textarea name="textareaName" id="textareaName">lorem ipsum</textarea>' . "\r\n";
+        $result = '<textarea name="textareaName" id="textareaName">lorem ipsum</textarea>' . PHP_EOL;
 
         $this->assertEquals($form, $result);
     }
@@ -147,12 +147,12 @@ class FormTest extends \PHPUnit\Framework\TestCase
         });
 
         $form   = $this->object->form_group('group');
-        $result = '<div>' . "\r\n" . '</div>' . "\r\n";
+        $result = '<div>' . PHP_EOL . '</div>' . PHP_EOL;
 
         $this->assertEquals($form, $result);
 
         $form   = $this->object->form_group('group', [ 'balise' => 'error' ]);
-        $result = '<div>' . "\r\n" . '</div>' . "\r\n";
+        $result = '<div>' . PHP_EOL . '</div>' . PHP_EOL;
 
         $this->assertEquals($form, $result);
     }
@@ -162,7 +162,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->object->token('test');
 
         $form   = $this->object->form_token('test');
-        $result = '<input name="test" type="hidden" value="' . $_SESSION[ 'token' ]['test'] . '">' . "\r\n";
+        $result = '<input name="test" type="hidden" value="' . $_SESSION[ 'token' ]['test'] . '">' . PHP_EOL;
 
         $this->assertEquals($form, $result);
     }
@@ -170,7 +170,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     public function testFormOpen()
     {
         $form   = $this->object->form_open();
-        $result = '<form method="post" action="http://localhost/">' . "\r\n";
+        $result = '<form method="post" action="http://localhost/">' . PHP_EOL;
 
         $this->assertEquals($form, $result);
     }
@@ -178,7 +178,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     public function testFormClose()
     {
         $form   = $this->object->form_close();
-        $result = '</form>' . "\r\n";
+        $result = '</form>' . PHP_EOL;
 
         $this->assertEquals($form, $result);
     }
@@ -188,7 +188,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->object->label('label-test', 'lorem ipsum');
 
         $form   = $this->object->form_label('label-test');
-        $result = '<label>lorem ipsum</label>' . "\r\n";
+        $result = '<label>lorem ipsum</label>' . PHP_EOL;
 
         $this->assertEquals($form, $result);
     }
@@ -199,7 +199,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
             ->text('name');
 
         $form   = $this->object->form_label('label-test-require');
-        $result = '<label for="name">lorem ipsum</label>' . "\r\n";
+        $result = '<label for="name">lorem ipsum</label>' . PHP_EOL;
 
         $this->assertEquals($form, $result);
     }
@@ -210,7 +210,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
             ->text('name');
 
         $form   = $this->object->form_label('label-test-require');
-        $result = '<label for="id-for">lorem ipsum</label>' . "\r\n";
+        $result = '<label for="id-for">lorem ipsum</label>' . PHP_EOL;
 
         $this->assertEquals($form, $result);
     }
@@ -221,7 +221,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
             ->text('name', [ 'required' => 'required' ]);
 
         $form   = $this->object->form_label('label-test-require');
-        $result = '<label for="name">lorem ipsum<span class="form-required">*</span></label>' . "\r\n";
+        $result = '<label for="name">lorem ipsum<span class="form-required">*</span></label>' . PHP_EOL;
 
         $this->assertEquals($form, $result);
     }
@@ -231,7 +231,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->object->legend('legend-test', 'lorem ipsum');
 
         $form   = $this->object->form_legend('legend-test');
-        $result = '<legend>lorem ipsum</legend>' . "\r\n";
+        $result = '<legend>lorem ipsum</legend>' . PHP_EOL;
 
         $this->assertEquals($form, $result);
     }
@@ -244,15 +244,15 @@ class FormTest extends \PHPUnit\Framework\TestCase
             ->addAttr('textName1', [ 'required' => 'required' ]);
 
         $input1  = $this->object->form_input('textName1');
-        $result1 = '<input name="textName1" type="text" id="textName1" required>' . "\r\n";
+        $result1 = '<input name="textName1" type="text" id="textName1" required>' . PHP_EOL;
         $this->assertEquals($input1, $result1);
 
         $this->object->addAttrs([ 'textName1', 'textName2' ], [ 'value' => 'lorem ipsum' ]);
 
         $input1  = $this->object->form_input('textName1');
         $input2  = $this->object->form_input('textName2');
-        $result1 = '<input name="textName1" type="text" id="textName1" required value="lorem ipsum">' . "\r\n";
-        $result2 = '<input name="textName2" type="text" id="textName2" value="lorem ipsum">' . "\r\n";
+        $result1 = '<input name="textName1" type="text" id="textName1" required value="lorem ipsum">' . PHP_EOL;
+        $result2 = '<input name="textName2" type="text" id="textName2" value="lorem ipsum">' . PHP_EOL;
 
         $this->assertEquals($input1, $result1);
         $this->assertEquals($input2, $result2);
@@ -266,7 +266,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->object->addAttr('textName1', [ 'required' => 'required' ]);
 
         $input1  = $this->object->form_input('textName1');
-        $result1 = '<input name="textName1" type="text" id="textName1" required>' . "\r\n";
+        $result1 = '<input name="textName1" type="text" id="textName1" required>' . PHP_EOL;
         $this->assertEquals($input1, $result1);
     }
 
@@ -326,12 +326,12 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             $this->object->renderForm(),
-            '<form method="post" action="http://localhost/">' . "\r\n" .
-            '<input name="1" type="text" id="1">' . "\r\n" .
-            '<input name="4" type="text" id="4">' . "\r\n" .
-            '<input name="3" type="text" id="3">' . "\r\n" .
-            '<input name="2" type="text" id="2">' . "\r\n" .
-            '</form>' . "\r\n"
+            '<form method="post" action="http://localhost/">' . PHP_EOL .
+            '<input name="1" type="text" id="1">' . PHP_EOL .
+            '<input name="4" type="text" id="4">' . PHP_EOL .
+            '<input name="3" type="text" id="3">' . PHP_EOL .
+            '<input name="2" type="text" id="2">' . PHP_EOL .
+            '</form>' . PHP_EOL
         );
     }
 
@@ -351,14 +351,14 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             $this->object->renderForm(),
-            '<form method="post" action="http://localhost/">' . "\r\n" .
-            '<div>' . "\r\n" .
-            '<input name="1" type="text" id="1">' . "\r\n" .
-            '<input name="4" type="text" id="4">' . "\r\n" .
-            '<input name="3" type="text" id="3">' . "\r\n" .
-            '<input name="2" type="text" id="2">' . "\r\n" .
-            '</div>' . "\r\n" .
-            '</form>' . "\r\n"
+            '<form method="post" action="http://localhost/">' . PHP_EOL .
+            '<div>' . PHP_EOL .
+            '<input name="1" type="text" id="1">' . PHP_EOL .
+            '<input name="4" type="text" id="4">' . PHP_EOL .
+            '<input name="3" type="text" id="3">' . PHP_EOL .
+            '<input name="2" type="text" id="2">' . PHP_EOL .
+            '</div>' . PHP_EOL .
+            '</form>' . PHP_EOL
         );
     }
 
@@ -375,12 +375,12 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             $this->object->renderForm(),
-            '<form method="post" action="http://localhost/">' . "\r\n" .
-            '<input name="1" type="text" id="1">' . "\r\n" .
-            '<input name="4" type="text" id="4">' . "\r\n" .
-            '<input name="3" type="text" id="3">' . "\r\n" .
-            '<input name="2" type="text" id="2">' . "\r\n" .
-            '</form>' . "\r\n"
+            '<form method="post" action="http://localhost/">' . PHP_EOL .
+            '<input name="1" type="text" id="1">' . PHP_EOL .
+            '<input name="4" type="text" id="4">' . PHP_EOL .
+            '<input name="3" type="text" id="3">' . PHP_EOL .
+            '<input name="2" type="text" id="2">' . PHP_EOL .
+            '</form>' . PHP_EOL
         );
     }
 
@@ -411,9 +411,9 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             $this->object->renderForm(),
-            '<form method="post" action="http://localhost/">' . "\r\n" .
-            '<img id="image" src="/files/logo.png" alt="Logo"/>' . "\r\n" .
-            '</form>' . "\r\n"
+            '<form method="post" action="http://localhost/">' . PHP_EOL .
+            '<img id="image" src="/files/logo.png" alt="Logo"/>' . PHP_EOL .
+            '</form>' . PHP_EOL
         );
 
         $this->object->html('image', '<p:css:attr>:_content</p>', [
@@ -423,9 +423,9 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             $this->object->renderForm(),
-            '<form method="post" action="http://localhost/">' . "\r\n" .
-            '<p id="test">Logo</p>' . "\r\n" .
-            '</form>' . "\r\n"
+            '<form method="post" action="http://localhost/">' . PHP_EOL .
+            '<p id="test">Logo</p>' . PHP_EOL .
+            '</form>' . PHP_EOL
         );
     }
     
@@ -437,10 +437,10 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             $this->object->renderForm(),
-            '<form method="post" action="http://localhost/">' . "\r\n" .
-            '<label id="test"><input name="check" type="checkbox" id="check">' . "\r\n" .
-            '</label>' . "\r\n" .
-            '</form>' . "\r\n"
+            '<form method="post" action="http://localhost/">' . PHP_EOL .
+            '<label id="test"><input name="check" type="checkbox" id="check">' . PHP_EOL .
+            '</label>' . PHP_EOL .
+            '</form>' . PHP_EOL
         );
     }
 }
