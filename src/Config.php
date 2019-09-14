@@ -77,14 +77,15 @@ class Config implements \ArrayAccess
     public function get($strKey, $default = null)
     {
         list($file, $key) = $this->prepareKey($strKey);
+        $this->loadConfig($file);
 
         if ($key) {
-            return $this->has($file) && isset($this->data[ $file ][ $key ])
+            return isset($this->data[ $file ][ $key ])
                 ? $this->data[ $file ][ $key ]
                 : $default;
         }
 
-        return $this->has($file)
+        return isset($this->data[ $file ])
             ? $this->data[ $file ]
             : $default;
     }
@@ -101,7 +102,8 @@ class Config implements \ArrayAccess
     public function set($strKey, $value)
     {
         list($file, $key) = $this->prepareKey($strKey);
-        $hasFile = $this->has($file);
+        $this->loadConfig($file);
+        $hasFile = isset($this->data[$file]);
 
         if ($key) {
             $this->data[$file][$key] = $value;
@@ -130,8 +132,9 @@ class Config implements \ArrayAccess
     public function del($strKey)
     {
         list($file, $key) = $this->prepareKey($strKey);
+        $this->loadConfig($file);
 
-        if (!$this->has($file)) {
+        if (!isset($this->data[$file])) {
             return $this;
         }
 
