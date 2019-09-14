@@ -840,7 +840,10 @@ class FormBuilder
     {
         $html = '';
         foreach ($attr as $key => $values) {
-            if (empty($values)) {
+            if ($values === '') {
+                continue;
+            }
+            if (in_array($key, $this->attributesUnique) && empty($values)) {
                 continue;
             }
             if (in_array($key, $this->attributesUnique)) {
