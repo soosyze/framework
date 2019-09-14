@@ -199,7 +199,7 @@ class UploadedFile implements UploadedFileInterface
             if (!file_exists($this->file) && (file_exists($targetPath) || !is_writable($targetPath))) {
                 throw new \InvalidArgumentException('An error has occurred.');
             }
-            $this->moved = php_sapi_name() == 'cli'
+            $this->moved = php_sapi_name() === 'cli'
                 ? $this->moveToSapi($targetPath)
                 : $this->moveToNoSapi($targetPath);
         } else {

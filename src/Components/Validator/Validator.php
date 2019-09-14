@@ -443,7 +443,7 @@ class Validator
     protected function getRuleName($rule)
     {
         /* Retire le caractère de négation de la fonction. */
-        $function = $rule[ 0 ] == '!'
+        $function = $rule[ 0 ] === '!'
             ? substr($rule, 1)
             : $rule;
 
@@ -465,7 +465,7 @@ class Validator
     protected function getRuleArgs($rule)
     {
         /* Si l'argument fait référence à un autre champ. */
-        if (($arg = substr(strstr($rule, ':'), 1)) !== false && $arg[ 0 ] == '@') {
+        if (($arg = substr(strstr($rule, ':'), 1)) !== false && $arg[ 0 ] === '@') {
             $keyArg = substr($arg, 1);
             $arg    = $this->inputs[ $keyArg ];
         }

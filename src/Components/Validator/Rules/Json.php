@@ -28,9 +28,9 @@ class Json extends \Soosyze\Components\Validator\Rule
     protected function test($key, $value, $arg, $not = true)
     {
         json_decode($value);
-        if (json_last_error() != JSON_ERROR_NONE && $not) {
+        if (json_last_error() !== JSON_ERROR_NONE && $not) {
             $this->addReturn($key, 'must');
-        } elseif (json_last_error() == JSON_ERROR_NONE && !$not) {
+        } elseif (json_last_error() === JSON_ERROR_NONE && !$not) {
             $this->addReturn($key, 'not');
         }
     }

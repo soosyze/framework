@@ -31,7 +31,7 @@ class Token extends \Soosyze\Components\Validator\Rule
      */
     protected function test($key, $value, $arg, $not = true)
     {
-        if (session_id() == '') {
+        if (session_id() === '') {
             @session_start([
                     'cookie_httponly' => true,
                     'cookie_secure'   => true

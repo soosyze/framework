@@ -359,7 +359,7 @@ class FormBuilder
      */
     public function token($name)
     {
-        if (session_id() == '') {
+        if (session_id() === '') {
             @session_start([
                 'cookie_httponly' => true,
                 'cookie_secure'   => true
@@ -491,7 +491,7 @@ class FormBuilder
             . $this->renderAttrCSS($attr) . $this->renderAttrInput($attr)
             . '>' . self::EOL;
         foreach ($item[ 'options' ] as $option) {
-            $selected = isset($option[ 'selected' ]) || (isset($attr[ 'selected' ]) && $attr[ 'selected' ] == $option[ 'value' ])
+            $selected = isset($option[ 'selected' ]) || (isset($attr[ 'selected' ]) && $attr[ 'selected' ] === $option[ 'value' ])
                 ? 'selected'
                 : '';
 
@@ -802,7 +802,7 @@ class FormBuilder
          * il devient automatiquement l'id de la balise courante.
          */
         $previous = end($this->form);
-        if ($previous && $previous[ 'type' ] == 'label' && !isset($previous[ 'attr' ][ 'for' ]) && isset($attr[ 'attr' ][ 'id' ])) {
+        if ($previous && $previous[ 'type' ] === 'label' && !isset($previous[ 'attr' ][ 'for' ]) && isset($attr[ 'attr' ][ 'id' ])) {
             $this->form[ key($this->form) ][ 'attr' ][ 'for' ] = $attr[ 'attr' ][ 'id' ];
         }
         $this->form[ $name ] = $attr;

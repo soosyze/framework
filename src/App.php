@@ -205,7 +205,7 @@ abstract class App
 
         $this->container->callHook('app.response.before', [ &$request, &$response ]);
 
-        if (($route = $this->router->parse($request)) && $response->getStatusCode() == 404) {
+        if (($route = $this->router->parse($request)) && $response->getStatusCode() === 404) {
             $this->container->callHook($route[ 'key' ] . '.response.before', [
                 &$request,
                 &$response

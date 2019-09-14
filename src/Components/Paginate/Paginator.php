@@ -278,10 +278,10 @@ class Paginator
     {
         return [
             'title'   => $key,
-            'link'    => $key == $this->current
+            'link'    => $key === $this->current
             ? null
             : $this->getUrl($key),
-            'current' => $key == $this->current
+            'current' => $key === $this->current
             ? 'active'
             : ''
         ];

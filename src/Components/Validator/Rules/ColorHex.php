@@ -29,9 +29,9 @@ class ColorHex extends Regex
     {
         if ($arg === false) {
             $patern = '[A-Fa-f0-9]{6}|[A-Fa-f0-9]{3}';
-        } elseif ($arg == 3) {
+        } elseif ($arg === '3') {
             $patern = '[A-Fa-f0-9]{3}';
-        } elseif ($arg == 6) {
+        } elseif ($arg === '6') {
             $patern = '[A-Fa-f0-9]{6}';
         } else {
             throw new \InvalidArgumentException('A color in hexadecimal format must be contained in 3 or 6 characters.');

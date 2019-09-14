@@ -103,8 +103,8 @@ class ServerRequest extends Request implements ServerRequestInterface
         $method = isset($_SERVER[ 'REQUEST_METHOD' ])
             ? $_SERVER[ 'REQUEST_METHOD' ]
             : 'GET';
-        $scheme = isset($_SERVER[ 'HTTPS' ]) && ($_SERVER[ 'HTTPS' ] == 'on' || $_SERVER[ 'HTTPS' ] == 1) ||
-            isset($_SERVER[ 'HTTP_X_FORWARDED_PROTO' ]) && $_SERVER[ 'HTTP_X_FORWARDED_PROTO' ] == 'https'
+        $scheme = isset($_SERVER[ 'HTTPS' ]) && ($_SERVER[ 'HTTPS' ] === 'on' || $_SERVER[ 'HTTPS' ] == 1) ||
+            isset($_SERVER[ 'HTTP_X_FORWARDED_PROTO' ]) && $_SERVER[ 'HTTP_X_FORWARDED_PROTO' ] === 'https'
             ? 'https'
             : 'http';
 
