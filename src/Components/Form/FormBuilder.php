@@ -255,15 +255,15 @@ class FormBuilder
     /**
      * Enregistre un label.
      *
-     * @param string     $name  Clé unique.
-     * @param string     $label Texte à afficher.
-     * @param array|null $attr  Liste d'attributs.
+     * @param string          $name  Clé unique.
+     * @param string|callable $label Texte à afficher ou sous formulaire.
+     * @param array|null      $attr  Liste d'attributs.
      *
      * @return $this
      */
     public function label($name, $label, array $attr = [])
     {
-        if (\is_callable($label)) {
+        if (!\is_string($label) && \is_callable($label)) {
             $subform = new FormBuilder([]);
             $label($subform);
             $label = $subform;
