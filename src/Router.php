@@ -143,7 +143,7 @@ class Router
     public function getRegexForPath($path, array $param)
     {
         array_walk($param, function (&$with) {
-            $with = str_replace('(', '(?:', $with);
+            $with = str_replace([ '(', '/' ], [ '(?:', '\/' ], $with);
             $with = "($with)";
         });
         
@@ -181,6 +181,7 @@ class Router
                 if (!$strict && !isset($params[$key])) {
                     continue;
                 }
+                $value = str_replace([ '(', '/' ], [ '(?:', '\/' ], $value);
                 if ($strict && !preg_match('/^' . $value . '$/', $params[ $key ])) {
                     throw new RouteArgumentException($params[ $key ], $value, $path);
                 }
