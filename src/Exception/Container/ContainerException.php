@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Soosyze Framework http://soosyze.com
+ * Soosyze Framework https://soosyze.com
  *
  * @package Soosyze\Exception\App
  * @author  Mathieu NOËL <mathieu@soosyze.com>
