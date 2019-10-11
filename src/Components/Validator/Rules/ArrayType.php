@@ -15,7 +15,7 @@ namespace Soosyze\Components\Validator\Rules;
  *
  * @author Mathieu NOËL
  */
-class ArrayR extends \Soosyze\Components\Validator\Rule
+class ArrayType extends \Soosyze\Components\Validator\Rule
 {
     /**
      * Test si la valeur est de type array.

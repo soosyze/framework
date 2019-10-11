@@ -15,21 +15,21 @@ namespace Soosyze\Components\Validator\Rules;
  *
  * @author Mathieu NOËL
  */
-class StringR extends \Soosyze\Components\Validator\Rule
+class FloatType extends \Soosyze\Components\Validator\Rule
 {
     /**
-     * Test si la valeur est une chaine de caractères.
+     * Test si une valeur est de type numérique flottant.
      *
      * @param string $key   Clé du test.
-     * @param string $value Valeur à tester.
+     * @param float  $value Valeur à tester.
      * @param string $arg   Argument de test.
      * @param bool   $not   Inverse le test.
      */
     protected function test($key, $value, $arg, $not = true)
     {
-        if (!is_string($value) && $not) {
+        if (!is_float($value) && $not) {
             $this->addReturn($key, 'must');
-        } elseif (is_string($value) && !$not) {
+        } elseif (is_float($value) && !$not) {
             $this->addReturn($key, 'not');
         }
     }
@@ -40,8 +40,8 @@ class StringR extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label n\'est pas une chaine de caractères.',
-            'not'  => 'La valeur de :label ne doit pas être une chaine de caractères.'
+            'must' => 'La valeur de :label n\'est pas un nombre flottant.',
+            'not'  => 'La valeur de :label ne doit être un nombre flottant.'
         ];
     }
 }

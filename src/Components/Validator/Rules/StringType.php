@@ -15,10 +15,10 @@ namespace Soosyze\Components\Validator\Rules;
  *
  * @author Mathieu NOËL
  */
-class BoolR extends \Soosyze\Components\Validator\Rule
+class StringType extends \Soosyze\Components\Validator\Rule
 {
     /**
-     * Test si une valeur est de type boolean.
+     * Test si la valeur est une chaine de caractères.
      *
      * @param string $key   Clé du test.
      * @param string $value Valeur à tester.
@@ -27,26 +27,11 @@ class BoolR extends \Soosyze\Components\Validator\Rule
      */
     protected function test($key, $value, $arg, $not = true)
     {
-        if (!$this->isBool($value) && $not) {
+        if (!is_string($value) && $not) {
             $this->addReturn($key, 'must');
-        } elseif ($this->isBool($value) && !$not) {
+        } elseif (is_string($value) && !$not) {
             $this->addReturn($key, 'not');
         }
-    }
-
-    /**
-     * Si la variable contient une valeur boolean.
-     *
-     * @param mixed $var Variable testée.
-     *
-     * @return bool
-     */
-    protected function isBool($var)
-    {
-        return filter_var($var, FILTER_VALIDATE_BOOLEAN) ||
-            filter_var($var, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null ||
-            $var === false ||
-            $var === '';
     }
 
     /**
@@ -55,8 +40,8 @@ class BoolR extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label n\'est pas un boolean.',
-            'not'  => 'La valeur de :label ne doit pas être un boolean.'
+            'must' => 'La valeur de :label n\'est pas une chaine de caractères.',
+            'not'  => 'La valeur de :label ne doit pas être une chaine de caractères.'
         ];
     }
 }
