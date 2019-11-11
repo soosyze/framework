@@ -38,4 +38,15 @@ class ColorHex extends Regex
         }
         parent::test('colorhex', $value, '/^#(' . $patern . ')$/', $not);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function messages()
+    {
+        return [
+            'must' => 'La valeur de :label doit être une couleur :regex.',
+            'not'  => 'La valeur de :label ne doit pas correspondre à la règle de validation :regex.'
+        ];
+    }
 }
