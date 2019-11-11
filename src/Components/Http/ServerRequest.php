@@ -167,6 +167,16 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
+     * Si la requête est envoyée par Ajax.
+     * Cette méthode ne fait pas partie de la norme PSR-7.
+     *
+     * @return bool
+     */
+    public function isAjax()
+    {
+        return !empty($this->serverParams[ 'HTTP_X_REQUESTED_WITH' ]) && strtolower($this->serverParams[ 'HTTP_X_REQUESTED_WITH' ]) === 'xmlhttprequest';
+    }
+
      * Récupérer les paramètres du serveur.
      *
      * Récupère les données liées à l'environnement de demande entrante,
