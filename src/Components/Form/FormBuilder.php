@@ -253,7 +253,7 @@ class FormBuilder
      */
     public function group($name, $balise, callable $callback, $attr = [])
     {
-        $subform = new FormBuilder([]);
+        $subform = new FormBuilder([], false);
         $callback($subform);
         $group   = array_merge([ 'balise' => $balise ], $attr);
 
@@ -272,7 +272,7 @@ class FormBuilder
     public function label($name, $label, array $attr = [])
     {
         if (!\is_string($label) && \is_callable($label)) {
-            $subform = new FormBuilder([]);
+            $subform = new FormBuilder([], false);
             $label($subform);
             $label = $subform;
         }
@@ -1039,7 +1039,7 @@ class FormBuilder
     private function addItem($key, callable $callback, $after = false)
     {
         if (isset($this->form[ $key ])) {
-            $subform = new FormBuilder([]);
+            $subform = new FormBuilder([], false);
             $callback($subform);
             $this->array_splice_assoc($this->form, $key, ($after ? $key : 0), $subform->getForm(), $after);
 
