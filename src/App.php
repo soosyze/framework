@@ -35,6 +35,13 @@ abstract class App
     protected $environnement = [];
 
     /**
+     * Le nom de l'environnement par défaut.
+     *
+     * @var string
+     */
+    protected $environnementDefault = '';
+
+    /**
      * Instance unique de App.
      *
      * @var $self
@@ -284,6 +291,20 @@ abstract class App
     }
 
     /**
+     * Ajoute l'environnement par défaut.
+     *
+     * @param string $nameEnv
+     *
+     * @return $this
+     */
+    public function setEnvironmentDefault($nameEnv)
+    {
+        $this->environnementDefault = $nameEnv;
+
+        return $this;
+    }
+
+    /**
      * Retourne la requête courante.
      *
      * @return ServerRequest
@@ -311,7 +332,7 @@ abstract class App
             }
         }
 
-        return '';
+        return $this->environnementDefault;
     }
 
     /**
@@ -328,7 +349,7 @@ abstract class App
         return isset($this->environnement[ $nameEnv ]) && (
             in_array(gethostname(), $this->environnement[ $nameEnv ]) ||
             in_array($authority, $this->environnement[ $nameEnv ])
-            );
+            ) || $this->environnementDefault === $nameEnv;
     }
 
     /**
