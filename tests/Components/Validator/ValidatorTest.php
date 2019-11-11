@@ -1377,6 +1377,17 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($this->object->isValid());
     }
 
+    public function testCustomLabel()
+    {
+        $this->object
+            ->setLabel([ 'field' => 'Text input' ])
+            ->addInput('field', 10)
+            ->addRule('field', 'string');
+
+        $this->assertFalse($this->object->isValid());
+        $this->assertEquals($this->object->getError('field.string'), 'La valeur de Text input n\'est pas une chaine de caractères.');
+    }
+
     public function testCustomMessage()
     {
         Validator::setMessages([

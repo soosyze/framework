@@ -25,6 +25,13 @@ abstract class Rule
     private $keyValue = '';
 
     /**
+     * Le label du champ.
+     *
+     * @var string
+     */
+    private $label = '';
+
+    /**
      * Valeurs de retour.
      *
      * @var string[]
@@ -68,6 +75,20 @@ abstract class Rule
     public function setMessages(array $messages = [])
     {
         $this->messages = $messages;
+
+        return $this;
+    }
+
+    /**
+     * Ajoute un label au champ.
+     *
+     * @param string $label
+     *
+     * @return $this
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
 
         return $this;
     }
@@ -120,7 +141,7 @@ abstract class Rule
     protected function addReturn($keyRule, $keyMessage, array $value = [])
     {
         $key            = "$this->keyValue.$keyRule";
-        $args           = array_merge([ ':label' => $this->keyValue ], $value);
+        $args           = array_merge([ ':label' => $this->label ], $value);
         $argsKey        = array_keys($args);
         $this->messages = array_merge($this->messages(), $this->messages);
 
@@ -138,7 +159,8 @@ abstract class Rule
      * @throws \InvalidArgumentException The minimum value of between must be numeric.
      * @throws \InvalidArgumentException The maximum value of entry must be numeric.
      * @throws \InvalidArgumentException The minimum value must not be greater than the maximum value.
-     * @return numeric[]                 Tableau des valeurs min et max.
+     *
+     * @return numeric[] Tableau des valeurs min et max.
      */
     protected function getParamMinMax($arg)
     {

@@ -102,6 +102,13 @@ class Validator
     protected $key = [];
 
     /**
+     * Liste des labels.
+     *
+     * @var string[]
+     */
+    protected $labelCustom = [];
+
+    /**
      * Tests personnalisés par l'utilisateur.
      *
      * @var Rule[]
@@ -145,6 +152,20 @@ class Validator
     }
 
     /**
+     * Ajoute un tableau associatif de "key_field" => "Label du champ".
+     *
+     * @param string[] $labels
+     *
+     * @return $this
+     */
+    public function setLabel(array $labels)
+    {
+        $this->labelCustom = $labels;
+
+        return $this;
+    }
+
+    /**
      * Ajoute un champ à tester.
      *
      * @param string $key   Nom du champ.
@@ -172,6 +193,23 @@ class Validator
     public function addRule($key, $rule)
     {
         $this->rules[ $key ] = $rule;
+
+        return $this;
+    }
+
+    /**
+     * Rajoute un label de champ.
+     *
+     * @codeCoverageIgnore add
+     *
+     * @param type $key
+     * @param type $label
+     *
+     * @return $this
+     */
+    public function addLabel($key, $label)
+    {
+        $this->labelCustom[ $key ] = $label;
 
         return $this;
     }
@@ -506,13 +544,17 @@ class Validator
         if (isset(self::$messagesCustom[ $name ])) {
             $rule->setMessages(self::$messagesCustom[ $name ]);
         }
+        $label = isset($this->labelCustom[ $key ])
+            ? $this->labelCustom[ $key ]
+            : $key;
 
-        $rule->execute(
-            $name,
-            $key,
-            $this->inputs[ $key ],
-            $arg,
-            $strRule[ 0 ] != '!'
+        $rule->setLabel($label)
+            ->execute(
+                $name,
+                $key,
+                $this->inputs[ $key ],
+                $arg,
+                $strRule[ 0 ] != '!'
         );
 
         if ($rule->hasErrors()) {
