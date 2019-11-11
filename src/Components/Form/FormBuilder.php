@@ -26,7 +26,7 @@ class FormBuilder
      *
      * @var string[]
      */
-    protected $attributesCss = [
+    protected static $attributesCss = [
         'id', 'class', 'style'
     ];
 
@@ -37,7 +37,7 @@ class FormBuilder
      *
      * @var string[]
      */
-    protected $attributesUnique = [
+    protected static $attributesUnique = [
         'autofocus',
         'checked',
         'disabled',
@@ -50,7 +50,7 @@ class FormBuilder
      *
      * @var string[]
      */
-    protected $baliseGroup = [
+    protected static $baliseGroup = [
         'div', 'span', 'fieldset'
     ];
 
@@ -59,7 +59,7 @@ class FormBuilder
      *
      * @var string[]
      */
-    protected $typeInputBasic = [
+    protected static $typeInputBasic = [
         'button',
         'checkbox',
         'color',
@@ -96,25 +96,33 @@ class FormBuilder
      *
      * @var array
      */
-    protected $errors = [];
+    protected static $errors = [];
 
     /**
      * Messages de réussites.
      *
      * @var array
      */
-    protected $success = [];
+    protected static $success = [];
 
     /**
      * Déclare l'ouverture du formulaire.
      *
-     * @param array $attributes
+     * @param array $attr
+     * @param bool  $withOpen
      */
-    public function __construct(array $attributes)
+    public function __construct(array $attr = [], $withOpen = true)
     {
-        $this->openForm($attributes);
+        if ($withOpen) {
+            $this->openForm($attr);
+        }
     }
-    
+
+    /**
+     * Le formulaire au format HTML.
+     *
+     * @return string
+     */
     public function __toString()
     {
         return $this->renderSubForm();
@@ -132,7 +140,7 @@ class FormBuilder
      */
     public function __call($type, $arg)
     {
-        if (in_array($type, $this->typeInputBasic)) {
+        if (in_array($type, self::$typeInputBasic)) {
             array_unshift($arg, $type);
 
             return call_user_func_array([ $this, 'inputBasic' ], $arg);
@@ -535,7 +543,7 @@ class FormBuilder
         $item = $this->getItem($key);
         $attr = $this->merge_attr($item[ 'attr' ], $attrAdd);
 
-        $balise = in_array($attr[ 'balise' ], $this->baliseGroup)
+        $balise = in_array($attr[ 'balise' ], self::$baliseGroup)
             ? $attr[ 'balise' ]
             : 'div';
 
@@ -591,7 +599,7 @@ class FormBuilder
      */
     public function form_errors()
     {
-        return $this->errors;
+        return self::$errors;
     }
 
     /**
@@ -603,7 +611,7 @@ class FormBuilder
      */
     public function form_success()
     {
-        return $this->success;
+        return self::$success;
     }
 
     /**
@@ -617,7 +625,7 @@ class FormBuilder
      */
     public function setErrors(array $errs)
     {
-        $this->errors = $errs;
+        self::$errors = $errs;
 
         return $this;
     }
@@ -633,7 +641,7 @@ class FormBuilder
      */
     public function addError($err)
     {
-        $this->errors[] = $err;
+        self::$errors[] = $err;
 
         return $this;
     }
@@ -667,7 +675,7 @@ class FormBuilder
      */
     public function setSuccess(array $success)
     {
-        $this->success = $success;
+        self::$success = $success;
 
         return $this;
     }
@@ -683,7 +691,7 @@ class FormBuilder
      */
     public function addSuccess($success)
     {
-        $this->success[] = $success;
+        self::$success[] = $success;
 
         return $this;
     }
@@ -792,7 +800,7 @@ class FormBuilder
     protected function renderInput($key, array $input)
     {
         $html = '';
-        if (in_array($input[ 'type' ], $this->typeInputBasic)) {
+        if (in_array($input[ 'type' ], self::$typeInputBasic)) {
             $html .= $this->form_input($key);
         } elseif ($input[ 'type' ] === 'label') {
             $html .= $this->form_label($key);
@@ -845,7 +853,7 @@ class FormBuilder
     {
         $html = '';
         foreach ($attr as $key => $values) {
-            if (in_array($key, $this->attributesCss) && $values !== '') {
+            if (in_array($key, self::$attributesCss) && $values !== '') {
                 $html .= ' ' . htmlspecialchars($key) . '="' . htmlspecialchars($values) . '"';
             }
         }
@@ -867,12 +875,12 @@ class FormBuilder
             if ($values === '') {
                 continue;
             }
-            if (in_array($key, $this->attributesUnique) && empty($values)) {
+            if (in_array($key, self::$attributesUnique) && empty($values)) {
                 continue;
             }
-            if (in_array($key, $this->attributesUnique)) {
+            if (in_array($key, self::$attributesUnique)) {
                 $html .= ' ' . $key;
-            } elseif (!in_array($key, $this->attributesCss) && $key !== 'selected') {
+            } elseif (!in_array($key, self::$attributesCss) && $key !== 'selected') {
                 $html .= ' ' . htmlspecialchars($key) . '="' . htmlentities($values) . '"';
             }
         }
