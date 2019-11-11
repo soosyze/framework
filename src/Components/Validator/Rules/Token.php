@@ -15,7 +15,7 @@ namespace Soosyze\Components\Validator\Rules;
  *
  * @author Mathieu NOËL
  */
-class Token extends \Soosyze\Components\Validator\Rule
+class Token extends Size
 {
     /**
      * Test la validité d'un token ($_SESSION['token']) à une valeur de comparaison
@@ -41,17 +41,14 @@ class Token extends \Soosyze\Components\Validator\Rule
         if ($arg === false) {
             $arg = 900;
         }
-        if (!is_numeric($arg)) {
-            throw new \InvalidArgumentException('The time value must be numeric.');
-        }
-        
-        $name = $this->getKeyValue();
+        $intervale = $this->getComparator($arg);
+        $name      = $this->getKeyValue();
 
         if (!isset($_SESSION[ 'token' ][ $name ]) && !isset($_SESSION[ 'token_time' ][ $name ])) {
             $this->addReturn($key, 'error');
         } elseif ($_SESSION[ 'token' ][ $name ] != $value) {
             $this->addReturn($key, 'invalid');
-        } elseif ($_SESSION[ 'token_time' ][ $name ] <= (time() - intval($arg))) {
+        } elseif ($_SESSION[ 'token_time' ][ $name ] <= (time() - intval($intervale))) {
             $this->addReturn($key, 'time');
         }
     }
