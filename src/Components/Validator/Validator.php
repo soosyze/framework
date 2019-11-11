@@ -51,6 +51,7 @@ class Validator
         'file_mimes'              => 'Rules\FileMimes',
         'file_mimetypes'          => 'Rules\FileMimetypes',
         'float'                   => 'Rules\FloatType',
+        'fontawesome'             => 'Rules\FontAwesome',
         'image'                   => 'Rules\Image',
         'image_dimensions_height' => 'Rules\ImageDimensionsHeight',
         'image_dimensions_width'  => 'Rules\ImageDimensionsWidth',
