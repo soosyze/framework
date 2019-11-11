@@ -22,7 +22,7 @@ class ImageDimensionsWidth extends ImageDimensions
      */
     protected function messages()
     {
-        $output                = parent::messages();
+        $output               = parent::messages();
         $output[ 'must' ]     = 'La largeur de l\'image :label doit être comprise entre les valeurs :minpx et :maxpx.';
         $output[ 'not_must' ] = 'La largeur de l\'image :label ne doit pas être comprise entre les valeurs :minpx et :maxpx.';
 

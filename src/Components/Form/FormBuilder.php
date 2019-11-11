@@ -218,7 +218,7 @@ class FormBuilder
      */
     public function openForm(array $attr = [])
     {
-        $this->form[ 'open' ] = [ 'attr' => $attr, 'type' => 'open' ];
+        $this->form[ 'open' ] = [ 'type' => 'open', 'attr' => $attr ];
 
         return $this;
     }
@@ -274,7 +274,7 @@ class FormBuilder
         if (!\is_string($label) && \is_callable($label)) {
             $subform = new FormBuilder([], false);
             $label($subform);
-            $label = $subform;
+            $label   = $subform;
         }
 
         return $this->input($name, [ 'type' => 'label', 'label' => $label, 'attr' => $attr ]);
@@ -307,7 +307,8 @@ class FormBuilder
     {
         $basic = array_merge([ 'id' => $name ], $attr);
 
-        return $this->input($name, [ 'type' => 'textarea', 'content' => $content, 'attr' => $basic ]);
+        return $this->input($name, [ 'type'    => 'textarea', 'content' => $content,
+                'attr'    => $basic ]);
     }
 
     /**
@@ -955,7 +956,7 @@ class FormBuilder
         }
 
         foreach ($this->form as $input) {
-            if ($input[ 'type' ] != 'group') {
+            if ($input[ 'type' ] !== 'group') {
                 continue;
             }
 

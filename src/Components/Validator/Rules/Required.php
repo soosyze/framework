@@ -29,7 +29,7 @@ class Required extends \Soosyze\Components\Validator\Rule
      */
     protected function test($key, $value, $arg, $not = true)
     {
-        if ($value == '') {
+        if ($value === '') {
             $this->addReturn($key, 'must');
         } elseif ($value instanceof UploadedFileInterface) {
             if ($value->getError() === UPLOAD_ERR_NO_FILE) {

@@ -55,10 +55,10 @@ class Between extends Size
      */
     protected function sizeBetween($key, $lengthValue, $min, $max, $not = true)
     {
-        if (!($lengthValue <= $max['size'] && $lengthValue >= $min['size']) && $not) {
-            $this->addReturn($key, 'must', [ ':min' => $min['value'], ':max' => $max['value'] ]);
-        } elseif ($lengthValue <= $max['size'] && $lengthValue >= $min['size'] && !$not) {
-            $this->addReturn($key, 'not', [ ':min' => $min['value'], ':max' => $max['value'] ]);
+        if (!($lengthValue <= $max[ 'size' ] && $lengthValue >= $min[ 'size' ]) && $not) {
+            $this->addReturn($key, 'must', [ ':min' => $min[ 'value' ], ':max' => $max[ 'value' ] ]);
+        } elseif ($lengthValue <= $max[ 'size' ] && $lengthValue >= $min[ 'size' ] && !$not) {
+            $this->addReturn($key, 'not', [ ':min' => $min[ 'value' ], ':max' => $max[ 'value' ] ]);
         }
     }
 

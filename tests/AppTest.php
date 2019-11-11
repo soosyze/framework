@@ -167,7 +167,7 @@ class TestModule extends \Soosyze\Controller
         return 'ok';
     }
 
-    public function outputJson()
+    public function api()
     {
         return $this->json(200, [ 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ]);
     }

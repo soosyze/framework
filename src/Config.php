@@ -25,7 +25,7 @@ class Config implements \ArrayAccess
      * @var string
      */
     private $path = '';
-    
+
     /**
      * Les données de la configurations.
      *
@@ -61,8 +61,8 @@ class Config implements \ArrayAccess
         $this->loadConfig($file);
 
         return $key
-            ? isset($this->data[$file][$key])
-            : isset($this->data[$file]);
+            ? isset($this->data[ $file ][ $key ])
+            : isset($this->data[ $file ]);
     }
 
     /**
@@ -103,19 +103,19 @@ class Config implements \ArrayAccess
     {
         list($file, $key) = $this->prepareKey($strKey);
         $this->loadConfig($file);
-        $hasFile = isset($this->data[$file]);
+        $hasFile = isset($this->data[ $file ]);
 
         if ($key) {
-            $this->data[$file][$key] = $value;
+            $this->data[ $file ][ $key ] = $value;
         } else {
-            $this->data[$file] = !is_array($value)
-                ? [$value]
+            $this->data[ $file ] = !is_array($value)
+                ? [ $value ]
                 : $value;
         }
         if ($hasFile) {
-            Util::saveJson($this->path, $file, $this->data[$file]);
+            Util::saveJson($this->path, $file, $this->data[ $file ]);
         } else {
-            Util::createJson($this->path, $file, $this->data[$file]);
+            Util::createJson($this->path, $file, $this->data[ $file ]);
         }
 
         return $this;
@@ -134,13 +134,13 @@ class Config implements \ArrayAccess
         list($file, $key) = $this->prepareKey($strKey);
         $this->loadConfig($file);
 
-        if (!isset($this->data[$file])) {
+        if (!isset($this->data[ $file ])) {
             return $this;
         }
 
         if ($key) {
             unset($this->data[ $file ][ $key ]);
-            Util::saveJson($this->path, $file, $this->data[$file]);
+            Util::saveJson($this->path, $file, $this->data[ $file ]);
         } else {
             unset($this->data[ $file ]);
             unlink($this->path . $file . '.json');
@@ -213,7 +213,7 @@ class Config implements \ArrayAccess
     {
         $this->del($offset);
     }
-    
+
     /**
      * Sépare le nom du fichier de la clé.
      *
@@ -229,18 +229,18 @@ class Config implements \ArrayAccess
             throw new \InvalidArgumentException('The key must be a non-empty string.');
         }
 
-        $str   = trim($strKey, '.');
-        $split[0] = $str;
+        $str        = trim($strKey, '.');
+        $split[ 0 ] = $str;
         if (strpos($str, '.') !== false) {
-            $split[0] = strstr($str, '.', true);
-            $split[1] = trim(strstr($str, '.'), '.');
+            $split[ 0 ] = strstr($str, '.', true);
+            $split[ 1 ] = trim(strstr($str, '.'), '.');
         }
 
-        return isset($split[1])
-            ? [$split[0], $split[1]]
-            : [$split[0], null];
+        return isset($split[ 1 ])
+            ? [ $split[ 0 ], $split[ 1 ] ]
+            : [ $split[ 0 ], null ];
     }
-    
+
     /**
      * Charge et garde en mémoire les données de configuration.
      *
@@ -250,14 +250,14 @@ class Config implements \ArrayAccess
      */
     protected function loadConfig($nameConfig)
     {
-        if (isset($this->data[$nameConfig])) {
+        if (isset($this->data[ $nameConfig ])) {
             return;
         }
-        
+
         $file = $this->path . $nameConfig . '.json';
 
         if (file_exists($file)) {
-            $this->data[$nameConfig] = Util::getJson($file);
+            $this->data[ $nameConfig ] = Util::getJson($file);
         }
     }
 }

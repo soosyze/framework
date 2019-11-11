@@ -20,16 +20,16 @@ class ArrayType extends \Soosyze\Components\Validator\Rule
     /**
      * Test si la valeur est de type array.
      *
-     * @param string $key   Clé du test.
-     * @param string $value Valeur à tester.
-     * @param string $arg   Argument de test.
-     * @param bool   $not   Inverse le test.
+     * @param string $key    Clé du test.
+     * @param string $values Valeur à tester.
+     * @param string $arg    Argument de test.
+     * @param bool   $not    Inverse le test.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $values, $arg, $not = true)
     {
-        if (!is_array($value) && $not) {
+        if (!\is_array($values) && $not) {
             $this->addReturn($key, 'must');
-        } elseif (is_array($value) && !$not) {
+        } elseif (\is_array($values) && !$not) {
             $this->addReturn($key, 'not');
         }
     }

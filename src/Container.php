@@ -78,7 +78,7 @@ class Container implements ContainerInterface
     public function setService($key, $class, array $arg = [], array $hooks = [])
     {
         $this->services[ $key ] = [ 'class' => $class, 'arguments' => $arg, 'hooks' => $hooks ];
-        $this->loadHooks([$this->services[ $key ]]);
+        $this->loadHooks([ $this->services[ $key ] ]);
 
         return $this;
     }
@@ -302,7 +302,7 @@ class Container implements ContainerInterface
             }
             /* Injecte un parmètre comme argument d'instantiation du service appelé. */
             elseif (strpos($arg, '#') === 0) {
-                $arg = $this->config[substr($arg, 1)];
+                $arg = $this->config[ substr($arg, 1) ];
             }
             /* Dans le cas ou ont souhaites échaper l'appel à un autre service ou un paramètre. */
             elseif (strpos($arg, '\@') === 0 || strpos($arg, '\#') === 0) {

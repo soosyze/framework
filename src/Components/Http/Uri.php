@@ -68,7 +68,7 @@ class Uri implements UriInterface
      * @var string
      */
     protected $path = '';
-    
+
     /**
      * Requête encodée.
      *
@@ -295,8 +295,8 @@ class Uri implements UriInterface
      */
     public function withUserInfo($user, $password = null)
     {
-        $clone           = clone $this;
-        $clone->user     = $this->filterString($user);
+        $clone       = clone $this;
+        $clone->user = $this->filterString($user);
         $clone->pass = $password !== null
             ? $this->filterString($password)
             : '';
@@ -502,7 +502,7 @@ class Uri implements UriInterface
      */
     protected function filterQuery($query)
     {
-        $queryStr    = $this->filterString($query);
+        $queryStr = $this->filterString($query);
 
         return $this->rawurldecodeValue(ltrim($queryStr, '?'));
     }
@@ -516,8 +516,8 @@ class Uri implements UriInterface
      */
     protected function filterFragment($fragment)
     {
-        $fragmentStr    = $this->filterString($fragment);
-        
+        $fragmentStr = $this->filterString($fragment);
+
         return $this->rawurldecodeValue(ltrim($fragmentStr, '#'));
     }
 
@@ -530,7 +530,7 @@ class Uri implements UriInterface
      */
     protected function filterPath($path)
     {
-        $pathStr    = $this->filterString($path);
+        $pathStr = $this->filterString($path);
 
         return $this->rawurldecodeValue($pathStr);
     }

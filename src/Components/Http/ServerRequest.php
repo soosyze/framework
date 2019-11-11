@@ -470,6 +470,14 @@ class ServerRequest extends Request implements ServerRequestInterface
         return self::normaliseUplaod($filesParse);
     }
 
+    /**
+     * Détermine quel script a déclanché la requête.
+     * Permet de calculer le chemin de base de la requête.
+     *
+     * @param string $default La valeur par défaut du script.
+     *
+     * @return string
+     */
     protected function getScriptName($default = '/')
     {
         $filename = basename(!empty($this->serverParams[ 'SCRIPT_FILENAME' ])

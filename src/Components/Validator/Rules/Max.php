@@ -57,7 +57,7 @@ class Max extends Size
     protected function sizeMax($key, $lengthValue, $max, $not = true)
     {
         $sizeMax = $this->getComparator($max);
-        
+
         if (($lengthValue > $sizeMax) && $not) {
             $this->addReturn($key, 'must', [ ':max' => $max ]);
         } elseif (!($lengthValue > $sizeMax) && !$not) {

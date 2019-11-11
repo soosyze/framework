@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Soosyze Framework https://soosyze.com
+ * Soosyze Framework http://soosyze.com
  *
  * @package Soosyze\Components\Validator
  * @author  Mathieu NOËL <mathieu@soosyze.com>
@@ -44,8 +44,8 @@ class Validator
         'date_before_or_equal'    => 'Rules\DateBeforeOrEqual',
         'date_format'             => 'Rules\DateFormat',
         'dir'                     => 'Rules\Dir',
-        'equal'                   => 'Rules\Equal',
         'email'                   => 'Rules\Email',
+        'equal'                   => 'Rules\Equal',
         'file'                    => 'Rules\File',
         'file_extensions'         => 'Rules\FileExtensions',
         'file_mimes'              => 'Rules\FileMimes',
@@ -169,6 +169,8 @@ class Validator
 
     /**
      * Ajoute un champ à tester.
+     *
+     * @codeCoverageIgnore add
      *
      * @param string $key   Nom du champ.
      * @param mixed  $value Valeur du champ.

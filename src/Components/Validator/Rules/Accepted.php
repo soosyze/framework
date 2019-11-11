@@ -40,8 +40,8 @@ class Accepted extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label n\'est pas alpha numérique.',
-            'not'  => 'La valeur de :label ne doit pas être alpha numérique.'
+            'must' => 'La valeur de :label n\'est pas valide.',
+            'not'  => 'La valeur de :label ne doit pas être valide.'
         ];
     }
 }

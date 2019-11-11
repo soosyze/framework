@@ -210,7 +210,7 @@ class Stream implements StreamInterface
     {
         $seekable = $this->getMetadata('seekable');
 
-        return  $seekable !== null && $seekable !== false;
+        return $seekable !== null && $seekable !== false;
     }
 
     /**

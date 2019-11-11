@@ -101,7 +101,7 @@ abstract class App
      *
      * @return self Instancte unique de App.
      */
-    public static function getInstance(ServerRequestInterface $request)
+    public static function getInstance(ServerRequestInterface $request = null)
     {
         if (is_null(self::$instance)) {
             $class          = get_called_class();

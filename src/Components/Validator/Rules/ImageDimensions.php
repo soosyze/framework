@@ -58,7 +58,7 @@ abstract class ImageDimensions extends FileMimetypes
             'height' => $dimension[ 1 ]
         ];
     }
-    
+
     /**
      * Test la taille d'une image.
      *
