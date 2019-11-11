@@ -177,6 +177,18 @@ class ServerRequest extends Request implements ServerRequestInterface
         return !empty($this->serverParams[ 'HTTP_X_REQUESTED_WITH' ]) && strtolower($this->serverParams[ 'HTTP_X_REQUESTED_WITH' ]) === 'xmlhttprequest';
     }
 
+    /**
+     * Si la requête dépasse la taille maximum autorisée.
+     * Cette méthode ne fait pas partie de la norme PSR-7.
+     *
+     * @return type
+     */
+    public function isMaxSize()
+    {
+        return empty($this->parseBody) && empty($this->uploadFiles) && isset($this->serverParams[ 'CONTENT_LENGTH' ]) && $this->serverParams[ 'CONTENT_LENGTH' ] > 0;
+    }
+
+    /**
      * Récupérer les paramètres du serveur.
      *
      * Récupère les données liées à l'environnement de demande entrante,
