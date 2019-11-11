@@ -43,7 +43,7 @@ class Controller
     /**
      * Container d'injection de dépendance (CID).
      *
-     * @var Container
+     * @var \Psr\Container\ContainerInterface
      */
     protected $container;
 
@@ -57,23 +57,9 @@ class Controller
      *
      * @return object
      */
-    public function __call($name, $arg)
+    public function __call($key, $arg)
     {
-        return $this->get($name);
-    }
-
-    /**
-     * Ajoute le container d'injection de dépendance au contrôleur.
-     *
-     * @param Container $container CID.
-     *
-     * @return $this
-     */
-    public function setContainer($container)
-    {
-        $this->container = $container;
-
-        return $this;
+        return $this->container->get($key);
     }
 
     /**
