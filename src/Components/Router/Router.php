@@ -8,12 +8,11 @@
  * @license https://github.com/soosyze/framework/blob/master/LICENSE (MIT License)
  */
 
-namespace Soosyze;
+namespace Soosyze\Components\Router;
 
 use ArrayAccess;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\RequestInterface;
-use Soosyze\Exception\Route\RouteArgumentException;
-use Soosyze\Exception\Route\RouteNotFoundException;
 
 /**
  * Cherche un objet et une méthode à exécuter en fonction de la requête HTTP.
@@ -22,20 +21,6 @@ use Soosyze\Exception\Route\RouteNotFoundException;
  */
 class Router
 {
-    /**
-     * Routes à parser.
-     *
-     * @var array
-     */
-    protected $routes = [];
-
-    /**
-     * Objets à appeler.
-     *
-     * @var object[]
-     */
-    protected $objects = [];
-
     /**
      * Requête courante
      *
@@ -49,7 +34,7 @@ class Router
      * @var array|ArrayAccess
      */
     protected $config = [];
-    
+
     /**
      * La base de l'URL de vos routes.
      *
@@ -58,45 +43,48 @@ class Router
     protected $basePath = '';
 
     /**
+     * Le container à transmetre aux objets appelé.
+     *
+     * @var ContainerInterface
+     */
+    protected $container;
+
+    /**
      * Construit le router avec la liste des routes et les objets à appeler.
      *
-     * @param array    $routes Liste des routes.
-     * @param object[] $obj    Liste des instances d'objet.
+     * @param ContainerInterface|null $container
      */
-    public function __construct(array $routes, array $obj = [])
+    public function __construct(ContainerInterface $container = null)
     {
-        $this->routes  = $routes;
-        $this->objects = $obj;
+        $this->container = $container;
     }
 
     /**
      * Appel un objet et sa méthode en fonction de la requête.
      *
      * @param RequestInterface $request
+     * @param type             $key_query Le préfixe de la route.
      *
      * @return array|null La route ou null si non trouvée.
      */
-    public function parse(RequestInterface $request)
+    public function parse(RequestInterface $request, $key_query = 'q')
     {
         /* Rempli un array des paramètres de l'Uri. */
-        $query = $this->parseQueryFromRequest($request);
-        foreach ($this->routes as $key => $route) {
-            if (strtoupper($route[ 'methode' ]) !== $request->getMethod()) {
-                continue;
-            }
-
-            if (isset($route[ 'with' ])) {
+        $query  = $this->parseQueryFromRequest($request, $key_query);
+        $routes = Route::getRouteByMethode($request->getMethod());
+        foreach ($routes as $route) {
+            if (!empty($route[ 'with' ])) {
                 $path = $this->getRegexForPath($route[ 'path' ], $route[ 'with' ]);
 
                 if (preg_match('/^(' . $path . ')$/', $query)) {
-                    return array_merge($route, [ 'key' => $key ]);
+                    return $route;
                 }
             } elseif ($route[ 'path' ] === $query) {
                 /* Ajoute la clé de la route aux données. */
-                return array_merge($route, [ 'key' => $key ]);
+                return $route;
             }
         }
-        
+
         return null;
     }
 
@@ -114,7 +102,7 @@ class Router
         $methode = substr(strrchr($route[ 'uses' ], '@'), 1);
 
         /* Cherche les différents paramètres de l'URL pour l'injecter dans la méthode. */
-        if (isset($route[ 'with' ])) {
+        if (!empty($route[ 'with' ])) {
             $query  = $this->parseQueryFromRequest($request);
             $params = $this->parseParam($route[ 'path' ], $query, $route[ 'with' ]);
         }
@@ -124,12 +112,17 @@ class Router
             ? $this->currentRequest
             : $request;
 
-        /* Créer l'objet si celui-ci n'existe pas. */
-        $obj = !empty($this->objects[ $class ])
-            ? $this->objects[ $class ]
-            : new $class();
+        $obj        = new $class();
+        $reflection = new \ReflectionClass($obj);
+        if ($reflection->hasProperty('container')) {
+            $property = $reflection->getProperty('container');
+            $property->setAccessible(true);
+            $property->setValue($obj, $this->container);
+        } else {
+            $obj->container = $this->container;
+        }
 
-        return call_user_func_array([ $obj, $methode ], $params);
+        return $reflection->getMethod($methode)->invokeArgs($obj, $params);
     }
 
     /**
@@ -146,50 +139,68 @@ class Router
             $with = str_replace([ '(', '/' ], [ '(?:', '\/' ], $with);
             $with = "($with)";
         });
-        
-        $str = str_replace(['\\', '/'], [ '//', '\/'], $path);
+
+        $str = str_replace([ '\\', '/' ], [ '//', '\/' ], $path);
         $key = array_keys($param);
-        
+
         return str_replace($key, $param, $str);
     }
 
     /**
      * Recherche une route à partir de son nom.
      *
-     * @param string $name   Nom de la route.
-     * @param array  $params Variables requises par la route.
-     * @param bool   $strict Autorise la construction de routes partielles.
+     * @param string $name      Nom de la route.
+     * @param array  $params    Variables requises par la route.
+     * @param bool   $strict    Autorise la construction de routes partielles.
+     * @param type   $key_query Le préfixe de la route.
      *
      * @return string
      */
-    public function getRoute($name, array $params = null, $strict = true)
-    {
-        if (!isset($this->routes[ $name ])) {
-            throw new RouteNotFoundException('The path does not exist.');
+    public function getRoute(
+        $name,
+        array $params = null,
+        $strict = true,
+        $key_query = 'q'
+    ) {
+        if (($route = Route::getRoute($name)) === null) {
+            throw new Exception\RouteNotFoundException('The path does not exist.');
         }
 
-        $route = $this->routes[ $name ];
-        $path  = $route[ 'path' ];
-
-        if (isset($route[ 'with' ])) {
-            foreach ($route[ 'with' ] as $key => $value) {
-                if ($strict && !isset($params[$key])) {
-                    throw new \InvalidArgumentException(htmlspecialchars(
-                        "the argument $key is missing"
-                    ));
-                }
-                if (!$strict && !isset($params[$key])) {
-                    continue;
-                }
-                $value = str_replace([ '(', '/' ], [ '(?:', '\/' ], $value);
-                if ($strict && !preg_match('/^' . $value . '$/', $params[ $key ])) {
-                    throw new RouteArgumentException($params[ $key ], $value, $path);
-                }
-                $path = str_replace($key, $params[ $key ], $path);
+        $path = $route[ 'path' ];
+        foreach ($route[ 'with' ] as $key => $value) {
+            if ($strict && !isset($params[ $key ])) {
+                throw new \InvalidArgumentException(htmlspecialchars(
+                    "the argument $key is missing"
+                ));
             }
+            if (!$strict && !isset($params[ $key ])) {
+                continue;
+            }
+            $value = str_replace([ '(', '/' ], [ '(?:', '\/' ], $value);
+            if ($strict && !preg_match('/^' . $value . '$/', $params[ $key ])) {
+                throw new Exception\RouteArgumentException($params[ $key ], $value, $path);
+            }
+            $path = str_replace($key, $params[ $key ], $path);
         }
         $prefix = !$this->isRewrite()
-            ? '?q='
+            ? "?$key_query="
+            : '';
+
+        return $this->basePath . $prefix . $path;
+    }
+
+    /**
+     * Construit une route manuellement.
+     *
+     * @param string $path      Le chemin de la route.
+     * @param type   $key_query Le préfixe de la route.
+     *
+     * @return string
+     */
+    public function makeRoute($path, $key_query = 'q')
+    {
+        $prefix = !$this->isRewrite()
+            ? "?$key_query="
             : '';
 
         return $this->basePath . $prefix . $path;
@@ -238,20 +249,6 @@ class Router
     }
 
     /**
-     * Ajout des objets à instancier lors de l'appel.
-     *
-     * @param object[] $obj
-     *
-     * @return $this
-     */
-    public function setObjects(array $obj)
-    {
-        $this->objects = $obj;
-
-        return $this;
-    }
-
-    /**
      * Ajoute une nouvelle requête courante.
      *
      * @param RequestInterface $request
@@ -279,12 +276,15 @@ class Router
      * Parse les paramètres de la requête et retourne la chaine qui servira à
      *
      * @param RequestInterface $request
+     * @param type             $key_query Le préfixe de la route.
      *
      * @throws \InvalidArgumentException
      * @return string
      */
-    public function parseQueryFromRequest(RequestInterface $request = null)
-    {
+    public function parseQueryFromRequest(
+        RequestInterface $request = null,
+        $key_query = 'q'
+    ) {
         if ($request === null && $this->currentRequest === null) {
             throw new \InvalidArgumentException('No request is provided.');
         }
@@ -296,8 +296,8 @@ class Router
         /* Rempli un array des paramètres de l'Uri. */
         parse_str($uri->getQuery(), $parseQuery);
 
-        return !empty($parseQuery['q'])
-            ? $parseQuery['q']
+        return !empty($parseQuery[ $key_query ])
+            ? $parseQuery[ $key_query ]
             : '/';
     }
 

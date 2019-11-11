@@ -8,10 +8,10 @@
  * @license https://github.com/soosyze/framework/blob/master/LICENSE (MIT License)
  */
 
-namespace Soosyze\Exception\Route;
+namespace Soosyze\Components\Router\Exception;
 
 /**
- * Exception levée lorsqu'une appelé n'est pas trouvée.
+ * Exception levée lorsqu'une route appelée n'est pas trouvée.
  */
 class RouteNotFoundException extends \Exception
 {

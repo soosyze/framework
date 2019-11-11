@@ -15,9 +15,9 @@ use Psr\Http\Message\ServerRequestInterface;
 use Soosyze\Components\Http\Response;
 use Soosyze\Components\Http\ServerRequest;
 use Soosyze\Components\Http\Stream;
+use Soosyze\Components\Router\Router;
 use Soosyze\Components\Util\Util;
 use Soosyze\Container;
-use Soosyze\Router;
 
 /**
  * Coeur de l'application, il est le ciment qui unis les modules et les services.
@@ -60,13 +60,6 @@ abstract class App
      *
      * @var array
      */
-    private $modules = [];
-
-    /**
-     * Paramètres du framework.
-     *
-     * @var array
-     */
     private $settings = [];
 
     /**
@@ -75,13 +68,6 @@ abstract class App
      * @var ServerRequestInterface
      */
     private $request;
-
-    /**
-     * Liste des routes.
-     *
-     * @var array
-     */
-    private $routes = [];
 
     /**
      * Liste des services.
@@ -175,20 +161,15 @@ abstract class App
         $this->services = $this->loadServices();
         $this->container->setServices($this->services);
 
-        $this->modules = $this->loadModules();
         $this->loadRoutesAndServices();
 
-        $this->router = (new Router($this->routes, $this->modules))
+        $this->router = (new Router($this->container))
             ->setRequest($this->request)
             ->setConfig($config)
             ->setBasePath($this->request->getBasePath());
 
         $this->container->addServices($this->services)
             ->setInstance('router', $this->router);
-
-        foreach ($this->modules as $module) {
-            $module->setContainer($this->container);
-        }
 
         return $this;
     }
@@ -415,9 +396,10 @@ abstract class App
      */
     protected function loadRoutesAndServices()
     {
-        foreach ($this->modules as $module) {
+        $modules = $this->loadModules();
+        foreach ($modules as $module) {
             if ($module->getPathRoutes()) {
-                $this->routes += Util::getJson($module->getPathRoutes());
+                include_once $module->getPathRoutes();
             }
 
             if ($module->getPathServices()) {

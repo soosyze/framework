@@ -4,9 +4,10 @@ namespace Soosyze\Test;
 
 use Soosyze\Components\Http\Request;
 use Soosyze\Components\Http\Uri;
-use Soosyze\Router;
+use Soosyze\Components\Router\Route;
+use Soosyze\Components\Router\Router;
 
-class RoutingTest extends \PHPUnit\Framework\TestCase
+class RouterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Router
@@ -19,38 +20,24 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
      */
     protected function setUp()
     {
-        $routes = [
-            'test.index' => [
-                'methode' => 'GET',
-                'path' => '/',
-                'uses' => "\Soosyze\Test\TestController@index"
-            ],
-            'test.post' => [
-                'methode' => 'POST',
-                'path' => '/',
-                'uses' => "\Soosyze\Test\TestController@indexPost"
-            ],
-            'test.page'  => [
-                'methode' => 'GET',
-                'path' => 'page/:item',
-                'uses' => 'TestController@page',
-                'with' => [
-                    ':item' => '[0-9]+'
-                ],
-            ],
-            'test.page.format'  => [
-                'methode' => 'GET',
-                'path' => 'page/:item.:ext',
-                'uses' => 'TestController@format',
-                'with' => [
-                    ':item' => '[0-9]+',
-                    ':ext' => 'json|xml'
-                ],
-            ]
-        ];
+        Route::useNamespace('');
+        Route::get('test.index', '/', 'Soosyze\Test\TestController@index');
+        Route::post('test.post', '/', 'Soosyze\Test\TestController@indexPost');
 
-        $this->object = new Router($routes);
-        $this->object->setObjects([ 'TestController' => new TestController() ]);
+        Route::useNamespace('Soosyze\Test');
+        Route::get('test.page', 'page/:id', 'TestController@page', [ ':id' => '[0-9]+' ]);
+        Route::post('test.post', 'page/:id/post', 'TestController@post', [ ':id' => '[0-9]+' ]);
+        Route::put('test.put', 'page/:id/put', 'TestController@put', [ ':id' => '[0-9]+' ]);
+        Route::path('test.path', 'page/:id/path', 'TestController@path', [ ':id' => '[0-9]+' ]);
+        Route::option('test.option', 'page/:id/option', 'TestController@option', [
+            ':id' => '[0-9]+' ]);
+        Route::delete('test.delete', 'page/:id/delete', 'TestController@delete', [
+            ':id' => '[0-9]+' ]);
+        Route::get('test.page.format', 'page/:id.:ext', 'TestController@format', [
+            ':id'  => '[0-9]+',
+            ':ext' => 'json|xml'
+        ]);
+        $this->object = new Router();
     }
 
     /**
@@ -68,10 +55,11 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
 
         $route  = $this->object->parse($request);
         $result = [
-            'methode' => 'GET',
-            'path' => '/',
-            'uses' => "\Soosyze\Test\TestController@index",
-            'key'  => 'test.index'
+            'key'     => 'test.index',
+            'methode' => 'get',
+            'path'    => '/',
+            'uses'    => "\Soosyze\Test\TestController@index",
+            'with'    => []
         ];
 
         $this->assertEquals($route, $result);
@@ -82,7 +70,22 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
         $route = $this->object->parse($request);
         $this->assertNull($route);
     }
-    
+
+    public function testParseQueryFromRequest()
+    {
+        $uri     = Uri::create('http://test.com');
+        $request = new Request('GET', $uri);
+        $out     = $this->object->setRequest($request)->parseQueryFromRequest();
+
+        $this->assertEquals($out, '/');
+
+        $uri     = Uri::create('http://test.com?q=foo');
+        $request = new Request('GET', $uri);
+        $out     = $this->object->setRequest($request)->parseQueryFromRequest();
+
+        $this->assertEquals($out, 'foo');
+    }
+
     public function testExecute()
     {
         $uri     = Uri::create('http://test.com');
@@ -93,7 +96,7 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals($result, 'hello world !');
     }
-    
+
     public function testExecuteSetRequest()
     {
         $uri     = Uri::create('http://test.com');
@@ -108,6 +111,14 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
     public function testExecuteParam()
     {
         $uri     = Uri::create('http://test.com/?q=page/1');
+        $request = new Request('GET', $uri);
+
+        $route  = $this->object->parse($request);
+        $result = $this->object->execute($route, $request);
+
+        $this->assertEquals($result, 'hello page 1');
+
+        $uri     = Uri::create('http://test.com/?q=page/1#foo');
         $request = new Request('GET', $uri);
 
         $route  = $this->object->parse($request);
@@ -134,18 +145,18 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
         $uri     = Uri::create('http://test.com/?q=page/1');
         $request = new Request('GET', $uri);
 
-        $route  = $this->object->parse($request);
+        $route = $this->object->parse($request);
         $this->object->execute($route);
     }
 
     public function testRelplaceRegex()
     {
-        $str    = 'index/page/:id/edit';
+        $str = 'index/page/:id/edit';
 
-        $result = $this->object->getRegexForPath($str, [':id'=>'\d+']);
+        $result = $this->object->getRegexForPath($str, [ ':id' => '\d+' ]);
         $this->assertEquals($result, 'index\/page\/(\d+)\/edit');
 
-        $result2 = $this->object->getRegexForPath($str, [':id'=>'(\d+)']);
+        $result2 = $this->object->getRegexForPath($str, [ ':id' => '(\d+)' ]);
         $this->assertEquals($result2, 'index\/page\/((?:\d+))\/edit');
     }
 
@@ -166,11 +177,11 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
         $request = new Request('GET', $uri);
 
         $this->object->setRequest($request)->setBasePath('http://test.com/');
-        $result = $this->object->getRoute('test.page', [ ':item' => '1' ]);
+        $result = $this->object->getRoute('test.page', [ ':id' => '1' ]);
 
         $this->assertEquals($result, 'http://test.com/?q=page/1');
     }
-    
+
     public function testGetRouteParam()
     {
         $uri     = Uri::create('http://test.com/?q=test');
@@ -179,7 +190,7 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
         $this->object->setRequest($request)->setBasePath('http://test.com/');
         $result = $this->object->getRoute('test.page.format', [ ':ext' => 'json' ], false);
 
-        $this->assertEquals($result, 'http://test.com/?q=page/:item.json');
+        $this->assertEquals($result, 'http://test.com/?q=page/:id.json');
     }
 
     /**
@@ -203,7 +214,7 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
         $request = new Request('GET', $uri);
 
         $this->object->setRequest($request);
-        $this->object->getRoute('test.page', [ ':item' => 'error' ]);
+        $this->object->getRoute('test.page', [ ':id' => 'error' ]);
     }
 
     /**
@@ -229,10 +240,10 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
 
         $this->assertTrue($this->object->isRewrite());
 
-        $result = $this->object->getRoute('test.page', [ ':item' => '1' ]);
+        $result = $this->object->getRoute('test.page', [ ':id' => '1' ]);
         $this->assertEquals($result, 'http://test.com/page/1');
     }
-    
+
     public function testGetBasePath()
     {
         $uri     = Uri::create('http://test.com/');
@@ -249,6 +260,15 @@ class RoutingTest extends \PHPUnit\Framework\TestCase
     {
         $this->object->setConfig('error');
     }
+
+    public function testMakeRoute()
+    {
+        $url = $this->object
+            ->setBasePath('http://test.com')
+            ->makeRoute('foo/route');
+
+        $this->assertEquals($url, 'http://test.com?q=foo/route');
+    }
 }
 
 class TestController
@@ -257,7 +277,7 @@ class TestController
     {
         return 'hello world !';
     }
-    
+
     public function format($item, $ext)
     {
         return "hello $ext $item";

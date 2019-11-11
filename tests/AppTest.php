@@ -144,7 +144,7 @@ class AppCore extends \Soosyze\App
     protected function loadModules()
     {
         return [
-            'Test' => new TestModule()
+            new TestModule()
         ];
     }
 
@@ -158,7 +158,7 @@ class TestModule extends \Soosyze\Controller
 {
     public function __construct()
     {
-        $this->pathRoutes   = __DIR__ . '/config/testRouting.json';
+        $this->pathRoutes   = __DIR__ . '/config/routes.php';
         $this->pathServices = __DIR__ . '/config/testService.json';
     }
 

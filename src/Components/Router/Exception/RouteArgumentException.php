@@ -8,7 +8,7 @@
  * @license https://github.com/soosyze/framework/blob/master/LICENSE (MIT License)
  */
 
-namespace Soosyze\Exception\Route;
+namespace Soosyze\Components\Router\Exception;
 
 /**
  * Exception levée lorsqu'un paramètre de la route ne remplit pas la condition.
@@ -25,7 +25,7 @@ class RouteArgumentException extends \Exception
      * @param Exception $previous  Exception précédente.
      */
     public function __construct(
-        $param,
+    $param,
         $condition,
         $path,
         $code = 0,
