@@ -151,6 +151,29 @@ abstract class App
     }
 
     /**
+     * Revoie la valeur d'un paramètre du framework ou le paramètre par défaut avec l'environnement en suffixe.
+     *
+     * @param string $key
+     * @param string $default
+     * @param bool   $addEnv
+     *
+     * @throws \InvalidArgumentException
+     * @return string
+     */
+    public function getSettingEnv($key, $default = '', $addEnv = true)
+    {
+        $setting = $this->getSetting($key, $default);
+        if (!\is_string($setting)) {
+            throw new \InvalidArgumentException('The framework parameter must return a string.');
+        }
+        $env = $addEnv
+            ? $this->getEnvironment()
+            : '';
+
+        return "$setting/$env";
+    }
+
+    /**
      * Initialise le routeur et le container. Charge les configurations, les routes,
      * les services et les modules. Transmet le container aux contrôleurs.
      *
@@ -158,7 +181,7 @@ abstract class App
      */
     public function init()
     {
-        $config = new Config($this->getSetting('config'), $this->getEnvironment());
+        $config = new Config($this->getDir('config'));
 
         $this->container = (new Container)
             ->setConfig($config)
@@ -358,20 +381,17 @@ abstract class App
      *
      * @param string $key     Paramètres du framework.
      * @param string $default Valeur par défaut.
+     * @param bool   $addEnv  Si le retour doit prendre en compte l'environnement.
      *
      * @throws \InvalidArgumentException The framework parameter must return a string.
      * @return string
      */
-    public function getDir($key, $default = '')
+    public function getDir($key, $default = '', $addEnv = true)
     {
         $root = $this->getSetting('root', '');
-        $dir  = $this->getSetting($key, $default);
-        if (!\is_string($dir)) {
-            throw new \InvalidArgumentException('The framework parameter must return a string.');
-        }
-        $env = $this->getEnvironment();
-        
-        return Util::cleanDir("$root/$dir/$env");
+        $dir  = $this->getSettingEnv($key, $default, $addEnv);
+
+        return Util::cleanDir("$root/$dir");
     }
 
     /**
@@ -380,20 +400,17 @@ abstract class App
      *
      * @param string $key     Paramètres du framework.
      * @param string $default Valeur par défaut.
+     * @param bool   $addEnv  Si le retour doit prendre en compte l'environnement.
      *
      * @throws \InvalidArgumentException The framework parameter must return a string.
      * @return string
      */
-    public function getPath($key, $default = '')
+    public function getPath($key, $default = '', $addEnv = true)
     {
         $root = $this->request->getBasePath();
-        $dir  = $this->getSetting($key, $default);
-        if (!\is_string($dir)) {
-            throw new \InvalidArgumentException('The framework parameter must return a string.');
-        }
-        $env = $this->getEnvironment();
+        $dir  = $this->getSettingEnv($key, $default, $addEnv);
 
-        return $root . Util::cleanPath("$dir/$env");
+        return $root . Util::cleanPath("$dir");
     }
 
     /**
