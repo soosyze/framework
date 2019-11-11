@@ -15,7 +15,7 @@ namespace Soosyze\Components\Validator\Rules;
  *
  * @author Mathieu NOËL
  */
-class DateFormat extends Date
+class DateFormat extends \Soosyze\Components\Validator\Rule
 {
     /**
      * Test si une date correspond au format.
@@ -31,19 +31,13 @@ class DateFormat extends Date
      */
     protected function test($key, $value, $arg, $not = true)
     {
-        parent::test('date', $value, $arg);
-
-        if ($this->hasErrors()) {
-            return 1;
-        }
-
         $dateFormat  = date_parse_from_format($arg, $value);
         $errorFormat = $dateFormat[ 'error_count' ] === 0 && $dateFormat[ 'warning_count' ] === 0;
 
         if (!$errorFormat && $not) {
-            $this->addReturn('date_format', 'must', [ $arg ]);
+            $this->addReturn($key, 'must', [ ':format' => $arg ]);
         } elseif ($errorFormat && !$not) {
-            $this->addReturn('date_format', 'not', [ $arg ]);
+            $this->addReturn($key, 'not', [ ':format' => $arg ]);
         }
     }
 
@@ -52,10 +46,9 @@ class DateFormat extends Date
      */
     protected function messages()
     {
-        $output           = parent::messages();
-        $output[ 'must' ] = 'La valeur de :label n\'est pas au format :label.';
-        $output[ 'not' ]  = 'La valeur de :label ne doit pas être du format :label.';
-
-        return $output;
+        return [
+            'must' => 'La valeur de :label n\'est pas au format de date :format.',
+            'not'  => 'La valeur de :label ne doit pas être du format de date :format.'
+        ];
     }
 }

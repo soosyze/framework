@@ -405,15 +405,16 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     public function testDateFormat()
     {
         $this->object->setInputs([
-            'field_date'              => '10/01/1994',
-            'field_not_date'          => '1994/01/10',
-            'field_date_required'     => '10/01/1994',
+            'field_date'              => '20/01/1994',
+            'field_not_date'          => '1994/01/20',
+            'field_not_date'          => '1994/01/20',
+            'field_date_required'     => '20/01/1994',
             'field_date_not_required' => ''
         ])->setRules([
-            'field_date'              => 'date_format:j/n/Y',
-            'field_not_date'          => '!date_format:j/n/Y',
-            'field_date_required'     => 'required|date_format:j/n/Y',
-            'field_date_not_required' => '!required|date_format:j/n/Y',
+            'field_date'              => 'date_format:j/m/Y',
+            'field_not_date'          => '!date_format:j/m/Y',
+            'field_date_required'     => 'required|date_format:j/m/Y',
+            'field_date_not_required' => '!required|date_format:j/m/Y'
         ]);
 
         $this->assertTrue($this->object->isValid());
@@ -423,9 +424,9 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_date'       => '1994/10/01',
             'field_not_date'   => '10/01/1994'
         ])->setRules([
-            'field_date_error' => 'date_format:j/n/Y',
-            'field_date'       => 'date_format:j/n/Y',
-            'field_not_date'   => '!date_format:j/n/Y'
+            'field_date_error' => 'date_format:j/m/Y',
+            'field_date'       => 'date_format:j/m/Y',
+            'field_not_date'   => '!date_format:j/m/Y'
         ]);
 
         $this->assertFalse($this->object->isValid());
