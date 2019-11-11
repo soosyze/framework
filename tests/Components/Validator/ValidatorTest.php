@@ -1018,6 +1018,36 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->isValid();
     }
 
+    public function testNull()
+    {
+        $this->object->setInputs([
+            'field_null'              => null,
+            'field_not_null'          => '',
+            'field_null_required'     => null,
+            'field_null_not_required' => ''
+        ])->setRules([
+            'field_null'              => 'null',
+            'field_not_null'          => '!null',
+            'field_null_required'     => 'required|null',
+            'field_null_not_required' => '!required|null'
+        ]);
+
+        $this->assertTrue($this->object->isValid());
+
+        $this->object->setInputs([
+            'field_null'     => '',
+            'field_not_null' => null,
+            'field_null'     => ''
+        ])->setRules([
+            'field_null'          => 'null',
+            'field_not_null'      => '!null',
+            'field_null_required' => 'required|null'
+        ]);
+
+        $this->assertFalse($this->object->isValid());
+        $this->assertCount(4, $this->object->getErrors());
+    }
+
     public function testRequiredWith()
     {
         $this->object->setInputs([

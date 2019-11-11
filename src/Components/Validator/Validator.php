@@ -61,6 +61,7 @@ class Validator
         'json'                    => 'Rules\Json',
         'max'                     => 'Rules\Max',
         'min'                     => 'Rules\Min',
+        'null'                    => 'Rules\NullValue',
         'regex'                   => 'Rules\Regex',
         'required'                => 'Rules\Required',
         'required_with'           => 'Rules\Required',
