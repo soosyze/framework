@@ -249,7 +249,7 @@ class Validator
      */
     public function getKeyInputErrors()
     {
-        return $this->key;
+        return array_keys($this->key);
     }
 
     /**
@@ -257,13 +257,16 @@ class Validator
      *
      * @codeCoverageIgnore getter
      *
-     * @param string $key Nom du champ.
+     * @param string $key     Nom du champ.
+     * @param mixed  $default Valeur de retour par défaut.
      *
      * @return array Valeur d'un champ.
      */
-    public function getInput($key)
+    public function getInput($key, $default = '')
     {
-        return $this->inputs[ $key ];
+        return !empty($this->inputs[ $key ])
+            ? $this->inputs[ $key ]
+            : $default;
     }
 
     /**
@@ -275,7 +278,14 @@ class Validator
      */
     public function getInputs()
     {
-        return $this->inputs;
+        $inputs = $this->inputs;
+        if (($diff   = array_diff_key($this->inputs, $this->rules))) {
+            foreach (array_keys($diff) as $key) {
+                unset($inputs[ $key ]);
+            }
+        }
+
+        return $inputs;
     }
 
     /**
@@ -302,7 +312,7 @@ class Validator
             }
         }
 
-        return array_diff_key($this->inputs, array_flip($inputs));
+        return array_diff_key($this->getInputs(), array_flip($inputs));
     }
 
     /**
@@ -560,8 +570,8 @@ class Validator
         );
 
         if ($rule->hasErrors()) {
-            $this->key[]  = $key;
-            $this->errors += $rule->getErrors();
+            $this->key[ $key ] = 1;
+            $this->errors      += $rule->getErrors();
         }
     }
 
