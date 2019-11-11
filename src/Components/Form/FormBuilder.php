@@ -434,6 +434,9 @@ class FormBuilder
         $html = '<label'
             . $this->renderAttrCSS($attr) . $this->renderAttrInput($attr) . '>'
             . $label;
+        $html .= !empty($attr[ 'data-tooltip' ])
+            ? ' <i class="fa fa-info-circle"></i>'
+            : '';
         $html .= isset($attr[ 'for' ]) && $this->isRequired($attr[ 'for' ])
             ? '<span class="form-required">*</span>'
             : '';
