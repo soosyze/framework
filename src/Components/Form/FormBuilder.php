@@ -717,8 +717,13 @@ class FormBuilder
      */
     public function addAttrs(array $keys, array $attr)
     {
-        foreach ($keys as $key) {
-            $this->addAttr($key, $attr);
+        foreach ($keys as $key => $value) {
+            if (\is_array($value)) {
+                $this->addAttrsArray($key, $value, $attr);
+
+                continue;
+            }
+            $this->addAttr($value, $attr);
         }
 
         return $this;
@@ -740,6 +745,25 @@ class FormBuilder
         }
 
         throw new \OutOfBoundsException(htmlspecialchars("The item $key was not found."));
+    }
+
+    /**
+     * Ajoute des attributs pour les champs multiples.
+     *
+     * @param string $key   Clé du champ multiple.
+     * @param array  $value Liste des champs.
+     * @param array  $attr  Attributs à ajouter.
+     */
+    protected function addAttrsArray($key, array $value, array $attr = null)
+    {
+        foreach ($value as $i => $data) {
+            if (!\is_array($data)) {
+                $this->addAttr($key . '[' . $data . ']', $attr);
+
+                continue;
+            }
+            $this->addAttrsArray($key . '[' . $i . ']', $data, $attr);
+        }
     }
 
     /**

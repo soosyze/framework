@@ -236,7 +236,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($form, $result);
     }
 
-    public function testAddAttr()
+    public function testAddAttrs()
     {
         $this->object
             ->text('textName1')
@@ -268,6 +268,56 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $input1  = $this->object->form_input('textName1');
         $result1 = '<input name="textName1" type="text" id="textName1" required>' . PHP_EOL;
         $this->assertEquals($input1, $result1);
+    }
+
+    public function testAddAttrMulti()
+    {
+        $this->object
+            ->checkbox('grp[1]')
+            ->checkbox('grp[2]');
+        
+        $input1  = $this->object->form_input('grp[1]');
+        $input2  = $this->object->form_input('grp[2]');
+        $result1 = '<input name="grp[1]" type="checkbox" id="grp[1]">' . PHP_EOL;
+        $result2 = '<input name="grp[2]" type="checkbox" id="grp[2]">' . PHP_EOL;
+        
+        $this->assertEquals($input1, $result1);
+        $this->assertEquals($input2, $result2);
+
+        $this->object->addAttrs(['grp' => [1, 2]], [ 'required' => 'required' ]);
+
+        $input1  = $this->object->form_input('grp[1]');
+        $input2  = $this->object->form_input('grp[2]');
+        $result1 = '<input name="grp[1]" type="checkbox" id="grp[1]" required>' . PHP_EOL;
+        $result2 = '<input name="grp[2]" type="checkbox" id="grp[2]" required>' . PHP_EOL;
+
+        $this->assertEquals($input1, $result1);
+        $this->assertEquals($input2, $result2);
+    }
+    
+    public function testAddAttrMultiSup()
+    {
+        $this->object
+            ->checkbox('grp[1][test]')
+            ->checkbox('grp[2][test2]');
+        
+        $input1  = $this->object->form_input('grp[1][test]');
+        $input2  = $this->object->form_input('grp[2][test2]');
+        $result1 = '<input name="grp[1][test]" type="checkbox" id="grp[1][test]">' . PHP_EOL;
+        $result2 = '<input name="grp[2][test2]" type="checkbox" id="grp[2][test2]">' . PHP_EOL;
+        
+        $this->assertEquals($input1, $result1);
+        $this->assertEquals($input2, $result2);
+
+        $this->object->addAttrs(['grp' => [1 => ['test'], 2 => ['test2']]], [ 'required' => 'required' ]);
+
+        $input1  = $this->object->form_input('grp[1][test]');
+        $input2  = $this->object->form_input('grp[2][test2]');
+        $result1 = '<input name="grp[1][test]" type="checkbox" id="grp[1][test]" required>' . PHP_EOL;
+        $result2 = '<input name="grp[2][test2]" type="checkbox" id="grp[2][test2]" required>' . PHP_EOL;
+
+        $this->assertEquals($input1, $result1);
+        $this->assertEquals($input2, $result2);
     }
 
     /**
