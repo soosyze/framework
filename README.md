@@ -12,7 +12,7 @@ Soosyze Framework est un micro-framework MVC object offrant un socle solide de d
 * [![PSR-2](https://img.shields.io/badge/PSR-2-yellow.svg)](https://www.php-fig.org/psr/psr-2 "Coding Style Guide") L'écriture du code est standardisée,
 * [![PSR-4](https://img.shields.io/badge/PSR-4-yellow.svg)](https://www.php-fig.org/psr/psr-4 "Autoloading Standard") Autoloader, interchangeable avec l'autoloader de Composer,
 * [![PSR-7](https://img.shields.io/badge/PSR-7-yellow.svg)](https://www.php-fig.org/psr/psr-7 "HTTP Message Interface") Composant Http (Resquest, Response, Message, Stream...),
-  * À passé les tests https://github.com/php-http/psr7-integration-tests à 100%, rendant l'implémentation intéroperable avec d'autres bibliothèques psr-7.
+  * À passé les tests https://github.com/php-http/psr7-integration-tests à 100%, rendant l'implémentation interopérable avec d'autres bibliothèques psr-7.
 * [![PSR-11](https://img.shields.io/badge/PSR-11-yellow.svg)](https://www.php-fig.org/psr/psr-11 "Container Interface") Container d'injection de dépendance ou CID,
 * [![PSR-17](https://img.shields.io/badge/PSR-17-yellow.svg)](https://www.php-fig.org/psr/psr-17 "HTTP Factories") Fabriques Http implémentées sans les interfaces qui contraignent les implémentations à PHP7,
 * Découpe des fonctionnalitées en modules,
@@ -23,7 +23,8 @@ Soosyze Framework est un micro-framework MVC object offrant un socle solide de d
     * Création de formulaire,
     * Validateur de données,
     * Envoie de Mail,
-    * Création de Templace.
+    * Moteur de Template,
+    * Création de Pagination.
 
 # Sommaire
 
