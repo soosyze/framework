@@ -11,14 +11,33 @@
 namespace Soosyze\Components\Validator\Rules;
 
 use Psr\Http\Message\UploadedFileInterface;
+use Soosyze\Components\Validator\Rule;
+use Soosyze\Components\Validator\RuleInputsInterface;
 
 /**
  * {@inheritdoc}
  *
  * @author Mathieu NOËL
  */
-class Required extends \Soosyze\Components\Validator\Rule
+class Required extends Rule implements RuleInputsInterface
 {
+    /**
+     * Ensemble des champs.
+     *
+     * @var array
+     */
+    protected $inputs;
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param array $inputs Ensemble des champs.
+     */
+    public function setInputs(array $inputs)
+    {
+        $this->inputs = $inputs;
+    }
+
     /**
      * Test si une valeur est requise.
      *
@@ -35,6 +54,10 @@ class Required extends \Soosyze\Components\Validator\Rule
             if ($value->getError() === UPLOAD_ERR_NO_FILE) {
                 $this->addReturn($key, 'must');
             }
+        }
+
+        if ($this->hasErrors() && !$not) {
+            $this->stopPropagation();
         }
     }
 

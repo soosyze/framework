@@ -15,20 +15,18 @@ namespace Soosyze\Components\Validator;
  *
  * @author Mathieu NOËL
  */
-abstract class Filter
+abstract class Filter extends Rule
 {
     /**
-     * Exécute le filtre de données.
+     * Exécute le filtre.
      *
-     * @param string $key   Identifiant de la valeur.
-     * @param mixed  $value Valeur à filtrer.
-     * @param string $arg   Argument de filtre.
+     * @param mixed $value Valeur à filtrer.
      *
-     * @return mixed $value Valeur à filtrer.
+     * @return $this
      */
-    public function execute($key, $value, $arg)
+    public function execute($value)
     {
-        return $this->clean($key, $value, $arg);
+        $this->value = $this->clean($this->keyRule, $value, $this->args);
     }
 
     /**
@@ -39,4 +37,25 @@ abstract class Filter
      * @param string $arg   Argument de filtre.
      */
     abstract protected function clean($key, $value, $arg);
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function messages()
+    {
+        throw new \BadMethodCallException;
+    }
+
+    /**
+     * Défini le test.
+     *
+     * @param string $keyRule Clé du test.
+     * @param string $value   Valeur à tester.
+     * @param string $args    Argument de test.
+     * @param bool   $not     Inverse le test.
+     */
+    protected function test($keyRule, $value, $args, $not = true)
+    {
+        throw new \BadMethodCallException;
+    }
 }

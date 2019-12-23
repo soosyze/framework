@@ -52,6 +52,7 @@ class Validator
         'file_mimetypes'          => 'Rules\FileMimetypes',
         'float'                   => 'Rules\FloatType',
         'fontawesome'             => 'Rules\FontAwesome',
+        'htmlsc'                  => 'Filters\Htmlsc',
         'image'                   => 'Rules\Image',
         'image_dimensions_height' => 'Rules\ImageDimensionsHeight',
         'image_dimensions_width'  => 'Rules\ImageDimensionsWidth',
@@ -64,22 +65,13 @@ class Validator
         'null'                    => 'Rules\NullValue',
         'regex'                   => 'Rules\Regex',
         'required'                => 'Rules\Required',
-        'required_with'           => 'Rules\Required',
-        'required_without'        => 'Rules\Required',
+        'required_with'           => 'Rules\RequiredWith',
+        'required_without'        => 'Rules\RequiredWithout',
         'slug'                    => 'Rules\Slug',
         'string'                  => 'Rules\StringType',
+        'striptags'               => 'Filters\StripTags',
         'token'                   => 'Rules\Token',
         'url'                     => 'Rules\Url'
-    ];
-
-    /**
-     * Liste des filtre pour les valeurs.
-     *
-     * @var string[]
-     */
-    protected $filters = [
-        'htmlsc'    => 'Filters\Htmlsc',
-        'striptags' => 'Filters\StripTags'
     ];
 
     /**
@@ -132,7 +124,7 @@ class Validator
      *
      * @return $this
      */
-    public static function addTest($key, Rule $rule)
+    public static function addTest($key, $rule)
     {
         self::$testsCustom[ $key ] = $rule;
 
@@ -370,48 +362,6 @@ class Validator
     }
 
     /**
-     * Si le champ est requis.
-     *
-     * @codeCoverageIgnore is
-     *
-     * @param string $key Nom du champ.
-     *
-     * @return bool
-     */
-    public function isRequired($key)
-    {
-        return !$this->isNotRequired($key);
-    }
-
-    /**
-     * Si le champ est requis à condition de la présence d'un ensemble d'autres champs.
-     *
-     * @codeCoverageIgnore is
-     *
-     * @param string $key Nom du champ.
-     *
-     * @return type
-     */
-    public function isRequiredWhith($key)
-    {
-        return strstr($this->rules[ $key ], 'required_with') && !$this->isRequiredWhithout($key);
-    }
-
-    /**
-     * Si le champ est requis à condition de l'absence d'un ensemble d'autres champs.
-     *
-     * @codeCoverageIgnore is
-     *
-     * @param string $key Nom du champ.
-     *
-     * @return type
-     */
-    public function isRequiredWhithout($key)
-    {
-        return strstr($this->rules[ $key ], 'required_without');
-    }
-
-    /**
      * Lance les tests
      *
      * @return bool Si le test à réussit.
@@ -420,23 +370,14 @@ class Validator
     {
         $this->key    = [];
         $this->errors = [];
-        $this->correctInputs();
-        foreach ($this->rules as $key => $test) {
-            /* Si la valeur est requise uniquement avec la présence de certains champs. */
-            if ($this->isRequiredWhith($key) && $this->isOneVoidValue($key)) {
-                continue;
-            }
-            /* Si la valeur est requise uniquement en l'absence de certains champs. */
-            if ($this->isRequiredWhithout($key) && !$this->isAllVoidValue($key)) {
-                continue;
-            }
-            /* Si la valeur n'est pas requise et vide. */
-            if ($this->isNotRequired($key) && $this->isVoidValue($key)) {
-                continue;
-            }
-            /* Pour chaque règle cherche les fonctions séparées par un pipe. */
-            foreach (explode('|', $test) as $rule) {
-                $this->parseRules($key, $rule);
+        foreach ($this->rules as $key => $tests) {
+            $rules = [];
+            if (\is_string($tests)) {
+                /* Construit les règles. */
+                foreach (explode('|', $tests) as $test) {
+                    $rules[] = $this->parseRules($key, $test);
+                }
+                $this->execute($key, $rules);
             }
         }
 
@@ -474,15 +415,41 @@ class Validator
     }
 
     /**
-     * Si la valeur n'est pas strictement requise.
+     * Exécute les règles sur un champ.
      *
-     * @param string $key Nom du champ.
-     *
-     * @return bool
+     * @param string $key   La clé des tests
+     * @param Rule[] $rules Les règles.
      */
-    protected function isNotRequired($key)
+    protected function execute($key, array $rules)
     {
-        return strstr($this->rules[ $key ], '!required') && !strstr($this->rules[ $key ], '!required_');
+        foreach ($rules as $rule) {
+            $value = $this->getCorrectInput($key, $this->inputs);
+            $rule->execute($value);
+            if ($rule->isStop()) {
+                break;
+            }
+            if ($rule->hasErrors()) {
+                $this->key[ $key ] = 1;
+                $this->errors      += $rule->getErrors();
+            }
+            $this->inputs[ $key ] = $rule->getValue();
+        }
+    }
+
+    /**
+     * Si la clé d'un champ correspond à la clé d'une règle alors sa valeur est retournée.
+     * Sinon retourne une chaine vide.
+     *
+     * @param string $key    Clé d'une règle.
+     * @param array  $inputs Liste des champs.
+     *
+     * @return mixed|string
+     */
+    protected function getCorrectInput($key, array $inputs)
+    {
+        return \array_key_exists($key, $inputs)
+            ? $inputs[ $key ]
+            : '';
     }
 
     /**
@@ -517,7 +484,7 @@ class Validator
     protected function getRuleArgs($rule)
     {
         /* Si l'argument fait référence à un autre champ. */
-        if (($arg = substr(strstr($rule, ':'), 1)) !== false && $arg[ 0 ] === '@') {
+        if (($arg = substr(strstr($rule, ':'), 1)) !== false && isset($arg[ 0 ]) && $arg[ 0 ] === '@') {
             $keyArg = substr($arg, 1);
             $arg    = $this->inputs[ $keyArg ];
         }
@@ -539,145 +506,29 @@ class Validator
         $arg  = $this->getRuleArgs($strRule);
 
         if (isset(self::$testsCustom[ $name ])) {
-            $rule = self::$testsCustom[ $name ];
+            $class = self::$testsCustom[ $name ];
         } elseif (isset($this->tests[ $name ])) {
             $class = __NAMESPACE__ . '\\' . $this->tests[ $name ];
-            $rule  = new $class();
-        } elseif (isset($this->filters[ $name ])) {
-            $class                = __NAMESPACE__ . '\\' . $this->filters[ $name ];
-            $filter               = new $class();
-            $this->inputs[ $key ] = $filter->execute($key, $this->inputs[ $key ], $arg);
-
-            return 0;
         } else {
             throw new \BadMethodCallException(htmlspecialchars(
                 "The $name function does not exist."
             ));
         }
 
-        if (isset(self::$messagesCustom[ $name ])) {
-            $rule->setMessages(self::$messagesCustom[ $name ]);
-        }
         $label = isset($this->labelCustom[ $key ])
             ? $this->labelCustom[ $key ]
             : $key;
+        $rule  = (new $class)
+            ->hydrate($name, $key, $arg, $strRule[ 0 ] != '!')
+            ->setLabel($label);
 
-        $rule->setLabel($label)
-            ->execute(
-                $name,
-                $key,
-                $this->inputs[ $key ],
-                $arg,
-                $strRule[ 0 ] != '!'
-        );
-
-        if ($rule->hasErrors()) {
-            $this->key[ $key ] = 1;
-            $this->errors      += $rule->getErrors();
+        if (isset(self::$messagesCustom[ $name ])) {
+            $rule->setMessages(self::$messagesCustom[ $name ]);
         }
-    }
-
-    /**
-     * Si la valeur est vide.
-     *
-     * @param string $key Nom du champ.
-     *
-     * @return bool
-     */
-    protected function isVoidValue($key)
-    {
-        $require = new Rules\Required;
-        $require->execute('required', $key, $this->inputs[ $key ], false, true);
-
-        return $require->hasErrors();
-    }
-
-    /**
-     * Si une des références d'une règle est vide.
-     *
-     * @param string $key  Nom du champ.
-     * @param string $rule Règle par défaut à utiliser cette méthode.
-     *
-     * @throws \InvalidArgumentException Le champ fourni n'existe pas.
-     * @return bool
-     */
-    protected function isOneVoidValue($key, $rule = 'required_with')
-    {
-        $fields  = $this->getParamField($this->rules[ $key ], $rule);
-        $require = new Rules\Required;
-
-        foreach ($fields as $field) {
-            if (!isset($this->inputs[ $field ])) {
-                throw new \InvalidArgumentException(htmlspecialchars(
-                    "The provided $field field does not exist."
-                ));
-            }
-            $require->execute('required', $field, $this->inputs[ $field ], false, true);
-            if ($require->hasErrors()) {
-                return true;
-            }
+        if ($rule instanceof RuleInputsInterface) {
+            $rule->setInputs($this->inputs);
         }
 
-        return false;
-    }
-
-    /**
-     * Si toutes les références d'une régle sont vides.
-     *
-     * @param string $key  Nom du champ.
-     * @param string $rule Règle par défaut à utiliser cette méthode.
-     *
-     * @throws \InvalidArgumentException
-     * @return bool
-     */
-    protected function isAllVoidValue($key, $rule = 'required_without')
-    {
-        $fields  = $this->getParamField($this->rules[ $key ], $rule);
-        $require = new Rules\Required;
-        $errors  = [];
-
-        foreach ($fields as $field) {
-            if (!isset($this->inputs[ $field ])) {
-                throw new \InvalidArgumentException(htmlspecialchars(
-                    "The provided $field field does not exist."
-                ));
-            }
-            $require->execute('required', $field, $this->inputs[ $field ], false, true);
-            $errors += $require->getErrors();
-        }
-
-        return count($errors) == count($fields);
-    }
-
-    /**
-     * Retourne les paramètres d'une règle d'un ensemble de règles.
-     *
-     * @param string $rules Ensemble de règles.
-     * @param string $rule  Règle recherchée.
-     *
-     * @throws \InvalidArgumentException Un champ doit être fourni pour la règle required_with.
-     * @return array                     Paramètre de la règle.
-     */
-    protected function getParamField($rules, $rule)
-    {
-        preg_match("/$rule:([A-Za-z0-9-_,]*)/", $rules, $matches);
-        if (empty($matches[ 1 ])) {
-            throw new \InvalidArgumentException('A field must be provided for the required with rule.');
-        }
-
-        return explode(',', $matches[ 1 ]);
-    }
-
-    /**
-     * Si les règles contiennes plus de champs que les valeurs reçues,
-     * les valeurs se voient corrigées.
-     */
-    private function correctInputs()
-    {
-        if (($diff = array_diff_key($this->rules, $this->inputs))) {
-            foreach (array_keys($diff) as $key) {
-                $this->inputs[ $key ] = '';
-            }
-        }
+        return $rule;
     }
 }

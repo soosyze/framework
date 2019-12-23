@@ -18,6 +18,34 @@ namespace Soosyze\Components\Validator;
 abstract class Rule
 {
     /**
+     * La valeur de test.
+     *
+     * @var mixed
+     */
+    protected $value;
+
+    /**
+     * Clé du test.
+     *
+     * @var string
+     */
+    protected $keyRule = '';
+
+    /**
+     * Argument de test.
+     *
+     * @var string
+     */
+    protected $args = '';
+
+    /**
+     * Inverse le test.
+     *
+     * @var type
+     */
+    protected $not = true;
+
+    /**
      * Clé d'appel de la valeur.
      *
      * @var string
@@ -32,6 +60,13 @@ abstract class Rule
     private $label = '';
 
     /**
+     * Si la suite des tests doit être stoppée.
+     *
+     * @var bool
+     */
+    private $propogation = false;
+
+    /**
      * Valeurs de retour.
      *
      * @var string[]
@@ -44,6 +79,26 @@ abstract class Rule
      * @var string[]
      */
     private $messages = [];
+
+    /**
+     * Exécute le test de validation.
+     *
+     * @param string $keyRule  Clé du test.
+     * @param string $keyValue Identifiant de la valeur.
+     * @param string $arg      Argument de test.
+     * @param bool   $not      Inverse le test.
+     *
+     * @return $this
+     */
+    public function hydrate($keyRule, $keyValue, $arg, $not = true)
+    {
+        $this->keyRule  = $keyRule;
+        $this->keyValue = $keyValue;
+        $this->args     = $arg;
+        $this->not      = $not;
+
+        return $this;
+    }
 
     /**
      * Retourne toutes les erreurs.
@@ -94,35 +149,68 @@ abstract class Rule
     }
 
     /**
-     * Exécute le test de validation.
+     * Exécute le test.
      *
-     * @param string $keyRule  Clé du test.
-     * @param string $keyValue Identifiant de la valeur.
-     * @param mixed  $value    Valeur à tester.
-     * @param string $arg      Argument de test.
-     * @param bool   $not      Inverse le test.
+     * @param mixed $value Valeur à tester.
      *
      * @return $this
      */
-    public function execute($keyRule, $keyValue, $value, $arg, $not)
+    public function execute($value)
     {
-        $this->errors   = [];
-        $this->keyValue = $keyValue;
-        $this->value    = $value;
-        $this->test($keyRule, $value, $arg, $not);
+        $this->errors = [];
+        $this->value  = $value;
+        $this->test($this->keyRule, $this->value, $this->args, $this->not);
 
         return $this;
     }
 
     /**
+     * Retourne la clé unique de la valeur.
+     *
+     * @return string
+     */
+    public function getKeyValue()
+    {
+        return $this->keyValue;
+    }
+
+    /**
+     * Stop les tests suivants.
+     */
+    public function stopPropagation()
+    {
+        $this->propogation = true;
+    }
+
+    /**
+     * Si les tests suivants doivent être stoppés.
+     *
+     * @return bool
+     */
+    public function isStop()
+    {
+        return $this->propogation;
+    }
+
+    /**
+     * Retourne la valeur.
+     *
+     * @return mixed
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
      * Défini le test.
      *
-     * @param string $key   Clé du test.
-     * @param string $value Valeur à tester.
-     * @param string $arg   Argument de test.
-     * @param bool   $not   Inverse le test.
+     * @param string $keyRule Clé du test.
+     * @param string $value   Valeur à tester.
+     * @param string $args    Argument de test.
+     * @param bool   $not     Inverse le test.
      */
-    abstract protected function test($key, $value, $arg, $not = true);
+    abstract protected function test($keyRule, $value, $args, $not = true);
 
     /**
      * Défini les messages de retours par défauts.
@@ -183,15 +271,5 @@ abstract class Rule
         }
 
         return [ 'min' => $min, 'max' => $max ];
-    }
-
-    /**
-     * Retourne la clé unique du test.
-     *
-     * @return string
-     */
-    protected function getKeyValue()
-    {
-        return $this->keyValue;
     }
 }

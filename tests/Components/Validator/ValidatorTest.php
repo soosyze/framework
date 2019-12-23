@@ -1096,9 +1096,8 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
      */
     public function testRequiredWithException()
     {
-        $this->object->setRules([
-            'field_required_whith' => 'required_with:field_error'
-        ])->isValid();
+        $this->object->addRule('field_required_whith', 'required_with:error')
+            ->isValid();
     }
 
     /**
@@ -1106,9 +1105,8 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
      */
     public function testRequiredWithVoidException()
     {
-        $this->object->setRules([
-            'field_required_whith' => 'required_with:'
-        ])->isValid();
+        $this->object->addRule('field_required_whith', 'required_with:')
+            ->isValid();
     }
 
     public function testRequiredWithout()
@@ -1153,9 +1151,17 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
      */
     public function testRequiredWithoutException()
     {
-        $this->object->setRules([
-            'field_required_whith' => 'required_without:field_error'
-        ])->isValid();
+        $this->object->addRule('field_required_whith', 'required_without:error')
+            ->isValid();
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testRequiredWithoutVoidException()
+    {
+        $this->object->addRule('field_required_whith', 'required_without:')
+            ->isValid();
     }
 
     public function testRegex()
