@@ -457,18 +457,27 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
         $this->object->setInputs([
             'field_date_error'  => 'not date',
-            'field_date_error2' => '10/01/1994',
             'field_date'        => '10/01/1994',
             'field_not_date'    => '10/02/1994'
         ])->setRules([
             'field_date_error'  => 'date_after:10/01/1994',
-            'field_date_error2' => 'date_after:error',
             'field_date'        => 'date_after:10/01/1994',
             'field_not_date'    => '!date_after:10/01/1994'
         ]);
 
         $this->assertFalse($this->object->isValid());
-        $this->assertCount(4, $this->object->getErrors());
+        $this->assertCount(3, $this->object->getErrors());
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testDateAfterException()
+    {
+        $this->object
+            ->addInput('field_date_error', 'not date')
+            ->addRule('field_date_error', 'date_after:error')
+            ->isValid();
     }
 
     public function testDateAfterOrEqual()
@@ -517,18 +526,27 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
         $this->object->setInputs([
             'field_date_error'  => 'not date',
-            'field_date_error2' => '10/01/1994',
             'field_date'        => '11/01/1994',
             'field_not_date'    => '09/01/1994'
         ])->setRules([
             'field_date_error'  => 'date_before:10/01/1994',
-            'field_date_error2' => 'date_before:error',
             'field_date'        => 'date_before:10/01/1994',
             'field_not_date'    => '!date_before:10/01/1994'
         ]);
 
         $this->assertFalse($this->object->isValid());
-        $this->assertCount(4, $this->object->getErrors());
+        $this->assertCount(3, $this->object->getErrors());
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testDateBeforeException()
+    {
+        $this->object
+            ->addInput('field_date_error', 'not date')
+            ->addRule('field_date_error', 'date_before:error')
+            ->isValid();
     }
 
     public function testDateBeforeOrEqual()
