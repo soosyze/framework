@@ -40,7 +40,7 @@ class IntType extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label n\'est pas un nombre entier.',
+            'must' => 'La valeur de :label doit être un nombre entier.',
             'not'  => 'La valeur de :label ne doit être un nombre entier.'
         ];
     }

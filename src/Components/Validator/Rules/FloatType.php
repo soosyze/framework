@@ -18,7 +18,7 @@ namespace Soosyze\Components\Validator\Rules;
 class FloatType extends \Soosyze\Components\Validator\Rule
 {
     /**
-     * Test si une valeur est de type numérique flottant.
+     * Test si une variable est de type ou de valeur numérique flottant.
      *
      * @param string $key   Clé du test.
      * @param float  $value Valeur à tester.
@@ -27,9 +27,9 @@ class FloatType extends \Soosyze\Components\Validator\Rule
      */
     protected function test($key, $value, $arg, $not = true)
     {
-        if (!is_float($value) && $not) {
+        if (!filter_var($value, FILTER_VALIDATE_FLOAT) && $not) {
             $this->addReturn($key, 'must');
-        } elseif (is_float($value) && !$not) {
+        } elseif (filter_var($value, FILTER_VALIDATE_FLOAT) && !$not) {
             $this->addReturn($key, 'not');
         }
     }
@@ -40,8 +40,8 @@ class FloatType extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label n\'est pas un nombre flottant.',
-            'not'  => 'La valeur de :label ne doit être un nombre flottant.'
+            'must' => 'La valeur de :label doit être nombre flottant.',
+            'not'  => 'La valeur de :label ne doit pas être un nombre flottant.'
         ];
     }
 }

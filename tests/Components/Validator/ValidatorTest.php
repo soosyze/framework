@@ -638,29 +638,49 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     public function testFloat()
     {
         $this->object->setInputs([
-            'field_float'              => 10.1,
-            'field_not_foat_text'      => 'not float',
-            'field_not_float_int'      => 10,
-            'field_not_float_array'    => [ 1, 2 ],
-            'field_float_required'     => 10.1,
-            'field_float_not_required' => ''
+            /* Float numeric. */
+            'float'              => 1.0,
+            'float_text'         => '1.0',
+            'float_simple'       => 1,
+            'float_simple_txt'   => '1',
+            /* Exponent. */
+            'float_exp'          => 1.0e1,
+            'float_exp_txt'      => '1.0e1',
+            'float_exp_txt2'     => '1E1',
+            /* Sup integer. */
+            'float_min'          => PHP_INT_MIN - 1,
+            'float_max'          => PHP_INT_MAX + 1,
+            /* Cast type */
+            'float_cast'         => ( float ) 1,
+            'float_cast_text'    => ( float ) '1',
+            /* Other. */
+            'float_required'     => 1.1,
+            'float_not_required' => ''
         ])->setRules([
-            'field_float'              => 'float',
-            'field_not_foat_text'      => '!float',
-            'field_not_float_int'      => '!float',
-            'field_not_float_array'    => '!float',
-            'field_float_required'     => 'required|float',
-            'field_float_not_required' => '!required|float'
+            'float'              => 'float',
+            'float_text'         => 'float',
+            'float_simple'       => 'float',
+            'float_simple_txt'   => 'float',
+            'float_exp'          => 'float',
+            'float_exp_txt'      => 'float',
+            'float_exp_txt2'     => 'float',
+            'float_min'          => 'float',
+            'float_max'          => 'float',
+            'float_cast'         => 'float',
+            'float_cast_text'    => 'float',
+            'float_not'          => '!float',
+            'float_required'     => 'required|float',
+            'float_not_required' => '!required|float'
         ]);
 
         $this->assertTrue($this->object->isValid());
 
         $this->object->setInputs([
-            'field_float'    => 'not float',
-            'field_not_foat' => 10.1
+            'float'    => 'not float',
+            'not_foat' => 10.1
         ])->setRules([
-            'field_float'    => 'float',
-            'field_not_foat' => '!float'
+            'float'    => 'float',
+            'not_foat' => '!float'
         ]);
 
         $this->assertFalse($this->object->isValid());
@@ -777,35 +797,55 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     public function testInt()
     {
         $this->object->setInputs([
-            'field_int'              => 10,
-            'field_int_text'         => '10',
-            'field_not_int_text'     => 'not int',
-            'field_not_int_float'    => 10.1,
-            'field_not_int_array'    => [ 1, 2 ],
-            'field_int_required'     => 10,
-            'field_int_not_required' => ''
+            'int'              => 1234,
+            'int_text'         => '1234',
+            'int_octal'        => 0123,
+            'int_hexa'         => 0x1A,
+            'int_binaire'      => 0b11111111,
+            /* Cast type */
+            'int_cast'         => ( int ) 1.1,
+            'int_cast_text'    => ( int ) '1.1',
+            /* Other. */
+            'int_not'          => 1.1,
+            'int_required'     => 1,
+            'int_not_required' => '',
+            'int_min'   => PHP_INT_MIN,
+            'int_max'   => PHP_INT_MAX
         ])->setRules([
-            'field_int'              => 'int',
-            'field_int_text'         => 'int',
-            'field_not_int_text'     => '!int',
-            'field_not_int_float'    => '!int',
-            'field_not_int_array'    => '!int',
-            'field_int_required'     => 'required|int',
-            'field_int_not_required' => '!required|int'
+            'int'              => 'int',
+            'int_text'         => 'int',
+            'int_octal'        => 'int',
+            'int_hexa'         => 'int',
+            'int_binaire'      => 'int',
+            'int_cast'         => 'int',
+            'int_cast_text'    => 'int',
+            'int_not'          => '!int',
+            'int_required'     => 'required|int',
+            'int_not_required' => '!required|int'
         ]);
 
         $this->assertTrue($this->object->isValid());
 
         $this->object->setInputs([
-            'field_int'          => 'not int',
-            'field_not_int_text' => 10
+            'int'         => 1,
+            'int_octal'   => '0123',
+            'int_hexa'    => '0x1A',
+            'int_binaire' => '0b11111111',
+            'float'       => 1.1,
+            'float_min'   => PHP_INT_MIN - 1,
+            'float_max'   => PHP_INT_MAX + 1
         ])->setRules([
-            'field_int'          => 'int',
-            'field_not_int_text' => '!int'
+            'int'         => '!int',
+            'float'       => 'int',
+            'int_octal'   => 'int',
+            'int_hexa'    => 'int',
+            'int_binaire' => 'int',
+            'float_min'   => 'int',
+            'float_max'   => 'int'
         ]);
 
         $this->assertFalse($this->object->isValid());
-        $this->assertCount(2, $this->object->getErrors());
+        $this->assertCount(7, $this->object->getErrors());
     }
 
     public function testJson()
