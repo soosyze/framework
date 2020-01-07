@@ -27,9 +27,11 @@ class Between extends Size
      */
     protected function test($key, $value, $arg, $not = true)
     {
-        $between = $this->getParamMinMax($arg);
-
         $length = $this->getSize($value);
+        if ($this->hasErrors()) {
+            return 1;
+        }
+        $between = $this->getParamMinMax($arg);
         $this->sizeBetween($key, $length, $between[ 'min' ], $between[ 'max' ], $not);
     }
 
@@ -38,10 +40,11 @@ class Between extends Size
      */
     protected function messages()
     {
-        return [
-            'must' => 'La valeur de :label doit être comprise entre les valeurs :min et :max.',
-            'not'  => 'La valeur de :label ne doit pas être comprise entre les valeurs :min et :max.'
-        ];
+        $output           = parent::messages();
+        $output[ 'must' ] = 'La valeur de :label doit être comprise entre les valeurs :min et :max.';
+        $output[ 'not' ]  = 'La valeur de :label ne doit pas être comprise entre les valeurs :min et :max.';
+
+        return $output;
     }
 
     /**

@@ -32,6 +32,9 @@ class Min extends Size
     protected function test($key, $value, $arg, $not = true)
     {
         $length = $this->getSize($value);
+        if ($this->hasErrors()) {
+            return 1;
+        }
         $this->sizeMin($key, $length, $arg, $not);
     }
 
@@ -40,10 +43,11 @@ class Min extends Size
      */
     protected function messages()
     {
-        return [
-            'must' => 'La valeur de :label doit être au minimum :min.',
-            'not'  => 'La valeur de :label ne doit pas dépasser :min.'
-        ];
+        $output           = parent::messages();
+        $output[ 'must' ] = 'La valeur de :label doit être au minimum :min.';
+        $output[ 'not' ]  = 'La valeur de :label ne doit pas dépasser :min.';
+
+        return $output;
     }
 
     /**

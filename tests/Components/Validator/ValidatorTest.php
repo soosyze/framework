@@ -207,17 +207,19 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->object->setInputs([
             /* Text */
             'field_text_between_min' => 'Lor',
-            'field_text_between_max' => 'Lorem ip'
+            'field_text_between_max' => 'Lorem ip',
+            'field_between'          => new \stdClass()
         ])->setRules([
             /* Text */
             'field_text_between_min' => 'between:5,10',
-            'field_text_between_max' => '!between:5,10'
+            'field_text_between_max' => '!between:5,10',
+            'field_between'          => '!between:5,10'
         ]);
 
         $this->assertFalse($this->object->isValid());
-        $this->assertCount(2, $this->object->getErrors());
+        $this->assertCount(3, $this->object->getErrors());
         $this->assertArraySubset($this->object->getKeyInputErrors(), [
-            'field_text_between_min', 'field_text_between_max'
+            'field_text_between_min', 'field_text_between_max', 'field_between'
         ]);
     }
 
@@ -262,17 +264,6 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->object
             ->addInput('field_between', 4)
             ->addRule('field_between', 'between:10,1')
-            ->isValid();
-    }
-
-    /**
-     * @expectedException \Exception
-     */
-    public function testBetweenExceptionValue()
-    {
-        $this->object
-            ->addInput('field_between', new \stdClass())
-            ->addRule('field_between', 'between:1,10')
             ->isValid();
     }
 
@@ -651,8 +642,8 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'float_min'          => PHP_INT_MIN - 1,
             'float_max'          => PHP_INT_MAX + 1,
             /* Cast type */
-            'float_cast'         => ( float ) 1,
-            'float_cast_text'    => ( float ) '1',
+            'float_cast'         => (float) 1,
+            'float_cast_text'    => (float) '1',
             /* Other. */
             'float_required'     => 1.1,
             'float_not_required' => ''
@@ -803,8 +794,8 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'int_hexa'         => 0x1A,
             'int_binaire'      => 0b11111111,
             /* Cast type */
-            'int_cast'         => ( int ) 1.1,
-            'int_cast_text'    => ( int ) '1.1',
+            'int_cast'         => (int) 1.1,
+            'int_cast_text'    => (int) '1.1',
             /* Other. */
             'int_not'          => 1.1,
             'int_required'     => 1,
@@ -919,10 +910,6 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_not_int_max'           => 6,
             'field_int_max_required'      => 5,
             'field_int_max_not_required'  => '',
-            /* Numeric */
-            'field_numeric_max'           => '5',
-            'field_not_numeric_max'       => '6',
-            'field_numeric_max_required'  => '5',
             /* Tableau */
             'field_array_max'             => [ 1, 2, 3, 4, 5 ],
             'field_not_array_max'         => [ 1, 2, 3, 4, 5, 6 ]
@@ -937,10 +924,6 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_not_int_max'           => '!max:5',
             'field_int_max_required'      => 'required|max:5',
             'field_int_max_not_required'  => '!required|max:5',
-            /* Numeric */
-            'field_numeric_max'           => 'max:5',
-            'field_not_numeric_max'       => '!max:5',
-            'field_numeric_max_required'  => 'required|max:5',
             /* Tableau */
             'field_array_max'             => 'max:5',
             'field_not_array_max'         => '!max:5'
@@ -951,11 +934,54 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->object->setInputs([
             /* Text */
             'field_text_max'     => 'Lorem ipsum',
-            'field_not_text_max' => 'Lorem'
+            'field_not_text_max' => 'Lorem',
+            'field_max_size'     => new \stdClass()
         ])->setRules([
             /* Text */
             'field_text_max'     => 'max:5',
-            'field_not_text_max' => '!max:5'
+            'field_not_text_max' => '!max:5',
+            'field_max_size'     => '!max:5'
+        ]);
+
+        $this->assertFalse($this->object->isValid());
+        $this->assertCount(3, $this->object->getErrors());
+    }
+
+    public function testMaxNumeric()
+    {
+        $this->object->setInputs([
+            /* Entier */
+            'int_max'               => 5,
+            'not_int_max'           => 6,
+            'int_max_required'      => 5,
+            'int_max_not_required'  => '',
+            /* Numeric entier */
+            'numeric_max'          => '5',
+            'not_numeric_max'      => '6',
+            'numeric_max_required' => '5'
+        ])->setRules([
+            /* Entier */
+            'int_max'               => 'max_numeric:5',
+            'not_int_max'           => '!max_numeric:5',
+            'int_max_required'      => 'required|max_numeric:5',
+            'int_max_not_required'  => '!required|max_numeric:5',
+            /* Numeric entier */
+            'int_max'               => 'max_numeric:5',
+            'not_int_max'           => '!max_numeric:5',
+            'int_max_required'      => 'required|max_numeric:5',
+            'int_max_not_required'  => '!required|max_numeric:5'
+        ]);
+
+        $this->assertTrue($this->object->isValid());
+
+        $this->object->setInputs([
+            /* Text */
+            'text_max'     => 'Lorem ipsum',
+            'not_text_max' => 'Lore'
+        ])->setRules([
+            /* Text */
+            'text_max'     => 'max_numeric:5',
+            'not_text_max' => '!max_numeric:5'
         ]);
 
         $this->assertFalse($this->object->isValid());
@@ -970,17 +996,6 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->object
             ->addInput('field_text_max', 4)
             ->addRule('field_text_max', 'max:error')
-            ->isValid();
-    }
-
-    /**
-     * @expectedException \Exception
-     */
-    public function testMaxExceptionValue()
-    {
-        $this->object
-            ->addInput('field_text_max', new \stdClass())
-            ->addRule('field_text_max', 'max:5')
             ->isValid();
     }
 
@@ -1000,14 +1015,10 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_not_int_min'                => 4,
             'field_int_min_required'           => 5,
             'field_int_min_not_required'       => '',
-            /* Numeric entier */
-            'field_numeric_int_min'            => '5',
-            'field_not_numeric_int_min'        => '4',
-            'field_numeric_int_min_required'   => '5',
-            /* Numeric flottant */
-            'field_numeric_float_min'          => '5.5',
-            'field_not_numeric_float_min'      => '4.5',
-            'field_numeric_int_float_required' => '5.5',
+            /* Flottant */
+            'field_numeric_float_min'          => 5.5,
+            'field_not_numeric_float_min'      => 4.5,
+            'field_numeric_int_float_required' => 5.5,
             /* Tableau */
             'field_array_min'                  => [ 1, 2, 3, 4, 5 ],
             'field_not_array_min'              => [ 1, 2, 3, 4 ],
@@ -1026,11 +1037,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_not_int_min'                => '!min:5',
             'field_int_min_required'           => 'required|min:5',
             'field_int_min_not_required'       => '!required|min:5',
-            /* Numeric entier */
-            'field_numeric_int_min'            => 'min:5',
-            'field_not_numeric_int_min'        => '!min:5',
-            'field_numeric_int_min_required'   => 'required|min:5',
-            /* Numeric flottant */
+            /* Flottant */
             'field_numeric_float_min'          => 'min:5.5',
             'field_not_numeric_float_min'      => '!min:5.0',
             'field_numeric_int_float_required' => 'required|min:5.5',
@@ -1060,6 +1067,56 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         fclose($stream);
     }
 
+    public function testMinNumeric()
+    {
+        $this->object->setInputs([
+            /* Entier */
+            'int_min'                    => 5,
+            'not_int_min'                => 4,
+            'int_min_required'           => 5,
+            'int_min_not_required'       => '',
+            /* Numeric entier */
+            'numeric_int_min'            => '5',
+            'not_numeric_int_min'        => '4',
+            'numeric_int_min_required'   => '5',
+            /* Numeric flottant */
+            'numeric_float_min'          => '5.5',
+            'not_numeric_float_min'      => '4.5',
+            'numeric_int_float_required' => '5.5'
+        ])->setRules([
+            /* Entier */
+            'int_min'                    => 'min_numeric:5',
+            'not_int_min'                => '!min_numeric:5',
+            'int_min_required'           => 'required|min_numeric:5',
+            'int_min_not_required'       => '!required|min_numeric:5',
+            /* Numeric entier */
+            'numeric_int_min'            => 'min_numeric:5',
+            'not_numeric_int_min'        => '!min_numeric:5',
+            'numeric_int_min_required'   => 'required|min_numeric:5',
+            /* Numeric flottant */
+            'numeric_float_min'          => 'min_numeric:5.5',
+            'not_numeric_float_min'      => '!min_numeric:5.0',
+            'numeric_int_float_required' => 'required|min_numeric:5.5'
+        ]);
+
+        $this->assertTrue($this->object->isValid());
+
+        $this->object->setInputs([
+            /* Text */
+            'text_min'     => 'Lore',
+            'not_text_min' => 'Lorem ipsum',
+            'min_size'     => new \stdClass()
+        ])->setRules([
+            /* Text */
+            'text_min'     => 'min_numeric:5',
+            'not_text_min' => '!min_numeric:5',
+            'min_size'     => 'min_numeric:5'
+        ]);
+
+        $this->assertFalse($this->object->isValid());
+        $this->assertCount(3, $this->object->getErrors());
+    }
+
     /**
      * @expectedException \Exception
      */
@@ -1068,17 +1125,6 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->object
             ->addInput('field_text_min', 4)
             ->addRule('field_text_min', 'min:error')
-            ->isValid();
-    }
-
-    /**
-     * @expectedException \Exception
-     */
-    public function testMinExceptionValue()
-    {
-        $this->object
-            ->addInput('field_text_min', new \stdClass())
-            ->addRule('field_text_min', 'min:5')
             ->isValid();
     }
 

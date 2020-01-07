@@ -32,6 +32,9 @@ class Max extends Size
     protected function test($key, $value, $arg, $not = true)
     {
         $length = $this->getSize($value);
+        if ($this->hasErrors()) {
+            return 1;
+        }
         $this->sizeMax($key, $length, $arg, $not);
     }
 
@@ -40,10 +43,11 @@ class Max extends Size
      */
     protected function messages()
     {
-        return [
-            'must' => 'La valeur de :label doit être au maximum :max.',
-            'not'  => 'La valeur de :label doit dépasser :max.'
-        ];
+        $output           = parent::messages();
+        $output[ 'must' ] = 'La valeur de :label doit être au maximum :max.';
+        $output[ 'not' ]  = 'La valeur de :label doit dépasser :max.';
+
+        return $output;
     }
 
     /**

@@ -52,16 +52,16 @@ abstract class Size extends \Soosyze\Components\Validator\Rule
     /**
      * Retourne la longueur de valeur en fonction de son type.
      *
-     * @param array|float|int|object|numeric|ressource|string|UploadedFileInterface $value Valeur à tester.
+     * @param array|float|int|object|ressource|string|UploadedFileInterface $value Valeur à tester.
      *
      * @throws \InvalidArgumentException La fonction max ne peut pas tester pas ce type de valeur.
      * @return int|float                 Longueur.
      */
     protected function getSize($value)
     {
-        if (is_numeric($value)) {
-            /* numeric+0 = int|float */
-            $size = $value + 0;
+        $size = 0;
+        if (is_int($value) || is_float($value)) {
+            $size = $value;
         } elseif (is_string($value) || method_exists($value, '__toString')) {
             $size = strlen((string) $value);
         } elseif (is_array($value)) {
@@ -77,9 +77,33 @@ abstract class Size extends \Soosyze\Components\Validator\Rule
                 ? $stats[ 'size' ]
                 : 0;
         } else {
-            throw new \InvalidArgumentException('The between function can not test this type of value.');
+            $this->addReturn('size', 'size');
         }
 
         return $size;
+    }
+    
+    protected function getSizeNumeric($value)
+    {
+        $size = 0;
+        if (is_numeric($value)) {
+            /* numeric+0 = int|float */
+            $size = $value + 0;
+        } else {
+            $this->addReturn('size', 'size_numeric');
+        }
+
+        return $size;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function messages()
+    {
+        return [
+            'size'         => 'La valeur :label doit être nombre entier, flottant, une chaine de caractère, un tableau, un fichier ou une ressource.',
+            'size_numeric' => 'La valeur :label doit être numérique.'
+        ];
     }
 }

@@ -58,10 +58,11 @@ class Token extends Size
      */
     protected function messages()
     {
-        return [
-            'error'   => 'Une erreur est survenue.',
-            'invalid' => 'Le token n\'est pas valide.',
-            'time'    => 'Vous avez attendu trop longtemps, veilliez recharger la page.'
-        ];
+        $output               = parent::messages();
+        $output[ 'error' ]   = 'Une erreur est survenue.';
+        $output[ 'invalid' ] = 'Le token n\'est pas valide.';
+        $output[ 'time' ]    = 'Vous avez attendu trop longtemps, veilliez recharger la page.';
+
+        return $output;
     }
 }
