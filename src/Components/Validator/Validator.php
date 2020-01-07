@@ -66,6 +66,7 @@ class Validator
         'min'                     => 'Rules\Min',
         'min_numeric'             => 'Rules\MinNumeric',
         'null'                    => 'Rules\NullValue',
+        'numeric'                 => 'Rules\NumericType',
         'regex'                   => 'Rules\Regex',
         'required'                => 'Rules\Required',
         'required_with'           => 'Rules\RequiredWith',
