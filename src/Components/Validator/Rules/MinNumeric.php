@@ -29,7 +29,7 @@ class MinNumeric extends Min
      *
      * @throws \InvalidArgumentException La valeur min n'est pas numérique.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $value, $arg, $not)
     {
         $length = $this->getSizeNumeric($value);
         if ($this->hasErrors()) {

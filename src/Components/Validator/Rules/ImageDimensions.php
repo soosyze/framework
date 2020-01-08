@@ -27,9 +27,9 @@ abstract class ImageDimensions extends FileMimetypes
      * @param string                                  $arg   Argument de test.
      * @param bool                                    $not   Inverse le test.
      */
-    public function test($key, $value, $arg, $not = true)
+    public function test($key, $value, $arg, $not)
     {
-        parent::test('file_mimetypes', $value, 'image');
+        parent::test('file_mimetypes', $value, 'image', true);
 
         if ($this->hasErrors()) {
             return 1;
@@ -68,7 +68,7 @@ abstract class ImageDimensions extends FileMimetypes
      * @param numeric $max         Hauteur maximum autorisée.
      * @param bool    $not         Inverse le test.
      */
-    protected function sizeBetween($key, $lengthValue, $min, $max, $not = true)
+    protected function sizeBetween($key, $lengthValue, $min, $max, $not)
     {
         if (!($lengthValue <= $max && $lengthValue >= $min) && $not) {
             $this->addReturn($key, 'must', [

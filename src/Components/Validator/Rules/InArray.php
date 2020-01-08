@@ -25,7 +25,7 @@ class InArray extends \Soosyze\Components\Validator\Rule
      * @param array  $arg   Tableau de comparaison.
      * @param bool   $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $value, $arg, $not)
     {
         $array = explode(',', $arg);
         if (!in_array($value, $array) && $not) {

@@ -25,7 +25,7 @@ class Slug extends Regex
      * @param string $arg   Argument de test.
      * @param bool   $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $value, $arg, $not)
     {
         parent::test('slug', $value, '/^[a-zA-Z0-9_-]*$/', $not);
     }

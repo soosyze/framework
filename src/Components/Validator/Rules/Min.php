@@ -29,7 +29,7 @@ class Min extends Size
      *
      * @throws \InvalidArgumentException La valeur min n'est pas numérique.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $value, $arg, $not)
     {
         $length = $this->getSize($value);
         if ($this->hasErrors()) {
@@ -58,7 +58,7 @@ class Min extends Size
      * @param string $min         Valeur de comparraison.
      * @param bool   $not         Inverse le test.
      */
-    protected function sizeMin($key, $lengthValue, $min, $not = true)
+    protected function sizeMin($key, $lengthValue, $min, $not)
     {
         $sizeMin = $this->getComparator($min);
 

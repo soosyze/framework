@@ -27,7 +27,7 @@ class DateAfterOrEqual extends DateAfter
      *
      * @return int 1 erreur de date.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $value, $arg, $not)
     {
         parent::test('date_after', $value, $arg, $not);
     }
@@ -39,7 +39,7 @@ class DateAfterOrEqual extends DateAfter
      * @param string $arg   Date de comparaison.
      * @param bool   $not   Inverse le test.
      */
-    protected function testDateAfter($value, $arg, $not = true)
+    protected function testDateAfter($value, $arg, $not)
     {
         if (!($value >= $arg) && $not) {
             $this->addReturn('date_after_or_equal', 'after', [ ':dateafter' => $arg ]);

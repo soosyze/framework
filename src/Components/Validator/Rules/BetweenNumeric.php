@@ -25,7 +25,7 @@ class BetweenNumeric extends Between
      * @param string  $arg   Liste de 2 valeurs de comparaison séparées par une virgule.
      * @param bool    $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $value, $arg, $not)
     {
         $length = $this->getSizeNumeric($value);
         if ($this->hasErrors()) {

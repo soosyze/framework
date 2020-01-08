@@ -25,7 +25,7 @@ class Equal extends \Soosyze\Components\Validator\Rule
      * @param scalar $arg   Valeur de comparaison.
      * @param bool   $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $value, $arg, $not)
     {
         if ($value !== $arg && $not) {
             $this->addReturn($key, 'must');

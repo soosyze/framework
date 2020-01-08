@@ -27,7 +27,7 @@ class Image extends FileMimes
      * @param string|bool           $arg   Liste d'extensions d'images autorisées.
      * @param bool                  $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $value, $arg, $not)
     {
         $extensions = $arg === false
             ? 'jpe,jpg,jpeg,png,gif,svg'

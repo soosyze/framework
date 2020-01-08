@@ -210,7 +210,7 @@ abstract class Rule
      * @param string $args    Argument de test.
      * @param bool   $not     Inverse le test.
      */
-    abstract protected function test($keyRule, $value, $args, $not = true);
+    abstract protected function test($keyRule, $value, $args, $not);
 
     /**
      * Défini les messages de retours par défauts.

@@ -40,7 +40,7 @@ class FontAwesome extends \Soosyze\Components\Validator\Rule
      * @param string $arg   Styles de fontawesome acceptés.
      * @param bool   $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $value, $arg, $not)
     {
         $argStyle      = explode(',', $arg);
         $stylesPattern = [];

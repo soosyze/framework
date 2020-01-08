@@ -29,7 +29,7 @@ class Token extends Size
      *
      * @throws \InvalidArgumentException La valeur time n'est pas numérique.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $value, $arg, $not)
     {
         if (session_id() === '') {
             @session_start([

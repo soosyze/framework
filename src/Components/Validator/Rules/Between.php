@@ -25,7 +25,7 @@ class Between extends Size
      * @param string                                                        $arg   Liste de 2 valeurs de comparaison séparées par une virgule.
      * @param bool                                                          $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $value, $arg, $not)
     {
         $length = $this->getSize($value);
         if ($this->hasErrors()) {
@@ -56,7 +56,7 @@ class Between extends Size
      * @param numeric $max         Valeur maximum.
      * @param bool    $not         Inverse le test.
      */
-    protected function sizeBetween($key, $lengthValue, $min, $max, $not = true)
+    protected function sizeBetween($key, $lengthValue, $min, $max, $not)
     {
         if (!($lengthValue <= $max[ 'size' ] && $lengthValue >= $min[ 'size' ]) && $not) {
             $this->addReturn($key, 'must', [ ':min' => $min[ 'value' ], ':max' => $max[ 'value' ] ]);

@@ -29,7 +29,7 @@ class Max extends Size
      *
      * @throws \InvalidArgumentException La valeur max n'est pas numérique.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $value, $arg, $not)
     {
         $length = $this->getSize($value);
         if ($this->hasErrors()) {
@@ -58,7 +58,7 @@ class Max extends Size
      * @param string $max         Valeur de comparraison.
      * @param bool   $not         Inverse le test.
      */
-    protected function sizeMax($key, $lengthValue, $max, $not = true)
+    protected function sizeMax($key, $lengthValue, $max, $not)
     {
         $sizeMax = $this->getComparator($max);
 

@@ -29,7 +29,7 @@ class DateFormat extends \Soosyze\Components\Validator\Rule
      *
      * @return int 1 erreur de date.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $value, $arg, $not)
     {
         $dateFormat  = date_parse_from_format($arg, $value);
         $errorFormat = $dateFormat[ 'error_count' ] === 0 && $dateFormat[ 'warning_count' ] === 0;

@@ -25,7 +25,7 @@ class ColorHex extends Regex
      * @param string $arg   Argument de test.
      * @param bool   $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $value, $arg, $not)
     {
         if ($arg === false) {
             $patern = '[A-Fa-f0-9]{6}|[A-Fa-f0-9]{3}';

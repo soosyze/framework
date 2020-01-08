@@ -27,9 +27,9 @@ class FileMimetypes extends File
      *
      * @return int 1 erreur de fichier.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $value, $arg, $not)
     {
-        parent::test('file', $value, false);
+        parent::test('file', $value, false, true);
 
         if ($this->hasErrors()) {
             return 1;

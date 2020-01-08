@@ -25,7 +25,7 @@ class Json extends \Soosyze\Components\Validator\Rule
      * @param string $arg   Argument de test.
      * @param bool   $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $value, $arg, $not)
     {
         json_decode($value);
         if (json_last_error() !== JSON_ERROR_NONE && $not) {

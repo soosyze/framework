@@ -17,7 +17,7 @@ namespace Soosyze\Components\Validator\Rules;
  */
 class NumericType extends \Soosyze\Components\Validator\Rule
 {
-    protected function test($key, $value, $args, $not = true)
+    protected function test($key, $value, $args, $not)
     {
         if (!is_numeric($value) && $not) {
             $this->addReturn($key, 'must');

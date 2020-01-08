@@ -25,7 +25,7 @@ class ArrayType extends \Soosyze\Components\Validator\Rule
      * @param string $arg    Argument de test.
      * @param bool   $not    Inverse le test.
      */
-    protected function test($key, $values, $arg, $not = true)
+    protected function test($key, $values, $arg, $not)
     {
         if (!\is_array($values) && $not) {
             $this->addReturn($key, 'must');

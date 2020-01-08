@@ -27,13 +27,13 @@ class DateAfter extends Date
      *
      * @return int 1 erreur de date.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $value, $arg, $not)
     {
-        parent::test('date', $arg, false);
+        parent::test('date', $arg, false, true);
         if ($this->hasErrors()) {
             throw new \InvalidArgumentException('The comparison date is not correct.');
         }
-        parent::test('date', $value, false);
+        parent::test('date', $value, false, true);
         if ($this->hasErrors()) {
             return 1;
         }
@@ -47,7 +47,7 @@ class DateAfter extends Date
      * @param string $arg   Date de comparaison.
      * @param bool   $not   Inverse le test.
      */
-    protected function testDateAfter($value, $arg, $not = true)
+    protected function testDateAfter($value, $arg, $not)
     {
         if (!($value > $arg) && $not) {
             $this->addReturn('date_after', 'after', [ ':dateafter' => $arg ]);

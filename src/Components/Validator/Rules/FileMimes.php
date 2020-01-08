@@ -34,7 +34,7 @@ class FileMimes extends FileExtensions
      *
      * @return int 1 erreur de fichier.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $value, $arg, $not)
     {
         parent::test('file_extensions', $value, $arg, $not);
 

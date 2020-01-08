@@ -25,7 +25,7 @@ class IntType extends \Soosyze\Components\Validator\Rule
      * @param string $arg   Argument de test.
      * @param bool   $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $value, $arg, $not)
     {
         if (!filter_var($value, FILTER_VALIDATE_INT) && $not) {
             $this->addReturn($key, 'must');

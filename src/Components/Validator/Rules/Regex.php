@@ -25,7 +25,7 @@ class Regex extends \Soosyze\Components\Validator\Rule
      * @param string $arg   Expression régulière.
      * @param bool   $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $value, $arg, $not)
     {
         if (!preg_match($arg, $value) && $not) {
             $this->addReturn($key, 'must', [ ':regex' => $arg ]);

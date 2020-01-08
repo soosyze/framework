@@ -27,7 +27,7 @@ class DateBeforeOrEqual extends DateBefore
      *
      * @return int 1 erreur de date.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $value, $arg, $not)
     {
         parent::test('date_before', $value, $arg, $not);
     }
@@ -39,7 +39,7 @@ class DateBeforeOrEqual extends DateBefore
      * @param string $arg   Date de comparaison.
      * @param bool   $not   Inverse le test.
      */
-    protected function testDateBefore($value, $arg, $not = true)
+    protected function testDateBefore($value, $arg, $not)
     {
         if (!($value <= $arg) && $not) {
             $this->addReturn('date_before_or_equal', 'before', [ ':datebefore' => $arg ]);
