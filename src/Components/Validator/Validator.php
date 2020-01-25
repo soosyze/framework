@@ -78,6 +78,7 @@ class Validator
         'required_with_all'       => 'Rules\RequiredWithAll',
         'required_without'        => 'Rules\RequiredWithout',
         'required_without_all'    => 'Rules\RequiredWithoutAll',
+        'ressource'               => 'Rules\RessourceType',
         'slug'                    => 'Rules\Slug',
         'string'                  => 'Rules\StringType',
         'striptags'               => 'Filters\StripTags',
