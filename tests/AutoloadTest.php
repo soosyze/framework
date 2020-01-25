@@ -1,6 +1,6 @@
 <?php
 
-namespace Soosyze\Test;
+namespace Soosyze\Tests;
 
 use Soosyze\Autoload;
 

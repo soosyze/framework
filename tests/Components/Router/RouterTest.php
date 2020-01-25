@@ -1,6 +1,6 @@
 <?php
 
-namespace Soosyze\Test;
+namespace Soosyze\Tests\Components\Router;
 
 use Soosyze\Components\Http\Request;
 use Soosyze\Components\Http\Uri;
@@ -21,10 +21,10 @@ class RouterTest extends \PHPUnit\Framework\TestCase
     protected function setUp()
     {
         Route::useNamespace('');
-        Route::get('test.index', '/', 'Soosyze\Test\TestController@index');
-        Route::post('test.post', '/', 'Soosyze\Test\TestController@indexPost');
+        Route::get('test.index', '/', 'Soosyze\Tests\Components\Router\TestController@index');
+        Route::post('test.post', '/', 'Soosyze\Tests\Components\Router\TestController@indexPost');
 
-        Route::useNamespace('Soosyze\Test');
+        Route::useNamespace('Soosyze\Tests\Components\Router');
         Route::get('test.page', 'page/:id', 'TestController@page', [ ':id' => '[0-9]+' ]);
         Route::post('test.post', 'page/:id/post', 'TestController@post', [ ':id' => '[0-9]+' ]);
         Route::put('test.put', 'page/:id/put', 'TestController@put', [ ':id' => '[0-9]+' ]);
@@ -58,7 +58,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
             'key'     => 'test.index',
             'methode' => 'get',
             'path'    => '/',
-            'uses'    => "\Soosyze\Test\TestController@index",
+            'uses'    => "\Soosyze\Tests\Components\Router\TestController@index",
             'with'    => []
         ];
 
