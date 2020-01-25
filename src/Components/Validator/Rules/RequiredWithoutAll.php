@@ -15,7 +15,7 @@ namespace Soosyze\Components\Validator\Rules;
  *
  * @author Mathieu NOËL
  */
-class RequiredWithout extends Required
+class RequiredWithoutAll extends Required
 {
     /**
      * Test si une valeur est requise si un ensemble de champs n'est pas présent.
@@ -28,7 +28,7 @@ class RequiredWithout extends Required
     protected function test($key, $value, $arg, $not)
     {
         parent::test($key, $value, $arg, $not);
-        if (!$this->isStop() && !$this->isOneVoidValue()) {
+        if (!$this->isStop() && !$this->isAllVoidValue()) {
             $this->stopPropagation();
         }
     }
@@ -40,12 +40,13 @@ class RequiredWithout extends Required
      *
      * @return bool
      */
-    protected function isOneVoidValue()
+    protected function isAllVoidValue()
     {
         if (empty($this->args)) {
             throw new \InvalidArgumentException('A field must be provided for the required with rule.');
         }
         $fields = explode(',', $this->args);
+        $errors = [];
         foreach ($fields as $field) {
             if (!isset($this->inputs[ $field ])) {
                 throw new \InvalidArgumentException(htmlspecialchars(
@@ -56,11 +57,9 @@ class RequiredWithout extends Required
             $require = (new Required)
                 ->hydrate('required', $field, false, true)
                 ->execute($this->inputs[ $field ]);
-            if ($require->hasErrors()) {
-                return true;
-            }
+            $errors  += $require->getErrors();
         }
 
-        return false;
+        return count($errors) == count($fields);
     }
 }
