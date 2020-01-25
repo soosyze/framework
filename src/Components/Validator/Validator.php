@@ -87,6 +87,7 @@ class Validator
         'to_ltrim'                => 'Filters\ToLtrim',
         'to_rtrim'                => 'Filters\ToRtrim',
         'to_striptags'            => 'Filters\ToStripTags',
+        'to_trim'                 => 'Filters\ToTrim',
         'token'                   => 'Rules\Token',
         'url'                     => 'Rules\Url',
         'uuid'                    => 'Rules\Uuid',
