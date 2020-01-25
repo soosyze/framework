@@ -15,7 +15,7 @@ namespace Soosyze\Components\Validator\Rules;
  *
  * @author Mathieu NOËL
  */
-class Equal extends \Soosyze\Components\Validator\Rule
+class EqualStrict extends \Soosyze\Components\Validator\Rule
 {
     /**
      * Test si 2 valeurs sont identiques.
@@ -27,9 +27,9 @@ class Equal extends \Soosyze\Components\Validator\Rule
      */
     protected function test($key, $value, $arg, $not)
     {
-        if ($value != $arg && $not) {
+        if ($value !== $arg && $not) {
             $this->addReturn($key, 'must');
-        } elseif ($value == $arg && !$not) {
+        } elseif ($value === $arg && !$not) {
             $this->addReturn($key, 'not');
         }
     }

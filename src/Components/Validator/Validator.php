@@ -49,6 +49,7 @@ class Validator
         'dir'                     => 'Rules\Dir',
         'email'                   => 'Rules\Email',
         'equal'                   => 'Rules\Equal',
+        'equal_strict'            => 'Rules\EqualStrict',
         'file'                    => 'Rules\File',
         'file_extensions'         => 'Rules\FileExtensions',
         'file_mimes'              => 'Rules\FileMimes',
