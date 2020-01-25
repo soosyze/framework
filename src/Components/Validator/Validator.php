@@ -62,6 +62,7 @@ class Validator
         'image_dimensions_width'  => 'Rules\ImageDimensionsWidth',
         'inarray'                 => 'Rules\InArray',
         'int'                     => 'Rules\IntType',
+        'instanceof'              => 'Rules\Instance',
         'ip'                      => 'Rules\Ip',
         'json'                    => 'Rules\Json',
         'max'                     => 'Rules\Max',
