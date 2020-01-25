@@ -23,7 +23,7 @@ class NumericTest extends Rule
             'float_exp_txt'   => '1.0e1',
             'float_exp_txt_2' => '1E1',
             /* Limit */
-            'float_min'       => -PHP_INT_MAX - 2, // PHP_INT_MIN - 1
+            'float_min'       => PHP_INT_MIN - 1,
             'float_max'       => PHP_INT_MAX + 1,
             /* Cast type */
             'float_cast'      => (float) 1,
@@ -37,7 +37,7 @@ class NumericTest extends Rule
             'int_cast'        => (int) 1.1,
             'int_cast_txt'    => (int) '1.1',
             /* Limit */
-            'int_min'         => -PHP_INT_MAX - 1, // PHP_INT_MIN
+            'int_min'         => PHP_INT_MIN,
             'int_max'         => PHP_INT_MAX
         ])->setRules([
             /* -------- STANDARD ------- */

@@ -10,6 +10,13 @@
 
 namespace Soosyze\Components\Validator\Rules;
 
+if (!function_exists('is_iterable')) {
+    function is_iterable($obj)
+    {
+        return is_array($obj) || (is_object($obj) && ($obj instanceof \Traversable));
+    }
+}
+
 /**
  * {@inheritdoc}
  *
@@ -27,9 +34,9 @@ class IterableType extends \Soosyze\Components\Validator\Rule
      */
     protected function test($key, $values, $arg, $not)
     {
-        if (!\is_iterable($values) && $not) {
+        if (!is_iterable($values) && $not) {
             $this->addReturn($key, 'must');
-        } elseif (\is_iterable($values) && !$not) {
+        } elseif (is_iterable($values) && !$not) {
             $this->addReturn($key, 'not');
         }
     }

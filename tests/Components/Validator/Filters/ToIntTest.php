@@ -19,7 +19,7 @@ class ToIntTest extends Filter
             'cast'     => (int) 1.1,
             'cast_txt' => (int) '1.1',
             /* Limit */
-            'min'      => -PHP_INT_MAX - 1, // PHP_INT_MIN
+            'min'      => PHP_INT_MIN,
             'max'      => PHP_INT_MAX
         ])->setRules([
             /* Standard */

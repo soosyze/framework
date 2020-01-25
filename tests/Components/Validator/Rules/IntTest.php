@@ -16,7 +16,7 @@ class IntTest extends Rule
             'zero'         => 0,
             'zero_txt'     => '0',
             /* Limit */
-            'min'          => -PHP_INT_MAX - 1, // PHP_INT_MIN
+            'min'          => PHP_INT_MIN,
             'max'          => PHP_INT_MAX,
             /* Cast type */
             'cast'         => (int) 1.1,

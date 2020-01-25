@@ -7,21 +7,13 @@ class IterableTest extends Rule
     public function testIterable()
     {
         $this->object->setInputs([
-            'must'            => [ 0, 1, 2 ],
-            'must_func_array' => (function () {
-                return [ 0, 1, 2 ];
-            })(),
-            'must_func_yield' => (function () {
-                yield 1;
-                yield 2;
-                yield 3;
-            })(),
+            'must'             => [ 0, 1, 2 ],
+            'must_func_array'  => $this->mus_func_array(),
             'must_traversable' => new \ArrayIterator([ 1, 2, 3 ]),
             'not_must'         => 'hello'
         ])->setRules([
             'must'             => 'iterable',
             'must_func_array'  => 'iterable',
-            'must_func_yield'  => 'iterable',
             'must_traversable' => 'iterable',
             'not_must'         => '!iterable'
         ]);
@@ -38,5 +30,10 @@ class IterableTest extends Rule
 
         $this->assertFalse($this->object->isValid());
         $this->assertCount(2, $this->object->getErrors());
+    }
+
+    protected function mus_func_array()
+    {
+        return [ 0, 1, 2 ];
     }
 }

@@ -20,7 +20,7 @@ class FloatTest extends Rule
             'exp_txt'      => '1.0e1',
             'exp_txt_2'    => '1E1',
             /* Limit */
-            'min'          => -PHP_INT_MAX - 2, // PHP_INT_MIN - 1
+            'min'          => PHP_INT_MIN - 1,
             'max'          => PHP_INT_MAX + 1,
             /* Cast type */
             'cast'         => (float) 1,
