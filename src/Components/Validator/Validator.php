@@ -81,6 +81,7 @@ class Validator
         'slug'                    => 'Rules\Slug',
         'string'                  => 'Rules\StringType',
         'to_bool'                 => 'Filters\ToBool',
+        'to_float'                => 'Filters\ToFloat',
         'to_htmlsc'               => 'Filters\ToHtmlsc',
         'to_striptags'            => 'Filters\ToStripTags',
         'token'                   => 'Rules\Token',
