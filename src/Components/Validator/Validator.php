@@ -31,8 +31,8 @@ class Validator
      */
     protected $tests = [
         'accepted'                => 'Rules\Accepted',
-        'alphanum'                => 'Rules\AlphaNum',
-        'alphanumtext'            => 'Rules\AlphaNumText',
+        'alpha_num'               => 'Rules\AlphaNum',
+        'alpha_num_text'          => 'Rules\AlphaNumText',
         'array'                   => 'Rules\ArrayType',
         'base64'                  => 'Rules\Base64',
         'between'                 => 'Rules\Between',
