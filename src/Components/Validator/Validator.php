@@ -83,6 +83,7 @@ class Validator
         'to_bool'                 => 'Filters\ToBool',
         'to_float'                => 'Filters\ToFloat',
         'to_htmlsc'               => 'Filters\ToHtmlsc',
+        'to_int'                  => 'Filters\ToInt',
         'to_striptags'            => 'Filters\ToStripTags',
         'token'                   => 'Rules\Token',
         'url'                     => 'Rules\Url',
