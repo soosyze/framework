@@ -85,6 +85,7 @@ class Validator
         'token'                   => 'Rules\Token',
         'url'                     => 'Rules\Url',
         'uuid'                    => 'Rules\Uuid',
+        'version'                 => 'Rules\Version'
     ];
 
     /**
