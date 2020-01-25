@@ -27,9 +27,10 @@ class IntType extends \Soosyze\Components\Validator\Rule
      */
     protected function test($key, $value, $arg, $not)
     {
-        if (!filter_var($value, FILTER_VALIDATE_INT) && $not) {
+        $filter = filter_var($value, FILTER_VALIDATE_INT);
+        if (!is_int($filter) && $not) {
             $this->addReturn($key, 'must');
-        } elseif (filter_var($value, FILTER_VALIDATE_INT) && !$not) {
+        } elseif (is_int($filter) && !$not) {
             $this->addReturn($key, 'not');
         }
     }
