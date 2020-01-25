@@ -64,6 +64,7 @@ class Validator
         'int'                     => 'Rules\IntType',
         'instanceof'              => 'Rules\Instance',
         'ip'                      => 'Rules\Ip',
+        'iterable'                => 'Rules\IterableType',
         'json'                    => 'Rules\Json',
         'max'                     => 'Rules\Max',
         'max_numeric'             => 'Rules\MaxNumeric',
