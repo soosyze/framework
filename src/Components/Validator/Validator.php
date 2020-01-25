@@ -38,6 +38,7 @@ class Validator
         'between'                 => 'Rules\Between',
         'between_numeric'         => 'Rules\BetweenNumeric',
         'bool'                    => 'Rules\BoolType',
+        'class_exists'            => 'Rules\ClassExists',
         'colorhex'                => 'Rules\ColorHex',
         'date'                    => 'Rules\Date',
         'date_after'              => 'Rules\DateAfter',
