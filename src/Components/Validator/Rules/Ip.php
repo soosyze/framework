@@ -27,20 +27,23 @@ class Ip extends \Soosyze\Components\Validator\Rule
      */
     protected function test($key, $value, $arg, $not)
     {
+        $version = 'IP';
         if ($arg === false) {
             $options = null;
         } elseif ($arg === '4') {
+            $version = 'IPv4';
             $options = FILTER_FLAG_IPV4;
         } elseif ($arg === '6') {
+            $version = 'IPv6';
             $options = FILTER_FLAG_IPV6;
         } else {
             throw new \InvalidArgumentException('An IP address must be in IPv4 or IPv6 format.');
         }
 
         if (!filter_var($value, FILTER_VALIDATE_IP, $options) && $not) {
-            $this->addReturn($key, 'must');
+            $this->addReturn($key, 'must', [ ':version' => $version ]);
         } elseif (filter_var($value, FILTER_VALIDATE_IP, $options) && !$not) {
-            $this->addReturn($key, 'not');
+            $this->addReturn($key, 'not', [ ':version' => $version ]);
         }
     }
 
@@ -50,8 +53,8 @@ class Ip extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label n\'est pas une adresse IP.',
-            'not'  => 'La valeur de :label ne doit être une adresse IP.'
+            'must' => 'Le champ :label doit être une adresse :version valide.',
+            'not'  => 'Le champ :label ne doit pas être une adresse :version valide.'
         ];
     }
 }
