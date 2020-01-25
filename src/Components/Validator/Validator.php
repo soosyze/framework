@@ -75,6 +75,7 @@ class Validator
         'regex'                   => 'Rules\Regex',
         'required'                => 'Rules\Required',
         'required_with'           => 'Rules\RequiredWith',
+        'required_with_all'       => 'Rules\RequiredWithAll',
         'required_without'        => 'Rules\RequiredWithout',
         'slug'                    => 'Rules\Slug',
         'string'                  => 'Rules\StringType',
