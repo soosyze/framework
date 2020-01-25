@@ -96,16 +96,24 @@ class Util
         }
         // @codeCoverageIgnoreEnd
         if (!file_exists($strFile)) {
-            throw new \InvalidArgumentException(htmlspecialchars("The $strFile file is missing."));
+            throw new \InvalidArgumentException(
+                htmlspecialchars("The $strFile file is missing.")
+            );
         }
         if (strrchr($strFile, '.') != '.json') {
-            throw new \InvalidArgumentException(htmlspecialchars("The $strFile is not in JSON format."));
+            throw new \InvalidArgumentException(
+                htmlspecialchars("The $strFile is not in JSON format.")
+            );
         }
         if (($json = file_get_contents($strFile)) === null) {
-            throw new \Exception(htmlspecialchars("The $strFile file is not readable."));
+            throw new \Exception(
+                htmlspecialchars("The $strFile file is not readable.")
+            );
         }
         if (($return = json_decode($json, $assoc)) === null) {
-            throw new \Exception(htmlspecialchars("The JSON $strFile file is invalid."));
+            throw new \Exception(
+                htmlspecialchars("The JSON $strFile file is invalid.")
+            );
         }
 
         return $return;
@@ -151,7 +159,10 @@ class Util
      */
     public static function saveJson($strPath, $strFileName, array $data)
     {
-        $fp = fopen(self::cleanPath($strPath) . self::DS . $strFileName . '.json', 'w');
+        $fp = fopen(
+            self::cleanPath($strPath) . self::DS . $strFileName . '.json',
+            'w'
+        );
         fwrite($fp, json_encode($data));
 
         return fclose($fp);
@@ -307,8 +318,10 @@ class Util
      *
      * @return string
      */
-    public static function strRandom($length = 20, $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_')
-    {
+    public static function strRandom(
+        $length = 20,
+        $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_'
+    ) {
         $str = '';
         for ($i = 0; $i < $length; $i++) {
             $str .= $chars[ rand(0, strlen($chars) - 1) ];

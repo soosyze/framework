@@ -22,7 +22,7 @@ class FileMimetypes extends File
      *
      * @param string                $key   Clé du test.
      * @param UploadedFileInterface $value Valeur à tester.
-     * @param string                $arg   Mine exacte ou le type du mime du fichier.
+     * @param string                $arg   Mime exacte ou le type du mime du fichier.
      * @param bool                  $not   Inverse le test.
      *
      * @return int 1 erreur de fichier.

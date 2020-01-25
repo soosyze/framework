@@ -28,15 +28,15 @@ class ColorHex extends Regex
     protected function test($key, $value, $arg, $not)
     {
         if ($arg === false) {
-            $patern = '[A-Fa-f0-9]{6}|[A-Fa-f0-9]{3}';
+            $patern = '[\da-f]{6}|[\da-f]{3}';
         } elseif ($arg === '3') {
-            $patern = '[A-Fa-f0-9]{3}';
+            $patern = '[\da-f]{3}';
         } elseif ($arg === '6') {
-            $patern = '[A-Fa-f0-9]{6}';
+            $patern = '[\da-f]{6}';
         } else {
             throw new \InvalidArgumentException('A color in hexadecimal format must be contained in 3 or 6 characters.');
         }
-        parent::test('colorhex', $value, '/^#(' . $patern . ')$/', $not);
+        parent::test('colorhex', $value, '/^#(' . $patern . ')$/i', $not);
     }
 
     /**

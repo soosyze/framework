@@ -38,7 +38,9 @@ abstract class ImageDimensions extends FileMimetypes
         $between = $this->getParamMinMax($arg);
 
         $length = $this->getDimensions($value);
-        $type   = $key === 'image_dimensions_height' ? 'height' : 'width';
+        $type   = $key === 'image_dimensions_height'
+            ? 'height'
+            : 'width';
         $this->sizeBetween($key, $length[ $type ], $between[ 'min' ], $between[ 'max' ], $not);
     }
 

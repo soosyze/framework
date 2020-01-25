@@ -82,7 +82,7 @@ abstract class Size extends \Soosyze\Components\Validator\Rule
 
         return $size;
     }
-    
+
     protected function getSizeNumeric($value)
     {
         $size = 0;

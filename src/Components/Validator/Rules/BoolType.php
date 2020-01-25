@@ -43,10 +43,10 @@ class BoolType extends \Soosyze\Components\Validator\Rule
      */
     protected function isBool($var)
     {
-        return filter_var($var, FILTER_VALIDATE_BOOLEAN) ||
-            filter_var($var, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null ||
-            $var === false ||
-            $var === '';
+        return filter_var($var, FILTER_VALIDATE_BOOLEAN)
+            || filter_var($var, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null
+            || $var === false
+            || $var === '';
     }
 
     /**

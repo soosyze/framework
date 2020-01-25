@@ -226,7 +226,9 @@ class Config implements \ArrayAccess
     protected function prepareKey($strKey)
     {
         if (!is_string($strKey) || $strKey === '') {
-            throw new \InvalidArgumentException('The key must be a non-empty string.');
+            throw new \InvalidArgumentException(
+                'The key must be a non-empty string.'
+            );
         }
 
         $str        = trim($strKey, '.');

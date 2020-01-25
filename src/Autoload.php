@@ -129,7 +129,9 @@ class Autoload
          * égale à la clé. Cette condition peut éviter la boucle.
          */
         if (isset($this->prefix[ $path ])) {
-            $filepath = $this->relplaceSlash($this->prefix[ $path ] . self::DS . $file);
+            $filepath = $this->relplaceSlash(
+                $this->prefix[ $path ] . self::DS . $file
+            );
 
             if ($this->requireFile($filepath)) {
                 return $filepath;
@@ -141,7 +143,9 @@ class Autoload
          * et la classe instanciée.
          */
         foreach ($this->lib as $nameSpace => $src) {
-            $filepath = $this->relplaceSlash(str_replace($nameSpace, $src, $class) . '.php');
+            $filepath = $this->relplaceSlash(
+                str_replace($nameSpace, $src, $class) . '.php'
+            );
 
             if ($this->requireFile($filepath)) {
                 return $filepath;
@@ -153,7 +157,9 @@ class Autoload
          * pour chercher une correspondance avec l'arborescence.
          */
         foreach ($this->map as $map) {
-            $filepath = $this->relplaceSlash($map . self::DS . $path . self::DS . $file);
+            $filepath = $this->relplaceSlash(
+                $map . self::DS . $path . self::DS . $file
+            );
 
             if ($this->requireFile($filepath)) {
                 return $filepath;

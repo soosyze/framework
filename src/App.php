@@ -372,7 +372,7 @@ abstract class App
         return isset($this->environnement[ $nameEnv ]) && (
             in_array(gethostname(), $this->environnement[ $nameEnv ]) ||
             in_array($authority, $this->environnement[ $nameEnv ])
-            ) || $this->environnementDefault === $nameEnv;
+        ) || $this->environnementDefault === $nameEnv;
     }
 
     /**

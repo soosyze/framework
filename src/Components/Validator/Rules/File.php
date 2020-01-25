@@ -105,7 +105,7 @@ class File extends \Soosyze\Components\Validator\Rule
      *
      * @param UploadedFileInterface $upload
      *
-     * @return string|false Minetype ou FALSE si une erreur s'est produite.
+     * @return string|false Mimetype ou FALSE si une erreur s'est produite.
      */
     protected function getMime(UploadedFileInterface $upload)
     {

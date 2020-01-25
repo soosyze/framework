@@ -47,7 +47,7 @@ class FileMimes extends FileExtensions
 
         if ($not) {
             $extension = $this->getExtension($value);
-            $this->validMine($info, $extension);
+            $this->validMime($info, $extension);
         } else {
             $this->validNotMime($info, $arg);
         }
@@ -74,7 +74,7 @@ class FileMimes extends FileExtensions
      *
      * @return int 1 erreur, l'extension n'est pas pris en charge.
      */
-    protected function validMine($info, $extension)
+    protected function validMime($info, $extension)
     {
         if (($mime = $this->getMimeByExtension($extension)) === false) {
             return 1;

@@ -166,7 +166,9 @@ class Container implements ContainerInterface
         }
 
         if (!isset($this->services[ $key ])) {
-            throw new NotFoundException(htmlspecialchars("Service $key does not exist."));
+            throw new NotFoundException(
+                htmlspecialchars("Service $key does not exist.")
+            );
         }
 
         try {
@@ -176,7 +178,9 @@ class Container implements ContainerInterface
              */
             $ref = new \ReflectionClass($this->services[ $key ][ 'class' ]);
         } catch (\ReflectionException $ex) {
-            throw new ContainerException(htmlspecialchars("$key is not exist."), $ex->getCode(), $ex);
+            throw new ContainerException(
+                htmlspecialchars("$key is not exist.")
+            );
         }
 
         $args     = $this->matchArgs($key);
@@ -255,7 +259,9 @@ class Container implements ContainerInterface
     public function setConfig($config)
     {
         if (!\is_array($config) && !($config instanceof \ArrayAccess)) {
-            throw new \InvalidArgumentException('The configuration must be an ArrayAccess array or instance.');
+            throw new \InvalidArgumentException(
+                'The configuration must be an ArrayAccess array or instance.'
+            );
         }
         $this->config = $config;
 

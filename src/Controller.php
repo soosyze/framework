@@ -128,6 +128,7 @@ class Controller
     {
         $stream = new Stream(json_encode($content));
 
-        return (new Response($code, $stream))->withHeader('content-type', 'application/json');
+        return (new Response($code, $stream))
+            ->withHeader('content-type', 'application/json');
     }
 }
