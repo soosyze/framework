@@ -34,6 +34,7 @@ class Validator
         'alphanum'                => 'Rules\AlphaNum',
         'alphanumtext'            => 'Rules\AlphaNumText',
         'array'                   => 'Rules\ArrayType',
+        'base64'                  => 'Rules\Base64',
         'between'                 => 'Rules\Between',
         'between_numeric'         => 'Rules\BetweenNumeric',
         'bool'                    => 'Rules\BoolType',
