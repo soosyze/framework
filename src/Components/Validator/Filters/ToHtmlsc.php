@@ -15,28 +15,25 @@ namespace Soosyze\Components\Validator\Filters;
  *
  * @author Mathieu NOËL
  */
-class StripTags extends \Soosyze\Components\Validator\Filter
+class ToHtmlsc extends \Soosyze\Components\Validator\Filter
 {
     /**
-     * Filtre les balises autorisées dans une valeur.
+     * Filtre une valeur avec la méthode htmlspecialchars.
      *
      * @param string $key   Identifiant de la valeur.
      * @param string $value Valeur à filtrer.
-     * @param string $arg   Liste des balise HTML autorisés.
+     * @param string $arg   Argument de filtre.
      *
      * @throws \InvalidArgumentException La valeur time n'est pas numérique.
      */
-    protected function clean(
-        $key,
-        $value,
-        $arg = '<h1><h2><h3><h4><h5><h6><p><span><b><i><u><a><table><thead><tbody><tfoot><tr><th><td><ul><ol><li><dl><dt><dd><img><br><hr>'
-    ) {
+    protected function clean($key, $value, $arg)
+    {
         if (!is_string($value)) {
             throw new \InvalidArgumentException(htmlspecialchars(
-                "The value of the $key field is not a string"
+                "The $key field does not exist"
             ));
         }
 
-        return strip_tags($value, $arg);
+        return htmlspecialchars($value);
     }
 }
