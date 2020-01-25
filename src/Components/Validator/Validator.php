@@ -80,6 +80,7 @@ class Validator
         'ressource'               => 'Rules\RessourceType',
         'slug'                    => 'Rules\Slug',
         'string'                  => 'Rules\StringType',
+        'to_bool'                 => 'Filters\ToBool',
         'to_htmlsc'               => 'Filters\ToHtmlsc',
         'to_striptags'            => 'Filters\ToStripTags',
         'token'                   => 'Rules\Token',
