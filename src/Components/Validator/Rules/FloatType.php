@@ -27,9 +27,10 @@ class FloatType extends \Soosyze\Components\Validator\Rule
      */
     protected function test($key, $value, $arg, $not)
     {
-        if (!filter_var($value, FILTER_VALIDATE_FLOAT) && $not) {
+        $filter = filter_var($value, FILTER_VALIDATE_FLOAT);
+        if (!is_float($filter) && $not) {
             $this->addReturn($key, 'must');
-        } elseif (filter_var($value, FILTER_VALIDATE_FLOAT) && !$not) {
+        } elseif (is_float($filter) && !$not) {
             $this->addReturn($key, 'not');
         }
     }
