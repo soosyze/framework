@@ -84,6 +84,7 @@ class Validator
         'to_float'                => 'Filters\ToFloat',
         'to_htmlsc'               => 'Filters\ToHtmlsc',
         'to_int'                  => 'Filters\ToInt',
+        'to_ltrim'                => 'Filters\ToLtrim',
         'to_striptags'            => 'Filters\ToStripTags',
         'token'                   => 'Rules\Token',
         'url'                     => 'Rules\Url',
