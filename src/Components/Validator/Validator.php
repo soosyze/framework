@@ -83,7 +83,8 @@ class Validator
         'string'                  => 'Rules\StringType',
         'striptags'               => 'Filters\StripTags',
         'token'                   => 'Rules\Token',
-        'url'                     => 'Rules\Url'
+        'url'                     => 'Rules\Url',
+        'uuid'                    => 'Rules\Uuid',
     ];
 
     /**
