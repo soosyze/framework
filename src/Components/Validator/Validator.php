@@ -278,7 +278,7 @@ class Validator
      */
     public function getInput($key, $default = '')
     {
-        return !empty($this->inputs[ $key ])
+        return array_key_exists($key, $this->inputs) && $this->inputs[ $key ] !== ''
             ? $this->inputs[ $key ]
             : $default;
     }
