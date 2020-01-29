@@ -446,7 +446,7 @@ class Validator
         foreach ($rules as $rule) {
             $value = $this->getCorrectInput($key, $this->inputs);
             $rule->execute($value);
-            if ($rule->isStop()) {
+            if ($rule->isStopImmediate()) {
                 break;
             }
             if ($rule->hasErrors()) {
@@ -454,6 +454,9 @@ class Validator
                 $this->errors      += $rule->getErrors();
             }
             $this->inputs[ $key ] = $rule->getValue();
+            if ($rule->isStop()) {
+                break;
+            }
         }
     }
 
