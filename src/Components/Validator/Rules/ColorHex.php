@@ -36,7 +36,7 @@ class ColorHex extends Regex
         } else {
             throw new \InvalidArgumentException('A color in hexadecimal format must be contained in 3 or 6 characters.');
         }
-        parent::test('colorhex', $value, '/^#(' . $patern . ')$/i', $not);
+        parent::test($key, $value, '/^#(' . $patern . ')$/i', $not);
     }
 
     /**

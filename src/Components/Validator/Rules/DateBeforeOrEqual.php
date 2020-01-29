@@ -39,12 +39,12 @@ class DateBeforeOrEqual extends DateBefore
      * @param string $arg   Date de comparaison.
      * @param bool   $not   Inverse le test.
      */
-    protected function testDateBefore($value, $arg, $not)
+    protected function testDateBefore($key, $value, $arg, $not)
     {
         if (!($value <= $arg) && $not) {
-            $this->addReturn('date_before_or_equal', 'before', [ ':datebefore' => $arg ]);
+            $this->addReturn($key, 'before', [ ':datebefore' => $arg ]);
         } elseif (($value <= $arg) && !$not) {
-            $this->addReturn('date_before_or_equal', 'not_before', [ ':datebefore' => $arg ]);
+            $this->addReturn($key, 'not_before', [ ':datebefore' => $arg ]);
         }
     }
 

@@ -27,7 +27,7 @@ class AlphaNumText extends Regex
      */
     protected function test($key, $value, $arg, $not)
     {
-        parent::test('alpha_num_text', $value, '/^[\w\s.!?,;:_-…]*$/i', $not);
+        parent::test($key, $value, '/^[\w\s.!?,;:_-…]*$/i', $not);
     }
 
     /**

@@ -37,7 +37,7 @@ class DateAfter extends Date
         if ($this->hasErrors()) {
             return 1;
         }
-        $this->testDateAfter($value, $arg, $not);
+        $this->testDateAfter($key, $value, $arg, $not);
     }
 
     /**
@@ -47,12 +47,12 @@ class DateAfter extends Date
      * @param string $arg   Date de comparaison.
      * @param bool   $not   Inverse le test.
      */
-    protected function testDateAfter($value, $arg, $not)
+    protected function testDateAfter($key, $value, $arg, $not)
     {
         if (!($value > $arg) && $not) {
-            $this->addReturn('date_after', 'after', [ ':dateafter' => $arg ]);
+            $this->addReturn($key, 'after', [ ':dateafter' => $arg ]);
         } elseif (($value > $arg) && !$not) {
-            $this->addReturn('date_after', 'not_after', [ ':dateafter' => $arg ]);
+            $this->addReturn($key, 'not_after', [ ':dateafter' => $arg ]);
         }
     }
 

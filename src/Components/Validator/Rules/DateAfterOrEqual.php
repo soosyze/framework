@@ -39,7 +39,7 @@ class DateAfterOrEqual extends DateAfter
      * @param string $arg   Date de comparaison.
      * @param bool   $not   Inverse le test.
      */
-    protected function testDateAfter($value, $arg, $not)
+    protected function testDateAfter($key, $value, $arg, $not)
     {
         if (!($value >= $arg) && $not) {
             $this->addReturn('date_after_or_equal', 'after', [ ':dateafter' => $arg ]);

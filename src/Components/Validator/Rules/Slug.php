@@ -27,6 +27,6 @@ class Slug extends Regex
      */
     protected function test($key, $value, $arg, $not)
     {
-        parent::test('slug', $value, '/^[a-zA-Z0-9_-]*$/', $not);
+        parent::test($key, $value, '/^[a-zA-Z0-9_-]*$/', $not);
     }
 }
