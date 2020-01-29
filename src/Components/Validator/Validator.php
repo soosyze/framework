@@ -88,6 +88,7 @@ class Validator
         'to_rtrim'                => 'Filters\ToRtrim',
         'to_striptags'            => 'Filters\ToStripTags',
         'to_trim'                 => 'Filters\ToTrim',
+        'timezone'                => 'Rules\Timezone',
         'token'                   => 'Rules\Token',
         'url'                     => 'Rules\Url',
         'uuid'                    => 'Rules\Uuid',
