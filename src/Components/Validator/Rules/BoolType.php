@@ -32,6 +32,10 @@ class BoolType extends \Soosyze\Components\Validator\Rule
         } elseif ($this->isBool($value) && !$not) {
             $this->addReturn($key, 'not');
         }
+
+        if ($this->hasErrors()) {
+            $this->stopPropagation();
+        }
     }
 
     /**

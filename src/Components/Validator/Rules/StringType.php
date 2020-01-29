@@ -32,6 +32,10 @@ class StringType extends \Soosyze\Components\Validator\Rule
         } elseif (is_string($value) && !$not) {
             $this->addReturn($key, 'not');
         }
+
+        if ($this->hasErrors()) {
+            $this->stopPropagation();
+        }
     }
 
     /**

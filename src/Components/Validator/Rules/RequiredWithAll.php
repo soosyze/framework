@@ -28,8 +28,8 @@ class RequiredWithAll extends Required
     protected function test($key, $value, $arg, $not)
     {
         parent::test($key, $value, $arg, $not);
-        if (!$this->isStop() && $this->isOneVoidValue()) {
-            $this->stopPropagation();
+        if (!$this->isStopImmediate() && $this->isOneVoidValue()) {
+            $this->stopImmediatePropagation();
         }
     }
 

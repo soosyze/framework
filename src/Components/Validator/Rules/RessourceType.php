@@ -32,6 +32,10 @@ class RessourceType extends \Soosyze\Components\Validator\Rule
         } elseif (is_resource($value) && !$not) {
             $this->addReturn($key, 'not');
         }
+
+        if ($this->hasErrors()) {
+            $this->stopPropagation();
+        }
     }
 
     /**

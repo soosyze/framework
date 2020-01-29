@@ -65,6 +65,8 @@ abstract class Rule
      * @var bool
      */
     private $propogation = false;
+    
+    private $immediatePropagation = false;
 
     /**
      * Valeurs de retour.
@@ -181,6 +183,11 @@ abstract class Rule
     {
         $this->propogation = true;
     }
+    
+    public function stopImmediatePropagation()
+    {
+        $this->immediatePropagation = true;
+    }
 
     /**
      * Si les tests suivants doivent être stoppés.
@@ -190,6 +197,11 @@ abstract class Rule
     public function isStop()
     {
         return $this->propogation;
+    }
+    
+    public function isStopImmediate()
+    {
+        return $this->immediatePropagation;
     }
 
     /**

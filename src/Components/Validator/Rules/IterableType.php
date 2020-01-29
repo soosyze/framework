@@ -39,6 +39,10 @@ class IterableType extends \Soosyze\Components\Validator\Rule
         } elseif (is_iterable($values) && !$not) {
             $this->addReturn($key, 'not');
         }
+
+        if ($this->hasErrors()) {
+            $this->stopPropagation();
+        }
     }
 
     /**

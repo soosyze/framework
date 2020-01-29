@@ -24,6 +24,10 @@ class NumericType extends \Soosyze\Components\Validator\Rule
         } elseif (is_numeric($value) && !$not) {
             $this->addReturn($key, 'not');
         }
+
+        if ($this->hasErrors()) {
+            $this->stopPropagation();
+        }
     }
 
     protected function messages()

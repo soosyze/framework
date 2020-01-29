@@ -33,6 +33,10 @@ class IntType extends \Soosyze\Components\Validator\Rule
         } elseif (is_int($filter) && !$not) {
             $this->addReturn($key, 'not');
         }
+
+        if ($this->hasErrors()) {
+            $this->stopPropagation();
+        }
     }
 
     /**

@@ -40,6 +40,10 @@ class File extends \Soosyze\Components\Validator\Rule
         if ($value instanceof UploadedFileInterface) {
             $this->checkErrorFile($key, $value);
         }
+
+        if ($this->hasErrors()) {
+            $this->stopPropagation();
+        }
     }
 
     /**

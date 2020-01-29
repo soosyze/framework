@@ -32,6 +32,10 @@ class ArrayType extends \Soosyze\Components\Validator\Rule
         } elseif (\is_array($values) && !$not) {
             $this->addReturn($key, 'not');
         }
+
+        if ($this->hasErrors()) {
+            $this->stopPropagation();
+        }
     }
 
     /**

@@ -33,6 +33,10 @@ class FloatType extends \Soosyze\Components\Validator\Rule
         } elseif (is_float($filter) && !$not) {
             $this->addReturn($key, 'not');
         }
+
+        if ($this->hasErrors()) {
+            $this->stopPropagation();
+        }
     }
 
     /**
