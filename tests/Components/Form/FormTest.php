@@ -195,7 +195,8 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
     public function testFormLabelFor()
     {
-        $this->object->label('label-test-require', 'lorem ipsum')
+        $this->object
+            ->label('label-test-require', 'lorem ipsum')
             ->text('name');
 
         $form   = $this->object->form_label('label-test-require');
@@ -206,7 +207,8 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
     public function testFormLabelForManuel()
     {
-        $this->object->label('label-test-require', 'lorem ipsum', [ 'for' => 'id-for' ])
+        $this->object
+            ->label('label-test-require', 'lorem ipsum', [ 'for' => 'id-for' ])
             ->text('name');
 
         $form   = $this->object->form_label('label-test-require');
@@ -217,7 +219,8 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
     public function testFormLabelForRequire()
     {
-        $this->object->label('label-test-require', 'lorem ipsum')
+        $this->object
+            ->label('label-test-require', 'lorem ipsum')
             ->text('name', [ 'required' => 'required' ]);
 
         $form   = $this->object->form_label('label-test-require');
@@ -260,10 +263,11 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
     public function testAddAttrGroup()
     {
-        $this->object->group('group', 'div', function ($form) {
-            $form->text('textName1');
-        });
-        $this->object->addAttr('textName1', [ 'required' => 'required' ]);
+        $this->object
+            ->group('group', 'div', function ($form) {
+                $form->text('textName1');
+            })
+            ->addAttr('textName1', [ 'required' => 'required' ]);
 
         $input1  = $this->object->form_input('textName1');
         $result1 = '<input name="textName1" type="text" id="textName1" required>' . PHP_EOL;
@@ -320,19 +324,11 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($input2, $result2);
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testAddAttrException()
-    {
-        $this->object->text('textName1');
-        $this->object->addAttr('error', [ 'required' => 'required' ]);
-    }
-
     public function testGetItem()
     {
-        $this->object->text('textName1');
-        $item = $this->object->getItem('textName1');
+        $item = $this->object
+            ->text('textName1')
+            ->getItem('textName1');
 
         $this->assertEquals(
             [ 'type' => 'text', 'attr' => [ 'id' => 'textName1' ] ],
@@ -342,14 +338,16 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
     public function testGetItemGroup()
     {
-        $this->object->group('group', 'div', function ($form) {
-            $form->text('textName1');
-        });
-        $item = $this->object->getItem('textName1');
+        $item = $this->object
+            ->group('group', 'div', function ($form) {
+                $form->text('textName1');
+            })
+            ->getItem('textName1');
 
-        $this->assertEquals([ 'type' => 'text',
-            'attr' => [ 'id' => 'textName1' ]
-            ], $item);
+        $this->assertEquals(
+            [ 'type' => 'text', 'attr' => [ 'id' => 'textName1' ] ],
+            $item
+        );
     }
 
     /**
@@ -357,25 +355,23 @@ class FormTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetItemException()
     {
-        $this->object->text('textName1');
-        $this->object->getItem('error');
+        $this->object->text('textName1')->getItem('error');
     }
 
     public function testBefore()
     {
         $this->object
             ->text('1')
-            ->text('2');
-
-        $this->object->addBefore('2', function ($form) {
-            $form->text('3');
-        });
-        $this->object->addBefore('3', function ($form) {
-            $form->text('4');
-        });
+            ->text('2')
+            ->before('2', function ($form) {
+                $form->text('3');
+            })
+            ->before('3', function ($form) {
+                $form->text('4');
+            });
 
         $this->assertEquals(
-            $this->object->renderForm(),
+            (string) $this->object,
             '<form method="post" action="http://localhost/">' . PHP_EOL .
             '<input name="1" type="text" id="1">' . PHP_EOL .
             '<input name="4" type="text" id="4">' . PHP_EOL .
@@ -384,23 +380,23 @@ class FormTest extends \PHPUnit\Framework\TestCase
             '</form>' . PHP_EOL
         );
     }
-
-    public function testBeforeSubForm()
+    
+    public function testBeforeGroup()
     {
-        $this->object->group('group', 'div', function ($form) {
-            $form->text('1')
+        $this->object
+            ->group('group', 'div', function ($form) {
+                $form->text('1')
                 ->text('2');
-        });
-
-        $this->object->addBefore('2', function ($form) {
-            $form->text('3');
-        });
-        $this->object->addBefore('3', function ($form) {
-            $form->text('4');
-        });
+            })
+            ->before('2', function ($form) {
+                $form->text('3');
+            })
+            ->before('3', function ($form) {
+                $form->text('4');
+            });
 
         $this->assertEquals(
-            $this->object->renderForm(),
+            (string) $this->object,
             '<form method="post" action="http://localhost/">' . PHP_EOL .
             '<div>' . PHP_EOL .
             '<input name="1" type="text" id="1">' . PHP_EOL .
@@ -414,17 +410,18 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
     public function testAfter()
     {
-        $this->object->text('1')->text('2');
-
-        $this->object->addAfter('1', function ($form) {
-            $form->text('3');
-        });
-        $this->object->addAfter('1', function ($form) {
-            $form->text('4');
-        });
+        $this->object
+            ->text('1')
+            ->text('2')
+            ->after('1', function ($form) {
+                $form->text('3');
+            })
+            ->after('1', function ($form) {
+                $form->text('4');
+            });
 
         $this->assertEquals(
-            $this->object->renderForm(),
+            (string) $this->object,
             '<form method="post" action="http://localhost/">' . PHP_EOL .
             '<input name="1" type="text" id="1">' . PHP_EOL .
             '<input name="4" type="text" id="4">' . PHP_EOL .
@@ -434,12 +431,39 @@ class FormTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    public function testAfterGroup()
+    {
+        $this->object
+            ->group('group', 'div', function ($form) {
+                $form->text('1')
+                ->text('2');
+            })
+            ->after('1', function ($form) {
+                $form->text('3');
+            })
+            ->after('1', function ($form) {
+                $form->text('4');
+            });
+
+        $this->assertEquals(
+            (string) $this->object,
+            '<form method="post" action="http://localhost/">' . PHP_EOL .
+            '<div>' . PHP_EOL .
+            '<input name="1" type="text" id="1">' . PHP_EOL .
+            '<input name="4" type="text" id="4">' . PHP_EOL .
+            '<input name="3" type="text" id="3">' . PHP_EOL .
+            '<input name="2" type="text" id="2">' . PHP_EOL .
+            '</div>' . PHP_EOL .
+            '</form>' . PHP_EOL
+        );
+    }
+
     /**
      * @expectedException \Exception
      */
     public function testBeforeException()
     {
-        $this->object->addBefore('error', function () {
+        $this->object->before('error', function () {
         });
     }
 
@@ -448,37 +472,135 @@ class FormTest extends \PHPUnit\Framework\TestCase
      */
     public function testAfterException()
     {
-        $this->object->addAfter('error', function () {
+        $this->object->after('error', function () {
+        });
+    }
+
+    public function testPrepend()
+    {
+        $this->object
+            ->group('group', 'div', function ($form) {
+                $form->text('1')
+                ->text('2');
+            })
+            ->prepend('group', function ($form) {
+                $form->text('3');
+            })
+            ->prepend('group', function ($form) {
+                $form->text('4');
+            });
+
+        $this->assertEquals(
+            (string) $this->object,
+            '<form method="post" action="http://localhost/">' . PHP_EOL .
+            '<div>' . PHP_EOL .
+            '<input name="4" type="text" id="4">' . PHP_EOL .
+            '<input name="3" type="text" id="3">' . PHP_EOL .
+            '<input name="1" type="text" id="1">' . PHP_EOL .
+            '<input name="2" type="text" id="2">' . PHP_EOL .
+            '</div>' . PHP_EOL .
+            '</form>' . PHP_EOL
+        );
+    }
+
+    public function testAppend()
+    {
+        $this->object
+            ->group('group', 'div', function ($form) {
+                $form->text('1')
+                ->text('2');
+            })
+            ->append('group', function ($form) {
+                $form->text('3');
+            })
+            ->append('group', function ($form) {
+                $form->text('4');
+            });
+
+        $this->assertEquals(
+            (string) $this->object,
+            '<form method="post" action="http://localhost/">' . PHP_EOL .
+            '<div>' . PHP_EOL .
+            '<input name="1" type="text" id="1">' . PHP_EOL .
+            '<input name="2" type="text" id="2">' . PHP_EOL .
+            '<input name="3" type="text" id="3">' . PHP_EOL .
+            '<input name="4" type="text" id="4">' . PHP_EOL .
+            '</div>' . PHP_EOL .
+            '</form>' . PHP_EOL
+        );
+    }
+
+    public function testAppendGroup()
+    {
+        $this->object
+            ->group('group', 'div', function ($form) {
+                $form->group('group_2', 'div', function ($form) {
+                    $form->text('1')
+                    ->text('2');
+                });
+            })
+            ->append('group_2', function ($form) {
+                $form->text('3');
+            })
+            ->append('group_2', function ($form) {
+                $form->text('4');
+            });
+
+        $this->assertEquals(
+            (string) $this->object,
+            '<form method="post" action="http://localhost/">' . PHP_EOL .
+            '<div>' . PHP_EOL .
+            '<div>' . PHP_EOL .
+            '<input name="1" type="text" id="1">' . PHP_EOL .
+            '<input name="2" type="text" id="2">' . PHP_EOL .
+            '<input name="3" type="text" id="3">' . PHP_EOL .
+            '<input name="4" type="text" id="4">' . PHP_EOL .
+            '</div>' . PHP_EOL .
+            '</div>' . PHP_EOL .
+            '</form>' . PHP_EOL
+        );
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testPreprendException()
+    {
+        $this->object->prepend('error', function () {
+        });
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testappendException()
+    {
+        $this->object->append('error', function () {
         });
     }
 
     public function testHtml()
     {
-        $this->object->html('image', '<img:css:attr/>', [
-            'src' => '/files/logo.png',
-            'alt' => 'Logo'
+        $this->object
+            ->html('image', '<img:attr/>', [
+                'src' => '/files/logo.png',
+                'alt' => 'Logo'
+            ])
+            ->html('paragraph', '<p:attr>:_content</p>', [
+                'id'       => 'test',
+                '_content' => 'Logo'
         ]);
 
         $this->assertEquals(
-            $this->object->renderForm(),
-            '<form method="post" action="http://localhost/">' . PHP_EOL .
-            '<img id="image" src="/files/logo.png" alt="Logo"/>' . PHP_EOL .
-            '</form>' . PHP_EOL
+            $this->object->form_html('image'),
+            '<img id="image" src="/files/logo.png" alt="Logo"/>' . PHP_EOL
         );
-
-        $this->object->html('image', '<p:css:attr>:_content</p>', [
-            'id' => 'test',
-            '_content' => 'Logo'
-        ]);
-
         $this->assertEquals(
-            $this->object->renderForm(),
-            '<form method="post" action="http://localhost/">' . PHP_EOL .
-            '<p id="test">Logo</p>' . PHP_EOL .
-            '</form>' . PHP_EOL
+            $this->object->form_html('paragraph'),
+            '<p id="test">Logo</p>' . PHP_EOL
         );
     }
-    
+
     public function testSubformInLabel()
     {
         $this->object->label('test', function ($form) {
@@ -486,7 +608,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         }, [ 'id' => 'test' ]);
 
         $this->assertEquals(
-            $this->object->renderForm(),
+            (string) $this->object,
             '<form method="post" action="http://localhost/">' . PHP_EOL .
             '<label id="test"><input name="check" type="checkbox" id="check">' . PHP_EOL .
             '</label>' . PHP_EOL .
