@@ -367,4 +367,56 @@ class Util
 
         return rtrim($number, '.00') . ' ' . $units[ $power ];
     }
+
+    /**
+     * Différence entre 2 dates dans un format lisible par l'homme.
+     *
+     * @param \DateTime $from
+     * @param string    $to
+     *
+     * @return string
+     */
+    public static function strHumansTimeDiff(\DateTime $from, $to = 'now')
+    {
+        $interval = \date_create($to)->diff($from);
+
+        if (($value = $interval->y) >= 1) {
+            $str = $value > 1
+                ? '%s years'
+                : '%s year';
+        } elseif (($value = $interval->m) >= 1) {
+            $str = $value > 1
+                ? '%s months'
+                : '%s month';
+        } elseif (($value = $interval->d / 7) >= 1) {
+            $str = $value > 1
+                ? '%s weeks'
+                : '%s week';
+        } elseif (($value = $interval->d) >= 1) {
+            $str = $value > 1
+                ? '%s days'
+                : '%s day';
+        } elseif (($value = $interval->h) >= 1) {
+            $str = $value > 1
+                ? '%s hours'
+                : '%s hour';
+        } elseif (($value = $interval->i) >= 1) {
+            $str = $value > 1
+                ? '%s minutes'
+                : '%s minute';
+        } else {
+            $value = $interval->s;
+            $str   = $value > 1
+                ? '%s seconds'
+                : '%s second';
+        }
+
+        $suffix = $interval->invert
+            ? ' ago'
+            : '';
+
+        return $value > 1
+            ? [ $str . $suffix, $value ]
+            : [ $str . $suffix, 1 ];
+    }
 }
