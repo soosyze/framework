@@ -3,8 +3,6 @@
 /**
  * Soosyze Framework https://soosyze.com
  *
- * @package Soosyze
- * @author  Mathieu NOËL <mathieu@soosyze.com>
  * @license https://github.com/soosyze/framework/blob/master/LICENSE (MIT License)
  */
 
@@ -15,7 +13,7 @@ use Soosyze\Components\Util\Util;
 /**
  * Enregistre et restitue dans des fichiers de configuration de l'application.
  *
- * @author Mathieu NOËL
+ * @author Mathieu NOËL <mathieu@soosyze.com>
  */
 class Config implements \ArrayAccess
 {

@@ -3,8 +3,6 @@
 /**
  * Soosyze Framework https://soosyze.com
  *
- * @package Soosyze\Components\Validator\Rules
- * @author  Mathieu NOËL <mathieu@soosyze.com>
  * @license https://github.com/soosyze/framework/blob/master/LICENSE (MIT License)
  */
 
@@ -18,7 +16,7 @@ namespace Soosyze\Components\Validator\Rules;
  * @see https://semver.org/lang/fr/
  * @license Creative Commons - CC BY 3.0
  *
- * @author Mathieu NOËL
+ * @author Mathieu NOËL <mathieu@soosyze.com>
  */
 class Version extends \Soosyze\Components\Validator\Rule
 {

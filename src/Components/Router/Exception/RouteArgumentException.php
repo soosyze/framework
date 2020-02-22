@@ -3,8 +3,6 @@
 /**
  * Soosyze Framework https://soosyze.com
  *
- * @package Soosyze\Exception\App
- * @author  Mathieu NOËL <mathieu@soosyze.com>
  * @license https://github.com/soosyze/framework/blob/master/LICENSE (MIT License)
  */
 
@@ -12,6 +10,8 @@ namespace Soosyze\Components\Router\Exception;
 
 /**
  * Exception levée lorsqu'un paramètre de la route ne remplit pas la condition.
+ *
+ * @author Mathieu NOËL <mathieu@soosyze.com>
  */
 class RouteArgumentException extends \Exception
 {

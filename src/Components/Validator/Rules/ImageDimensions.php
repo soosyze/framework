@@ -3,8 +3,6 @@
 /**
  * Soosyze Framework https://soosyze.com
  *
- * @package Soosyze\Components\Validator\Rules
- * @author  Mathieu NOËL <mathieu@soosyze.com>
  * @license https://github.com/soosyze/framework/blob/master/LICENSE (MIT License)
  */
 
@@ -15,7 +13,7 @@ use Psr\Http\Message\UploadedFileInterface;
 /**
  * {@inheritdoc}
  *
- * @author Mathieu NOËL
+ * @author Mathieu NOËL <mathieu@soosyze.com>
  */
 abstract class ImageDimensions extends FileMimetypes
 {

@@ -3,8 +3,6 @@
 /**
  * Soosyze Framework https://soosyze.com
  *
- * @package Soosyze\Components\Template
- * @author  Mathieu NOËL <mathieu@soosyze.com>
  * @license https://github.com/soosyze/framework/blob/master/LICENSE (MIT License)
  */
 
@@ -13,7 +11,7 @@ namespace Soosyze\Components\Template;
 /**
  * Générer l'affichage d'une application web à partir de fichier PHP.
  *
- * @author Mathieu NOËL
+ * @author Mathieu NOËL <mathieu@soosyze.com>
  */
 class Template
 {

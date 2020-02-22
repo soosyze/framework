@@ -3,8 +3,6 @@
 /**
  * Soosyze Framework http://soosyze.com
  *
- * @package Soosyze\Components\Validator
- * @author  Mathieu NOËL <mathieu@soosyze.com>
  * @license https://github.com/soosyze/framework/blob/master/LICENSE (MIT License)
  */
 
@@ -13,7 +11,7 @@ namespace Soosyze\Components\Validator;
 /**
  * Valide des valeurs à partir de tests chaînés.
  *
- * @author Mathieu NOËL
+ * @author Mathieu NOËL <mathieu@soosyze.com>
  */
 class Validator
 {

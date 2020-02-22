@@ -3,8 +3,6 @@
 /**
  * Soosyze Framework https://soosyze.com
  *
- * @package Soosyze
- * @author  Mathieu NOËL <mathieu@soosyze.com>
  * @license https://github.com/soosyze/framework/blob/master/LICENSE (MIT License)
  */
 
@@ -20,7 +18,7 @@ use Soosyze\Exception\Container\NotFoundException;
  *
  * @see https://www.php-fig.org/psr/psr-11/ Suit les recommandations PSR-11.
  *
- * @author Mathieu NOËL
+ * @author Mathieu NOËL <mathieu@soosyze.com>
  */
 class Container implements ContainerInterface
 {

@@ -3,8 +3,6 @@
 /**
  * Soosyze Framework https://soosyze.com
  *
- * @package Soosyze\Components\HttpFactories
- * @author  Mathieu NOËL <mathieu@soosyze.com>
  * @license https://github.com/soosyze/framework/blob/master/LICENSE (MIT License)
  */
 
@@ -17,7 +15,7 @@ use Soosyze\Components\Http\Uri;
  *
  * @link https://www.php-fig.org/psr/psr-17/ PSR-17: HTTP Factories
  *
- * @author Mathieu NOËL
+ * @author Mathieu NOËL <mathieu@soosyze.com>
  */
 class UriFactory
 {

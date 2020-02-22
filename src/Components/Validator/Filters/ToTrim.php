@@ -3,8 +3,6 @@
 /**
  * Soosyze Framework https://soosyze.com
  *
- * @package Soosyze\Components\Validator
- * @author  Mathieu NOËL <mathieu@soosyze.com>
  * @license https://github.com/soosyze/framework/blob/master/LICENSE (MIT License)
  */
 
@@ -13,7 +11,7 @@ namespace Soosyze\Components\Validator\Filters;
 /**
  * {@inheritdoc}
  *
- * @author Mathieu NOËL
+ * @author Mathieu NOËL <mathieu@soosyze.com>
  */
 class ToTrim extends \Soosyze\Components\Validator\Filter
 {

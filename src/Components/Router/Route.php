@@ -3,8 +3,6 @@
 /**
  * Soosyze Framework https://soosyze.com
  *
- * @package Soosyze
- * @author  Mathieu NOËL <mathieu@soosyze.com>
  * @license https://github.com/soosyze/framework/blob/master/LICENSE (MIT License)
  */
 
@@ -13,7 +11,7 @@ namespace Soosyze\Components\Router;
 /**
  * Description of Route
  *
- * @author mnoel
+ * @author Mathieu NOËL <mathieu@soosyze.com>
  */
 final class Route
 {

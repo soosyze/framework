@@ -4,7 +4,6 @@
  * Soosyze Framework https://soosyze.com
  *
  * @package Soosyze\Components\Form
- * @author Mathieu NOËL <mathieu@soosyze.com>
  * @license https://github.com/soosyze/framework/blob/master/LICENSE (MIT License)
  */
 
@@ -13,7 +12,7 @@ namespace Soosyze\Components\Form;
 /**
  * Génèration des champs de formulaire.
  *
- * @author Mathieu NOËL
+ * @author Mathieu NOËL <mathieu@soosyze.com>
  */
 trait FormRenderTrait
 {

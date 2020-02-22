@@ -3,8 +3,6 @@
 /**
  * Soosyze Framework https://soosyze.com
  *
- * @package Soosyze\Components\Http
- * @author  Mathieu NOËL <mathieu@soosyze.com>
  * @license https://github.com/soosyze/framework/blob/master/LICENSE (MIT License)
  */
 
@@ -19,7 +17,7 @@ use Psr\Http\Message\UriInterface;
  * @link https://en.wikipedia.org/wiki/Uniform_Resource_Identifier
  * @link https://www.php-fig.org/psr/psr-7/ PSR-7: HTTP message interfaces
  *
- * @author Mathieu NOËL
+ * @author Mathieu NOËL <mathieu@soosyze.com>
  */
 class Uri implements UriInterface
 {

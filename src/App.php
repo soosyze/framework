@@ -3,8 +3,6 @@
 /**
  * Soosyze Framework https://soosyze.com
  *
- * @package Soosyze
- * @author  Mathieu NOËL <mathieu@soosyze.com>
  * @license https://github.com/soosyze/framework/blob/master/LICENSE (MIT License)
  */
 
@@ -23,7 +21,7 @@ use Soosyze\Container;
  * Coeur de l'application, il est le ciment qui unis les modules et les services.
  * Il possède la logique de framework (le router, les configurations... ).
  *
- * @author Mathieu NOËL
+ * @author Mathieu NOËL <mathieu@soosyze.com>
  */
 abstract class App
 {
