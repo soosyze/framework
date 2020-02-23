@@ -21,14 +21,16 @@ class ArrayTest extends Rule
         $this->assertTrue($this->object->isValid());
 
         $this->object->setInputs([
-            'must'     => 'not array',
-            'not_must' => [ 0, 1, 2 ]
+            'must'          => 'not array',
+            'not_must'      => [ 0, 1, 2 ],
+            'required_must' => [],
         ])->setRules([
-            'must'     => 'array',
-            'not_must' => '!array'
+            'must'          => 'array',
+            'not_must'      => '!array',
+            'required_must' => 'required|array',
         ]);
 
         $this->assertFalse($this->object->isValid());
-        $this->assertCount(2, $this->object->getErrors());
+        $this->assertCount(3, $this->object->getErrors());
     }
 }

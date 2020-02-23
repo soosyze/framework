@@ -46,11 +46,13 @@ class Required extends Rule implements RuleInputsInterface
      */
     protected function test($key, $value, $arg, $not)
     {
-        if ($value === '') {
-            $this->addReturn($key, 'must');
+        if (is_string($value) && mb_strlen(trim($value), 'UTF-8') === 0) {
+            $this->addReturn($key, 'must', [ ':values' => $arg ]);
+        } elseif (is_array($value) && count($value) === 0) {
+            $this->addReturn($key, 'must', [ ':values' => $arg ]);
         } elseif ($value instanceof UploadedFileInterface) {
             if ($value->getError() === UPLOAD_ERR_NO_FILE) {
-                $this->addReturn($key, 'must');
+                $this->addReturn($key, 'must', [ ':values' => $arg ]);
             }
         }
 
