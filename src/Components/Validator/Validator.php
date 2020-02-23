@@ -262,7 +262,12 @@ class Validator
      */
     public function getKeyInputErrors()
     {
-        return array_keys($this->key);
+        $out = [];
+        foreach ($this->errors as $key => $error) {
+            $out += $this->resucrsiveError($error, $key, false);
+        }
+
+        return array_keys($out);
     }
 
     /**
@@ -337,7 +342,12 @@ class Validator
      */
     public function getKeyErrors()
     {
-        return array_keys($this->errors);
+        $out = [];
+        foreach ($this->errors as $key => $error) {
+            $out += $this->resucrsiveError($error, $key);
+        }
+
+        return $out;
     }
 
     /**
@@ -387,7 +397,6 @@ class Validator
      */
     public function isValid()
     {
-        $this->key    = [];
         $this->errors = [];
         foreach ($this->rules as $key => $tests) {
             $rules = [];
@@ -434,6 +443,32 @@ class Validator
     }
 
     /**
+     * @param array $errors
+     * @param type  $strKey
+     * @param type  $rule
+     *
+     * @return array
+     */
+    protected function resucrsiveError(array $errors, $strKey = '', $rule = true)
+    {
+        $out = [];
+        foreach ($errors as $key => $error) {
+            if (is_array($error)) {
+                $out += $this->resucrsiveError($error, $strKey . '[' . $key . ']', $rule);
+
+                continue;
+            }
+            if ($rule) {
+                $out[ $strKey . '[' . $key . ']' ] = $error;
+            } else {
+                $out[ $strKey ] = $error;
+            }
+        }
+
+        return $out;
+    }
+
+    /**
      * Exécute les règles sur un champ.
      *
      * @param string $key   La clé des tests
@@ -448,8 +483,10 @@ class Validator
                 break;
             }
             if ($rule->hasErrors()) {
-                $this->key[ $key ] = 1;
-                $this->errors      += $rule->getErrors();
+                if (!isset($this->errors[ $key ])) {
+                    $this->errors[ $key ] = [];
+                }
+                $this->errors[ $key ] += $rule->getErrors();
             }
             $this->inputs[ $key ] = $rule->getValue();
             if ($rule->isStop()) {

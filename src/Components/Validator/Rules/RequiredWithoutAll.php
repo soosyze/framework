@@ -44,7 +44,7 @@ class RequiredWithoutAll extends Required
             throw new \InvalidArgumentException('A field must be provided for the required with rule.');
         }
         $fields = explode(',', $this->args);
-        $errors = [];
+        $errors = 0;
         foreach ($fields as $field) {
             if (!isset($this->inputs[ $field ])) {
                 throw new \InvalidArgumentException(htmlspecialchars(
@@ -55,9 +55,11 @@ class RequiredWithoutAll extends Required
             $require = (new Required)
                 ->hydrate('required', $field, false, true)
                 ->execute($this->inputs[ $field ]);
-            $errors  += $require->getErrors();
+            if ($require->getErrors()) {
+                $errors++;
+            }
         }
 
-        return count($errors) == count($fields);
+        return $errors == count($fields);
     }
 }

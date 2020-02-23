@@ -13,7 +13,7 @@ class UrlTest extends Rule
             'not_required_must' => ''
         ])->setRules([
             'must'              => 'url',
-            'not_url'           => '!url',
+            'not_must'          => '!url',
             'required_must'     => 'required|url',
             'not_required_must' => '!required|url'
         ]);

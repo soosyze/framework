@@ -69,7 +69,9 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
-        $this->assertEquals($this->object->getError('custom_cube.cube'), 'La valeur au cube de custom_cube n\'est pas égale à 4.');
+        $this->assertEquals($this->object->getError('custom_cube'), [
+            'cube' => 'La valeur au cube de custom_cube n\'est pas égale à 4.'
+        ]);
 
         $this->object->setInputs([
             'custom_cube2'     => 4,
@@ -90,7 +92,9 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->addRule('field', 'string');
 
         $this->assertFalse($this->object->isValid());
-        $this->assertEquals($this->object->getError('field.string'), 'La valeur de Text input n\'est pas une chaine de caractères.');
+        $this->assertEquals($this->object->getError('field'), [
+            'string' => 'La valeur de Text input n\'est pas une chaine de caractères.'
+        ]);
     }
 
     public function testCustomMessage()
@@ -107,7 +111,9 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field' => '!string'
         ]);
 
-        $this->object->isValid();
+        $this->assertEquals($this->object->getError('field'), [
+            'string' => 'My message custom global for field !'
+        ]);
 
         $this->assertEquals($this->object->getError('field.string'), 'My message custom for field !');
     }

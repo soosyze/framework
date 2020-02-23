@@ -238,12 +238,11 @@ abstract class Rule
      */
     protected function addReturn($keyRule, $keyMessage, array $value = [])
     {
-        $key            = "$this->keyValue.$keyRule";
         $args           = array_merge([ ':label' => $this->label ], $value);
         $argsKey        = array_keys($args);
-        $this->messages = array_merge($this->messages(), $this->messages);
+        $this->messages += $this->messages();
 
-        $this->errors[ $key ] = str_replace($argsKey, $args, $this->messages[ $keyMessage ]);
+        $this->errors[ $keyRule ] = str_replace($argsKey, $args, $this->messages[ $keyMessage ]);
     }
 
     /**

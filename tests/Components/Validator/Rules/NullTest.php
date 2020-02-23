@@ -31,6 +31,6 @@ class NullTest extends Rule
         ]);
 
         $this->assertFalse($this->object->isValid());
-        $this->assertCount(4, $this->object->getErrors());
+        $this->assertCount(4, $this->object->getKeyErrors());
     }
 }
