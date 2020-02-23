@@ -406,6 +406,11 @@ class Validator
                     $rules[] = $this->parseRules($key, $test);
                 }
                 $this->execute($key, $rules);
+            } elseif ($tests instanceof Validator) {
+                $tests->inputs = $this->inputs[ $key ];
+                if (!$tests->isValid()) {
+                    $this->errors[ $key ] = $tests->errors;
+                }
             }
         }
 
