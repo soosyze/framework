@@ -40,8 +40,8 @@ class Uuid extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'Le champ :label doit être accepté.',
-            'not'  => 'Le champ :label ne doit pas être accepté.'
+            'must' => 'The :label field must in UUID v4 format.',
+            'not'  => 'The :label field must not be in UUID v4 format.'
         ];
     }
 }

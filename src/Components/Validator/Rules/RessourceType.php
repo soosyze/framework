@@ -42,8 +42,8 @@ class RessourceType extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'Le champ :label doit être accepté.',
-            'not'  => 'Le champ :label ne doit pas être accepté.'
+            'must' => 'The value of the :label field must be a resource.',
+            'not'  => 'The value of the :label field must not be a resource.'
         ];
     }
 }

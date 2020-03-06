@@ -38,8 +38,8 @@ class Dir extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'Le chemin de :label n\'est pas valide.',
-            'not'  => 'Le chemin de :label n\'est pas valide.'
+            'must' => 'The :label field must be a valid path.',
+            'not'  => 'The :label field must not be a valid path.'
         ];
     }
 }

@@ -39,8 +39,8 @@ class Json extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label n\'est pas au format JSON.',
-            'not'  => 'La valeur de :label ne doit pas être au format JSON.'
+            'must' => 'The :label field must be in JSON format.',
+            'not'  => 'The :label field must not be in JSON format.'
         ];
     }
 }

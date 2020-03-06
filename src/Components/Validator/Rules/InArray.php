@@ -25,11 +25,14 @@ class InArray extends \Soosyze\Components\Validator\Rule
      */
     protected function test($key, $value, $arg, $not)
     {
-        $array = explode(',', $arg);
+        $array = \is_array($arg)
+            ? $arg
+            : explode(',', $arg);
+
         if (!in_array($value, $array) && $not) {
-            $this->addReturn($key, 'must');
+            $this->addReturn($key, 'must', [ ':list' => implode(',', $array) ]);
         } elseif (in_array($value, $array) && !$not) {
-            $this->addReturn($key, 'not');
+            $this->addReturn($key, 'not', [ ':list' => implode(',', $array) ]);
         }
     }
 
@@ -39,8 +42,8 @@ class InArray extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur :label n\'est pas dans la liste.',
-            'not'  => 'La valeur de :label ne doit pas être dans la liste.'
+            'must' => 'The :label field must be in the following list :list.',
+            'not'  => 'The :label field must not be in the following list :list.'
         ];
     }
 }

@@ -42,8 +42,8 @@ class Timezone extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur du champ :label doit être un fuseau horaire valide.',
-            'not'  => 'La valeur du champ :label ne doit pas être un fuseau horaire valide.'
+            'must' => 'The :label field must be a valid time zone.',
+            'not'  => 'The :label field must not be a valid time zone.'
         ];
     }
 }

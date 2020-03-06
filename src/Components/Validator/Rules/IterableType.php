@@ -49,8 +49,8 @@ class IterableType extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label n\'est pas un array.',
-            'not'  => 'La valeur de :label ne doit pas être un array.'
+            'must' => 'The value of the :label field must be iterable.',
+            'not'  => 'The value of the :label field must not be iterable.'
         ];
     }
 }

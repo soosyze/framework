@@ -38,8 +38,8 @@ class AlphaNum extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label n\'est pas alpha numérique.',
-            'not'  => 'La valeur de :label ne doit pas être alpha numérique.'
+            'must' => 'The :label field must contain only letters and numbers.',
+            'not'  => 'The :label field must not contain letters and numbers.'
         ];
     }
 }

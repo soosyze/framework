@@ -43,8 +43,8 @@ class FloatType extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label doit être nombre flottant.',
-            'not'  => 'La valeur de :label ne doit pas être un nombre flottant.'
+            'must' => 'The value of the :label field must be a floating number.',
+            'not'  => 'The value of the :label field must not be a floating number.'
         ];
     }
 }

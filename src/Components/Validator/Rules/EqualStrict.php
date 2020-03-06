@@ -26,9 +26,9 @@ class EqualStrict extends \Soosyze\Components\Validator\Rule
     protected function test($key, $value, $arg, $not)
     {
         if ($value !== $arg && $not) {
-            $this->addReturn($key, 'must');
+            $this->addReturn($key, 'must', [ 'value' => $arg ]);
         } elseif ($value === $arg && !$not) {
-            $this->addReturn($key, 'not');
+            $this->addReturn($key, 'not', [ 'value' => $arg ]);
         }
     }
 
@@ -38,8 +38,8 @@ class EqualStrict extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label n\'est pas valide.',
-            'not'  => 'La valeur de :label n\'est pas valide.'
+            'must' => 'The :label field must be strictly equal to :value.',
+            'not'  => 'The :label field must not be strictly equal to :value.'
         ];
     }
 }

@@ -60,8 +60,8 @@ class DateBefore extends Date
     protected function messages()
     {
         $output                 = parent::messages();
-        $output[ 'before' ]     = 'La date de :label doit être inférieur à :datebefore.';
-        $output[ 'not_before' ] = 'La date de :label ne doit pas être inferieur à :datebefore.';
+        $output[ 'before' ]     = 'The :label field must be a date lower than :datebefore.';
+        $output[ 'not_before' ] = 'The :label field must not be a date lower than :datebefore.';
 
         return $output;
     }

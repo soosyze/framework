@@ -38,8 +38,8 @@ class Base64 extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'Le champ :label doit être encodé en base64.',
-            'not'  => 'Le champ :label ne doit pas être encodé en base64.'
+            'must' => 'The :label field must be encoded in base64.',
+            'not'  => 'The :label field must not be encoded in base64.'
         ];
     }
 }

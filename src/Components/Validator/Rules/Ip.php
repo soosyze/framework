@@ -51,8 +51,8 @@ class Ip extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'Le champ :label doit être une adresse :version valide.',
-            'not'  => 'Le champ :label ne doit pas être une adresse :version valide.'
+            'must' => 'The :label field must be a valid :version address.',
+            'not'  => 'The :label field must not be a valid :version address.'
         ];
     }
 }

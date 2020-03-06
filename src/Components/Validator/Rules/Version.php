@@ -54,8 +54,8 @@ class Version extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label ne correspond pas à une version valide.',
-            'not'  => 'La valeur de :label ne doit pas correspondre à une version valide.'
+            'must' => 'The :label field must be a valid semantic version.',
+            'not'  => 'The :label field must not be a valid semantic version.'
         ];
     }
 }

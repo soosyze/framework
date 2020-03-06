@@ -67,7 +67,7 @@ class Required extends Rule implements RuleInputsInterface
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label est requise.'
+            'must' => 'The :label field is required.'
         ];
     }
 }

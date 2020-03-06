@@ -39,8 +39,8 @@ class Between extends Size
     protected function messages()
     {
         $output           = parent::messages();
-        $output[ 'must' ] = 'La valeur de :label doit être comprise entre les valeurs :min et :max.';
-        $output[ 'not' ]  = 'La valeur de :label ne doit pas être comprise entre les valeurs :min et :max.';
+        $output[ 'must' ] = 'The :label field must be between :min and :max.';
+        $output[ 'not' ]  = 'The :label field must not be between :min and :max.';
 
         return $output;
     }

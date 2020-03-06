@@ -38,8 +38,8 @@ class Accepted extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label n\'est pas valide.',
-            'not'  => 'La valeur de :label ne doit pas être valide.'
+            'must' => 'The :label field must be accepted.',
+            'not'  => 'The :label field must not be accepted.'
         ];
     }
 }

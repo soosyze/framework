@@ -42,8 +42,8 @@ class Max extends Size
     protected function messages()
     {
         $output           = parent::messages();
-        $output[ 'must' ] = 'La valeur de :label doit être au maximum :max.';
-        $output[ 'not' ]  = 'La valeur de :label doit dépasser :max.';
+        $output[ 'must' ] = 'The :label field must not be greater than :max.';
+        $output[ 'not' ]  = 'The :label field must be greater than :max.';
 
         return $output;
     }

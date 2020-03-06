@@ -38,8 +38,8 @@ class Email extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label n\'est pas une adresse e-mail.',
-            'not'  => 'La valeur de :label est une adresse e-mail.'
+            'must' => 'The :label field must be a valid email address.',
+            'not'  => 'The :label field must not be a valid email address.'
         ];
     }
 }

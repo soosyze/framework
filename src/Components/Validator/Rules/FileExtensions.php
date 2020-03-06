@@ -49,8 +49,8 @@ class FileExtensions extends File
     protected function messages()
     {
         $output              = parent::messages();
-        $output[ 'ext' ]     = 'La valeur :label n\'est pas dans la liste des extensions autorisées : :list.';
-        $output[ 'not_ext' ] = 'La valeur de :label ne doit pas être dans la liste des extensions : :list.';
+        $output[ 'ext' ]     = 'The :label field must be a file of type :list.';
+        $output[ 'not_ext' ] = 'The :label field must not be a file of type :list.';
 
         return $output;
     }

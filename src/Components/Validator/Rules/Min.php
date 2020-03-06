@@ -42,8 +42,8 @@ class Min extends Size
     protected function messages()
     {
         $output           = parent::messages();
-        $output[ 'must' ] = 'La valeur de :label doit être au minimum :min.';
-        $output[ 'not' ]  = 'La valeur de :label ne doit pas dépasser :min.';
+        $output[ 'must' ] = 'The :label field must not be less than :min.';
+        $output[ 'not' ]  = 'The :label field must be less than :min.';
 
         return $output;
     }

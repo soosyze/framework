@@ -34,8 +34,8 @@ class AlphaNumText extends Regex
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label contient des caractères non alpha numérique et/ou non textuelle.',
-            'not'  => 'La valeur de :label ne doit pas contenir des caractères non alpha numérique et/ou non textuelle.'
+            'must' => 'The :label field must contain only letters, numbers and punctuation characters.',
+            'not'  => 'The :label field must not contain letters, numbers, and punctuation characters.'
         ];
     }
 }

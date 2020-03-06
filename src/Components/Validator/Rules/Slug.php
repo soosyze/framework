@@ -27,4 +27,12 @@ class Slug extends Regex
     {
         parent::test($key, $value, '/^[a-zA-Z0-9_-]*$/', $not);
     }
+    
+    protected function messages()
+    {
+        return [
+            'must'     => 'The :label field must contain only letters, numbers, dashes and anderscore.',
+            'not_must' => 'The :label field must not contain letters, numbers, dashes and anderscore.',
+        ];
+    }
 }

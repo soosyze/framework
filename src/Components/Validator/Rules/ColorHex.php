@@ -43,8 +43,8 @@ class ColorHex extends Regex
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label doit être une couleur :regex.',
-            'not'  => 'La valeur de :label ne doit pas correspondre à la règle de validation :regex.'
+            'must' => 'The :label field must be a color in hexadecimal format.',
+            'not'  => 'The :label field must not be a color in hexadecimal format.'
         ];
     }
 }

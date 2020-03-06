@@ -52,8 +52,8 @@ class DateBeforeOrEqual extends DateBefore
     protected function messages()
     {
         $output                 = parent::messages();
-        $output[ 'before' ]     = 'La date de :label doit être inférieur ou égale à :datebefore.';
-        $output[ 'not_before' ] = 'La date de :label ne doit pas être inferieur ou égale à :datebefore.';
+        $output[ 'before' ]     = 'The :label field must be less than or equal to :datebefore.';
+        $output[ 'not_before' ] = 'The :label field must not be a date less than or equal to :datebefore.';
 
         return $output;
     }

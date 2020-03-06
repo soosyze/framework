@@ -45,8 +45,8 @@ class DateFormat extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label n\'est pas au format de date :format.',
-            'not'  => 'La valeur de :label ne doit pas être du format de date :format.'
+            'must' => 'The :label field must be a date in the format :format.',
+            'not'  => 'The :label field must not be a date in the format :format.'
         ];
     }
 }

@@ -38,8 +38,8 @@ class Date extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label n\'est pas une date.',
-            'not'  => 'La valeur de :label ne doit pas être une date.'
+            'must' => 'The :label field must be a date.',
+            'not'  => 'The :label field must not be a date.'
         ];
     }
 }

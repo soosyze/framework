@@ -38,8 +38,8 @@ class NullValue extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label n\'est pas vide.',
-            'not'  => 'La valeur de :label ne doit pas être vide.'
+            'must' => 'The value of the :label field must be NULL.',
+            'not'  => 'The value of the :label field must not be NULL.'
         ];
     }
 }

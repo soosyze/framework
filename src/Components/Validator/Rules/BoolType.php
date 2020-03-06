@@ -57,8 +57,8 @@ class BoolType extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label n\'est pas un boolean.',
-            'not'  => 'La valeur de :label ne doit pas être un boolean.'
+            'must' => 'The value of the :label field must be a boolean.',
+            'not'  => 'The value of the :label field must not be a boolean.'
         ];
     }
 }

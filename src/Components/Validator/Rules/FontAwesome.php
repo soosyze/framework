@@ -50,9 +50,9 @@ class FontAwesome extends \Soosyze\Components\Validator\Rule
         $str     = implode('|', array_keys($stylesPattern));
         $pattern = "/fa($str)? fa-[a-z]+/";
         if (!preg_match($pattern, $value) && $not) {
-            $this->addReturn($key, 'must', [ ':use_fonts' => implode(',', $stylesPattern) ]);
+            $this->addReturn($key, 'must', [ ':list' => implode(',', $stylesPattern) ]);
         } elseif (preg_match($pattern, $value) && !$not) {
-            $this->addReturn($key, 'not', [ ':use_fonts' => implode(',', $stylesPattern) ]);
+            $this->addReturn($key, 'not', [ ':list' => implode(',', $stylesPattern) ]);
         }
     }
 
@@ -62,8 +62,8 @@ class FontAwesome extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label ne correspond pas aux styles de FontAwesome : :use_fonts.',
-            'not'  => 'La valeur de :label ne doit pas correspondre aux styles de FontAwesome : :use_fonts.'
+            'must' => 'The :label field must correspond to one of the following FontAwesome styles :list.',
+            'not'  => 'The :label field must not correspond to one of the following FontAwesome styles :list.'
         ];
     }
 }

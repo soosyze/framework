@@ -21,8 +21,8 @@ class ImageDimensionsHeight extends ImageDimensions
     protected function messages()
     {
         $output               = parent::messages();
-        $output[ 'must' ]     = 'La hauteur de l\'image :label doit être comprise entre les valeurs :minpx et :maxpx.';
-        $output[ 'not_must' ] = 'La hauteur de l\'image :label ne doit pas être comprise entre les valeurs :minpx et :maxpx.';
+        $output[ 'must' ]     = 'The height of the :label image must be between :minpx and :maxpx.';
+        $output[ 'not_must' ] = 'The height of the :label image must not be between :minpx and :maxpx.';
 
         return $output;
     }

@@ -38,8 +38,8 @@ class Instance extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'Le champ :label doit être une instance de :class.',
-            'not'  => 'Le champ :label ne doit pas être une instance de :class.',
+            'must' => 'The :label field must be an instance of :class.',
+            'not'  => 'The :label field must not be an instance of :class.',
         ];
     }
 }

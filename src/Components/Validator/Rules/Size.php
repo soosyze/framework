@@ -100,8 +100,8 @@ abstract class Size extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'size'         => 'La valeur :label doit être nombre entier, flottant, une chaine de caractère, un tableau, un fichier ou une ressource.',
-            'size_numeric' => 'La valeur :label doit être numérique.'
+            'size'         => 'The value of the :label field must be of integer, floating point, character string, array, file or resource type.',
+            'size_numeric' => 'The value of the :label field must be numeric.'
         ];
     }
 }

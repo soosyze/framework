@@ -38,8 +38,8 @@ class Url extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label n\'est pas une URL',
-            'not'  => 'La valeur de :label est une URL'
+            'must' => 'The :label field must be a valid URL.',
+            'not'  => 'The :label field must not be a valid URL.'
         ];
     }
 }

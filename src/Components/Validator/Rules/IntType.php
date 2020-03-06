@@ -43,8 +43,8 @@ class IntType extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label doit être un nombre entier.',
-            'not'  => 'La valeur de :label ne doit être un nombre entier.'
+            'must' => 'The value of the :label field must be an integer.',
+            'not'  => 'The value of the :label field must not be an integer.'
         ];
     }
 }

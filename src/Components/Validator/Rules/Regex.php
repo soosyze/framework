@@ -38,8 +38,8 @@ class Regex extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label ne correspond pas à la règle de validation :regex.',
-            'not'  => 'La valeur de :label ne doit pas correspondre à la règle de validation :regex.'
+            'must' => 'The :label field must correspond to the validation rule :regex',
+            'not'  => 'The :label field must not correspond to the validation rule :regex'
         ];
     }
 }

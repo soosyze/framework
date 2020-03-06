@@ -50,15 +50,15 @@ class File extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must'        => ':label n\'est pas un fichier.',
-            'not'         => ':label ne doit pas être un fichier.',
-            'ini_size'    => 'La taille du fichier téléchargé excède la valeur de upload_max_filesize, configurée dans le php.ini',
-            'form_size'   => 'La taille du fichier téléchargé excède la valeur de MAX_FILE_SIZE, qui a été spécifiée dans le formulaire HTML.',
-            'err_partial' => 'Le fichier n\'a été que partiellement téléchargé.',
-            'no_file'     => 'Aucun fichier n\'a été téléchargé.',
-            'no_tmp_dir'  => 'Un dossier temporaire est manquant.',
-            'cant_write'  => 'Échec de l\'écriture du fichier sur le disque.',
-            'extension'   => 'Une extension PHP a arrêté l\'envoi de fichier.'
+            'must'        => 'The :label field is not a file.',
+            'not'         => 'The :label field must not be a file.',
+            'ini_size'    => 'The uploaded file exceeds the upload_max_filesize directive in php.ini.',
+            'form_size'   => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.',
+            'err_partial' => 'The uploaded file was only partially uploaded.',
+            'no_file'     => 'No file was uploaded.',
+            'no_tmp_dir'  => 'Missing a temporary folder.',
+            'cant_write'  => 'Failed to write file to disk.',
+            'extension'   => 'A PHP extension stopped the file upload.'
         ];
     }
 

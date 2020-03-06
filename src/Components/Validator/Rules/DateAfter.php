@@ -60,8 +60,8 @@ class DateAfter extends Date
     protected function messages()
     {
         $output                = parent::messages();
-        $output[ 'after' ]     = 'La date de :label doit être supérieur à :dateafter.';
-        $output[ 'not_after' ] = 'La date de :label ne doit pas être supérieur à :dateafter.';
+        $output[ 'after' ]     = 'The :label field must be a date greater than :dateafter.';
+        $output[ 'not_after' ] = 'The :label field must not be a date greater than :dateafter.';
 
         return $output;
     }

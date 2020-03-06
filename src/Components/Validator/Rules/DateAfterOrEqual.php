@@ -52,8 +52,8 @@ class DateAfterOrEqual extends DateAfter
     protected function messages()
     {
         $output                = parent::messages();
-        $output[ 'after' ]     = 'La date de :label doit être supérieur ou égale à :dateafter.';
-        $output[ 'not_after' ] = 'La date de :label ne doit pas être supérieur ou égale à :dateafter.';
+        $output[ 'after' ]     = 'The :label field must be greater than or equal to :dateafter.';
+        $output[ 'not_after' ] = 'The :label field must not be a date greater than or equal to :dateafter.';
 
         return $output;
     }

@@ -38,8 +38,8 @@ class ClassExists extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'Le champ :label doit être une adresse :version valide.',
-            'not'  => 'Le champ :label ne doit pas être une adresse :version valide.'
+            'must' => 'The :label field must be an instantiable class.',
+            'not'  => 'The :label field must not be an instantiable class.'
         ];
     }
 }

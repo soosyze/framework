@@ -28,11 +28,14 @@ class NumericType extends \Soosyze\Components\Validator\Rule
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label doit être une valeur numérique.',
-            'not'  => 'La valeur de :label ne doit pas être une valeur numérique.'
+            'must' => 'The value of the :label field must be numeric.',
+            'not'  => 'The value of the :label field must not be numeric.'
         ];
     }
 }

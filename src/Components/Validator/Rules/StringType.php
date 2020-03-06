@@ -42,8 +42,8 @@ class StringType extends \Soosyze\Components\Validator\Rule
     protected function messages()
     {
         return [
-            'must' => 'La valeur de :label n\'est pas une chaine de caractères.',
-            'not'  => 'La valeur de :label ne doit pas être une chaine de caractères.'
+            'must' => 'The value of the :label field must be a character string.',
+            'not'  => 'The value of the :label field must not be a character string.'
         ];
     }
 }
