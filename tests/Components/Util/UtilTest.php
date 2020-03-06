@@ -242,9 +242,9 @@ class UtilTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('1 second', sprintf($second[ 0 ], $second[ 1 ]));
         $second = Util::strHumansTimeDiff(date_create('now -1 second'));
         $this->assertEquals('1 second ago', sprintf($second[ 0 ], $second[ 1 ]));
-        $second = Util::strHumansTimeDiff(date_create('now +2 second'));
-        $this->assertEquals('2 seconds', sprintf($second[ 0 ], $second[ 1 ]));
-        $second = Util::strHumansTimeDiff(date_create('now -2 second'));
-        $this->assertEquals('2 seconds ago', sprintf($second[ 0 ], $second[ 1 ]));
+        $second = Util::strHumansTimeDiff(date_create('now +3 second'));
+        $this->assertEquals('3 seconds', sprintf($second[ 0 ], $second[ 1 ]));
+        $second = Util::strHumansTimeDiff(date_create('now -3 second'));
+        $this->assertEquals('3 seconds ago', sprintf($second[ 0 ], $second[ 1 ]));
     }
 }
