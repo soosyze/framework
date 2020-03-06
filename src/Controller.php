@@ -50,8 +50,8 @@ class Controller
      *
      * @codeCoverageIgnore Fonction testé directement avec l'objet Container.
      *
-     * @param string $name Nom du service.
-     * @param array  $arg  Paramètres passés à la fonction.
+     * @param string $key Nom du service.
+     * @param array  $arg Paramètres passés à la fonction.
      *
      * @return object
      */

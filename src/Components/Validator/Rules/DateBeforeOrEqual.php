@@ -33,6 +33,7 @@ class DateBeforeOrEqual extends DateBefore
     /**
      * {@inheritdoc}
      *
+     * @param string $key   Clé du test.
      * @param string $value Date à tester.
      * @param string $arg   Date de comparaison.
      * @param bool   $not   Inverse le test.

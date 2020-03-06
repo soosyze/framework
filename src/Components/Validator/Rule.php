@@ -63,7 +63,12 @@ abstract class Rule
      * @var bool
      */
     private $propogation = false;
-    
+
+    /**
+     * Si la suite des tests doit être stoppée immédiatement (avant le retour d'erreur).
+     *
+     * @var bool
+     */
     private $immediatePropagation = false;
 
     /**
@@ -211,13 +216,16 @@ abstract class Rule
         $this->propogation = true;
     }
     
+    /**
+     * Stop les tests suivants immédiatement.
+     */
     public function stopImmediatePropagation()
     {
         $this->immediatePropagation = true;
     }
 
     /**
-     * Si les tests suivants doivent être stoppés.
+     * Si les tests suivants sont stoppés.
      *
      * @return bool
      */
@@ -226,6 +234,11 @@ abstract class Rule
         return $this->propogation;
     }
     
+    /**
+     * Si les tests suivants sont stoppés immédiatement.
+     *
+     * @return bool
+     */
     public function isStopImmediate()
     {
         return $this->immediatePropagation;
@@ -263,7 +276,7 @@ abstract class Rule
      *
      * @param string   $keyRule    Clé du test.
      * @param string   $keyMessage Identifiant du message à formater avec la valeur de test.
-     * @param string[] $value      Liste d'arguments de remplacements pour personnaliser le message.
+     * @param string[] $attributs  Liste d'arguments de remplacements pour personnaliser le message.
      */
     protected function addReturn($keyRule, $keyMessage, array $attributs = [])
     {
@@ -310,7 +323,14 @@ abstract class Rule
 
         return [ 'min' => $min, 'max' => $max ];
     }
-    
+
+    /**
+     * Personnaliser les attributs de retour.
+     *
+     * @param array $attributs
+     *
+     * @return array
+     */
     private function overrideAttributes(array $attributs)
     {
         $attributs += [ ':label' => $this->label ];

@@ -38,7 +38,7 @@ class Version extends \Soosyze\Components\Validator\Rule
      * @param string $arg   Argument de test.
      * @param bool   $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not = true)
+    protected function test($key, $value, $arg, $not)
     {
         $pattern = self::MAJOR . self::MINOR . self::PATH . self::PRE_DELIVERY . self::BUILD;
         if (!preg_match("/^$pattern$/", $value) && $not) {

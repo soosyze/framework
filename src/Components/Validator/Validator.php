@@ -192,6 +192,13 @@ class Validator
         return $this;
     }
 
+    /**
+     * Ajoute des attributs de retours personnalisés.
+     *
+     * @param array $attributs
+     *
+     * @return $this
+     */
     public function setAttributs(array $attributs)
     {
         $this->attributesCustom = $attributs;
@@ -494,9 +501,11 @@ class Validator
     }
 
     /**
-     * @param array $errors
-     * @param type  $strKey
-     * @param type  $rule
+     * Parcours les erreurs.
+     *
+     * @param array  $errors
+     * @param string $strKey
+     * @param bool   $rule
      *
      * @return array
      */
@@ -620,6 +629,14 @@ class Validator
         return (new $class)->hydrate($name, $key, $arg, $not);
     }
     
+    /**
+     * Valorise la règle du label, attributs, messages personnalisés.
+     *
+     * @param string $key
+     * @param Rule   $rule
+     *
+     * @return Rule
+     */
     protected function valoriseRule($key, Rule $rule)
     {
         $label = isset($this->labelCustom[ $key ])

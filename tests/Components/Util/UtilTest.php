@@ -68,7 +68,15 @@ class UtilTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetJsonExceptionExtension()
     {
-        Util::getJson(__DIR__ . '/UtilTest.php');
+        Util::getJson(__FILE__);
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testGetJsonExceptionGetContents()
+    {
+        Util::getJson(fopen('php://temp', '+r'));
     }
 
     public function testGetJson()
@@ -79,7 +87,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
 
     public function testGetFileExtension()
     {
-        $output = Util::getFileExtension(__DIR__ . '/UtilTest.php');
+        $output = Util::getFileExtension(__FILE__);
         $this->assertEquals('php', $output);
     }
 
@@ -116,7 +124,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
         $output = Util::cleanPath('\path//test\\file/');
         $this->assertEquals($output, '/path/test/file');
     }
-    
+
     public function testcleanDir()
     {
         $output = Util::cleanDir('\path//test\\file/');
@@ -158,7 +166,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
         $str = ' StœcHioméTRie-cHiMIE';
         $this->assertEquals('stoechiometrie-chimie', Util::strSlug($str));
     }
-    
+
     public function testStrFileSizeFormatted()
     {
         $this->assertEquals('1 Kb', Util::strFileSizeFormatted(1024));
@@ -170,59 +178,65 @@ class UtilTest extends \PHPUnit\Framework\TestCase
     public function testStrTimeDiffHumans()
     {
         /* YEARS */
-        $year   = Util::strHumansTimeDiff(date_create('now +1 year'));
+        $year   = Util::strHumansTimeDiff(date_create('now +1 year +1second'));
         $this->assertEquals('1 year', sprintf($year[ 0 ], $year[ 1 ]));
         $year   = Util::strHumansTimeDiff(date_create('now -1 year'));
         $this->assertEquals('1 year ago', sprintf($year[ 0 ], $year[ 1 ]));
-        $year   = Util::strHumansTimeDiff(date_create('now +2 year'));
+        $year   = Util::strHumansTimeDiff(date_create('now +2 year +1 second'));
         $this->assertEquals('2 years', sprintf($year[ 0 ], $year[ 1 ]));
         $year   = Util::strHumansTimeDiff(date_create('now -2 year'));
         $this->assertEquals('2 years ago', sprintf($year[ 0 ], $year[ 1 ]));
+        
         /* MONTH */
-        $month  = Util::strHumansTimeDiff(date_create('now +1 month'));
+        $month  = Util::strHumansTimeDiff(date_create('now +1 month +1 second'));
         $this->assertEquals('1 month', sprintf($month[ 0 ], $month[ 1 ]));
         $month  = Util::strHumansTimeDiff(date_create('now -1 month'));
         $this->assertEquals('1 month ago', sprintf($month[ 0 ], $month[ 1 ]));
-        $month  = Util::strHumansTimeDiff(date_create('now +2 month'));
+        $month  = Util::strHumansTimeDiff(date_create('now +2 month +1 second'));
         $this->assertEquals('2 months', sprintf($month[ 0 ], $month[ 1 ]));
         $month  = Util::strHumansTimeDiff(date_create('now -2 month'));
         $this->assertEquals('2 months ago', sprintf($month[ 0 ], $month[ 1 ]));
-        /* MONTH */
-        $week   = Util::strHumansTimeDiff(date_create('now +1 week'));
+        
+        /* WEEK */
+        $week   = Util::strHumansTimeDiff(date_create('now +1 week +1 second'));
         $this->assertEquals('1 week', sprintf($week[ 0 ], $week[ 1 ]));
         $week   = Util::strHumansTimeDiff(date_create('now -1 week'));
         $this->assertEquals('1 week ago', sprintf($week[ 0 ], $week[ 1 ]));
-        $week   = Util::strHumansTimeDiff(date_create('now +2 week'));
+        $week   = Util::strHumansTimeDiff(date_create('now +2 week +1 second'));
         $this->assertEquals('2 weeks', sprintf($week[ 0 ], $week[ 1 ]));
         $week   = Util::strHumansTimeDiff(date_create('now -2 week'));
         $this->assertEquals('2 weeks ago', sprintf($week[ 0 ], $week[ 1 ]));
+        
         /* DAY */
-        $day    = Util::strHumansTimeDiff(date_create('now +1 day'));
+        $day    = Util::strHumansTimeDiff(date_create('now +1 day +1 second'));
         $this->assertEquals('1 day', sprintf($day[ 0 ], $day[ 1 ]));
         $day    = Util::strHumansTimeDiff(date_create('now -1 day'));
         $this->assertEquals('1 day ago', sprintf($day[ 0 ], $day[ 1 ]));
-        $day    = Util::strHumansTimeDiff(date_create('now +2 day'));
+        $day    = Util::strHumansTimeDiff(date_create('now +2 day +1 second'));
         $this->assertEquals('2 days', sprintf($day[ 0 ], $day[ 1 ]));
         $day    = Util::strHumansTimeDiff(date_create('now -2 day'));
         $this->assertEquals('2 days ago', sprintf($day[ 0 ], $day[ 1 ]));
+        
         /* HOUR */
-        $hour   = Util::strHumansTimeDiff(date_create('now +1 hour'));
+        $hour   = Util::strHumansTimeDiff(date_create('now +1 hour +1 second'));
         $this->assertEquals('1 hour', sprintf($hour[ 0 ], $hour[ 1 ]));
         $hour   = Util::strHumansTimeDiff(date_create('now -1 hour'));
         $this->assertEquals('1 hour ago', sprintf($hour[ 0 ], $hour[ 1 ]));
-        $hour   = Util::strHumansTimeDiff(date_create('now +2 hour'));
+        $hour   = Util::strHumansTimeDiff(date_create('now +2 hour +1 second'));
         $this->assertEquals('2 hours', sprintf($hour[ 0 ], $hour[ 1 ]));
         $hour   = Util::strHumansTimeDiff(date_create('now -2 hour'));
         $this->assertEquals('2 hours ago', sprintf($hour[ 0 ], $hour[ 1 ]));
+        
         /* MINUTE */
-        $minute = Util::strHumansTimeDiff(date_create('now +1 minute'));
+        $minute = Util::strHumansTimeDiff(date_create('now +1 minute +1 second'));
         $this->assertEquals('1 minute', sprintf($minute[ 0 ], $minute[ 1 ]));
         $minute = Util::strHumansTimeDiff(date_create('now -1 minute'));
         $this->assertEquals('1 minute ago', sprintf($minute[ 0 ], $minute[ 1 ]));
-        $minute = Util::strHumansTimeDiff(date_create('now +2 minute'));
+        $minute = Util::strHumansTimeDiff(date_create('now +2 minute +1 second'));
         $this->assertEquals('2 minutes', sprintf($minute[ 0 ], $minute[ 1 ]));
         $minute = Util::strHumansTimeDiff(date_create('now -2 minute'));
         $this->assertEquals('2 minutes ago', sprintf($minute[ 0 ], $minute[ 1 ]));
+        
         /* SECONDE */
         $second = Util::strHumansTimeDiff(date_create('now +1 second'));
         $this->assertEquals('1 second', sprintf($second[ 0 ], $second[ 1 ]));

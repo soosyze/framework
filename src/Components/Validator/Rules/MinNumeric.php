@@ -8,8 +8,6 @@
 
 namespace Soosyze\Components\Validator\Rules;
 
-use Psr\Http\Message\UploadedFileInterface;
-
 /**
  * {@inheritdoc}
  *

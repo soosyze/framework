@@ -33,13 +33,13 @@ abstract class Size extends \Soosyze\Components\Validator\Rule
             return $size;
         }
         $str = strtolower($size);
-        if (preg_match('/^(\d+)(b|kb|mb|gb|tb|pb|eb|zb|yb)$/', $str, $matches)) {
+        if (preg_match('/^(\d+)(b|kb|mb|gb|tb|pb|eb|zb|yb)$/i', $str, $matches)) {
             $units = [
                 'b'  => 0, 'kb' => 1, 'mb' => 2,
                 'gb' => 3, 'tb' => 4, 'pb' => 5,
                 'eb' => 6, 'zb' => 7, 'yb' => 8
             ];
-            $power = $units[ $matches[ 2 ] ];
+            $power = $units[ strtolower($matches[ 2 ]) ];
 
             return pow(1024, $power) * $matches[ 1 ];
         }
@@ -52,8 +52,7 @@ abstract class Size extends \Soosyze\Components\Validator\Rule
      *
      * @param array|float|int|object|ressource|string|UploadedFileInterface $value Valeur à tester.
      *
-     * @throws \InvalidArgumentException La fonction max ne peut pas tester pas ce type de valeur.
-     * @return int|float                 Longueur.
+     * @return int|float Longueur.
      */
     protected function getSize($value)
     {
@@ -81,6 +80,13 @@ abstract class Size extends \Soosyze\Components\Validator\Rule
         return $size;
     }
 
+    /**
+     * Retourne la taille de la valeur.
+     *
+     * @param numeric $value Valeur à tester.
+     *
+     * @return int|float
+     */
     protected function getSizeNumeric($value)
     {
         $size = 0;

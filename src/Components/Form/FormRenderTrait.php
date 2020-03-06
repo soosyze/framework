@@ -108,15 +108,20 @@ trait FormRenderTrait
             : $item[ 'label' ];
         unset($item[ 'attr' ][ 'label' ]);
 
-        $html = '<label' . $this->renderAttrInput($item[ 'attr' ]) . '>' . $label;
+        $html = '';
         if (!empty($item[ 'attr' ][ 'data-tooltip' ])) {
             $html .= ' <i class="fa fa-info-circle"></i>';
         }
-        if (isset($item[ 'attr' ][ 'for' ]) && $this->isRequired($item[ 'attr' ][ 'for' ])) {
+        if (!empty($item[ 'attr' ][ 'required' ]) || (isset($item[ 'attr' ][ 'for' ]) && $this->isRequired($item[ 'attr' ][ 'for' ]))) {
             $html .= '<span class="form-required">*</span>';
         }
-
-        return $html . '</label>' . self::EOL;
+        
+        return sprintf(
+            '<label%s>%s%s</label>',
+            $this->renderAttrInput($item[ 'attr' ]),
+            $label,
+            $html
+        ) . self::EOL;
     }
 
     /**
@@ -129,10 +134,12 @@ trait FormRenderTrait
      */
     protected function renderInput($key, array $item)
     {
-        return '<input name="' . htmlspecialchars($key) . '" type="' . $item[ 'type' ] . '"'
-            . $this->renderAttrInput($item[ 'attr' ])
-            . '>' . self::EOL
-            . $this->renderFeedback($key);
+        return sprintf(
+            '<input name="%s" type="%s"%s>',
+            htmlspecialchars($key),
+            $item[ 'type' ],
+            $this->renderAttrInput($item[ 'attr' ])
+        ) . self::EOL . $this->renderFeedback($key);
     }
 
     /**
@@ -153,9 +160,13 @@ trait FormRenderTrait
             : $balise;
         unset($item[ 'attr' ][ 'balise' ]);
 
-        return '<' . $balise . $this->renderAttrInput($item[ 'attr' ]) . '>' . self::EOL
-            . $item[ 'form' ]->render()
-            . '</' . $balise . '>' . self::EOL;
+        return sprintf(
+            '<%s%s>%s</%s>',
+            $balise,
+            $this->renderAttrInput($item[ 'attr' ]),
+            self::EOL . $item[ 'form' ]->render(),
+            $balise
+        ) . self::EOL;
     }
 
     /**
@@ -173,10 +184,11 @@ trait FormRenderTrait
             : $item[ 'legend' ];
         unset($item[ 'attr' ][ 'legend' ]);
 
-        return '<legend' . $this->renderAttrInput($item[ 'attr' ]) . '>'
-            . htmlspecialchars($legend)
-            . '</legend>' . self::EOL
-            . $this->renderFeedback($key);
+        return sprintf(
+            '<legend%s>%s</legend>',
+            $this->renderAttrInput($item[ 'attr' ]),
+            htmlentities($legend)
+        ) . self::EOL . $this->renderFeedback($key);
     }
 
     /**
@@ -189,11 +201,12 @@ trait FormRenderTrait
      */
     protected function renderTextarea($key, array $item)
     {
-        return '<textarea name="' . htmlspecialchars($key) . '"'
-            . $this->renderAttrInput($item[ 'attr' ]) . '>'
-            . htmlentities($item[ 'content' ])
-            . '</textarea>' . self::EOL
-            . $this->renderFeedback($key);
+        return sprintf(
+            '<textarea name="%s"%s>%s</textarea>',
+            htmlspecialchars($key),
+            $this->renderAttrInput($item[ 'attr' ]),
+            htmlentities($item[ 'content' ])
+        ) . self::EOL . $this->renderFeedback($key);
     }
 
     /**
@@ -210,20 +223,26 @@ trait FormRenderTrait
             ? $item[ 'attr' ][ 'selected' ]
             : '';
         unset($item[ 'attr' ][ 'selected' ]);
-        $html   = '<select name="' . htmlspecialchars($key) . '"'
-            . $this->renderAttrInput($item[ 'attr' ])
-            . '>' . self::EOL;
+        $html   = '';
         foreach ($item[ 'options' ] as $option) {
             $selected = isset($option[ 'selected' ]) || ($select !== '' && $select === $option[ 'value' ])
                 ? 'selected'
                 : '';
 
-            $html .= '<option value="' . htmlspecialchars($option[ 'value' ]) . '" ' . $selected . '>'
-                . htmlspecialchars($option[ 'label' ])
-                . '</option>' . self::EOL;
+            $html .= sprintf(
+                '<option value="%s" %s>%s</option>',
+                htmlspecialchars($option[ 'value' ]),
+                $selected,
+                htmlentities($option[ 'label' ])
+            ) . self::EOL;
         }
 
-        return $html . '</select>' . self::EOL . $this->renderFeedback($key);
+        return sprintf(
+            '<select name="%s"%s>%s</select>',
+            htmlspecialchars($key),
+            $this->renderAttrInput($item[ 'attr' ]),
+            self::EOL . $html
+        ) . self::EOL . $this->renderFeedback($key);
     }
 
     /**
@@ -243,8 +262,7 @@ trait FormRenderTrait
 
         return str_replace(
             [ ':attr', ':_content' ],
-            [ $this->renderAttrInput($item[ 'attr' ]),
-                $content ],
+            [ $this->renderAttrInput($item[ 'attr' ]), $content ],
             $item[ 'html' ]
         ) . self::EOL;
     }

@@ -31,6 +31,13 @@ class ToBool extends \Soosyze\Components\Validator\Filter
             : $value;
     }
 
+    /**
+     * Si la variable est de type ou valeur boolean.
+     *
+     * @param mixed $var
+     *
+     * @return bool
+     */
     protected function isBool($var)
     {
         return filter_var($var, FILTER_VALIDATE_BOOLEAN) || filter_var($var, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null || $var === false || $var === '';

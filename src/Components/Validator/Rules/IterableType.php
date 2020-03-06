@@ -9,6 +9,13 @@
 namespace Soosyze\Components\Validator\Rules;
 
 if (!function_exists('is_iterable')) {
+    /**
+     * Détermine si le contenu de la variable est itérable pour les versions PHP5
+     *
+     * @param mixed $obj
+     *
+     * @return bool
+     */
     function is_iterable($obj)
     {
         return is_array($obj) || (is_object($obj) && ($obj instanceof \Traversable));
@@ -23,7 +30,7 @@ if (!function_exists('is_iterable')) {
 class IterableType extends \Soosyze\Components\Validator\Rule
 {
     /**
-     * Test si la valeur est de type array.
+     * Test si la valeur est itérable.
      *
      * @param string $key    Clé du test.
      * @param string $values Valeur à tester.

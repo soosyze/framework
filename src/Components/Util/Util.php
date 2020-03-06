@@ -93,22 +93,22 @@ class Util
             throw new \Exception('The JSON extension is not loaded.');
         }
         // @codeCoverageIgnoreEnd
+        if (!is_string($strFile)) {
+            throw new \Exception(
+                htmlspecialchars('The file is not readable.')
+            );
+        }
         if (!file_exists($strFile)) {
             throw new \InvalidArgumentException(
                 htmlspecialchars("The $strFile file is missing.")
             );
         }
-        if (strrchr($strFile, '.') != '.json') {
+        if (self::getFileExtension($strFile) !== 'json') {
             throw new \InvalidArgumentException(
                 htmlspecialchars("The $strFile is not in JSON format.")
             );
         }
-        if (($json = file_get_contents($strFile)) === null) {
-            throw new \Exception(
-                htmlspecialchars("The $strFile file is not readable.")
-            );
-        }
-        if (($return = json_decode($json, $assoc)) === null) {
+        if (($return = json_decode(file_get_contents($strFile), $assoc)) === null) {
             throw new \Exception(
                 htmlspecialchars("The JSON $strFile file is invalid.")
             );
@@ -372,7 +372,8 @@ class Util
      * @param \DateTime $from
      * @param string    $to
      *
-     * @return string
+     * @return array La première valeur est la chaine de caractère
+     *               et la seconde la valeur numérique à remplacer.
      */
     public static function strHumansTimeDiff(\DateTime $from, $to = 'now')
     {

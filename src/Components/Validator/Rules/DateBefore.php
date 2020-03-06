@@ -41,6 +41,7 @@ class DateBefore extends Date
     /**
      * Test si une date est antérieur à la date de comparaison.
      *
+     * @param string $key   Clé du test.
      * @param string $value Date à tester.
      * @param string $arg   Date de comparaison.
      * @param bool   $not   Inverse le test.
