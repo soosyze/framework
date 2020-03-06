@@ -93,29 +93,82 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
         $this->assertFalse($this->object->isValid());
         $this->assertEquals($this->object->getError('field'), [
-            'string' => 'La valeur de Text input n\'est pas une chaine de caractères.'
+            'string' => 'The value of the Text input field must be a character string.'
         ]);
     }
 
     public function testCustomMessage()
     {
-        Validator::setMessages([
+        $this->object
+            ->setInputs([
+                'field' => 'hello world !'
+            ])
+            ->setRules([
+                'field' => '!string'
+            ])
+            ->setMessages([
+                'field' => [
+                    'string' => [
+                        'not' => 'My message custom for :label !'
+                    ]
+                ]
+            ])
+            ->isValid();
+
+        $this->assertEquals($this->object->getError('field'), [
+            'string' => 'My message custom for field !'
+        ]);
+    }
+
+    public function testCustomMessageGlobal()
+    {
+        Validator::setMessagesGlobal([
             'string' => [
-                'not' => 'My message custom for :label !'
+                'not' => 'My message custom global for :label !'
             ]
         ]);
 
-        $this->object->setInputs([
-            'field' => 'hello world !'
-        ])->setRules([
-            'field' => '!string'
-        ]);
+        $this->object
+            ->setInputs([
+                'field' => 'hello world !'
+            ])
+            ->setRules([
+                'field' => '!string'
+            ])
+            ->isValid();
 
         $this->assertEquals($this->object->getError('field'), [
             'string' => 'My message custom global for field !'
         ]);
+    }
+    
+    public function testCustomAttributs()
+    {
+        $this->object
+            ->setInputs([
+                'field'   => 'MyValue',
+                'field_2' => 'OtherValue'
+            ])
+            ->setRules([
+                'field' => 'equal:@field_2'
+            ])
+            ->setAttributs([
+                'field' => [
+                    'equal' => [
+                        ':label' => function ($label) {
+                            return strtoupper($label);
+                        },
+                        ':value' => function ($value) {
+                            return 'field_2 : ' . $value;
+                        }
+                    ]
+                ]
+            ])
+            ->isValid();
 
-        $this->assertEquals($this->object->getError('field.string'), 'My message custom for field !');
+        $this->assertEquals($this->object->getError('field'), [
+            'equal' => 'The FIELD field must be equal to field_2 : OtherValue.'
+        ]);
     }
 
     public function testNoInput()

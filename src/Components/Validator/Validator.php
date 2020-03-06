@@ -129,12 +129,26 @@ class Validator
     protected static $testsCustom = [];
 
     /**
+     * Messages de retours personnalisés global.
+     *
+     * @var string[]
+     */
+    protected static $messagesCustomGlobal = [];
+
+    /**
      * Messages de retours personnalisés.
      *
      * @var string[]
      */
-    protected static $messagesCustom = [];
+    protected $messagesCustom = [];
 
+    /**
+     * Attributs des messages de retours personnalisés.
+     *
+     * @var array
+     */
+    protected $attributesCustom = [];
+    
     /**
      * Ajoute un test personnalisé.
      *
@@ -151,17 +165,38 @@ class Validator
     }
 
     /**
+     * Ajoute des messages globaux de retours personnalisés.
+     *
+     * @param string[] $messages
+     *
+     * @return $this
+     */
+    public static function setMessagesGlobal(array $messages)
+    {
+        self::$messagesCustomGlobal = $messages;
+
+        return new static;
+    }
+
+    /**
      * Ajoute des messages de retours personnalisés.
      *
      * @param string[] $messages
      *
      * @return $this
      */
-    public static function setMessages(array $messages)
+    public function setMessages(array $messages)
     {
-        self::$messagesCustom = $messages;
+        $this->messagesCustom = $messages;
 
-        return new static;
+        return $this;
+    }
+
+    public function setAttributs(array $attributs)
+    {
+        $this->attributesCustom = $attributs;
+
+        return $this;
     }
 
     /**
@@ -399,11 +434,22 @@ class Validator
     {
         $this->errors = [];
         foreach ($this->rules as $key => $tests) {
-            $rules = [];
             if (\is_string($tests)) {
+                $rules = [];
                 /* Construit les règles. */
                 foreach (explode('|', $tests) as $test) {
-                    $rules[] = $this->parseRules($key, $test);
+                    $rule    = $this->parseRules($key, $test);
+                    $rules[] = $this->valoriseRule($key, $rule);
+                }
+                $this->execute($key, $rules);
+            } elseif (\is_array($tests)) {
+                $rules = [];
+                /* Construit les règles. */
+                foreach ($tests as $rule) {
+                    if (is_string($rule)) {
+                        $rule    = $this->parseRules($key, $rule);
+                    }
+                    $rules[] = $this->valoriseRule($key, $rule);
                 }
                 $this->execute($key, $rules);
             } elseif ($tests instanceof Validator) {
@@ -487,13 +533,15 @@ class Validator
             if ($rule->isStopImmediate()) {
                 break;
             }
-            if ($rule->hasErrors()) {
-                if (!isset($this->errors[ $key ])) {
-                    $this->errors[ $key ] = [];
-                }
-                $this->errors[ $key ] += $rule->getErrors();
+            if (!$rule->hasErrors()) {
+                $this->inputs[ $key ] = $rule->getValue();
+
+                continue;
             }
-            $this->inputs[ $key ] = $rule->getValue();
+            if (!isset($this->errors[ $key ])) {
+                $this->errors[ $key ] = [];
+            }
+            $this->errors[ $key ] += $rule->getErrors();
             if ($rule->isStop()) {
                 break;
             }
@@ -515,45 +563,32 @@ class Validator
             ? $inputs[ $key ]
             : '';
     }
-
+    
     /**
-     * Retourne le nom de la règle à partir de sa composition complète.
+     * Retourne le nom, l'argument et la négation de la règle
      *
      * @param string $rule Règle compléte.
      *
-     * @return string Nom de la règle.
+     * @return array
      */
-    protected function getRuleName($rule)
+    protected function getInfosRule($rule)
     {
+        $exp  = explode(':', $rule, 2);
         /* Retire le caractère de négation de la fonction. */
-        $function = $rule[ 0 ] === '!'
-            ? substr($rule, 1)
-            : $rule;
+        $name = $exp[ 0 ][ 0 ] === '!'
+            ? substr($exp[ 0 ], 1)
+            : $exp[ 0 ];
+        $arg  = isset($exp[ 1 ])
+            ? $exp[ 1 ]
+            : false;
 
-        /* Sépare le nom de la fonction si elle a des arguments. */
-        if (($name = strstr($function, ':', true)) !== false) {
-            return strtolower($name);
-        }
-
-        return strtolower($function);
-    }
-
-    /**
-     * Retourne l'argument de la règle à partir de sa composition complète.
-     *
-     * @param string $rule Règle compléte.
-     *
-     * @return string Argument de la règle.
-     */
-    protected function getRuleArgs($rule)
-    {
         /* Si l'argument fait référence à un autre champ. */
-        if (($arg = substr(strstr($rule, ':'), 1)) !== false && isset($arg[ 0 ]) && $arg[ 0 ] === '@') {
+        if ($arg !== false && isset($arg[ 0 ]) && $arg[ 0 ] === '@') {
             $keyArg = substr($arg, 1);
             $arg    = $this->inputs[ $keyArg ];
         }
 
-        return $arg;
+        return [ strtolower($name), $arg, $rule[ 0 ] !== '!' ];
     }
 
     /**
@@ -566,8 +601,7 @@ class Validator
      */
     protected function parseRules($key, $strRule)
     {
-        $name = $this->getRuleName($strRule);
-        $arg  = $this->getRuleArgs($strRule);
+        list($name, $arg, $not) = $this->getInfosRule($strRule);
 
         if (isset(self::$testsCustom[ $name ])) {
             $class = self::$testsCustom[ $name ];
@@ -582,12 +616,25 @@ class Validator
         $label = isset($this->labelCustom[ $key ])
             ? $this->labelCustom[ $key ]
             : $key;
-        $rule  = (new $class)
-            ->hydrate($name, $key, $arg, $strRule[ 0 ] != '!')
-            ->setLabel($label);
 
-        if (isset(self::$messagesCustom[ $name ])) {
-            $rule->setMessages(self::$messagesCustom[ $name ]);
+        return (new $class)->hydrate($name, $key, $arg, $not);
+    }
+    
+    protected function valoriseRule($key, Rule $rule)
+    {
+        $label = isset($this->labelCustom[ $key ])
+            ? $this->labelCustom[ $key ]
+            : $key;
+
+        $name = $rule->setLabel($label)->getName();
+
+        if (isset($this->attributesCustom[ $key ][ $name ])) {
+            $rule->setAttributs($this->attributesCustom[ $key ][ $name ]);
+        }
+        if (isset($this->messagesCustom[ $key ][ $name ])) {
+            $rule->setMessages($this->messagesCustom[ $key ][ $name ]);
+        } elseif (isset(self::$messagesCustomGlobal[ $name ])) {
+            $rule->setMessages(self::$messagesCustomGlobal[ $name ]);
         }
         if ($rule instanceof RuleInputsInterface) {
             $rule->setInputs($this->inputs);

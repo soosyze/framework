@@ -40,7 +40,7 @@ class Token extends Size
             $arg = 900;
         }
         $intervale = $this->getComparator($arg);
-        $name      = $this->getKeyValue();
+        $name      = $this->getKey();
 
         if (!isset($_SESSION[ 'token' ][ $name ]) && !isset($_SESSION[ 'token_time' ][ $name ])) {
             $this->addReturn($key, 'error');

@@ -24,7 +24,7 @@ abstract class Filter extends Rule
      */
     public function execute($value)
     {
-        $this->value = $this->clean($this->keyRule, $value, $this->args);
+        $this->value = $this->clean($this->name, $value, $this->args);
     }
 
     /**

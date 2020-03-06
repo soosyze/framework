@@ -27,7 +27,7 @@ abstract class Rule
      *
      * @var string
      */
-    protected $keyRule = '';
+    protected $name = '';
 
     /**
      * Argument de test.
@@ -48,7 +48,7 @@ abstract class Rule
      *
      * @var string
      */
-    private $keyValue = '';
+    private $key = '';
 
     /**
      * Le label du champ.
@@ -81,6 +81,13 @@ abstract class Rule
     private $messages = [];
 
     /**
+     * Attributs des messages de retours personnalisés.
+     *
+     * @var array
+     */
+    private $attributes = [];
+
+    /**
      * Exécute le test de validation.
      *
      * @param string $keyRule  Clé du test.
@@ -92,8 +99,8 @@ abstract class Rule
      */
     public function hydrate($keyRule, $keyValue, $arg, $not = true)
     {
-        $this->keyRule  = $keyRule;
-        $this->keyValue = $keyValue;
+        $this->name  = $keyRule;
+        $this->key = $keyValue;
         $this->args     = $arg;
         $this->not      = $not;
 
@@ -135,6 +142,20 @@ abstract class Rule
     }
 
     /**
+     * Modifie les attributs des messages d'erreur.
+     *
+     * @param array $attributs
+     *
+     * @return $this
+     */
+    public function setAttributs(array $attributs)
+    {
+        $this->attributes = $attributs;
+
+        return $this;
+    }
+
+    /**
      * Ajoute un label au champ.
      *
      * @param string $label
@@ -159,7 +180,7 @@ abstract class Rule
     {
         $this->errors = [];
         $this->value  = $value;
-        $this->test($this->keyRule, $this->value, $this->args, $this->not);
+        $this->test($this->name, $this->value, $this->args, $this->not);
 
         return $this;
     }
@@ -169,9 +190,17 @@ abstract class Rule
      *
      * @return string
      */
-    public function getKeyValue()
+    public function getKey()
     {
-        return $this->keyValue;
+        return $this->key;
+    }
+
+    /**
+     * Retourne le nom du test.
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**
@@ -236,9 +265,9 @@ abstract class Rule
      * @param string   $keyMessage Identifiant du message à formater avec la valeur de test.
      * @param string[] $value      Liste d'arguments de remplacements pour personnaliser le message.
      */
-    protected function addReturn($keyRule, $keyMessage, array $value = [])
+    protected function addReturn($keyRule, $keyMessage, array $attributs = [])
     {
-        $args           = array_merge([ ':label' => $this->label ], $value);
+        $args           = $this->overrideAttributes($attributs);
         $argsKey        = array_keys($args);
         $this->messages += $this->messages();
 
@@ -280,5 +309,17 @@ abstract class Rule
         }
 
         return [ 'min' => $min, 'max' => $max ];
+    }
+    
+    private function overrideAttributes(array $attributs)
+    {
+        $attributs += [ ':label' => $this->label ];
+        foreach ($attributs as $key => $value) {
+            if (isset($this->attributes[$key])) {
+                $attributs[$key] = call_user_func_array($this->attributes[$key], [$value]);
+            }
+        }
+
+        return $attributs;
     }
 }
