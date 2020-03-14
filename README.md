@@ -36,11 +36,11 @@ Soosyze Framework est un micro-framework MVC object offrant un socle solide de d
 
 ## Version PHP
 
-| Version PHP           | SoosyzeFramework 1.x |
-|-----------------------|----------------------|
-| <= 5.3                | ✗ Non supporté       |
-| 5.4 / 5.5 / 5.6       | ✓ Supporté           |
-| 7.0 / 7.1 / 7.2 / 7.3 | ✓ Supporté           |
+| Version PHP                 | SoosyzeFramework 1.x |
+|-----------------------------|----------------------|
+| <= 5.3                      | ✗ Non supporté       |
+| 5.4 / 5.5 / 5.6             | ✓ Supporté           |
+| 7.0 / 7.1 / 7.2 / 7.3 / 7.4 | ✓ Supporté           |
 
 ## Extensions
 
