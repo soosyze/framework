@@ -310,6 +310,22 @@ class FormGroupBuilder
     }
 
     /**
+     * Enregistre une datetime.
+     *
+     * @param string     $name    Clé unique.
+     * @param array|null $attr    Liste d'attributs.
+     *
+     * @return $this
+     */
+    public function datetime($name, array $attr = []) {
+        $basic = array_merge([ 'id' => $name ], $attr);
+
+        return $this->input($name, [
+            'type' => 'datetime-local', 'attr' => $basic
+        ]);
+    }
+ 
+    /**
      * Enregistre une liste de sélection.
      *
      * @param string $name    Clé unique.
