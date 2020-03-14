@@ -122,11 +122,18 @@ class Validator
     protected $labelCustom = [];
 
     /**
+     * Tests globaux personnalisés par l'utilisateur.
+     *
+     * @var Rule[]
+     */
+    protected static $testsCustomGlobal = [];
+
+    /**
      * Tests personnalisés par l'utilisateur.
      *
      * @var Rule[]
      */
-    protected static $testsCustom = [];
+    protected $testsCustom = [];
 
     /**
      * Messages de retours personnalisés global.
@@ -150,6 +157,21 @@ class Validator
     protected $attributesCustom = [];
     
     /**
+     * Ajoute un test global personnalisé.
+     *
+     * @param string $key  Clé du test.
+     * @param Rule   $rule Function de test.
+     *
+     * @return $this
+     */
+    public static function addTestGlobal($key, $rule)
+    {
+        self::$testsCustomGlobal[ $key ] = $rule;
+
+        return new static;
+    }
+
+    /**
      * Ajoute un test personnalisé.
      *
      * @param string $key  Clé du test.
@@ -159,9 +181,9 @@ class Validator
      */
     public static function addTest($key, $rule)
     {
-        self::$testsCustom[ $key ] = $rule;
+        $this->testsCustom[ $key ] = $rule;
 
-        return new static;
+        return $this;
     }
 
     /**
@@ -612,8 +634,10 @@ class Validator
     {
         list($name, $arg, $not) = $this->getInfosRule($strRule);
 
-        if (isset(self::$testsCustom[ $name ])) {
-            $class = self::$testsCustom[ $name ];
+        if (isset($this->testsCustom[ $name ])) {
+            $class = $this->testsCustom[ $name ];
+        } elseif (isset(self::$testsCustomGlobal[ $name ])) {
+            $class = self::$testsCustomGlobal[ $name ];
         } elseif (isset($this->tests[ $name ])) {
             $class = __NAMESPACE__ . '\\' . $this->tests[ $name ];
         } else {

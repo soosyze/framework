@@ -40,8 +40,8 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
     public function testCustomTest()
     {
-        Validator::addTest('cube', '\Soosyze\Tests\Components\Validator\Cube');
-        Validator::addTest('double', '\Soosyze\Tests\Components\Validator\DoubleR');
+        Validator::addTestGlobal('cube', '\Soosyze\Tests\Components\Validator\Cube');
+        Validator::addTestGlobal('double', '\Soosyze\Tests\Components\Validator\DoubleR');
         $this->object->setInputs([
             'custom_cube'      => 4,
             'custom_not_cube'  => 2,
@@ -59,7 +59,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
     public function testCustomTestReturn()
     {
-        Validator::addTest('cube', new Cube());
+        Validator::addTestGlobal('cube', new Cube());
         $this->object->setInputs([
             'custom_cube'     => 5,
             'custom_not_cube' => 4
