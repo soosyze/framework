@@ -11,10 +11,6 @@ namespace Soosyze\Components\Validator\Rules;
 /**
  * {@inheritdoc}
  *
- * @see https://github.com/semver/semver/blob/master/semver.md
- * @see https://semver.org/lang/fr/
- * @license Creative Commons - CC BY 3.0
- *
  * @author Mathieu NOËL <mathieu@soosyze.com>
  */
 class Timezone extends \Soosyze\Components\Validator\Rule

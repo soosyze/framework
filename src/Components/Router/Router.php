@@ -70,6 +70,7 @@ class Router
         /* Rempli un array des paramètres de l'Uri. */
         $query  = $this->parseQueryFromRequest($request, $key_query);
         $routes = Route::getRouteByMethode($request->getMethod());
+
         foreach ($routes as $route) {
             if (!empty($route[ 'with' ])) {
                 $path = $this->getRegexForPath($route[ 'path' ], $route[ 'with' ]);

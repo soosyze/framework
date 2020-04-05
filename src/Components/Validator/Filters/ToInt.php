@@ -29,6 +29,5 @@ class ToInt extends \Soosyze\Components\Validator\Filter
         return is_int(filter_var($value, FILTER_VALIDATE_INT))
             ? filter_var($value, FILTER_VALIDATE_INT)
             : $value;
-        //var_dump(is_int($o));
     }
 }
