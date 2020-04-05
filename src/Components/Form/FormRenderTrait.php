@@ -114,6 +114,7 @@ trait FormRenderTrait
         }
         if (!empty($item[ 'attr' ][ 'required' ]) || (isset($item[ 'attr' ][ 'for' ]) && $this->isRequired($item[ 'attr' ][ 'for' ]))) {
             $html .= '<span class="form-required">*</span>';
+            unset($item[ 'attr' ][ 'required' ]);
         }
         
         return sprintf(
