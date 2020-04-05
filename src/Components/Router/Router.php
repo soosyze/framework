@@ -291,6 +291,11 @@ class Router
             ? $this->currentRequest->getUri()
             : $request->getUri();
 
+        if ($this->isRewrite()) {
+            return $uri->getPath() === '/'
+                ? '/'
+                : ltrim($uri->getPath(), '/');
+        }
         /* Rempli un array des paramètres de l'Uri. */
         parse_str($uri->getQuery(), $parseQuery);
 
