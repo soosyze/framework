@@ -10,8 +10,6 @@ class RequiredWithoutAllTest extends Rule
             'field_1' => 1,
             'field_2' => 1
         ])->setRules([
-            'field_1'  => 'int',
-            'field_2'  => 'int',
             'required' => 'required_without_all:field_1,field_2'
         ]);
 
@@ -21,8 +19,6 @@ class RequiredWithoutAllTest extends Rule
             'field_1' => '',
             'field_2' => 1
         ])->setRules([
-            'field_1'  => '!required',
-            'field_2'  => 'int',
             'required' => 'required_without_all:field_1,field_2'
         ]);
 
@@ -32,24 +28,44 @@ class RequiredWithoutAllTest extends Rule
             'field_1' => '',
             'field_2' => ''
         ])->setRules([
-            'field_1'  => '!required',
-            'field_2'  => '!required',
             'required' => 'required_without_all:field_1,field_2'
+        ]);
+
+        $this->assertFalse($this->object->isValid());
+        $this->assertCount(1, $this->object->getErrors());
+    }
+
+    public function testRequiredWithoutAllIntegration()
+    {
+        $this->object->setInputs([
+            'field_1'  => '',
+            'field_2'  => ''
+        ])->setRules([
+            'required' => '!required_without_all:field_1,field_2|int'
+        ]);
+
+        $this->assertTrue($this->object->isValid());
+
+        $this->object->setInputs([
+            'field_1'  => 1,
+            'field_2'  => ''
+        ])->setRules([
+            'required' => '!required_without_all:field_1,field_2|int'
         ]);
 
         $this->assertFalse($this->object->isValid());
         $this->assertCount(1, $this->object->getErrors());
 
         $this->object->setInputs([
-            'field_1' => '',
-            'field_2' => ''
+            'field_1'  => 1,
+            'field_2'  => 1,
+            'required' => 1
         ])->setRules([
-            'field_1'  => '!required',
-            'field_2'  => '!required',
-            'required' => '!required_without_all:field_1,field_2'
+            'required' => 'required_without_all:field_1,field_2|!int'
         ]);
 
-        $this->assertTrue($this->object->isValid());
+        $this->assertFalse($this->object->isValid());
+        $this->assertCount(1, $this->object->getErrors());
     }
 
     /**

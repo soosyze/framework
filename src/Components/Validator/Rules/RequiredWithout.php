@@ -25,9 +25,8 @@ class RequiredWithout extends Required
      */
     protected function test($key, $value, $arg, $not)
     {
-        parent::test($key, $value, $arg, $not);
-        if (!$this->isStopImmediate() && !$this->isOneVoidValue()) {
-            $this->stopImmediatePropagation();
+        if ($this->isOneVoidValue()) {
+            parent::test($key, $value, $arg, $not);
         }
     }
 

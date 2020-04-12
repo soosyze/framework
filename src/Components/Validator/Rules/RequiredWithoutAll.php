@@ -25,9 +25,8 @@ class RequiredWithoutAll extends Required
      */
     protected function test($key, $value, $arg, $not)
     {
-        parent::test($key, $value, $arg, $not);
-        if (!$this->isStopImmediate() && !$this->isAllVoidValue()) {
-            $this->stopImmediatePropagation();
+        if ($this->isAllVoidValue()) {
+            parent::test($key, $value, $arg, $not);
         }
     }
 

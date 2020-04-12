@@ -25,9 +25,8 @@ class RequiredWith extends Required
      */
     protected function test($key, $value, $arg, $not)
     {
-        parent::test($key, $value, $arg, $not);
-        if (!$this->isStopImmediate() && !$this->isOneValue()) {
-            $this->stopImmediatePropagation();
+        if ($this->isOneValue()) {
+            parent::test($key, $value, $arg, $not);
         }
     }
 
