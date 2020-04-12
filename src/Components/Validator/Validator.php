@@ -471,16 +471,6 @@ class Validator
                     $rules[] = $this->valoriseRule($key, $rule);
                 }
                 $this->execute($key, $rules);
-            } elseif (\is_array($tests)) {
-                $rules = [];
-                /* Construit les règles. */
-                foreach ($tests as $rule) {
-                    if (is_string($rule)) {
-                        $rule    = $this->parseRules($key, $rule);
-                    }
-                    $rules[] = $this->valoriseRule($key, $rule);
-                }
-                $this->execute($key, $rules);
             } elseif ($tests instanceof Validator) {
                 $tests->inputs = $this->inputs[ $key ];
                 if (!$tests->isValid()) {
