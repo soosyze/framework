@@ -56,8 +56,10 @@ class Required extends Rule implements RuleInputsInterface
             }
         }
 
-        if ($this->hasErrors() && !$not) {
-            $this->stopImmediatePropagation();
+        if ($this->hasErrors()) {
+            $not
+                ? $this->stopPropagation()
+                : $this->stopImmediatePropagation();
         }
     }
 

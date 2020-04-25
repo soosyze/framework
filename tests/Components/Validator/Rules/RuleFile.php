@@ -54,10 +54,6 @@ class RuleFile extends \PHPUnit\Framework\TestCase
      */
     protected $uplaod_error;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
     protected function setUp()
     {
         $this->object = new Validator;
@@ -95,10 +91,6 @@ class RuleFile extends \PHPUnit\Framework\TestCase
         $this->uplaod_error = new UploadedFile($this->file_error, 'test.gif', 1, 'error/mine');
     }
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
     protected function tearDown()
     {
         /* Supprime le fichier du test */
