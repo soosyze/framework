@@ -338,13 +338,13 @@ class Util
      *
      * @return string
      */
-    public static function strSlug($str, $separator = '_')
+    public static function strSlug($str, $separator = '_', $ignore = '')
     {
         $output = mb_strtolower($str, 'UTF-8');
         $output = str_replace(self::$search, self::$replace, $output);
-        $output = preg_replace('/([^\w-]+)/i', $separator, $output);
+        $output = preg_replace('/([^\w' . $ignore . ']|_)+/i', $separator, $output);
 
-        return trim($output, $separator . '-');
+        return trim($output, $separator);
     }
 
     /**
