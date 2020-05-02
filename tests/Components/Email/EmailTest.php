@@ -39,7 +39,7 @@ class EmailTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($this->object->getHeaders(), [
             'mime-version'              => [ '1.0' ],
             'x-priority'                => [ '3' ],
-            'content-type'              => [ 'text/plain; charset="iso-8859-1"' ]
+            'content-type'              => [ 'text/plain; charset=UTF-8; format=flowed; delsp=yes' ]
         ]);
     }
 
@@ -58,7 +58,7 @@ class EmailTest extends \PHPUnit\Framework\TestCase
         $eof     = "\r\n";
         $headers = 'mime-version: 1.0' . $eof
             . 'x-priority: 3' . $eof
-            . 'content-type: text/plain; charset="iso-8859-1"' . $eof;
+            . 'content-type: text/plain; charset=UTF-8; format=flowed; delsp=yes' . $eof;
 
         $this->assertEquals($headers, $this->object->parseHeaders());
     }
@@ -123,7 +123,7 @@ class EmailTest extends \PHPUnit\Framework\TestCase
     public function testIsHtml()
     {
         $this->object->isHtml();
-        $this->assertEquals([ 'text/html; charset="iso-8859-1"' ], $this->object->getHeader('content-type'));
+        $this->assertEquals([ 'text/html; charset=UTF-8; format=flowed; delsp=yes' ], $this->object->getHeader('content-type'));
     }
 
     protected static function callMethod($obj, $name, array $args = [])

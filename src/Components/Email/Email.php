@@ -157,8 +157,8 @@ class Email
         $key = 'content-type';
 
         return $bool
-            ? $this->withHeader($key, 'text/html; charset="utf-8"')
-            : $this->withHeader($key, 'text/plain; charset="utf-8"');
+            ? $this->withHeader($key, 'text/html; charset=UTF-8; format=flowed; delsp=yes')
+            : $this->withHeader($key, 'text/plain; charset=UTF-8; format=flowed; delsp=yes');
     }
 
     /**
