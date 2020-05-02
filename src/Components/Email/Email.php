@@ -39,7 +39,7 @@ class Email
         /* Priorité de 1(du plus important) à 5 */
         'x-priority'   => [ '3' ],
         /* Type de données attendue par le webmail */
-        'content-type' => [ 'text/plain; charset="iso-8859-1"' ]
+        'content-type' => [ 'text/plain; charset=UTF-8; format=flowed; delsp=yes' ]
     ];
 
     /**
@@ -126,7 +126,7 @@ class Email
      */
     public function subject($subj)
     {
-        $this->subject = mb_convert_encoding($subj, 'ASCII');
+        $this->subject = mb_convert_encoding($subj, 'UTF-8');
 
         return $this;
     }
@@ -140,7 +140,7 @@ class Email
      */
     public function message($msg)
     {
-        $this->message = mb_convert_encoding($msg, 'ASCII');
+        $this->message = mb_convert_encoding($msg, 'UTF-8');
 
         return $this;
     }
@@ -157,8 +157,8 @@ class Email
         $key = 'content-type';
 
         return $bool
-            ? $this->withHeader($key, 'text/html; charset="iso-8859-1"')
-            : $this->withHeader($key, 'text/plain; charset="iso-8859-1"');
+            ? $this->withHeader($key, 'text/html; charset="utf-8"')
+            : $this->withHeader($key, 'text/plain; charset="utf-8"');
     }
 
     /**
