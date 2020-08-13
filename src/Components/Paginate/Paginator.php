@@ -160,7 +160,7 @@ class Paginator
      */
     public function render()
     {
-        $out = '<ul class="pagination">' . PHP_EOL;
+        $out = '';
         if ($url = $this->getPreviousUrl()) {
             $out .= "<li><a href=\"{$url}\">&laquo;</a></li>" . PHP_EOL;
         }
@@ -175,7 +175,9 @@ class Paginator
             $out .= "<li><a href=\"{$url}\"> &raquo;</a></li>" . PHP_EOL;
         }
 
-        return $out . '</ul>' . PHP_EOL;
+        return $out
+            ? '<ul class="pagination">' . PHP_EOL . $out . '</ul>' . PHP_EOL
+            : '';
     }
 
     /**
