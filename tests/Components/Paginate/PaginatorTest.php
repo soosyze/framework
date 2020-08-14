@@ -25,9 +25,7 @@ class PaginatorTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($paginator1, $html);
         
         $paginator2 = new Paginator(10, 0, 1, 'page/:id');
-        $html      = '<ul class="pagination">' . PHP_EOL;
-        $html      .= '</ul>' . PHP_EOL;
-        $this->assertEquals($paginator2, $html);
+        $this->assertEquals($paginator2, '');
     }
 
     public function testPaginatorMultiple()
