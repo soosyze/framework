@@ -367,6 +367,55 @@ class Util
     }
 
     /**
+     * Retourne le nombre d'octet à partir du format de données utilisé par le fichier php.ini
+     * Exemple, pour la chaine '1M' il sera retourné 1048576.
+     *
+     * @param string $shortBytes
+     *
+     * @return int
+     */
+    public static function getOctetShortBytesPhp($shortBytes)
+    {
+        $unit = null;
+        if (preg_match('/(?P<unit>k|m|g)+$/i', trim($shortBytes), $matches) !== false) {
+            $unit = isset($matches[ 'unit' ])
+                ? strtolower($matches[ 'unit' ])
+                : null;
+        }
+
+        if (preg_match('/^(?P<value>\d+)+/i', trim($shortBytes), $matches) !== false) {
+            if (!isset($matches[ 'value' ])) {
+                return null;
+            }
+            $value = (int) $matches[ 'value' ];
+        }
+
+        switch ($unit) {
+            case 'k':
+                return $value * 1024;
+            case 'm':
+                return $value * 1048576;
+            case 'g':
+                return $value * 1073741824;
+            default:
+                return $value;
+        }
+    }
+    /**
+     * Retourne la quantité de données maximum à l'upload autorisé par votre configuration.
+     *
+     * @return int
+     */
+    public static function getOctetUploadLimit()
+    {
+        $max_upload   = self::getOctetShortBytesPhp(ini_get('upload_max_filesize'));
+        $max_post     = self::getOctetShortBytesPhp(ini_get('post_max_size'));
+        $memory_limit = self::getOctetShortBytesPhp(ini_get('memory_limit')); // -1 no limit
+
+        return min($max_upload, $max_post, $memory_limit);
+    }
+
+    /**
      * Différence entre 2 dates dans un format lisible par l'homme.
      *
      * @param \DateTime $from

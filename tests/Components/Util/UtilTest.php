@@ -177,7 +177,27 @@ class UtilTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('2.43 Kb', Util::strFileSizeFormatted(2487));
         $this->assertEquals('2.429 Kb', Util::strFileSizeFormatted(2487, 3));
     }
-
+    
+    public function testGetOctetShortBytesPhp()
+    {
+        $this->assertEquals(0, Util::getOctetShortBytesPhp(0));
+        $this->assertEquals(1, Util::getOctetShortBytesPhp('1 k b'));
+        $this->assertEquals(1024, Util::getOctetShortBytesPhp('1 m k'));
+        $this->assertEquals(1024, Util::getOctetShortBytesPhp('1 rqgJdsg5k'));
+        $this->assertEquals(1024, Util::getOctetShortBytesPhp('1 kk'));
+        $this->assertEquals(1024, Util::getOctetShortBytesPhp(1024));
+        $this->assertEquals(1024, Util::getOctetShortBytesPhp('1K'));
+        $this->assertEquals(1048576, Util::getOctetShortBytesPhp('1M'));
+        $this->assertEquals(1073741824, Util::getOctetShortBytesPhp('1G'));
+        $this->assertEquals(null, Util::getOctetShortBytesPhp('G'));
+        $this->assertEquals(null, Util::getOctetShortBytesPhp('G1'));
+        $this->assertEquals(null, Util::getOctetShortBytesPhp('G1k'));
+        $this->assertEquals(null, Util::getOctetShortBytesPhp('-1'));
+        $this->assertEquals(null, Util::getOctetShortBytesPhp(-1));
+        $this->assertEquals(1, Util::getOctetShortBytesPhp(1.5));
+        $this->assertEquals(15, Util::getOctetShortBytesPhp(15.875));
+    }
+    
     public function testStrTimeDiffHumans()
     {
         /* YEARS */
