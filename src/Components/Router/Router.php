@@ -146,20 +146,18 @@ class Router
     }
 
     /**
-     * Recherche une route à partir de son nom.
+     * Retourne un chemin à partir du nom d'une route.
      *
-     * @param string $name      Nom de la route.
-     * @param array  $params    Variables requises par la route.
-     * @param bool   $strict    Autorise la construction de routes partielles.
-     * @param type   $key_query Le préfixe de la route.
+     * @param string $name   Nom de la route.
+     * @param array  $params Variables requises par la route.
+     * @param bool   $strict Autorise la construction de routes partielles.
      *
      * @return string
      */
-    public function getRoute(
+    public function getPath(
         $name,
         array $params = null,
-        $strict = true,
-        $key_query = 'q'
+        $strict = true
     ) {
         if (($route = Route::getRoute($name)) === null) {
             throw new Exception\RouteNotFoundException('The path does not exist.');
@@ -181,11 +179,56 @@ class Router
             }
             $path = str_replace($key, $params[ $key ], $path);
         }
+
+        return $path;
+    }
+
+    /**
+     * Retourne une route à partir de son nom.
+     *
+     * @param string $name      Nom de la route.
+     * @param array  $params    Variables requises par la route.
+     * @param bool   $strict    Autorise la construction de routes partielles.
+     * @param type   $key_query Le préfixe de la route.
+     *
+     * @return string
+     */
+    public function getRoute(
+        $name,
+        array $params = null,
+        $strict = true,
+        $key_query = 'q'
+    ) {
         $prefix = !$this->isRewrite()
             ? "?$key_query="
             : '';
 
-        return $this->basePath . $prefix . $path;
+        return $this->basePath . $prefix . $this->getPath($name, $params, $strict);
+    }
+
+    /**
+     * Retourne une instance de RequestInterface à partir du nom d'une route.
+     *
+     * @param string $name      Nom de la route.
+     * @param array  $params    Variables requises par la route.
+     * @param bool   $strict    Autorise la construction de routes partielles.
+     * @param type   $key_query Le préfixe de la route.
+     *
+     * @return RequestInterface
+     */
+    public function getRequestByRoute(
+        $name,
+        array $params = null,
+        $strict = true,
+        $key_query = 'q'
+    ) {
+        $path = $this->getPath($name, $params, $strict);
+
+        return $this->currentRequest->withUri(
+            $this->isRewrite()
+                ? $this->currentRequest->getUri()->withPath($path)
+                : $this->currentRequest->getUri()->withQuery("?$key_query=$path")
+        );
     }
 
     /**

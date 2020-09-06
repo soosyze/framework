@@ -171,6 +171,29 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($result, 'http://test.com/?q=/');
     }
 
+    public function testGetRequestByRoute()
+    {
+        $uri     = Uri::create('http://test.com/?q=test');
+        $request = new Request('GET', $uri);
+
+        $this->object->setRequest($request)->setBasePath('http://test.com/');
+        $result = $this->object->getRequestByRoute('test.index');
+
+        $this->assertEquals((string) $result->getUri(), 'http://test.com/?q=/');
+        
+        /* Rewrite */
+        $uriRewrite     = Uri::create('http://test.com/test');
+        $requestRewrite = new Request('GET', $uriRewrite);
+
+        $this->object
+            ->setConfig([ 'settings.rewrite_engine' => true ])
+            ->setBasePath('http://test.com/')
+            ->setRequest($requestRewrite);
+        $resultRewrite = $this->object->getRequestByRoute('test.index');
+
+        $this->assertEquals((string) $resultRewrite->getUri(), 'http://test.com/');
+    }
+
     public function testGetRouteStrictParam()
     {
         $uri     = Uri::create('http://test.com/?q=test');
