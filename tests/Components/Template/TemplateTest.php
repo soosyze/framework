@@ -137,7 +137,7 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
     {
         /* Override PATH */
         $page = new Template('testBlock.php', $this->pathTemplate);
-        $page->pathOverride($this->pathTemplate . 'theme/');
+        $page->addPathOverride($this->pathTemplate . 'theme/');
         $this->object->addVar('attr', 'Test')
             ->addBlock('page', $page)
             ->addBlock('title');
@@ -146,7 +146,7 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
 
         /* Override NAME */
         $page = new Template('testBlock.php', $this->pathTemplate);
-        $page->nameOverride('testBlock_1.php');
+        $page->addNameOverride('testBlock_1.php');
         $this->object->addVar('attr', 'Test')
             ->addBlock('page', $page)
             ->addBlock('title');
@@ -155,8 +155,8 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
 
         /* Override PATH & NAME */
         $page = new Template('testBlock.php', $this->pathTemplate);
-        $page->pathOverride($this->pathTemplate . 'theme/')
-            ->nameOverride('testBlock_1.php');
+        $page->addPathOverride($this->pathTemplate . 'theme/')
+            ->addNameOverride('testBlock_1.php');
         $this->object->addVar('attr', 'Test')
             ->addBlock('page', $page)
             ->addBlock('title');

@@ -292,13 +292,27 @@ class Template
     }
 
     /**
-     * Ajoute un nom de fichier.
+     * Défini les noms de fichier de remplacement.
+     *
+     * @param array $names
+     *
+     * @return $this
+     */
+    public function setNamesOverride(array $names)
+    {
+        $this->nameOverride = $names;
+
+        return $this;
+    }
+
+    /**
+     * Ajoute un nom de fichier de remplacement.
      *
      * @param string $name
      *
      * @return $this
      */
-    public function nameOverride($name)
+    public function addNameOverride($name)
     {
         $this->nameOverride[] = $name;
 
@@ -306,13 +320,29 @@ class Template
     }
 
     /**
-     * Ajoute un chemin.
+     * Ajoute des noms de fichier de remplacement.
+     *
+     * @param array $names
+     *
+     * @return $this
+     */
+    public function addNamesOverride(array $names)
+    {
+        foreach ($names as $name) {
+            $this->addNameOverride($name);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Ajoute un chemin de remplacement.
      *
      * @param string $name
      *
      * @return $this
      */
-    public function pathOverride($name)
+    public function addPathOverride($name)
     {
         $this->pathOverride[] = $name;
 
