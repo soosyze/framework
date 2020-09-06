@@ -104,10 +104,10 @@ abstract class Rule
      */
     public function hydrate($keyRule, $keyValue, $arg, $not = true)
     {
-        $this->name  = $keyRule;
-        $this->key = $keyValue;
-        $this->args     = $arg;
-        $this->not      = $not;
+        $this->name = $keyRule;
+        $this->key  = $keyValue;
+        $this->args = $arg;
+        $this->not  = $not;
 
         return $this;
     }

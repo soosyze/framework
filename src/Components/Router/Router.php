@@ -241,9 +241,9 @@ class Router
      */
     public function makeRoute($path, $key_query = 'q')
     {
-        $prefix = !$this->isRewrite()
-            ? "?$key_query="
-            : '';
+        $prefix = $this->isRewrite()
+            ? ''
+            : "?$key_query=";
 
         return $this->basePath . $prefix . $path;
     }

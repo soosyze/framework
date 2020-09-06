@@ -335,6 +335,7 @@ class Util
      *
      * @param string $str       Chaîne de caractère à traiter.
      * @param char   $separator Caractère de remplacement.
+     * @param string $ignore    Caractères ignorés par le remplacement.
      *
      * @return string
      */
@@ -404,6 +405,7 @@ class Util
                 return $value;
         }
     }
+
     /**
      * Retourne la quantité de données maximum à l'upload autorisé par votre configuration.
      *

@@ -19,7 +19,7 @@ class FormGroupBuilder
 {
     use FormRenderTrait;
 
-    const EOL                              = PHP_EOL;
+    const EOL = PHP_EOL;
 
     /**
      * Types des champs standards.
@@ -118,14 +118,18 @@ class FormGroupBuilder
 
             return call_user_func_array([ $this, 'inputBasic' ], $arg);
         }
-        if (isset(self::$typeInputRender[$type])) {
-            $item           = $this->getItem($arg[0]);
-            $attr = isset($arg[1])
-                ? $arg[1]
+        if (isset(self::$typeInputRender[ $type ])) {
+            $item = $this->getItem($arg[ 0 ]);
+            $attr = isset($arg[ 1 ])
+                ? $arg[ 1 ]
                 : [];
+
             $item[ 'attr' ] = $this->merge_attr($item[ 'attr' ], $attr);
 
-            return call_user_func_array([ $this, self::$typeInputRender[$type] ], [$arg[0], $item]);
+            return call_user_func_array(
+                [ $this, self::$typeInputRender[ $type ] ],
+                [ $arg[ 0 ], $item ]
+            );
         }
 
         throw new \BadMethodCallException(htmlspecialchars(
@@ -248,9 +252,12 @@ class FormGroupBuilder
         $subform = new FormGroupBuilder;
         $callback($subform);
 
-        return $this->input($name, [ 'type'    => 'group', 'form' => $subform,
-                'balise'  => $balise,
-                'attr'    => $attr ]);
+        return $this->input($name, [
+                'type'   => 'group',
+                'form'   => $subform,
+                'balise' => $balise,
+                'attr'   => $attr
+        ]);
     }
 
     /**
@@ -292,6 +299,55 @@ class FormGroupBuilder
     }
 
     /**
+     * Enregistre un champ numerique.
+     *
+     * @param string     $name Clé unique.
+     * @param array|null $attr Liste d'attributs.
+     *
+     * @return $this
+     */
+    public function number($name, array $attr = [])
+    {
+        $actions = !empty($attr[ ':actions' ]);
+        unset($attr[ ':actions' ]);
+        $basic = array_merge([ 'id' => $name ], $attr);
+
+        $this->input($name, [ 'type' => 'number', 'attr' => $basic ]);
+        if ($actions) {
+            $value = empty($attr[ 'value' ])
+                ? 0
+                : $attr[ 'value' ];
+            $step  = empty($attr[ 'step' ])
+                ? 1
+                : $attr[ 'step' ];
+            $min   = empty($attr[ 'min' ])
+                ? null
+                : $attr[ 'min' ];
+            $max   = $attr[ 'max' ]
+                ? null
+                : $attr[ 'max' ];
+
+            $this->html("$name-decrement", '<button:attr>:_content</button>', [
+                '_content'    => '<i class="fa fa-minus" aria-hidden="true"></i>',
+                'class'       => 'btn input-number-decrement',
+                'data-target' => "#$name",
+                'disabled'    => ($min && $value - $step < $min),
+                'type'        => 'button'
+            ]);
+
+            $this->html("$name-increment", '<button:attr>:_content</button>', [
+                '_content'    => '<i class="fa fa-plus" aria-hidden="true"></i>',
+                'class'       => 'btn input-number-increment',
+                'data-target' => "#$name",
+                'disabled'    => ($max && $value + $step > $max),
+                'type'        => 'button'
+            ]);
+        }
+
+        return $this;
+    }
+
+    /**
      * Enregistre un textarea.
      *
      * @param string     $name    Clé unique.
@@ -322,10 +378,10 @@ class FormGroupBuilder
         $basic = array_merge([ 'id' => $name ], $attr);
 
         return $this->input($name, [
-            'type' => 'datetime-local', 'attr' => $basic
+                'type' => 'datetime-local', 'attr' => $basic
         ]);
     }
- 
+
     /**
      * Enregistre une liste de sélection.
      *
