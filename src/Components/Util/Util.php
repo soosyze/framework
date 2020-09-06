@@ -439,7 +439,7 @@ class Util
             $str = $value > 1
                 ? '%s months'
                 : '%s month';
-        } elseif (($value = $interval->d / 7) >= 1) {
+        } elseif (($value = floor($interval->d / 7)) >= 1) {
             $str = $value > 1
                 ? '%s weeks'
                 : '%s week';
