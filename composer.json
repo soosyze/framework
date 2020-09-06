@@ -3,13 +3,14 @@
     "description": "A simple framework for creating web applications",
     "type": "framework",
     "keywords": ["php", "framework", "php-framework", "mvc", "composer", "psr-4", "psr-7", "psr-11"],
-    "homepage": "http://soosyze.com",
+    "homepage": "https://soosyze.com",
     "license": "MIT",
     "authors": [
         {
             "name": "Mathieu NOËL",
             "email": "mathieu@soosyze.com",
-            "homepage": "http://mathieu-noel.fr"
+            "homepage": "https://mathieu-noel.fr",
+            "role": "Lead developer"
         }
     ],
     "support": {
