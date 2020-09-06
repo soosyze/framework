@@ -216,6 +216,21 @@ class Validator
     }
 
     /**
+     * Ajoute un message de retours personnalisés.
+     *
+     * @param string   $key
+     * @param string[] $messages
+     *
+     * @return $this
+     */
+    public function addMessage($key, array $messages)
+    {
+        $this->messagesCustom[ $key ] = $messages;
+
+        return $this;
+    }
+
+    /**
      * Ajoute des attributs de retours personnalisés.
      *
      * @param array $attributs
