@@ -350,12 +350,13 @@ class Util
     /**
      * À partir d'une valeur numérique, calcul et retourne son équivalent en taille de fichier.
      *
-     * @param int $size      Valeur numértique.
-     * @param int $precision Le nombre de zéro après la virgule.
+     * @param int   $size      Valeur numértique.
+     * @param int   $precision Le nombre de zéro après la virgule.
+     * @param mixed $default   Valeur par défaut en cas d'abence de valeur.
      *
      * @return string
      */
-    public static function strFileSizeFormatted($size, $precision = 2)
+    public static function strFileSizeFormatted($size, $precision = 2, $default = '')
     {
         $units  = [ 'b', 'Kb', 'Mb', 'Gb', 'Tb', 'Pb', 'Eb', 'Zb', 'Yb' ];
         $power  = $size > 0
@@ -363,7 +364,9 @@ class Util
             : 0;
         $number = number_format($size / pow(1024, $power), $precision, '.', ' ');
 
-        return rtrim($number, '.00') . ' ' . $units[ $power ];
+        return rtrim($number, '.0')
+            ? rtrim($number, '.0') . ' ' . $units[ $power ]
+            : $default;
     }
 
     /**

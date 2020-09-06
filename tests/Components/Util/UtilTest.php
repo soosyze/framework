@@ -172,6 +172,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
 
     public function testStrFileSizeFormatted()
     {
+        $this->assertEquals('', Util::strFileSizeFormatted(0));
         $this->assertEquals('1 Kb', Util::strFileSizeFormatted(1024));
         $this->assertEquals('1 023 b', Util::strFileSizeFormatted(1023));
         $this->assertEquals('2.43 Kb', Util::strFileSizeFormatted(2487));
