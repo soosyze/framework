@@ -323,7 +323,7 @@ class FormGroupBuilder
             $min   = empty($attr[ 'min' ])
                 ? null
                 : $attr[ 'min' ];
-            $max   = $attr[ 'max' ]
+            $max   = empty($attr[ 'max' ])
                 ? null
                 : $attr[ 'max' ];
 
