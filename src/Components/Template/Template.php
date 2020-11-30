@@ -278,10 +278,11 @@ class Template
         require_once 'functions_include.php';
         $section = [];
         foreach ($this->sections as $key => &$subTpl) {
-            $section[ $key ] = !is_null($subTpl)
+            $section[ $key ] = $subTpl !== null
                 ? $this->filter('block.' . $key, $subTpl->render())
                 : '';
         }
+        unset($subTpl);
 
         foreach ($this->vars as $key => $value) {
             $$key = $this->filter('var.' . $key, $value);

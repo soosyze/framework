@@ -35,7 +35,7 @@ class Slug extends Regex
     {
         return [
             'must' => 'The :label field must contain only letters, numbers, dashes and anderscore.',
-            'not'  => 'The :label field must not contain letters, numbers, dashes and anderscore.',
+            'not'  => 'The :label field must not contain letters, numbers, dashes and anderscore.'
         ];
     }
 }

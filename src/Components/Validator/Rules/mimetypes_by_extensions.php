@@ -124,7 +124,7 @@ return [
     'pdf'     => 'application/pdf',
     'pgm'     => 'image/x-portable-graymap',
     'png'     => [
-        'image/png', 'image/x-png', 'image/x-citrix-png',
+        'image/png', 'image/x-png', 'image/x-citrix-png'
     ],
     'pnm'     => 'image/x-portable-anymap',
     'ppm'     => 'image/x-portable-pixmap',

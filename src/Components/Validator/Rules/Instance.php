@@ -39,7 +39,7 @@ class Instance extends \Soosyze\Components\Validator\Rule
     {
         return [
             'must' => 'The :label field must be an instance of :class.',
-            'not'  => 'The :label field must not be an instance of :class.',
+            'not'  => 'The :label field must not be an instance of :class.'
         ];
     }
 }

@@ -57,7 +57,7 @@ class Request extends Message implements RequestInterface
         'POST',
         'PURGE',
         'PUT',
-        'TRACE',
+        'TRACE'
     ];
 
     /**
@@ -111,11 +111,11 @@ class Request extends Message implements RequestInterface
             return $this->requestTarget;
         }
 
-        $target = $this->uri->getPath() != ''
+        $target = $this->uri->getPath() !== ''
             ? $this->uri->getPath()
             : '/';
 
-        return $target .= $this->uri->getQuery() != ''
+        return $target .= $this->uri->getQuery() !== ''
             ? '?' . $this->uri->getQuery()
             : '';
     }

@@ -281,12 +281,12 @@ class Message implements MessageInterface
      */
     private function validateAndTrimHeader($header, $values)
     {
-        if (!\is_string($header) || 1 !== \preg_match('@^[!#$%&\'*+.^_`|~0-9A-Za-z-]+$@', $header)) {
+        if (!\is_string($header) || \preg_match('@^[!#$%&\'*+.^_`|~0-9A-Za-z-]+$@', $header) !== 1) {
             throw new \InvalidArgumentException('Header name must be an RFC 7230 compatible string.');
         }
         if (!\is_array($values)) {
             // This is simple, just one value.
-            if ((!\is_numeric($values) && !\is_string($values)) || 1 !== \preg_match("@^[ \t\x21-\x7E\x80-\xFF]*$@", (string) $values)) {
+            if ((!\is_numeric($values) && !\is_string($values)) || \preg_match("@^[ \t\x21-\x7E\x80-\xFF]*$@", (string) $values) !== 1) {
                 throw new \InvalidArgumentException('Header values must be RFC 7230 compatible strings.');
             }
 
@@ -298,7 +298,7 @@ class Message implements MessageInterface
         // Assert Non empty array
         $returnValues = [];
         foreach ($values as $v) {
-            if ((!\is_numeric($v) && !\is_string($v)) || 1 !== \preg_match("@^[ \t\x21-\x7E\x80-\xFF]*$@", (string) $v)) {
+            if ((!\is_numeric($v) && !\is_string($v)) || \preg_match("@^[ \t\x21-\x7E\x80-\xFF]*$@", (string) $v) !== 1) {
                 throw new \InvalidArgumentException('Header values must be RFC 7230 compatible strings.');
             }
             $returnValues[] = \trim((string) $v, " \t");

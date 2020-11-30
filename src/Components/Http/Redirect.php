@@ -55,9 +55,9 @@ class Redirect extends Response
      */
     protected function filtreCode($code = 301)
     {
-        parent::filtreCode($code);
+        $codeRedirectValid = \array_fill_keys($this->codeRedirectValid, true);
 
-        if (!in_array($code, $this->codeRedirectValid)) {
+        if (!isset($codeRedirectValid[$code])) {
             throw new \InvalidArgumentException('Status code is invalid for redirect.');
         }
 

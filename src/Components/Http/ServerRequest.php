@@ -323,7 +323,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function withParsedBody($data)
     {
-        if (!\is_array($data) && !\is_object($data) && null !== $data) {
+        if (!\is_array($data) && !\is_object($data) && $data !== null) {
             throw new \InvalidArgumentException('First parameter to withParsedBody MUST be object, array or null');
         }
 
@@ -431,16 +431,13 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public static function parseFiles(array $files)
     {
-        if (empty($files)) {
-            return [];
-        }
         $output = [];
         /* Premier parcour, détermine les fichier simple ou multiple. */
         foreach ($files as $key => $file) {
             if ($file instanceof UploadedFileInterface) {
                 $output[ $key ] = $file;
-            } elseif (is_array($file) && isset($file[ 'tmp_name' ])) {
-                $output[ $key ] = is_array($file[ 'tmp_name' ])
+            } elseif (isset($file[ 'tmp_name' ])) {
+                $output[ $key ] = \is_array($file[ 'tmp_name' ])
                     ? self::normaliseMultiFile($file)
                     : $file;
             } else {
@@ -558,7 +555,7 @@ class ServerRequest extends Request implements ServerRequestInterface
         foreach ($files as $key => $value) {
             if ($value instanceof UploadedFileInterface) {
                 $output[ $key ] = $value;
-            } elseif (is_array($value) && isset($value[ 'tmp_name' ])) {
+            } elseif (isset($value[ 'tmp_name' ])) {
                 $output[ $key ] = UploadedFile::create($value);
             } elseif (is_array($value)) {
                 $output[ $key ] = self::normaliseUplaod($value);

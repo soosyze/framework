@@ -78,7 +78,7 @@ class Paginator
         $this->limit  = $limit;
         $this->setCurrent($current);
         $this->link   = $link;
-        $this->nbPage = $limit != 0
+        $this->nbPage = $limit > 0
             ? (int) ceil($count / $limit)
             : 0;
     }
@@ -108,7 +108,7 @@ class Paginator
         if (!is_numeric($current) || $current < 1) {
             throw new \InvalidArgumentException('The current page must be a numeric number greater than 1.');
         }
-        $this->current = (int) $current + 0;
+        $this->current = (int) $current;
 
         return $this;
     }
@@ -128,7 +128,7 @@ class Paginator
         if (!is_numeric($max) || $max < 3) {
             throw new \InvalidArgumentException('The number of pages to display must be greater than or equal to three.');
         }
-        $this->nbMaxPage = (int) $max + 0;
+        $this->nbMaxPage = (int) $max;
 
         return $this;
     }

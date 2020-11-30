@@ -48,7 +48,7 @@ class FormGroupBuilder
         'text',
         'time',
         'url',
-        'week',
+        'week'
     ];
 
     /**
@@ -247,7 +247,7 @@ class FormGroupBuilder
      *
      * @return $this
      */
-    public function group($name, $balise, callable $callback, $attr = [])
+    public function group($name, $balise, callable $callback, array $attr = [])
     {
         $subform = new FormGroupBuilder;
         $callback($subform);
@@ -334,7 +334,6 @@ class FormGroupBuilder
                 'disabled'    => ($min && $value - $step < $min),
                 'type'        => 'button'
             ]);
-
             $this->html("$name-increment", '<button:attr>:_content</button>', [
                 '_content'    => '<i class="fa fa-plus" aria-hidden="true"></i>',
                 'class'       => 'btn input-number-increment',
@@ -447,10 +446,12 @@ class FormGroupBuilder
                     'cookie_secure'   => true
             ]);
         }
-        /* On génère un token totalement unique. */
-        $token                             = uniqid(rand(), true);
+        /* On génère un token unique. */
+        $token = uniqid(rand(), true);
+
         /* Et on le stocke. */
-        $_SESSION[ 'token' ][ $name ]      = $token;
+        $_SESSION[ 'token' ][ $name ] = $token;
+
         /* On enregistre aussi le timestamp correspondant au moment de la création du token. */
         $_SESSION[ 'token_time' ][ $name ] = time();
 
@@ -784,7 +785,7 @@ class FormGroupBuilder
         }
 
         foreach ($this->form as $input) {
-            if ($input[ 'type' ] != 'group') {
+            if ($input[ 'type' ] !== 'group') {
                 continue;
             }
 
@@ -815,9 +816,9 @@ class FormGroupBuilder
      *
      * @return void
      */
-    private function addEnd(FormGroupBuilder $form)
+    protected function addEnd(FormGroupBuilder $form)
     {
-        $this->form = $this->form + $form->getForm();
+        $this->form += $form->getForm();
     }
 
     /**
@@ -876,7 +877,7 @@ class FormGroupBuilder
         }
 
         foreach ($this->form as $input) {
-            if ($input[ 'type' ] != 'group') {
+            if ($input[ 'type' ] !== 'group') {
                 continue;
             }
 
@@ -910,7 +911,7 @@ class FormGroupBuilder
         }
 
         foreach ($this->form as $input) {
-            if ($input[ 'type' ] != 'group') {
+            if ($input[ 'type' ] !== 'group') {
                 continue;
             }
 

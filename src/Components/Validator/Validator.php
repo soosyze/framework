@@ -362,7 +362,7 @@ class Validator
      */
     public function getInput($key, $default = '')
     {
-        return array_key_exists($key, $this->inputs) && $this->inputs[ $key ] !== ''
+        return isset($this->inputs[$key]) && $this->inputs[ $key ] !== ''
             ? $this->inputs[ $key ]
             : $default;
     }
@@ -546,11 +546,11 @@ class Validator
 
                 continue;
             }
-            if ($rule) {
-                $out[ $strKey . '[' . $key . ']' ] = $error;
-            } else {
-                $out[ $strKey ] = $error;
-            }
+
+            $out[ $rule
+                ? $strKey . '[' . $key . ']'
+                : $strKey
+            ] = $error;
         }
 
         return $out;

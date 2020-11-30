@@ -103,7 +103,7 @@ class Response extends Message implements ResponseInterface
         508 => 'Loop Detected',
         510 => 'Not Extended',
         511 => 'Network Authentication Required',
-        598 => 'Network read timeout error',
+        598 => 'Network read timeout error'
     ];
 
     /**

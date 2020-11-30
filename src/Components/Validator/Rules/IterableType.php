@@ -18,7 +18,7 @@ if (!function_exists('is_iterable')) {
      */
     function is_iterable($obj)
     {
-        return is_array($obj) || (is_object($obj) && ($obj instanceof \Traversable));
+        return \is_array($obj) || ($obj instanceof \Traversable);
     }
 }
 
