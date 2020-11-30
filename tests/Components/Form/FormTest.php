@@ -33,7 +33,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $form   = $this->object->form_input('textName');
-        $result = '<input name="textName" type="text" id="textName" required value="lorem ipsum">' . PHP_EOL;
+        $result = '<input name="textName" type="text" required value="lorem ipsum" id="textName">' . PHP_EOL;
 
         $this->assertEquals($form, $result);
     }
@@ -46,7 +46,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $form   = $this->object->form_input('textName');
-        $result = '<input name="textName" type="text" id="textName" required value="lorem ipsum">' . PHP_EOL;
+        $result = '<input name="textName" type="text" required value="lorem ipsum" id="textName">' . PHP_EOL;
 
         $this->assertEquals($form, $result);
     }
@@ -59,7 +59,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $form   = $this->object->form_input('passwordName');
-        $result = '<input name="passwordName" type="password" id="passwordName" required value="lorem ipsum">' . PHP_EOL;
+        $result = '<input name="passwordName" type="password" required value="lorem ipsum" id="passwordName">' . PHP_EOL;
 
         $this->assertEquals($form, $result);
     }
@@ -72,7 +72,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $form   = $this->object->form_input('email');
-        $result = '<input name="email" type="email" id="email" required value="lorem ipsum">' . PHP_EOL;
+        $result = '<input name="email" type="email" required value="lorem ipsum" id="email">' . PHP_EOL;
 
         $this->assertEquals($form, $result);
     }
@@ -593,7 +593,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             $this->object->form_html('image'),
-            '<img id="image" src="/files/logo.png" alt="Logo"/>' . PHP_EOL
+            '<img src="/files/logo.png" alt="Logo" id="image"/>' . PHP_EOL
         );
         $this->assertEquals(
             $this->object->form_html('paragraph'),

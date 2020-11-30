@@ -232,9 +232,9 @@ class FormGroupBuilder
      */
     public function html($name, $html, array $attr = [])
     {
-        $basic = array_merge([ 'id' => $name ], $attr);
-
-        return $this->input($name, [ 'type' => 'html', 'html' => $html, 'attr' => $basic ]);
+        return $this->input($name, [
+            'type' => 'html', 'html' => $html, 'attr' => $attr + [ 'id' => $name ]
+        ]);
     }
 
     /**
@@ -278,7 +278,7 @@ class FormGroupBuilder
         }
 
         return $this->input($name, [
-                'type'  => 'label', 'label' => $label, 'attr'  => $attr
+            'type' => 'label', 'label' => $label, 'attr' => $attr
         ]);
     }
 
@@ -294,7 +294,7 @@ class FormGroupBuilder
     public function legend($name, $legend, array $attr = [])
     {
         return $this->input($name, [
-                'type'   => 'legend', 'legend' => $legend, 'attr'   => $attr
+            'type' => 'legend', 'legend' => $legend, 'attr' => $attr
         ]);
     }
 
@@ -310,9 +310,9 @@ class FormGroupBuilder
     {
         $actions = !empty($attr[ ':actions' ]);
         unset($attr[ ':actions' ]);
-        $basic = array_merge([ 'id' => $name ], $attr);
 
-        $this->input($name, [ 'type' => 'number', 'attr' => $basic ]);
+        $this->input($name, [ 'type' => 'number', 'attr' => $attr + [ 'id' => $name ] ]);
+
         if ($actions) {
             $value = empty($attr[ 'value' ])
                 ? 0
@@ -357,10 +357,8 @@ class FormGroupBuilder
      */
     public function textarea($name, $content = '', array $attr = [])
     {
-        $basic = array_merge([ 'id' => $name ], $attr);
-
         return $this->input($name, [
-                'type'    => 'textarea', 'content' => $content, 'attr'    => $basic
+            'type' => 'textarea', 'content' => $content, 'attr' => $attr + [ 'id' => $name ]
         ]);
     }
 
@@ -374,10 +372,8 @@ class FormGroupBuilder
      */
     public function datetime($name, array $attr = [])
     {
-        $basic = array_merge([ 'id' => $name ], $attr);
-
         return $this->input($name, [
-                'type' => 'datetime-local', 'attr' => $basic
+            'type' => 'datetime-local', 'attr' => $attr + [ 'id' => $name ]
         ]);
     }
 
@@ -392,10 +388,8 @@ class FormGroupBuilder
      */
     public function select($name, $options = [], array $attr = [])
     {
-        $basic = array_merge([ 'id' => $name ], $attr);
-
         return $this->input($name, [
-                'type'    => 'select', 'options' => $options, 'attr'    => $basic
+            'type' => 'select', 'options' => $options, 'attr' => $attr + [ 'id' => $name ]
         ]);
     }
 
@@ -410,9 +404,9 @@ class FormGroupBuilder
      */
     public function inputBasic($type, $name, array $attr = [])
     {
-        $basic = array_merge([ 'id' => $name ], $attr);
-
-        return $this->input($name, [ 'type' => $type, 'attr' => $basic ]);
+        return $this->input($name, [
+            'type' => $type, 'attr' => $attr + [ 'id' => $name ]
+        ]);
     }
 
     /**
@@ -426,9 +420,10 @@ class FormGroupBuilder
      */
     public function submit($name, $value, array $attr = [])
     {
-        $basic = array_merge([ 'id' => $name, 'value' => $value ], $attr);
-
-        return $this->input($name, [ 'type' => 'submit', 'attr' => $basic ]);
+        return $this->input($name, [
+            'type' => 'submit',
+            'attr' => $attr + [ 'id' => $name, 'value' => $value ]
+        ]);
     }
 
     /**
