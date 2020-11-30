@@ -23,4 +23,15 @@ class ToLtrimTest extends Filter
         $this->assertEquals('test  ', $this->object->getInput('start_end'));
         $this->assertEquals('test', $this->object->getInput('custom'));
     }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testToLtrimException()
+    {
+        $this->object
+            ->addInput('field', 1)
+            ->addRule('field', 'to_ltrim')
+            ->isValid();
+    }
 }

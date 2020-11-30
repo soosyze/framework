@@ -19,22 +19,27 @@ class ToBool extends \Soosyze\Components\Validator\Filter
      * Filtre une valeur avec la méthode htmlspecialchars.
      *
      * @param string $key   Identifiant de la valeur.
-     * @param string $value Valeur à filtrer.
+     * @param mixed  $value Valeur à filtrer.
      * @param string $arg   Argument de filtre.
      *
-     * @throws \InvalidArgumentException La valeur time n'est pas numérique.
+     * @throws \InvalidArgumentException The type must be validated before being filtered.
      *
      * @return bool
      */
     protected function clean($key, $value, $arg)
     {
-        return $this->isBool($value)
-            ? filter_var($value, FILTER_VALIDATE_BOOLEAN)
-            : $value;
+        if (!$this->isBool($value)) {
+            throw new \InvalidArgumentException('The type must be validated before being filtered.');
+        }
+
+        return filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
 
     /**
      * Si la variable est de type ou valeur boolean.
+     *
+     * @see https://www.php.net/ChangeLog-5.php#PHP_5_4 (5.4.8)
+     * Fixed bug #49510 (Boolean validation fails with FILTER_NULL_ON_FAILURE with empty string or false.)
      *
      * @param mixed $var
      *
@@ -42,6 +47,8 @@ class ToBool extends \Soosyze\Components\Validator\Filter
      */
     protected function isBool($var)
     {
-        return filter_var($var, FILTER_VALIDATE_BOOLEAN) || filter_var($var, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null || $var === false || $var === '';
+        return filter_var($var, FILTER_VALIDATE_BOOLEAN)
+            || filter_var($var, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null
+            || $var === false;
     }
 }

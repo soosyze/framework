@@ -65,4 +65,15 @@ class ToFloatTest extends Filter
         $this->assertTrue(is_float($this->object->getInput('cast')));
         $this->assertTrue(is_float($this->object->getInput('cast_txt')));
     }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testToFloatException()
+    {
+        $this->object
+            ->addInput('field', 'error')
+            ->addRule('field', 'to_float')
+            ->isValid();
+    }
 }

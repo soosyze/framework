@@ -23,4 +23,15 @@ class ToTrimTest extends Filter
         $this->assertEquals('test', $this->object->getInput('start_end'));
         $this->assertEquals('test', $this->object->getInput('custom'));
     }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testToTrimException()
+    {
+        $this->object
+            ->addInput('field', 1)
+            ->addRule('field', 'to_trim')
+            ->isValid();
+    }
 }

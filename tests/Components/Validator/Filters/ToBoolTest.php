@@ -56,4 +56,15 @@ class ToBoolTest extends Filter
         $this->assertTrue(is_bool($this->object->getInput('false_no')));
         $this->assertTrue(is_bool($this->object->getInput('false_void')));
     }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testToBoolException()
+    {
+        $this->object
+            ->addInput('field', 'error')
+            ->addRule('field', 'to_bool')
+            ->isValid();
+    }
 }

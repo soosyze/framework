@@ -53,4 +53,15 @@ class ToIntTest extends Filter
         $this->assertTrue(is_int($this->object->getInput('min')));
         $this->assertTrue(is_int($this->object->getInput('max')));
     }
+    
+    /**
+     * @expectedException \Exception
+     */
+    public function testToIntException()
+    {
+        $this->object
+            ->addInput('field', 'error')
+            ->addRule('field', 'to_int')
+            ->isValid();
+    }
 }
