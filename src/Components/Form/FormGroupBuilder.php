@@ -63,7 +63,8 @@ class FormGroupBuilder
         'form_legend'   => 'renderLegend',
         'form_select'   => 'renderSelect',
         'form_input'    => 'renderInput',
-        'form_textarea' => 'renderTextarea'
+        'form_textarea' => 'renderTextarea',
+        'form_token'    => 'renderInput'
     ];
 
     /**
@@ -456,18 +457,6 @@ class FormGroupBuilder
         ]);
 
         return $this;
-    }
-
-    /**
-     * Génère une balise input hidden pour le token.
-     *
-     * @param string $name Clé unique.
-     *
-     * @return string HTML
-     */
-    public function form_token($name)
-    {
-        return $this->form_input($name);
     }
 
     /**
