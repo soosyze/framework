@@ -251,7 +251,7 @@ class Validator
      *
      * @return $this
      */
-    public function setLabel(array $labels)
+    public function setLabels(array $labels)
     {
         $this->labelCustom = $labels;
 
@@ -305,6 +305,22 @@ class Validator
     public function addLabel($key, $label)
     {
         $this->labelCustom[ $key ] = $label;
+
+        return $this;
+    }
+
+    /**
+     * Rajoute des labels de champ.
+     *
+     * @codeCoverageIgnore add
+     *
+     * @param string[] $labels
+     *
+     * @return $this
+     */
+    public function addLabels(array $labels)
+    {
+        $this->labelCustom += $labels;
 
         return $this;
     }

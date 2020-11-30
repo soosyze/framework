@@ -87,7 +87,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     public function testCustomLabel()
     {
         $this->object
-            ->setLabel([ 'field' => 'Text input' ])
+            ->setLabels([ 'field' => 'Text input' ])
             ->addInput('field', 10)
             ->addRule('field', 'string');
 
