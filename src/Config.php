@@ -103,7 +103,6 @@ class Config implements \ArrayAccess
     {
         list($file, $key) = $this->prepareKey($strKey);
         $this->loadConfig($file);
-        $hasFile = isset($this->data[ $file ]);
 
         if ($key) {
             $this->data[ $file ][ $key ] = $value;
@@ -112,7 +111,7 @@ class Config implements \ArrayAccess
                 ? [ $value ]
                 : $value;
         }
-        if ($hasFile) {
+        if (isset($this->data[ $file ])) {
             Util::saveJson($this->path, $file, $this->data[ $file ]);
         } else {
             Util::createJson($this->path, $file, $this->data[ $file ]);
@@ -236,16 +235,12 @@ class Config implements \ArrayAccess
             );
         }
 
-        $str        = trim($strKey, '.');
-        $split[ 0 ] = $str;
+        $str = trim($strKey, '.');
         if (strpos($str, '.') !== false) {
-            $split[ 0 ] = strstr($str, '.', true);
-            $split[ 1 ] = trim(strstr($str, '.'), '.');
+            return [ strstr($str, '.', true), trim(strstr($str, '.'), '.') ];
         }
 
-        return isset($split[ 1 ])
-            ? [ $split[ 0 ], $split[ 1 ] ]
-            : [ $split[ 0 ], null ];
+        return [ $str, null ];
     }
 
     /**
