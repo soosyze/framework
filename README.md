@@ -15,6 +15,7 @@ Soosyze Framework est un micro-framework MVC object offrant un socle solide de d
   * À passé les tests https://github.com/php-http/psr7-integration-tests à 100%, rendant l'implémentation interopérable avec d'autres bibliothèques psr-7.
 * [![PSR-11](https://img.shields.io/badge/PSR-11-yellow.svg)](https://www.php-fig.org/psr/psr-11 "Container Interface") Container d'injection de dépendance ou CID,
 * [![PSR-17](https://img.shields.io/badge/PSR-17-yellow.svg)](https://www.php-fig.org/psr/psr-17 "HTTP Factories") Fabriques Http implémentées sans les interfaces qui contraignent les implémentations à PHP7,
+* [![PSR-18](https://img.shields.io/badge/PSR-18-yellow.svg)](https://www.php-fig.org/psr/psr-18 "HTTP Client") Client Http implémentées sans les interfaces qui contraignent les implémentations à PHP7,
 * Découpe des fonctionnalitées en modules,
 * Routeur (url),
 * Hook et Middleware,
@@ -44,12 +45,13 @@ Soosyze Framework est un micro-framework MVC object offrant un socle solide de d
 
 ## Extensions
 
+* `curl` si vous utilisez le composant HttpClient.
 * `date` si vous utilisez le composant Validator.
 * `fileinfo` si vous utilisez le composant Validator.
 * `filter` si vous utilisez le composant Validator.
 * `gd` si vous utilisez le composant Validator.
 * `json` si vous utilisez les composants Config ou Util.
-* `mbstring` si vous utilisez le composant Email.
+* `mbstring` si vous utilisez le composant Util.
 * `session` si vous utilisez les composants Validator ou FormBuilder.
 
 Ces extensions sont généralement actives par défauts.
