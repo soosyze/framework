@@ -253,23 +253,6 @@ abstract class App
     }
 
     /**
-     * Ajoute un service au container.
-     *
-     * @codeCoverageIgnore Fonction testé directement avec l'objet Container.
-     *
-     * @param string $key Nom du service.
-     * @param string $srv Instance du service.
-     *
-     * @return $this
-     */
-    public function set($key, $srv)
-    {
-        $this->container->set($key, $srv);
-
-        return $this;
-    }
-
-    /**
      * Appelle un hook (trigger/middelware).
      *
      * @codeCoverageIgnore Fonction testé directement avec l'objet Container.
