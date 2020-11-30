@@ -109,15 +109,40 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
     public function testInputSelect()
     {
-        $this->object->select('inputSelect', [
-            [ 'value' => 0, 'label' => 'hello' ],
-            [ 'value' => 1, 'label' => 'world' ]
-            ], [ 'selected' => 0 ]);
+        $options = [
+            [ 'label' => 'hello', 'value' => 0 ],
+            [ 'label' => 'world', 'value' => 1 ],
+        ];
+        $this->object->select('inputSelect', $options, [ 'selected' => 0 ]);
 
         $form   = $this->object->form_select('inputSelect');
         $result = '<select name="inputSelect" id="inputSelect">' . PHP_EOL
             . '<option value="0" selected>hello</option>' . PHP_EOL
-            . '<option value="1" >world</option>' . PHP_EOL
+            . '<option value="1">world</option>' . PHP_EOL
+            . '</select>' . PHP_EOL;
+
+        $this->assertEquals($form, $result);
+    }
+
+    public function testInputSelectGroup()
+    {
+        $options = [
+            [ 'label' => 'hello', 'value' => 0 ],
+            [ 'label' => 'world', 'value' => [
+                    [ 'label' => 'hello', 'value' => 1 ],
+                    [ 'label' => 'world', 'value' => 2 ]
+                ]
+            ]
+        ];
+        $this->object->select('inputSelect', $options, [ 'selected' => 1 ]);
+
+        $form   = $this->object->form_select('inputSelect');
+        $result = '<select name="inputSelect" id="inputSelect">' . PHP_EOL
+            . '<option value="0">hello</option>' . PHP_EOL
+            . '<optgroup label="world">'
+            . '<option value="1" selected>hello</option>' . PHP_EOL
+            . '<option value="2">world</option>' . PHP_EOL
+            . '</optgroup>' . PHP_EOL
             . '</select>' . PHP_EOL;
 
         $this->assertEquals($form, $result);

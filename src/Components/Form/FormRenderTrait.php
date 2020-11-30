@@ -224,26 +224,67 @@ trait FormRenderTrait
             ? $item[ 'attr' ][ 'selected' ]
             : '';
         unset($item[ 'attr' ][ 'selected' ]);
-        $html   = '';
-        foreach ($item[ 'options' ] as $option) {
-            $selected = isset($option[ 'selected' ]) || ($select !== '' && $select === $option[ 'value' ])
-                ? 'selected'
-                : '';
-
-            $html .= sprintf(
-                '<option value="%s" %s>%s</option>',
-                htmlspecialchars($option[ 'value' ]),
-                $selected,
-                htmlentities($option[ 'label' ])
-            ) . self::EOL;
-        }
 
         return sprintf(
             '<select name="%s"%s>%s</select>',
             htmlspecialchars($key),
             $this->renderAttrInput($item[ 'attr' ]),
-            self::EOL . $html
+            self::EOL . $this->renderSelectOptionGroup($item[ 'options' ], $select)
         ) . self::EOL . $this->renderFeedback($key);
+    }
+
+    /**
+     * Génère les balises options ou optgroup
+     *
+     * @param array  $options
+     * @param scalar $select
+     *
+     * @return string
+     */
+    protected function renderSelectOptionGroup(array $options, $select)
+    {
+        $html = '';
+
+        foreach ($options as $option) {
+            if (is_array($option[ 'value' ])) {
+                $html .= sprintf(
+                    '<optgroup label="%s">%s</optgroup>',
+                    htmlentities($option[ 'label' ]),
+                    $this->renderSelectOptionGroup($option[ 'value' ], $select)
+                ) . self::EOL;
+
+                continue;
+            }
+            $html .= $this->renderSelectOption($option, $select);
+        }
+
+        return $html;
+    }
+
+    /**
+     * Génère une balise option
+     *
+     * @param array  $option
+     * @param scalar $select
+     *
+     * @return string
+     */
+    protected function renderSelectOption(array $option, $select)
+    {
+        $selected   = isset($option[ 'selected' ]) || ($select !== '' && $select === $option[ 'value' ])
+            ? ' selected'
+            : '';
+        $attrOption = isset($option[ 'attr' ])
+            ? $this->renderAttrInput($option[ 'attr' ])
+            : '';
+
+        return sprintf(
+            '<option value="%s"%s%s>%s</option>',
+            htmlspecialchars($option[ 'value' ]),
+            $attrOption,
+            $selected,
+            htmlentities($option[ 'label' ])
+        ) . self::EOL;
     }
 
     /**

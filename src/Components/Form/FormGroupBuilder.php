@@ -382,7 +382,7 @@ class FormGroupBuilder
      * Enregistre une liste de sélection.
      *
      * @param string $name    Clé unique.
-     * @param array  $options Liste d'options [ 'value'=>'', 'label'=>'','selected' => 0|1 ].
+     * @param array  $options Liste d'options [ 'value'=> '', 'label'=> '', 'selected' => bool , 'attr' => [] ].
      * @param array  $attr    Liste d'attributs.
      *
      * @return $this
