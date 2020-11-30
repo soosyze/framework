@@ -23,6 +23,8 @@ class ToStripTags extends \Soosyze\Components\Validator\Filter
      * @param string $arg   Liste des balise HTML autorisés.
      *
      * @throws \InvalidArgumentException La valeur time n'est pas numérique.
+     *
+     * @return string
      */
     protected function clean(
         $key,

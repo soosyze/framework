@@ -20,15 +20,15 @@ class EqualStrict extends \Soosyze\Components\Validator\Rule
      *
      * @param string $key   Clé du test.
      * @param scalar $value Valeur à tester.
-     * @param scalar $arg   Valeur de comparaison.
+     * @param string $arg   Valeur de comparaison.
      * @param bool   $not   Inverse le test.
      */
     protected function test($key, $value, $arg, $not)
     {
         if ($value !== $arg && $not) {
-            $this->addReturn($key, 'must', [ 'value' => $arg ]);
+            $this->addReturn($key, 'must', [ ':value' => $arg ]);
         } elseif ($value === $arg && !$not) {
-            $this->addReturn($key, 'not', [ 'value' => $arg ]);
+            $this->addReturn($key, 'not', [ ':value' => $arg ]);
         }
     }
 

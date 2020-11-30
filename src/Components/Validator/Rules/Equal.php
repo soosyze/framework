@@ -20,7 +20,7 @@ class Equal extends \Soosyze\Components\Validator\Rule
      *
      * @param string $key   Clé du test.
      * @param scalar $value Valeur à tester.
-     * @param scalar $arg   Valeur de comparaison.
+     * @param string $arg   Valeur de comparaison.
      * @param bool   $not   Inverse le test.
      */
     protected function test($key, $value, $arg, $not)

@@ -45,7 +45,7 @@ class Request extends Message implements RequestInterface
     /**
      * Méthodes acceptés par le protocole HTTP.
      *
-     * @var string
+     * @var string[]
      */
     protected $methods = [
         'CONNECT',
@@ -64,11 +64,11 @@ class Request extends Message implements RequestInterface
      * Pendant la construction, les implémentations DOIVENT essayer de définir l'en-tête Host à partir de
      * un URI fourni si aucun en-tête Host n'est fourni.
      *
-     * @param string          $method  Méthode HTTP ('GET'|'POST'|...).
-     * @param UriInterface    $uri     L'URI de la requête.
-     * @param array           $headers Les en-têtes du message.
-     * @param StreamInterface $body    Le corps du message.
-     * @param type            $version La version du protocole HTTP.
+     * @param string               $method  Méthode HTTP ('GET'|'POST'|...).
+     * @param UriInterface         $uri     L'URI de la requête.
+     * @param array                $headers Les en-têtes du message.
+     * @param StreamInterface|null $body    Le corps du message.
+     * @param string               $version La version du protocole HTTP.
      */
     public function __construct(
         $method,

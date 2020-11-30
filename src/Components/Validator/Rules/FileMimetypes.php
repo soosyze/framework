@@ -22,15 +22,13 @@ class FileMimetypes extends File
      * @param UploadedFileInterface $value Valeur à tester.
      * @param string                $arg   Mime exacte ou le type du mime du fichier.
      * @param bool                  $not   Inverse le test.
-     *
-     * @return int 1 erreur de fichier.
      */
     protected function test($key, $value, $arg, $not)
     {
-        parent::test('file', $value, false, true);
+        parent::test('file', $value, '', true);
 
         if ($this->hasErrors()) {
-            return 1;
+            return;
         }
 
         $mtype = $this->getMime($value);

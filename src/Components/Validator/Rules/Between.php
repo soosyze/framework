@@ -26,11 +26,13 @@ class Between extends Size
     protected function test($key, $value, $arg, $not)
     {
         $length = $this->getSize($value);
+
         if ($this->hasErrors()) {
-            return 1;
+            return;
         }
-        $between = $this->getParamMinMax($arg);
-        $this->sizeBetween($key, $length, $between[ 'min' ], $between[ 'max' ], $not);
+
+        list($min, $max) = $this->getParamMinMax($arg);
+        $this->sizeBetween($key, $length, $min, $max, $not);
     }
 
     /**
@@ -48,17 +50,19 @@ class Between extends Size
     /**
      * Teste si une valeur est comprise entre 2 valeurs numériques.
      *
-     * @param string  $key         Clé du test.
-     * @param numeric $lengthValue Valeur de la taille.
-     * @param numeric $min         Valeur minimum.
-     * @param numeric $max         Valeur maximum.
-     * @param bool    $not         Inverse le test.
+     * @param string  $key    Clé du test.
+     * @param numeric $length Valeur de la taille.
+     * @param array   $min    Valeur minimum.
+     * @param array   $max    Valeur maximum.
+     * @param bool    $not    Inverse le test.
+     *
+     * @return void
      */
-    protected function sizeBetween($key, $lengthValue, $min, $max, $not)
+    protected function sizeBetween($key, $length, array $min, array $max, $not)
     {
-        if (!($lengthValue <= $max[ 'size' ] && $lengthValue >= $min[ 'size' ]) && $not) {
+        if (!($length <= $max[ 'size' ] && $length >= $min[ 'size' ]) && $not) {
             $this->addReturn($key, 'must', [ ':min' => $min[ 'value' ], ':max' => $max[ 'value' ] ]);
-        } elseif ($lengthValue <= $max[ 'size' ] && $lengthValue >= $min[ 'size' ] && !$not) {
+        } elseif ($length <= $max[ 'size' ] && $length >= $min[ 'size' ] && !$not) {
             $this->addReturn($key, 'not', [ ':min' => $min[ 'value' ], ':max' => $max[ 'value' ] ]);
         }
     }
@@ -66,10 +70,12 @@ class Between extends Size
     /**
      * {@inheritdoc}
      *
-     * @param type $arg
+     * @param string $arg
      *
-     * @throws \InvalidArgumentException
-     * @return type
+     * @throws \InvalidArgumentException Between values are invalid.
+     * @throws \InvalidArgumentException The minimum value must not be greater than the maximum value.
+     *
+     * @return array
      */
     protected function getParamMinMax($arg)
     {
@@ -86,11 +92,11 @@ class Between extends Size
         }
 
         return [
-            'min' => [
+            [
                 'value' => $explode[ 0 ],
                 'size'  => $min
             ],
-            'max' => [
+            [
                 'value' => $explode[ 1 ],
                 'size'  => $max
             ]

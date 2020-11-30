@@ -22,19 +22,19 @@ class DateBefore extends Date
      * @param string $value Date à tester.
      * @param string $arg   Date de comparaison.
      * @param bool   $not   Inverse le test.
-     *
-     * @return int 1 erreur de date.
      */
     protected function test($key, $value, $arg, $not)
     {
-        parent::test('date', $arg, false, true);
+        parent::test('date', $arg, '', true);
         if ($this->hasErrors()) {
             throw new \InvalidArgumentException('The comparison date is not correct.');
         }
-        parent::test('date', $value, false, true);
+        parent::test('date', $value, '', true);
+
         if ($this->hasErrors()) {
-            return 1;
+            return;
         }
+
         $this->testDateBefore($key, $value, $arg, $not);
     }
 
@@ -45,6 +45,8 @@ class DateBefore extends Date
      * @param string $value Date à tester.
      * @param string $arg   Date de comparaison.
      * @param bool   $not   Inverse le test.
+     *
+     * @return void
      */
     protected function testDateBefore($key, $value, $arg, $not)
     {

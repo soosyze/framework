@@ -25,7 +25,7 @@ class ColorHex extends Regex
      */
     protected function test($key, $value, $arg, $not)
     {
-        if ($arg === false) {
+        if (empty($arg)) {
             $patern = '[\da-f]{6}|[\da-f]{3}';
         } elseif ($arg === '3') {
             $patern = '[\da-f]{3}';

@@ -18,7 +18,7 @@ class Paginator
     /**
      * Identifiant incrémental contenu dans le lien.
      *
-     * @var int
+     * @var string
      */
     public $key = ':id';
 
@@ -250,7 +250,7 @@ class Paginator
     /**
      * Retourne l'url de la page suivante ou null si elle n'existe pas.
      *
-     * @return array|null
+     * @return string|null
      */
     public function getNextUrl()
     {
@@ -260,7 +260,7 @@ class Paginator
     /**
      * Retourne l'url de la page précédente ou null si elle n'existe pas.
      *
-     * @return array|null
+     * @return string|null
      */
     public function getPreviousUrl()
     {
@@ -298,6 +298,6 @@ class Paginator
     {
         return $key === null
             ? null
-            : str_replace($this->key, $key, $this->link);
+            : str_replace($this->key, (string) $key, $this->link);
     }
 }

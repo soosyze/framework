@@ -18,8 +18,8 @@ class ValidatorIterator extends Validator
     /**
      * {@inheritdoc}
      *
-     * @param type  $key
-     * @param array $rules
+     * @param string $key
+     * @param array  $rules
      */
     protected function execute($key, array $rules)
     {

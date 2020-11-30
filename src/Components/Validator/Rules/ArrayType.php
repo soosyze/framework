@@ -19,7 +19,7 @@ class ArrayType extends \Soosyze\Components\Validator\Rule
      * Test si la valeur est de type array.
      *
      * @param string $key    Clé du test.
-     * @param string $values Valeur à tester.
+     * @param mixed  $values Valeur à tester.
      * @param string $arg    Argument de test.
      * @param bool   $not    Inverse le test.
      */

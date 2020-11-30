@@ -117,10 +117,10 @@ class UriTest extends \PHPUnit\Framework\TestCase
         $this->assertNull(Uri::create('https://www.foo.com:443/')->getPort());
         $this->assertSame(1, Uri::create('http://www.foo.com:1/')->getPort());
 
-        $this->assertNull($this->object->withPort('')->getPort());
-        $this->assertNull($this->object->withPort('80')->getPort());
-        $this->assertNull(Uri::create('https://www.foo.com/')->withPort('443')->getPort());
-        $this->assertSame(1, $this->object->withPort('1')->getPort());
+        $this->assertNull($this->object->withPort(null)->getPort());
+        $this->assertNull($this->object->withPort(80)->getPort());
+        $this->assertNull(Uri::create('https://www.foo.com/')->withPort(443)->getPort());
+        $this->assertSame(1, $this->object->withPort(1)->getPort());
     }
     
     /**

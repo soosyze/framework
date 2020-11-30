@@ -22,10 +22,11 @@ abstract class Size extends \Soosyze\Components\Validator\Rule
      * Si la valeur est numérique elle est retournée directement.
      * Si la valeur est une taille exprimée en octet, elle et convertie en numérique puis retournée.
      *
-     * @param int|string $size
+     * @param numeric|string $size
      *
      * @throws \InvalidArgumentException The value must be numeric or in file size format.
-     * @return int                       La Taille de comparaison.
+     *
+     * @return numeric|string La Taille de comparaison.
      */
     protected function getComparator($size)
     {
@@ -50,9 +51,9 @@ abstract class Size extends \Soosyze\Components\Validator\Rule
     /**
      * Retourne la longueur de valeur en fonction de son type.
      *
-     * @param array|float|int|object|ressource|string|UploadedFileInterface $value Valeur à tester.
+     * @param mixed $value Valeur à tester.
      *
-     * @return int|float Longueur.
+     * @return float|int Longueur.
      */
     protected function getSize($value)
     {
@@ -83,9 +84,9 @@ abstract class Size extends \Soosyze\Components\Validator\Rule
     /**
      * Retourne la taille de la valeur.
      *
-     * @param numeric $value Valeur à tester.
+     * @param mixed $value Valeur à tester.
      *
-     * @return int|float
+     * @return float|int
      */
     protected function getSizeNumeric($value)
     {

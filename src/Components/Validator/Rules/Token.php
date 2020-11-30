@@ -21,7 +21,7 @@ class Token extends Size
      *
      * @param string $key   Clé du test.
      * @param string $value Valeur à tester.
-     * @param int    $arg   Nombre de seconde ou le token est valide (défaut 15 minutes),
+     * @param string $arg   Nombre de seconde ou le token est valide (défaut 15 minutes),
      *                      si la valeur du time = 0 alors le test du temps de validation n'est pas effectif.
      * @param bool   $not   Inverse le test.
      *
@@ -36,7 +36,7 @@ class Token extends Size
             ]);
         }
 
-        if ($arg === false) {
+        if (empty($arg)) {
             $arg = 900;
         }
         $intervale = $this->getComparator($arg);

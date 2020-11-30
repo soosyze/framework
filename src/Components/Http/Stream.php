@@ -49,7 +49,7 @@ class Stream implements StreamInterface
     /**
      * Flux de données.
      *
-     * @var string
+     * @var resource
      */
     private $stream;
 
@@ -65,7 +65,7 @@ class Stream implements StreamInterface
      *
      * @see http://php.net/manual/fr/wrappers.php.php
      *
-     * @param $mixed bool|float|int|object|ressource|string|null
+     * @param scalar|resource|object $mixed
      *
      * @throws \InvalidArgumentException Le type de données n'est pas pris en charge par flux de données.
      */
@@ -105,11 +105,12 @@ class Stream implements StreamInterface
     /**
      * Créer un flux à partir d'un fichier.
      *
-     * @param type $filename Nom du fichier.
-     * @param type $mode     Mode de lecture du fichier.
+     * @param string $filename Nom du fichier.
+     * @param string $mode     Mode de lecture du fichier.
      *
-     * @throws \InvalidArgumentException       Le mode de lecture n'est pas valide.
-     * @throws \RuntimeException               Le fichier ne peut pas être ouvert.
+     * @throws \InvalidArgumentException Le mode de lecture n'est pas valide.
+     * @throws \RuntimeException         Le fichier ne peut pas être ouvert.
+     *
      * @return \Soosyze\Components\Http\Stream
      */
     public static function createStreamFromFile($filename, $mode = 'r')
@@ -175,7 +176,8 @@ class Stream implements StreamInterface
      * Renvoie la position actuelle du pointeur de lecture/écriture du fichier.
      *
      * @throws \RuntimeException Une erreur est survenue.
-     * @return int               Position du pointeur de fichier
+     *
+     * @return int Position du pointeur de fichier
      */
     public function tell()
     {
@@ -221,6 +223,7 @@ class Stream implements StreamInterface
      *                    basé sur le décalage de recherche.
      *
      * @throws \RuntimeException Une erreur est survenue.
+     *
      * @return void
      */
     public function seek($offset, $whence = SEEK_SET)
@@ -235,6 +238,7 @@ class Stream implements StreamInterface
      * Replace le pointeur au début du flux.
      *
      * @throws \RuntimeException Une erreur est survenue.
+     *
      * @return void
      */
     public function rewind()
@@ -261,7 +265,8 @@ class Stream implements StreamInterface
      * @param string $string La chaîne à écrire.
      *
      * @throws \RuntimeException Une erreur est survenue.
-     * @return int               Renvoie le nombre d'octets écrits dans le flux.
+     *
+     * @return int Renvoie le nombre d'octets écrits dans le flux.
      */
     public function write($string)
     {
@@ -291,8 +296,8 @@ class Stream implements StreamInterface
      *
      * @throws \RuntimeException La valeur d'octet doit être un nombre entier positif.
      * @throws \RuntimeException Une erreur est survenue.
-     * @return string            Renvoie les données lues dans le flux
-     *                           ou une chaîne vide si aucun octet n'est disponible.
+     *
+     * @return string Renvoie les données lues dans le flux ou une chaîne vide si aucun octet n'est disponible.
      */
     public function read($length)
     {
@@ -314,6 +319,7 @@ class Stream implements StreamInterface
      * Renvoie le contenu restant.
      *
      * @throws \RuntimeException Une erreur c'est produit pendant la lecture du flux.
+     *
      * @return string
      */
     public function getContents()
@@ -380,6 +386,7 @@ class Stream implements StreamInterface
      * Déclenche une exception si le flux de données est détaché.
      *
      * @throws \RuntimeException Le flux est détaché.
+     *
      * @return $this
      */
     private function valideAttach()
@@ -395,6 +402,7 @@ class Stream implements StreamInterface
      * Déclenche une exception si la position du flux ne peut-être modifié.
      *
      * @throws \RuntimeException La position du flux ne peut-être modifié.
+     *
      * @return $this
      */
     private function valideSeekable()
@@ -410,6 +418,7 @@ class Stream implements StreamInterface
      * Déclenche une exception si le flux ne peut-être lisible.
      *
      * @throws \RuntimeException Impossible de lire à partir d'un flux non lisible.
+     *
      * @return $this
      */
     private function valideRead()
@@ -425,6 +434,7 @@ class Stream implements StreamInterface
      * Déclenche une exception si le flux est non accessible en écriture.
      *
      * @throws \RuntimeException Impossible d'écrire dans un flux non accessible en écriture.
+     *
      * @return $this
      */
     private function valideWrite()

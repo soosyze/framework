@@ -39,7 +39,7 @@ abstract class Rule
     /**
      * Inverse le test.
      *
-     * @var type
+     * @var bool
      */
     protected $not = true;
 
@@ -202,6 +202,8 @@ abstract class Rule
 
     /**
      * Retourne le nom du test.
+     *
+     * @return string
      */
     public function getName()
     {
@@ -210,6 +212,8 @@ abstract class Rule
 
     /**
      * Stop les tests suivants.
+     *
+     * @return void
      */
     public function stopPropagation()
     {
@@ -218,6 +222,8 @@ abstract class Rule
     
     /**
      * Stop les tests suivants immédiatement.
+     *
+     * @return void
      */
     public function stopImmediatePropagation()
     {
@@ -261,6 +267,8 @@ abstract class Rule
      * @param string $value   Valeur à tester.
      * @param string $args    Argument de test.
      * @param bool   $not     Inverse le test.
+     *
+     * @return void
      */
     abstract protected function test($keyRule, $value, $args, $not);
 
@@ -277,6 +285,8 @@ abstract class Rule
      * @param string   $keyRule    Clé du test.
      * @param string   $keyMessage Identifiant du message à formater avec la valeur de test.
      * @param string[] $attributs  Liste d'arguments de remplacements pour personnaliser le message.
+     *
+     * @return void
      */
     protected function addReturn($keyRule, $keyMessage, array $attributs = [])
     {

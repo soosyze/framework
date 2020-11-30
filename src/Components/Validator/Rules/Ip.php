@@ -26,7 +26,7 @@ class Ip extends \Soosyze\Components\Validator\Rule
     protected function test($key, $value, $arg, $not)
     {
         $version = 'IP';
-        if ($arg === false) {
+        if (empty($arg)) {
             $options = null;
         } elseif ($arg === '4') {
             $version = 'IPv4';

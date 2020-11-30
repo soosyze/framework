@@ -18,10 +18,10 @@ class MinNumeric extends Min
     /**
      * Test si une valeur est plus petite que la valeur de comparaison.
      *
-     * @param string    $key   Clé du test.
-     * @param numeric   $value Valeur à tester.
-     * @param int|float $arg   Valeur de comparraison.
-     * @param bool      $not   Inverse le test.
+     * @param string  $key   Clé du test.
+     * @param numeric $value Valeur à tester.
+     * @param string  $arg   Valeur de comparraison.
+     * @param bool    $not   Inverse le test.
      *
      * @throws \InvalidArgumentException La valeur min n'est pas numérique.
      */
@@ -29,7 +29,7 @@ class MinNumeric extends Min
     {
         $length = $this->getSizeNumeric($value);
         if ($this->hasErrors()) {
-            return 1;
+            return;
         }
         $this->sizeMin($key, $length, $arg, $not);
     }

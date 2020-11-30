@@ -20,10 +20,10 @@ class File extends \Soosyze\Components\Validator\Rule
     /**
      * Test si la valeur est un fichier.
      *
-     * @param string                $key   Clé du test.
-     * @param UploadedFileInterface $value Valeur à tester.
-     * @param string                $arg   Argument de test.
-     * @param bool                  $not   Inverse le test.
+     * @param string $key   Clé du test.
+     * @param mixed  $value Valeur à tester.
+     * @param string $arg   Argument de test.
+     * @param bool   $not   Inverse le test.
      */
     protected function test($key, $value, $arg, $not)
     {
@@ -67,6 +67,8 @@ class File extends \Soosyze\Components\Validator\Rule
      *
      * @param string                $key   Clé du test.
      * @param UploadedFileInterface $value
+     *
+     * @return void
      */
     protected function checkErrorFile($key, UploadedFileInterface $value)
     {
@@ -121,7 +123,7 @@ class File extends \Soosyze\Components\Validator\Rule
      *
      * @param UploadedFileInterface $upload
      *
-     * @return @return string|false Extension du fichier ou FALSE si une erreur s'est produite.
+     * @return string|false Extension du fichier ou FALSE si une erreur s'est produite.
      */
     protected function getExtension(UploadedFileInterface $upload)
     {

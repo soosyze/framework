@@ -18,7 +18,7 @@ class FontAwesome extends \Soosyze\Components\Validator\Rule
     /**
      * Liste des polices de caractères de FontAwesome.
      *
-     * @var type
+     * @var array
      */
     protected $fonts = [
         /* FREE */
@@ -34,7 +34,7 @@ class FontAwesome extends \Soosyze\Components\Validator\Rule
      * Test si une valeur est égale à une expression régulière.
      *
      * @param string $key   Clé du test.
-     * @param scalar $value Valeur à tester.
+     * @param string $value Valeur à tester.
      * @param string $arg   Styles de fontawesome acceptés.
      * @param bool   $not   Inverse le test.
      */

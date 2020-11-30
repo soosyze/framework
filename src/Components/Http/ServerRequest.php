@@ -9,7 +9,9 @@
 namespace Soosyze\Components\Http;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
+use Psr\Http\Message\UriInterface;
 use Soosyze\Components\Http\UploadedFile;
 
 /**
@@ -26,14 +28,14 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @var array
      */
-    protected $serverParams = [];
+    protected $serverParams;
 
     /**
      * Les cookies ($_COOKIE).
      *
-     * @var type
+     * @var array
      */
-    protected $cookieParams = [];
+    protected $cookieParams;
 
     /**
      * Paramètres de la requête ($_GET).
@@ -45,9 +47,9 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Fichiers transmis au serveur ($_FILES).
      *
-     * @var array
+     * @var UploadedFileInterface[]
      */
-    protected $uploadFiles = [];
+    protected $uploadFiles;
 
     /**
      * Les attribues.
@@ -66,20 +68,20 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Construit une requête coté serveur.
      *
-     * @param string                                   $method       Méthode HTTP ('GET'|'POST'|...).
-     * @param \Soosyze\Components\Http\UriInterface    $uri          L'URI de la requête.
-     * @param array                                    $headers      Les en-têtes du message.
-     * @param \Soosyze\Components\Http\StreamInterface $body         Corp de la requête.
-     * @param string                                   $version      La version du protocole HTTP.
-     * @param array                                    $serverParams Paramètres de la requête.
-     * @param array                                    $cookies      Les cookies.
-     * @param array                                    $uploadFiles  Fichiers transmis au serveur.
+     * @param string          $method       Méthode HTTP ('GET'|'POST'|...).
+     * @param UriInterface    $uri          L'URI de la requête.
+     * @param array           $headers      Les en-têtes du message.
+     * @param StreamInterface $body         Corp de la requête.
+     * @param string          $version      La version du protocole HTTP.
+     * @param array           $serverParams Paramètres de la requête.
+     * @param array           $cookies      Les cookies.
+     * @param array           $uploadFiles  Fichiers transmis au serveur.
      */
     public function __construct(
-    $method,
-        \Psr\Http\Message\UriInterface $uri,
+        $method,
+        UriInterface $uri,
         array $headers = [],
-        \Psr\Http\Message\StreamInterface $body = null,
+        StreamInterface $body = null,
         $version = '1.1',
         array $serverParams = [],
         array $cookies = [],
@@ -179,7 +181,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * Si la requête dépasse la taille maximum autorisée.
      * Cette méthode ne fait pas partie de la norme PSR-7.
      *
-     * @return type
+     * @return bool
      */
     public function isMaxSize()
     {
@@ -359,7 +361,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @param string $name    Nom de l'attribut.
      * @param mixed  $default Valeur par défaut à renvoyer si l'attribut n'existe pas.
      *
-     * @return mélangé
+     * @return mixed[]
      */
     public function getAttribute($name, $default = null)
     {

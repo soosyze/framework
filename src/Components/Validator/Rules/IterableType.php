@@ -33,7 +33,7 @@ class IterableType extends \Soosyze\Components\Validator\Rule
      * Test si la valeur est itérable.
      *
      * @param string $key    Clé du test.
-     * @param string $values Valeur à tester.
+     * @param mixed  $values Valeur à tester.
      * @param string $arg    Argument de test.
      * @param bool   $not    Inverse le test.
      */

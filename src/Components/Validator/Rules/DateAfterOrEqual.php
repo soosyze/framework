@@ -22,8 +22,6 @@ class DateAfterOrEqual extends DateAfter
      * @param string $value Date à tester.
      * @param string $arg   Date de comparaison.
      * @param bool   $not   Inverse le test.
-     *
-     * @return int 1 erreur de date.
      */
     protected function test($key, $value, $arg, $not)
     {

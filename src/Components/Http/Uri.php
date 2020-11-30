@@ -56,9 +56,9 @@ class Uri implements UriInterface
     /**
      * Port (80 pour le http, 443 pour le https).
      *
-     * @var int
+     * @var int|null
      */
-    protected $port = '';
+    protected $port = null;
 
     /**
      * Chemin de l'URI.
@@ -273,7 +273,8 @@ class Uri implements UriInterface
      * @param string $scheme Schéma à utiliser avec la nouvelle instance.
      *
      * @throws \InvalidArgumentException pour les schémas invalides ou non pris en charge.
-     * @return static                    Nouvelle instance avec le schéma spécifié.
+     *
+     * @return static Nouvelle instance avec le schéma spécifié.
      */
     public function withScheme($scheme)
     {
@@ -309,7 +310,8 @@ class Uri implements UriInterface
      * @param string $host Nom d'hôte à utiliser avec la nouvelle instance.
      *
      * @throws \InvalidArgumentException Noms d'hôtes non valides.
-     * @return static                    Nouvelle instance avec l'hôte spécifié.
+     *
+     * @return static Nouvelle instance avec l'hôte spécifié.
      */
     public function withHost($host)
     {
@@ -328,7 +330,8 @@ class Uri implements UriInterface
      *                       Supprime les informations du port.
      *
      * @throws \InvalidArgumentException Ports non valides.
-     * @return static                    Nouvelle instance avec le port spécifié.
+     *
+     * @return static Nouvelle instance avec le port spécifié.
      */
     public function withPort($port)
     {
@@ -344,7 +347,8 @@ class Uri implements UriInterface
      * @param string $path Chemin d'accès à utiliser avec la nouvelle instance.
      *
      * @throws \InvalidArgumentException Chemins d'accès non valides.
-     * @return static                    Nouvelle instance avec le chemin spécifié.
+     *
+     * @return static Nouvelle instance avec le chemin spécifié.
      */
     public function withPath($path)
     {
@@ -360,7 +364,8 @@ class Uri implements UriInterface
      * @param string $query Chaîne de requête à utiliser avec la nouvelle instance.
      *
      * @throws \InvalidArgumentException Chaînes de requêtes non valides.
-     * @return static                    Nouvelle instance avec la chaîne de requête spécifiée.
+     *
+     * @return static Nouvelle instance avec la chaîne de requête spécifiée.
      */
     public function withQuery($query)
     {
@@ -396,7 +401,7 @@ class Uri implements UriInterface
      */
     public static function validePort($port)
     {
-        return is_numeric($port) && ($port > 0 && $port <= 65535);
+        return is_int($port) && ($port > 0 && $port <= 65535);
     }
 
     /**
@@ -407,7 +412,8 @@ class Uri implements UriInterface
      * @param string $uri
      *
      * @throws \InvalidArgumentException
-     * @return static                    Nouvelle instance d'URI.
+     *
+     * @return UriInterface Nouvelle instance d'URI.
      */
     public static function create($uri)
     {
@@ -427,7 +433,7 @@ class Uri implements UriInterface
                 : '',
             isset($parse[ 'port' ])
                 ? $parse[ 'port' ]
-                : '',
+                : null,
             isset($parse[ 'query' ])
                 ? $parse[ 'query' ]
                 : '',
@@ -449,7 +455,8 @@ class Uri implements UriInterface
      * @param string|null $sch Schéma à filtrer.
      *
      * @throws \InvalidArgumentException Le schéma n'est pas pris en compte.
-     * @return string                    Schéma normalisé.
+     *
+     * @return string Schéma normalisé.
      */
     protected function filterScheme($sch = '')
     {
@@ -471,10 +478,11 @@ class Uri implements UriInterface
     /**
      * Filtre un port.
      *
-     * @param string|int|null $port Port à filtrer.
+     * @param int|null $port Port à filtrer.
      *
      * @throws \InvalidArgumentException Le port n'est pas dans la gamme des ports TCP/UDP.
-     * @return int|null                  Port normalisé.
+     *
+     * @return int|null Port normalisé.
      */
     protected function filterPort($port)
     {
@@ -536,7 +544,7 @@ class Uri implements UriInterface
     /**
      * Filtre une chaine de caractère.
      *
-     * @param string|object $value Chaine de caractère à filtrer.
+     * @param string|null|object $value Chaine de caractère à filtrer.
      *
      * @return string Chaine de caractère normalisée.
      */

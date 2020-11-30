@@ -11,7 +11,6 @@ namespace Soosyze;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Soosyze\Components\Http\Response;
-use Soosyze\Components\Http\ServerRequest;
 use Soosyze\Components\Http\Stream;
 use Soosyze\Components\Router\Router;
 use Soosyze\Components\Util\Util;
@@ -40,9 +39,16 @@ abstract class App
     protected $environnementDefault = '';
 
     /**
+     * Conteneur d'injection de dépendance (CID).
+     *
+     * @var Container
+     */
+    protected $container;
+
+    /**
      * Instance unique de App.
      *
-     * @var $self
+     * @var self
      */
     private static $instance = null;
 
@@ -52,13 +58,6 @@ abstract class App
      * @var Router
      */
     private $router;
-
-    /**
-     * Conteneur d'injection de dépendance (CID).
-     *
-     * @var Container
-     */
-    private $container;
 
     /**
      * Instances des modules.
@@ -97,7 +96,7 @@ abstract class App
      *
      * @param ServerRequestInterface|null $request Requête courante de l'application.
      *
-     * @return self Instancte unique de App.
+     * @return self Instance unique de App.
      */
     public static function getInstance(ServerRequestInterface $request = null)
     {
@@ -156,6 +155,7 @@ abstract class App
      * @param bool   $addEnv
      *
      * @throws \InvalidArgumentException
+     *
      * @return string
      */
     public function getSettingEnv($key, $default = '', $addEnv = true)
@@ -294,7 +294,9 @@ abstract class App
      */
     public function addHook($name, callable $func)
     {
-        return $this->container->addHook($name, $func);
+        $this->container->addHook($name, $func);
+        
+        return $this;
     }
 
     /**
@@ -328,7 +330,7 @@ abstract class App
     /**
      * Retourne la requête courante.
      *
-     * @return ServerRequest
+     * @return ServerRequestInterface
      */
     public function getRequest()
     {
@@ -382,6 +384,7 @@ abstract class App
      * @param bool   $addEnv  Si le retour doit prendre en compte l'environnement.
      *
      * @throws \InvalidArgumentException The framework parameter must return a string.
+     *
      * @return string
      */
     public function getDir($key, $default = '', $addEnv = true)
@@ -401,6 +404,7 @@ abstract class App
      * @param bool   $addEnv  Si le retour doit prendre en compte l'environnement.
      *
      * @throws \InvalidArgumentException The framework parameter must return a string.
+     *
      * @return string
      */
     public function getPath($key, $default = '', $addEnv = true)
@@ -421,7 +425,7 @@ abstract class App
     /**
      * Charge les instances des contrôleurs dans la table des modules (clé => objet).
      *
-     * @return object[]
+     * @return Controller[]
      */
     abstract protected function loadModules();
 
@@ -450,7 +454,7 @@ abstract class App
      *
      * Les données doivent pouvoir être prise en charge par le Stream de la réponse.
      *
-     * @param ResponseInterface|bool|float|int|ressource|string|null $response
+     * @param ResponseInterface|bool|float|int|object|ressource|string|null $response
      *
      * @return ResponseInterface
      */

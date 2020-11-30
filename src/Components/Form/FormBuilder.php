@@ -44,7 +44,7 @@ class FormBuilder extends FormGroupBuilder
     /**
      * Enregistre l'ouverture du formulaire.
      *
-     * @param array|null $attr Attributs de la balise form.
+     * @param array $attr Attributs de la balise form.
      *
      * @return $this
      */
@@ -68,7 +68,7 @@ class FormBuilder extends FormGroupBuilder
     /**
      * Génère une balise formulaire ouvrante.
      *
-     * @param array|null $attrAdd Liste des attributs additionnels.
+     * @param array $attrAdd Liste des attributs additionnels.
      *
      * @return string HTML
      */

@@ -22,16 +22,14 @@ class Max extends Size
      *
      * @param string                                       $key   Clé du test.
      * @param int|float|string|array|UploadedFileInterface $value Valeur à tester.
-     * @param int|float                                    $arg   Valeur de comparraison.
+     * @param string                                       $arg   Valeur de comparraison.
      * @param bool                                         $not   Inverse le test.
-     *
-     * @throws \InvalidArgumentException La valeur max n'est pas numérique.
      */
     protected function test($key, $value, $arg, $not)
     {
         $length = $this->getSize($value);
         if ($this->hasErrors()) {
-            return 1;
+            return;
         }
         $this->sizeMax($key, $length, $arg, $not);
     }
@@ -51,18 +49,20 @@ class Max extends Size
     /**
      * Test si une valeur est plus grande que la valeur de comparaison.
      *
-     * @param string $key         Clé du test.
-     * @param string $lengthValue Taille de la valeur.
-     * @param string $max         Valeur de comparraison.
-     * @param bool   $not         Inverse le test.
+     * @param string    $key    Clé du test.
+     * @param float|int $length Taille de la valeur.
+     * @param string    $max    Valeur de comparraison.
+     * @param bool      $not    Inverse le test.
+     *
+     * @return void
      */
-    protected function sizeMax($key, $lengthValue, $max, $not)
+    protected function sizeMax($key, $length, $max, $not)
     {
         $sizeMax = $this->getComparator($max);
 
-        if (($lengthValue > $sizeMax) && $not) {
+        if (($length > $sizeMax) && $not) {
             $this->addReturn($key, 'must', [ ':max' => $max ]);
-        } elseif (!($lengthValue > $sizeMax) && !$not) {
+        } elseif (!($length > $sizeMax) && !$not) {
             $this->addReturn($key, 'not', [ ':max' => $max ]);
         }
     }

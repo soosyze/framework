@@ -29,7 +29,7 @@ class Router
     /**
      * Configuration des routes.
      *
-     * @var array|ArrayAccess
+     * @var array|ArrayAccess<string, scalar>
      */
     protected $config = [];
 
@@ -43,7 +43,7 @@ class Router
     /**
      * Le container à transmetre aux objets appelé.
      *
-     * @var ContainerInterface
+     * @var ContainerInterface|null
      */
     protected $container;
 
@@ -61,7 +61,7 @@ class Router
      * Appel un objet et sa méthode en fonction de la requête.
      *
      * @param RequestInterface $request
-     * @param type             $key_query Le préfixe de la route.
+     * @param string           $key_query Le préfixe de la route.
      *
      * @return array|null La route ou null si non trouvée.
      */
@@ -189,7 +189,7 @@ class Router
      * @param string $name      Nom de la route.
      * @param array  $params    Variables requises par la route.
      * @param bool   $strict    Autorise la construction de routes partielles.
-     * @param type   $key_query Le préfixe de la route.
+     * @param string $key_query Le préfixe de la route.
      *
      * @return string
      */
@@ -212,7 +212,7 @@ class Router
      * @param string $name      Nom de la route.
      * @param array  $params    Variables requises par la route.
      * @param bool   $strict    Autorise la construction de routes partielles.
-     * @param type   $key_query Le préfixe de la route.
+     * @param string $key_query Le préfixe de la route.
      *
      * @return RequestInterface
      */
@@ -235,7 +235,7 @@ class Router
      * Construit une route manuellement.
      *
      * @param string $path      Le chemin de la route.
-     * @param type   $key_query Le préfixe de la route.
+     * @param string $key_query Le préfixe de la route.
      *
      * @return string
      */
@@ -276,13 +276,13 @@ class Router
      * Les configurations pour le router :
      * (bool)settings.rewrite_engine Si les routes doivent tenir compte de la réécriture d'URL.
      *
-     * @param array|ArrayAccess $config
+     * @param array|ArrayAccess<string, scalar> $config
      *
      * @return $this
      */
     public function setConfig($config)
     {
-        if (!\is_array($config) && !($config instanceof \ArrayAccess)) {
+        if (!\is_array($config) && !($config instanceof ArrayAccess)) {
             throw new \InvalidArgumentException('The configuration must be an ArrayAccess array or instance.');
         }
         $this->config = $config;
@@ -318,7 +318,7 @@ class Router
      * Parse les paramètres de la requête et retourne la chaine qui servira à
      *
      * @param RequestInterface $request
-     * @param type             $key_query Le préfixe de la route.
+     * @param string           $key_query Le préfixe de la route.
      *
      * @throws \InvalidArgumentException
      * @return string

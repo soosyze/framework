@@ -20,19 +20,17 @@ class InArray extends \Soosyze\Components\Validator\Rule
      *
      * @param string $key   Clé du test.
      * @param scalar $value Valeur à tester.
-     * @param array  $arg   Tableau de comparaison.
+     * @param string $arg   Tableau de comparaison.
      * @param bool   $not   Inverse le test.
      */
     protected function test($key, $value, $arg, $not)
     {
-        $array = \is_array($arg)
-            ? $arg
-            : explode(',', $arg);
+        $array = explode(',', $arg);
 
         if (!in_array($value, $array) && $not) {
-            $this->addReturn($key, 'must', [ ':list' => implode(',', $array) ]);
+            $this->addReturn($key, 'must', [ ':list' => $arg ]);
         } elseif (in_array($value, $array) && !$not) {
-            $this->addReturn($key, 'not', [ ':list' => implode(',', $array) ]);
+            $this->addReturn($key, 'not', [ ':list' => $arg ]);
         }
     }
 

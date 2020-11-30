@@ -32,7 +32,7 @@ class Template
     /**
      * Les sous templates.
      *
-     * @var \Template[]
+     * @var array<Template|null>
      */
     protected $sections = [];
 
@@ -158,8 +158,8 @@ class Template
     /**
      * Ajoute un bloc sous template avec la variable id_block par défaut.
      *
-     * @param string   $key Clé unique du bloc.
-     * @param Template $tpl Sous template.
+     * @param string        $key Clé unique du bloc.
+     * @param Template|null $tpl Sous template.
      *
      * @return $this
      */
@@ -204,6 +204,7 @@ class Template
      * @param string $key Nom de la template recherchée
      *
      * @throws \Exception Le bloc n'existe pas.
+     *
      * @return Template
      */
     public function getBlock($key)
@@ -220,7 +221,7 @@ class Template
      *
      * @codeCoverageIgnore getter
      *
-     * @return Template[]
+     * @return array<Template|null>
      */
     public function getBlocks()
     {
@@ -257,6 +258,8 @@ class Template
      * @codeCoverageIgnore setter
      *
      * @param string $name
+     *
+     * @return $this
      */
     public function setName($name)
     {

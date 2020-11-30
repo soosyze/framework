@@ -8,6 +8,8 @@
 
 namespace Soosyze\Components\Validator\Rules;
 
+use Psr\Http\Message\UploadedFileInterface;
+
 /**
  * {@inheritdoc}
  *
@@ -22,15 +24,13 @@ class FileExtensions extends File
      * @param UploadedFileInterface $value Valeur à tester.
      * @param string                $arg   Liste d'extensions séparé par une virgule.
      * @param bool                  $not   Inverse le test.
-     *
-     * @return int 1 erreur de fichier.
      */
     protected function test($key, $value, $arg, $not)
     {
-        parent::test('file', $value, false, true);
+        parent::test('file', $value, '', true);
 
         if ($this->hasErrors()) {
-            return 1;
+            return;
         }
 
         $extensions = explode(',', $arg);

@@ -43,6 +43,8 @@ final class Route
      * @param string $path
      * @param string $uses
      * @param array  $withs
+     *
+     * @return void
      */
     public static function get($key, $path, $uses, array $withs = [])
     {
@@ -52,10 +54,12 @@ final class Route
     /**
      * Ajoute une route avec la méthode POST.
      *
-     * @param type  $key
-     * @param type  $path
-     * @param type  $uses
-     * @param array $withs
+     * @param string $key
+     * @param string $path
+     * @param string $uses
+     * @param array  $withs
+     *
+     * @return void
      */
     public static function post($key, $path, $uses, array $withs = [])
     {
@@ -65,10 +69,12 @@ final class Route
     /**
      * Ajoute une route avec la méthode PUT.
      *
-     * @param type  $key
-     * @param type  $path
-     * @param type  $uses
-     * @param array $withs
+     * @param string $key
+     * @param string $path
+     * @param string $uses
+     * @param array  $withs
+     *
+     * @return void
      */
     public static function put($key, $path, $uses, array $withs = [])
     {
@@ -78,10 +84,12 @@ final class Route
     /**
      * Ajoute une route avec la méthode PATH.
      *
-     * @param type  $key
-     * @param type  $path
-     * @param type  $uses
-     * @param array $withs
+     * @param string $key
+     * @param string $path
+     * @param string $uses
+     * @param array  $withs
+     *
+     * @return void
      */
     public static function path($key, $path, $uses, array $withs = [])
     {
@@ -91,10 +99,12 @@ final class Route
     /**
      * Ajoute une route avec la méthode DELETE.
      *
-     * @param type  $key
-     * @param type  $path
-     * @param type  $uses
-     * @param array $withs
+     * @param string $key
+     * @param string $path
+     * @param string $uses
+     * @param array  $withs
+     *
+     * @return void
      */
     public static function delete($key, $path, $uses, array $withs = [])
     {
@@ -104,10 +114,12 @@ final class Route
     /**
      * Ajoute une route avec la méthode OPTION.
      *
-     * @param type  $key
-     * @param type  $path
-     * @param type  $uses
-     * @param array $withs
+     * @param string $key
+     * @param string $path
+     * @param string $uses
+     * @param array  $withs
+     *
+     * @return void
      */
     public static function option($key, $path, $uses, array $withs = [])
     {
@@ -141,7 +153,9 @@ final class Route
     /**
      * Spécifie le namespace des contrôleurs.
      *
-     * @param type $namespace
+     * @param string $namespace
+     *
+     * @return void
      */
     public static function useNamespace($namespace)
     {
@@ -155,7 +169,7 @@ final class Route
      *
      * @return array
      */
-    public static function getRouteByMethode($methode = null)
+    public static function getRouteByMethode($methode)
     {
         return !empty(self::$routeByMethode[ strtolower($methode) ])
             ? self::$routeByMethode[ strtolower($methode) ]
@@ -170,6 +184,8 @@ final class Route
      * @param string $path    La route
      * @param string $uses    Nom de la classe et sa méthode séparées par '@'
      * @param array  $withs   Liste des arguments.
+     *
+     * @return void
      */
     protected static function addMethode(
     $methode,

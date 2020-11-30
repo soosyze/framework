@@ -163,13 +163,13 @@ class Validator
      * @param string $key  Clé du test.
      * @param Rule   $rule Function de test.
      *
-     * @return $this
+     * @return self
      */
     public static function addTestGlobal($key, $rule)
     {
         self::$testsCustomGlobal[ $key ] = $rule;
 
-        return new static;
+        return new self();
     }
 
     /**
@@ -180,7 +180,7 @@ class Validator
      *
      * @return $this
      */
-    public static function addTest($key, $rule)
+    public function addTest($key, Rule $rule)
     {
         $this->testsCustom[ $key ] = $rule;
 
@@ -192,13 +192,13 @@ class Validator
      *
      * @param string[] $messages
      *
-     * @return $this
+     * @return self
      */
     public static function setMessagesGlobal(array $messages)
     {
         self::$messagesCustomGlobal = $messages;
 
-        return new static;
+        return new self();
     }
 
     /**
@@ -218,14 +218,14 @@ class Validator
     /**
      * Ajoute un message de retours personnalisés.
      *
-     * @param string   $key
-     * @param string[] $messages
+     * @param string $key
+     * @param array  $message
      *
      * @return $this
      */
-    public function addMessage($key, array $messages)
+    public function addMessage($key, array $message)
     {
-        $this->messagesCustom[ $key ] = $messages;
+        $this->messagesCustom[ $key ] = $message;
 
         return $this;
     }
@@ -297,8 +297,8 @@ class Validator
      *
      * @codeCoverageIgnore add
      *
-     * @param type $key
-     * @param type $label
+     * @param string $key
+     * @param string $label
      *
      * @return $this
      */
@@ -561,6 +561,8 @@ class Validator
      *
      * @param string $key   La clé des tests
      * @param Rule[] $rules Les règles.
+     *
+     * @return void
      */
     protected function execute($key, array $rules)
     {
@@ -617,10 +619,10 @@ class Validator
             : $exp[ 0 ];
         $arg  = isset($exp[ 1 ])
             ? $exp[ 1 ]
-            : false;
+            : '';
 
         /* Si l'argument fait référence à un autre champ. */
-        if ($arg !== false && isset($arg[ 0 ]) && $arg[ 0 ] === '@') {
+        if ($arg !== '' && isset($arg[ 0 ]) && $arg[ 0 ] === '@') {
             $keyArg = substr($arg, 1);
             $arg    = $this->inputs[ $keyArg ];
         }

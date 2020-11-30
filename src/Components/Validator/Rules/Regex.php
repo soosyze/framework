@@ -19,7 +19,7 @@ class Regex extends \Soosyze\Components\Validator\Rule
      * Test si une valeur est égale à une expression régulière.
      *
      * @param string $key   Clé du test.
-     * @param scalar $value Valeur à tester.
+     * @param string $value Valeur à tester.
      * @param string $arg   Expression régulière.
      * @param bool   $not   Inverse le test.
      */

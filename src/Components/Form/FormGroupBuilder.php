@@ -111,7 +111,7 @@ class FormGroupBuilder
      *
      * @return $this
      */
-    public function __call($type, $arg)
+    public function __call($type, array $arg)
     {
         if (in_array($type, self::$typeInputBasic)) {
             array_unshift($arg, $type);
@@ -240,10 +240,10 @@ class FormGroupBuilder
     /**
      * Enregistre un groupe d'input.
      *
-     * @param string     $name     Nom du groupe.
-     * @param string     $balise   Type de balise (div|span|fieldset).
-     * @param callable   $callback Fonction de création du sous-formulaire.
-     * @param array|null $attr     Liste d'attributs.
+     * @param string   $name     Nom du groupe.
+     * @param string   $balise   Type de balise (div|span|fieldset).
+     * @param callable $callback Fonction de création du sous-formulaire.
+     * @param array    $attr     Liste d'attributs.
      *
      * @return $this
      */
@@ -265,7 +265,7 @@ class FormGroupBuilder
      *
      * @param string          $name  Clé unique.
      * @param string|callable $label Texte à afficher ou sous formulaire.
-     * @param array|null      $attr  Liste d'attributs.
+     * @param array           $attr  Liste d'attributs.
      *
      * @return $this
      */
@@ -285,9 +285,9 @@ class FormGroupBuilder
     /**
      * Enregistre une legende.
      *
-     * @param string     $name   Clé unique.
-     * @param string     $legend Texte à afficher.
-     * @param array|null $attr   Liste d'attributs.
+     * @param string $name   Clé unique.
+     * @param string $legend Texte à afficher.
+     * @param array  $attr   Liste d'attributs.
      *
      * @return $this
      */
@@ -301,8 +301,8 @@ class FormGroupBuilder
     /**
      * Enregistre un champ numerique.
      *
-     * @param string     $name Clé unique.
-     * @param array|null $attr Liste d'attributs.
+     * @param string $name Clé unique.
+     * @param array  $attr Liste d'attributs.
      *
      * @return $this
      */
@@ -350,9 +350,9 @@ class FormGroupBuilder
     /**
      * Enregistre un textarea.
      *
-     * @param string     $name    Clé unique.
-     * @param string     $content Contenu du textarea.
-     * @param array|null $attr    Liste d'attributs.
+     * @param string $name    Clé unique.
+     * @param string $content Contenu du textarea.
+     * @param array  $attr    Liste d'attributs.
      *
      * @return $this
      */
@@ -368,8 +368,8 @@ class FormGroupBuilder
     /**
      * Enregistre une datetime.
      *
-     * @param string     $name Clé unique.
-     * @param array|null $attr Liste d'attributs.
+     * @param string $name Clé unique.
+     * @param array  $attr Liste d'attributs.
      *
      * @return $this
      */
@@ -403,9 +403,9 @@ class FormGroupBuilder
     /**
      * Enregistre un input standard.
      *
-     * @param string     $type Type d'input.
-     * @param string     $name Clé unique.
-     * @param array|null $attr Liste d'attributs.
+     * @param string $type Type d'input.
+     * @param string $name Clé unique.
+     * @param array  $attr Liste d'attributs.
      *
      * @return $this
      */
@@ -419,9 +419,9 @@ class FormGroupBuilder
     /**
      * Enregistre un submit.
      *
-     * @param string     $name  Clé unique.
-     * @param string     $value Texte à afficher.
-     * @param array|null $attr  Liste d'attributs.
+     * @param string $name  Clé unique.
+     * @param string $value Texte à afficher.
+     * @param array  $attr  Liste d'attributs.
      *
      * @return $this
      */
@@ -641,6 +641,8 @@ class FormGroupBuilder
      * @param string $key   Clé du champ multiple.
      * @param array  $value Liste des champs.
      * @param array  $attr  Attributs à ajouter.
+     *
+     * @return void
      */
     protected function addAttrsArray($key, array $value, array $attr = [])
     {
@@ -695,9 +697,9 @@ class FormGroupBuilder
     /**
      * Fusionne 2 tableaux sans écrasement de données si l'un des 2 est vide.
      *
-     * @param array|null $tab1
-     * @param array|null $tab2
-     * @param bool       $crushed
+     * @param array $tab1
+     * @param array $tab2
+     * @param bool  $crushed
      *
      * @return array Fusion des 2 tableaux.
      */
@@ -798,6 +800,8 @@ class FormGroupBuilder
      * Ajoute un formulaire au début du formulaire courant.
      *
      * @param FormGroupBuilder $form
+     *
+     * @return void
      */
     private function addFirst(FormGroupBuilder $form)
     {
@@ -808,6 +812,8 @@ class FormGroupBuilder
      * Ajoute un formulaire à la fin du formulaire courant.
      *
      * @param FormGroupBuilder $form
+     *
+     * @return void
      */
     private function addEnd(FormGroupBuilder $form)
     {

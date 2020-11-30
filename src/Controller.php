@@ -55,7 +55,7 @@ class Controller
      *
      * @return object
      */
-    public function __call($key, $arg)
+    public function __call($key, array $arg)
     {
         return $this->container->get($key);
     }

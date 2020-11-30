@@ -14,6 +14,7 @@ use Soosyze\Components\Util\Util;
  * Enregistre et restitue dans des fichiers de configuration de l'application.
  *
  * @author Mathieu NOËL <mathieu@soosyze.com>
+ * @implements \ArrayAccess<string, scalar>
  */
 class Config implements \ArrayAccess
 {
@@ -95,7 +96,8 @@ class Config implements \ArrayAccess
      * @param mixed  $value  Valeur à stocker.
      *
      * @throws \InvalidArgumentException La clé est invalide, elle doit être composée de 2 parties séparées par un point.
-     * @return this
+     *
+     * @return $this
      */
     public function set($strKey, $value)
     {
@@ -125,7 +127,8 @@ class Config implements \ArrayAccess
      * @param string $strKey "nom_fichier.nom_clé".
      *
      * @throws \InvalidArgumentException
-     * @return this
+     *
+     * @return $this
      */
     public function del($strKey)
     {
@@ -194,6 +197,8 @@ class Config implements \ArrayAccess
      *
      * @param mixed $offset
      * @param mixed $value
+     *
+     * @return void
      */
     public function offsetSet($offset, $value)
     {
@@ -206,6 +211,8 @@ class Config implements \ArrayAccess
      * @see https://www.php.net/manual/en/arrayaccess.offsetunset.php
      *
      * @param mixed $offset
+     *
+     * @return void
      */
     public function offsetUnset($offset)
     {

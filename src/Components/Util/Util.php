@@ -84,6 +84,7 @@ class Util
      * @throws \InvalidArgumentException L'extension du fichier n'est pas au format JSON.
      * @throws \Exception                Le fichier JSON n'est pas accessible en lecture.
      * @throws \Exception                Le fichier JSON est invalide.
+     *
      * @return array|object
      */
     public static function getJson($strFile, $assoc = true)
@@ -108,13 +109,16 @@ class Util
                 htmlspecialchars("The $strFile is not in JSON format.")
             );
         }
-        if (($return = json_decode(file_get_contents($strFile), $assoc)) === null) {
+
+        $out = json_decode(file_get_contents($strFile), $assoc);
+
+        if ((!is_array($out) && $assoc) || (!is_object($out) && !$assoc)) {
             throw new \Exception(
                 htmlspecialchars("The JSON $strFile file is invalid.")
             );
         }
 
-        return $return;
+        return $out;
     }
 
     /**
@@ -334,7 +338,7 @@ class Util
      * et supprime au début et à la fin de la chaine les caractères de séparation et tirets.
      *
      * @param string $str       Chaîne de caractère à traiter.
-     * @param char   $separator Caractère de remplacement.
+     * @param string $separator Caractère de remplacement.
      * @param string $ignore    Caractères ignorés par le remplacement.
      *
      * @return string
@@ -376,7 +380,7 @@ class Util
      *
      * @param string $shortBytes
      *
-     * @return int
+     * @return int|null
      */
     public static function getOctetShortBytesPhp($shortBytes)
     {

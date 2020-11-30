@@ -51,7 +51,7 @@ class RequiredWith extends Required
             }
 
             $require = (new Required)
-                ->hydrate('required', $field, false, true)
+                ->hydrate('required', $field, '', true)
                 ->execute($this->inputs[ $field ]);
             if (!$require->hasErrors()) {
                 return true;

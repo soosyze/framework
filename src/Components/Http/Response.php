@@ -9,6 +9,7 @@
 namespace Soosyze\Components\Http;
 
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Représentation d'une réponse sortante côté serveur.
@@ -108,14 +109,14 @@ class Response extends Message implements ResponseInterface
     /**
      * Construit une réponse à partir de son code, son message et de ses en-têtes.
      *
-     * @param int                               $code         Code d'état.
-     * @param \Psr\Http\Message\StreamInterface $body         Corp de la réponse.
-     * @param array                             $headers      En-tête de la réponse.
-     * @param string                            $reasonPhrase La phrase de raison allant de paire avec le code d'état.
+     * @param int                  $code         Code d'état.
+     * @param StreamInterface|null $body         Corp de la réponse.
+     * @param array                $headers      En-tête de la réponse.
+     * @param string               $reasonPhrase La phrase de raison allant de paire avec le code d'état.
      */
     public function __construct(
         $code = 200,
-        \Psr\Http\Message\StreamInterface $body = null,
+        StreamInterface $body = null,
         array $headers = [],
         $reasonPhrase = ''
     ) {
@@ -167,6 +168,7 @@ class Response extends Message implements ResponseInterface
      *                             utiliser les valeurs par défaut comme suggéré dans la spécification HTTP.
      *
      * @throws \InvalidArgumentException Pour les arguments de code d'état non valides.
+     *
      * @return static
      */
     public function withStatus($code, $reasonPhrase = '')
@@ -186,7 +188,7 @@ class Response extends Message implements ResponseInterface
     /**
      * Obtient la phrase de raison de la réponse.
      *
-     * @return int Code d'état.
+     * @return string Code d'état.
      */
     public function getReasonPhrase()
     {
@@ -199,13 +201,11 @@ class Response extends Message implements ResponseInterface
      * @param int $code Code d'état.
      *
      * @throws \InvalidArgumentException Le code de statut n'est pas valide.
-     * @return int                       Le code d'état filtré.
+     *
+     * @return int Le code d'état filtré.
      */
     protected function filtreCode($code)
     {
-        if (is_numeric($code) && is_int($code)) {
-            $code = (int) $code;
-        }
         if (!is_int($code) || !isset($this->reasonPhraseDefault[ $code ])) {
             throw new \InvalidArgumentException('Status code is invalid.');
         }

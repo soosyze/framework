@@ -46,7 +46,7 @@ class Container implements ContainerInterface
     /**
      * Composant de configuration.
      *
-     * @var array|ArrayAccess
+     * @var array|ArrayAccess<string, scalar>
      */
     protected $config;
 
@@ -58,7 +58,7 @@ class Container implements ContainerInterface
      *
      * @return object
      */
-    public function __call($name, $arg)
+    public function __call($name, array $arg)
     {
         return $this->get($name);
     }
@@ -250,7 +250,7 @@ class Container implements ContainerInterface
     /**
      * Ajoute le composant de configuration pour les services.
      *
-     * @param array|ArrayAccess $config
+     * @param array|ArrayAccess<string, scalar> $config
      *
      * @return $this
      */
@@ -270,6 +270,8 @@ class Container implements ContainerInterface
      * Charge les hooks contenus dans les services.
      *
      * @param array $services
+     *
+     * @return void
      */
     protected function loadHooks(array $services)
     {

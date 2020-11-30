@@ -25,14 +25,18 @@ abstract class Filter extends Rule
     public function execute($value)
     {
         $this->value = $this->clean($this->name, $value, $this->args);
+
+        return $this;
     }
 
     /**
      * Défini le filtre.
      *
      * @param string $key   Identifiant de la valeur.
-     * @param string $value Valeur à filtrer.
+     * @param mixed  $value Valeur à filtrer.
      * @param string $arg   Argument de filtre.
+     *
+     * @return mixed
      */
     abstract protected function clean($key, $value, $arg);
 

@@ -25,19 +25,17 @@ class FileMimes extends FileExtensions
     /**
      * Test si l'extension du fichier est autorisée.
      *
-     * @param string                $key   Clé du test.
-     * @param UploadedFileInterface $value Valeur à tester.
-     * @param scalar                $arg   Liste des extensions autorisées.
-     * @param bool                  $not   Inverse le test.
-     *
-     * @return int 1 erreur de fichier.
+     * @param string $key   Clé du test.
+     * @param mixed  $value Valeur à tester.
+     * @param string $arg   Liste des extensions autorisées.
+     * @param bool   $not   Inverse le test.
      */
     protected function test($key, $value, $arg, $not)
     {
         parent::test('file_extensions', $value, $arg, $not);
 
         if ($this->hasErrors()) {
-            return 1;
+            return;
         }
 
         $this->mimetypes = include 'mimetypes_by_extensions.php';
@@ -70,12 +68,12 @@ class FileMimes extends FileExtensions
      * @param string $info      Information sur le mimetype du fichier.
      * @param sting  $extension L'extension attendu.
      *
-     * @return int 1 erreur, l'extension n'est pas pris en charge.
+     * @return void
      */
     protected function validMime($info, $extension)
     {
         if (($mime = $this->getMimeByExtension($extension)) === false) {
-            return 1;
+            return;
         }
 
         if (is_array($mime) && !in_array($info, $mime)) {
@@ -90,11 +88,13 @@ class FileMimes extends FileExtensions
      *
      * @param string $info       Information sur le mimetype du fichier.
      * @param string $extensions Liste d'extensions séparées par une virgule.
+     *
+     * @return void
      */
     protected function validNotMime($info, $extensions)
     {
         if (($mimes = $this->getMimesByExtensions(explode(',', $extensions))) === false) {
-            return 1;
+            return;
         }
 
         if (in_array($info, $mimes)) {

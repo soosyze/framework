@@ -23,6 +23,8 @@ class ToInt extends \Soosyze\Components\Validator\Filter
      * @param string $arg   Argument de filtre.
      *
      * @throws \InvalidArgumentException La valeur time n'est pas numérique.
+     *
+     * @return int
      */
     protected function clean($key, $value, $arg)
     {

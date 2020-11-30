@@ -16,9 +16,11 @@ namespace Soosyze\Components\Validator;
 interface RuleInputsInterface
 {
     /**
-     * Ajoute toute les champs.
+     * Ajoute des champs.
      *
      * @param array $inputs Ensemble des champs.
+     *
+     * @return void
      */
     public function setInputs(array $inputs);
 }

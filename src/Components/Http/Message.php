@@ -33,7 +33,7 @@ class Message implements MessageInterface
     /**
      * Corp du message.
      *
-     * @var \Psr\Http\Message\StreamInterface
+     * @var StreamInterface
      */
     protected $body;
 
@@ -96,7 +96,7 @@ class Message implements MessageInterface
     /**
      * Vérifie si un en-tête existe par le nom (insensible à la casse).
      *
-     * @param $name Nom du champ d'en-tête insensible à la casse.
+     * @param string $name Nom du champ d'en-tête insensible à la casse.
      *
      * @return bool Renvoie true si l'en-tête est trouvé sinon faux.
      */
@@ -108,7 +108,7 @@ class Message implements MessageInterface
     /**
      * Vérifie si un en-tête existe par le nom (insensible à la casse).
      *
-     * @param $name Nom du champ d'en-tête insensible à la casse.
+     * @param string $name Nom du champ d'en-tête insensible à la casse.
      *
      * @return string[] Si l'en-tête est trouvé alors il est renvoyé
      *                  toutes ses valeurs, sinon un tableau vide.
@@ -123,7 +123,7 @@ class Message implements MessageInterface
     /**
      * Récupère une chaîne de valeurs séparées par des virgules pour un seul en-tête.
      *
-     * @param $name Nom du champ d'en-tête insensible à la casse.
+     * @param string $name Nom du champ d'en-tête insensible à la casse.
      *
      * @return string Si l'en-tête est trouvé alors il est renvoyé
      *                toutes les valeurs de l'en-tête concaténés par une virgule, sinon une chaine vide.
@@ -207,7 +207,7 @@ class Message implements MessageInterface
     /**
      * Renvoie une instance avec le corps du message spécifié.
      *
-     * @param string $body Le corp.
+     * @param StreamInterface $body Le corp.
      *
      * @return $this
      */
@@ -225,7 +225,8 @@ class Message implements MessageInterface
      * @param string $version
      *
      * @throws \InvalidArgumentException Le protocole spécifié n'est pas valide.
-     * @return string                    Le protocole si celui-ci est conforme.
+     *
+     * @return string Le protocole si celui-ci est conforme.
      */
     protected function filterProtocolVersion($version)
     {
@@ -240,6 +241,8 @@ class Message implements MessageInterface
      * Ajoute les en-têtes au message.
      *
      * @param array $headers
+     *
+     * @return void
      */
     protected function withHeaders(array $headers)
     {
@@ -272,7 +275,7 @@ class Message implements MessageInterface
      * @param string       $header
      * @param array|string $values
      *
-     * @throws InvalidArgumentException;
+     * @throws \InvalidArgumentException;
      *
      * @return array
      */

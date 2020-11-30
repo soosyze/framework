@@ -19,7 +19,7 @@ class BoolType extends \Soosyze\Components\Validator\Rule
      * Test si une valeur est de type boolean.
      *
      * @param string $key   Clé du test.
-     * @param string $value Valeur à tester.
+     * @param mixed  $value Valeur à tester.
      * @param string $arg   Argument de test.
      * @param bool   $not   Inverse le test.
      */
@@ -38,6 +38,9 @@ class BoolType extends \Soosyze\Components\Validator\Rule
 
     /**
      * Si la variable contient une valeur boolean.
+     *
+     * @see https://www.php.net/ChangeLog-5.php#PHP_5_4 (5.4.8)
+     * Fixed bug #49510 (Boolean validation fails with FILTER_NULL_ON_FAILURE with empty string or false.)
      *
      * @param mixed $var Variable testée.
      *

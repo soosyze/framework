@@ -29,7 +29,7 @@ class Autoload
     /**
      * Liste les répertoires à parcourir pour le chargement.
      *
-     * @var array
+     * @var string[]
      */
     protected $map = [];
 
@@ -67,7 +67,7 @@ class Autoload
     /**
      * Ajoute une map à parcourir pour y trouver des classes.
      *
-     * @param array $map
+     * @param string[] $map
      *
      * @return $this
      */
@@ -94,6 +94,8 @@ class Autoload
 
     /**
      * Appel l'autoload register.
+     *
+     * @return void
      */
     public function register()
     {

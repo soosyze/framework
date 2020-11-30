@@ -19,7 +19,7 @@ class StringType extends \Soosyze\Components\Validator\Rule
      * Test si la valeur est une chaine de caractères.
      *
      * @param string $key   Clé du test.
-     * @param string $value Valeur à tester.
+     * @param mixed  $value Valeur à tester.
      * @param string $arg   Argument de test.
      * @param bool   $not   Inverse le test.
      */

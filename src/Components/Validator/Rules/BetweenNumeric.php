@@ -26,10 +26,12 @@ class BetweenNumeric extends Between
     protected function test($key, $value, $arg, $not)
     {
         $length = $this->getSizeNumeric($value);
+
         if ($this->hasErrors()) {
-            return 1;
+            return;
         }
-        $between = $this->getParamMinMax($arg);
-        $this->sizeBetween($key, $length, $between[ 'min' ], $between[ 'max' ], $not);
+
+        list($min, $max) = $this->getParamMinMax($arg);
+        $this->sizeBetween($key, $length, $min, $max, $not);
     }
 }

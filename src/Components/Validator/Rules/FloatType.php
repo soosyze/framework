@@ -19,7 +19,7 @@ class FloatType extends \Soosyze\Components\Validator\Rule
      * Test si une variable est de type ou de valeur numérique flottant.
      *
      * @param string $key   Clé du test.
-     * @param float  $value Valeur à tester.
+     * @param mixed  $value Valeur à tester.
      * @param string $arg   Argument de test.
      * @param bool   $not   Inverse le test.
      */

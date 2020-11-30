@@ -24,8 +24,6 @@ class DateFormat extends \Soosyze\Components\Validator\Rule
      * @param string $value Valeur à tester.
      * @param string $arg   Format de la date (ex: Y-m-d).
      * @param bool   $not   Inverse le test.
-     *
-     * @return int 1 erreur de date.
      */
     protected function test($key, $value, $arg, $not)
     {

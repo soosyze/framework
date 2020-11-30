@@ -90,11 +90,11 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Construit un fichier.
      *
-     * @param string|ressource|StreamInterface $file
-     * @param string|null                      $name
-     * @param int|null                         $size
-     * @param string|null                      $type
-     * @param int                              $error
+     * @param string|resource|StreamInterface $file
+     * @param string|null                     $name
+     * @param int|null                        $size
+     * @param string|null                     $type
+     * @param int                             $error
      */
     public function __construct(
         $file,
@@ -267,9 +267,11 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Déclenche une exception si le fichier n'est pas valide.
      *
-     * @param string|ressource|StreamInterface $file Le fichier.
+     * @param string|resource|StreamInterface $file Le fichier.
      *
      * @throws \InvalidArgumentException La ressource de fichier n'est pas lisible.
+     *
+     * @return void
      */
     protected function filterFile($file)
     {
@@ -287,10 +289,11 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Déclenche une exception si le nom du fichier n'est pas valide.
      *
-     * @param string $name Nom du fichier
+     * @param string|null $name Nom du fichier
      *
      * @throws \InvalidArgumentException Le nom du fichier doit être une chaine de caractère ou null.
-     * @return string                    Nom du fichier filtré.
+     *
+     * @return string|null Nom du fichier filtré.
      */
     protected function filterName($name)
     {
@@ -304,10 +307,11 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Déclenche une exception si la taille du fichier n'est pas valide.
      *
-     * @param int $size Taille du fichier.
+     * @param int|null $size Taille du fichier.
      *
      * @throws \InvalidArgumentException La taille du fichier doit-être un nombre entier ou null
-     * @return int                       Taille du fichier filtré.
+     *
+     * @return int|null Taille du fichier filtré.
      */
     protected function filterSize($size)
     {
@@ -321,10 +325,11 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Déclenche une exception si le type du fichier n'est pas valide.
      *
-     * @param string $type Type du fichier
+     * @param string|null $type Type du fichier
      *
      * @throws \InvalidArgumentException Le type du fichier doit être une chaine de caractère ou null.
-     * @return string                    Type du fichier filtré.
+     *
+     * @return string|null Type du fichier filtré.
      */
     protected function filterType($type)
     {
@@ -341,7 +346,8 @@ class UploadedFile implements UploadedFileInterface
      * @param int $error Type d'erreur.
      *
      * @throws \InvalidArgumentException Le type d'erreur n'est pas valide.
-     * @return int                       Type d'erreur filtré.
+     *
+     * @return int Type d'erreur filtré.
      */
     protected function filterError($error)
     {
@@ -371,6 +377,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @throws \RuntimeException Le fichier n'a pas été téléchargé par HTTP POST.
      * @throws \RuntimeException Une erreur est survenue dans le déplacement du fichier.
+     *
      * @return bool
      */
     private function moveToNoSapi($targetPath)
