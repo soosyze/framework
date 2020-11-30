@@ -99,17 +99,20 @@ class Controller
      *
      * @codeCoverageIgnore Fonction testé directement avec l'objet Response.
      *
-     * @param string           $stream
-     * @param RequestInterface $request
+     * @param RequestInterface|null $request
      *
      * @return Response
      */
-    protected function get404($stream = null, RequestInterface $request = null)
+    protected function get404(RequestInterface $request = null)
     {
-        $text          = 'Page %s Not Found. Sorry, but the page you were trying to view does not exist.';
-        $stream_output = $stream instanceof RequestInterface && $request === null
-            ? sprintf($text, $stream->getUri()->getQuery())
-            : sprintf($text, $request->getUri()->getQuery());
+        $text = 'Page %s Not Found. Sorry, but the page you were trying to view does not exist.';
+
+        $stream_output = sprintf(
+            $text,
+            $request === null
+                ? ''
+                : $request->getUri()->getQuery()
+        );
 
         return new Response(404, new Stream($stream_output));
     }
