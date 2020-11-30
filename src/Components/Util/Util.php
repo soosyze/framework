@@ -278,6 +278,22 @@ class Util
     }
 
     /**
+     * Recherche une chaine dans une autre et l'entoure d'une balise avec une classe CSS.
+     *
+     * @param string $needle         Chaîne recherché.
+     * @param string $haystack       Chaine d'entrée
+     * @param string $classHighlight Classe CSS de la surbrillance
+     *
+     * @return string
+     */
+    public static function strHighlight($needle, $haystack, $classHighlight = 'highlight')
+    {
+        return $needle === ''
+            ? $haystack
+            : preg_replace('/' . preg_quote($needle, '/') . '/i', "<span class=\"$classHighlight\">$0</span>", $haystack);
+    }
+
+    /**
      * Remplace la première occurrence dans une chaine.
      *
      * @param string $search  Chaîne recherché.

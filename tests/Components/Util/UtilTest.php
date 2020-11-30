@@ -157,6 +157,27 @@ class UtilTest extends \PHPUnit\Framework\TestCase
         $output2 = Util::strRandom(30);
         $this->assertEquals(30, strlen($output2));
     }
+    
+    public function testStrHighlight()
+    {
+        $needle   = 'hello';
+        $haystack = 'hello wolrd';
+
+        $this->assertEquals(
+            'hello wolrd',
+            Util::strHighlight('', $haystack)
+        );
+
+        $this->assertEquals(
+            '<span class="highlight">hello</span> wolrd',
+            Util::strHighlight($needle, $haystack)
+        );
+
+        $this->assertEquals(
+            '<span class="foo">hello</span> wolrd',
+            Util::strHighlight($needle, $haystack, 'foo')
+        );
+    }
 
     public function testStrSlug()
     {
