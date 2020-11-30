@@ -180,7 +180,7 @@ trait FormRenderTrait
      */
     protected function renderLegend($key, array $item)
     {
-        $legend = isset($item[ 'attr' ][ 'label' ])
+        $legend = isset($item[ 'attr' ][ 'legend' ])
             ? $item[ 'attr' ][ 'legend' ]
             : $item[ 'legend' ];
         unset($item[ 'attr' ][ 'legend' ]);

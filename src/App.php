@@ -100,8 +100,8 @@ abstract class App
      */
     public static function getInstance(ServerRequestInterface $request = null)
     {
-        if (is_null(self::$instance)) {
-            $class          = get_called_class();
+        $class = get_called_class();
+        if (self::$instance === null) {
             self::$instance = new $class($request);
         }
 
@@ -412,7 +412,7 @@ abstract class App
         $root = $this->request->getBasePath();
         $dir  = $this->getSettingEnv($key, $default, $addEnv);
 
-        return $root . Util::cleanPath("$dir");
+        return $root . Util::cleanPath($dir);
     }
 
     /**

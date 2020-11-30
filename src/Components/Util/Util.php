@@ -190,11 +190,11 @@ class Util
      *
      * @return array Liste des répertoires.
      */
-    public static function getFolder($dir, $exclude = [ '.', '..' ])
+    public static function getFolder($dir, array $exclude = [ '.', '..' ])
     {
         $folder = [];
         foreach (new \DirectoryIterator($dir) as $file) {
-            if ($file->isDir() && !in_array($file->getBasename(), $exclude)) {
+            if ($file->isDir() && !\in_array($file->getBasename(), $exclude, true)) {
                 $folder[] = $file->getBasename();
             }
         }
@@ -205,18 +205,19 @@ class Util
     /**
      * Ajoute un préfixe à chaque élément d'un tableau de string.
      *
-     * @param string[] $array  Tableau contenant les valeurs à préfixer.
+     * @param string[] $values Tableau contenant les valeurs à préfixer.
      * @param string   $prefix Préfixe à ajouter.
      *
      * @return array Tableau préfixer.
      */
-    public static function arrayPrefixValue($array, $prefix)
+    public static function arrayPrefixValue(array $values, $prefix)
     {
-        foreach ($array as &$value) {
+        foreach ($values as &$value) {
             $value = $prefix . $value;
         }
+        unset($value);
 
-        return $array;
+        return $values;
     }
 
     /**

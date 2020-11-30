@@ -788,7 +788,7 @@ class FormGroupBuilder
      *
      * @return void
      */
-    private function addFirst(FormGroupBuilder $form)
+    protected function addFirst(FormGroupBuilder $form)
     {
         $this->form = $form->getForm() + $this->form;
     }

@@ -177,7 +177,7 @@ class Container implements ContainerInterface
             $ref = new \ReflectionClass($this->services[ $key ][ 'class' ]);
         } catch (\ReflectionException $ex) {
             throw new ContainerException(
-                htmlspecialchars("$key is not exist.")
+                htmlspecialchars("Class $key is not exist.")
             );
         }
 
@@ -315,6 +315,7 @@ class Container implements ContainerInterface
                 $arg = substr($arg, 1);
             }
         }
+        unset($arg);
 
         return $args;
     }

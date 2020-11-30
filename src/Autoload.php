@@ -17,7 +17,7 @@ namespace Soosyze;
  */
 class Autoload
 {
-    const DS             = DIRECTORY_SEPARATOR;
+    const DS = DIRECTORY_SEPARATOR;
 
     /**
      * Tableau avec comme clés un namespace et en valeur la racine de son arborescence.
@@ -99,7 +99,7 @@ class Autoload
      */
     public function register()
     {
-        spl_autoload_register([ __CLASS__, 'loader' ]);
+        spl_autoload_register([ self::class, 'loader' ]);
     }
 
     /**
