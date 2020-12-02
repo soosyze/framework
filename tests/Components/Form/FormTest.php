@@ -113,7 +113,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
             [ 'label' => 'hello', 'value' => 0 ],
             [ 'label' => 'world', 'value' => 1 ],
         ];
-        $this->object->select('inputSelect', $options, [ 'selected' => 0 ]);
+        $this->object->select('inputSelect', $options, [ ':selected' => 0 ]);
 
         $form   = $this->object->form_select('inputSelect');
         $result = '<select name="inputSelect" id="inputSelect">' . PHP_EOL
@@ -134,7 +134,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
                 ]
             ]
         ];
-        $this->object->select('inputSelect', $options, [ 'selected' => 1 ]);
+        $this->object->select('inputSelect', $options, [ ':selected' => 1 ]);
 
         $form   = $this->object->form_select('inputSelect');
         $result = '<select name="inputSelect" id="inputSelect">' . PHP_EOL
@@ -176,7 +176,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals($form, $result);
 
-        $form   = $this->object->form_group('group', [ 'balise' => 'error' ]);
+        $form   = $this->object->form_group('group', [ ':tag' => 'error' ]);
         $result = '<div>' . PHP_EOL . '</div>' . PHP_EOL;
 
         $this->assertEquals($form, $result);
@@ -611,9 +611,9 @@ class FormTest extends \PHPUnit\Framework\TestCase
                 'src' => '/files/logo.png',
                 'alt' => 'Logo'
             ])
-            ->html('paragraph', '<p:attr>:_content</p>', [
+            ->html('paragraph', '<p:attr>:content</p>', [
                 'id'       => 'test',
-                '_content' => 'Logo'
+                ':content' => 'Logo'
         ]);
 
         $this->assertEquals(

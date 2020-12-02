@@ -328,15 +328,15 @@ class FormGroupBuilder
                 ? null
                 : $attr[ 'max' ];
 
-            $this->html("$name-decrement", '<button:attr>:_content</button>', [
-                '_content'    => '<i class="fa fa-minus" aria-hidden="true"></i>',
+            $this->html("$name-decrement", '<button:attr>:content</button>', [
+                ':_content'    => '<i class="fa fa-minus" aria-hidden="true"></i>',
                 'class'       => 'btn input-number-decrement',
                 'data-target' => "#$name",
                 'disabled'    => ($min && $value - $step < $min),
                 'type'        => 'button'
             ]);
-            $this->html("$name-increment", '<button:attr>:_content</button>', [
-                '_content'    => '<i class="fa fa-plus" aria-hidden="true"></i>',
+            $this->html("$name-increment", '<button:attr>:content</button>', [
+                ':_content'    => '<i class="fa fa-plus" aria-hidden="true"></i>',
                 'class'       => 'btn input-number-increment',
                 'data-target' => "#$name",
                 'disabled'    => ($max && $value + $step > $max),

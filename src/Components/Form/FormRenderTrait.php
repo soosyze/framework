@@ -103,10 +103,10 @@ trait FormRenderTrait
      */
     protected function renderLabel($key, array $item)
     {
-        $label = isset($item[ 'attr' ][ 'label' ])
-            ? $item[ 'attr' ][ 'label' ]
+        $label = isset($item[ 'attr' ][ ':label' ])
+            ? $item[ 'attr' ][ ':label' ]
             : $item[ 'label' ];
-        unset($item[ 'attr' ][ 'label' ]);
+        unset($item[ 'attr' ][ ':label' ]);
 
         $html = '';
         if (!empty($item[ 'attr' ][ 'data-tooltip' ])) {
@@ -153,20 +153,20 @@ trait FormRenderTrait
      */
     protected function renderGroup($key, array $item)
     {
-        $balise = in_array($item[ 'balise' ], self::$baliseGroup)
+        $tag = in_array($item[ 'balise' ], self::$baliseGroup)
             ? $item[ 'balise' ]
             : 'div';
-        $balise = isset($item[ 'attr' ][ 'balise' ]) && in_array($item[ 'attr' ][ 'balise' ], self::$baliseGroup)
-            ? $item[ 'attr' ][ 'balise' ]
-            : $balise;
-        unset($item[ 'attr' ][ 'balise' ]);
+        $tag = isset($item[ 'attr' ][ ':tag' ]) && in_array($item[ 'attr' ][ ':tag' ], self::$baliseGroup)
+            ? $item[ 'attr' ][ ':tag' ]
+            : $tag;
+        unset($item[ 'attr' ][ ':tag' ]);
 
         return sprintf(
             '<%s%s>%s</%s>',
-            $balise,
+            $tag,
             $this->renderAttrInput($item[ 'attr' ]),
             self::EOL . $item[ 'form' ]->render(),
-            $balise
+            $tag
         ) . self::EOL;
     }
 
@@ -180,10 +180,10 @@ trait FormRenderTrait
      */
     protected function renderLegend($key, array $item)
     {
-        $legend = isset($item[ 'attr' ][ 'legend' ])
-            ? $item[ 'attr' ][ 'legend' ]
+        $legend = isset($item[ 'attr' ][ ':legend' ])
+            ? $item[ 'attr' ][ ':legend' ]
             : $item[ 'legend' ];
-        unset($item[ 'attr' ][ 'legend' ]);
+        unset($item[ 'attr' ][ ':legend' ]);
 
         return sprintf(
             '<legend%s>%s</legend>',
@@ -220,10 +220,10 @@ trait FormRenderTrait
      */
     protected function renderSelect($key, array $item)
     {
-        $select = isset($item[ 'attr' ][ 'selected' ])
-            ? $item[ 'attr' ][ 'selected' ]
+        $select = isset($item[ 'attr' ][ ':selected' ])
+            ? $item[ 'attr' ][ ':selected' ]
             : '';
-        unset($item[ 'attr' ][ 'selected' ]);
+        unset($item[ 'attr' ][ ':selected' ]);
 
         return sprintf(
             '<select name="%s"%s>%s</select>',
@@ -297,13 +297,13 @@ trait FormRenderTrait
      */
     protected function renderHtml($key, array $item)
     {
-        $content = isset($item[ 'attr' ][ '_content' ])
-            ? $item[ 'attr' ][ '_content' ]
+        $content = isset($item[ 'attr' ][ ':content' ])
+            ? $item[ 'attr' ][ ':content' ]
             : '';
-        unset($item[ 'attr' ][ '_content' ]);
+        unset($item[ 'attr' ][ ':content' ]);
 
         return str_replace(
-            [ ':attr', ':_content' ],
+            [ ':attr', ':content' ],
             [ $this->renderAttrInput($item[ 'attr' ]), $content ],
             $item[ 'html' ]
         ) . self::EOL;
