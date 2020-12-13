@@ -21,3 +21,34 @@ function isset_or(&$var, $default = '')
         ? $var
         : $default;
 }
+
+/**
+ * Si la valeur existe et non nul alors elle est renvoyée, sinon la valeur par défaut est renvoyée.
+ *
+ * @param mixed $var
+ * @param mixed $default
+ *
+ * @return mixed
+ */
+function not_empty_or($var, $default = '')
+{
+    return empty($var)
+        ? $default
+        : $var;
+}
+
+/**
+ * Si la condition est valide alors la première valeur est retournée sinon la seconde valeur est retournée.
+ *
+ * @param mixed $condition
+ * @param mixed $value_true
+ * @param mixed $value_false
+ *
+ * @return type
+ */
+function if_or($condition, $value_true, $value_false = '')
+{
+    return $condition
+        ? $value_true
+        : $value_false;
+}
