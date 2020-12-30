@@ -426,7 +426,7 @@ abstract class App
             }
 
             if ($module->getPathServices()) {
-                $this->services += Util::getJson($module->getPathServices());
+                $this->services += include_once $module->getPathServices();
             }
         }
     }
