@@ -95,7 +95,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('', Uri::create('/')->getUserInfo());
         $this->assertEquals('user:foo', Uri::create('http://user:foo@bar.com/')->getUserInfo());
         $this->assertEquals('foo', Uri::create('http://foo@bar.com/')->getUserInfo());
-        
+
         $this->assertEquals('', $this->object->withUserInfo('')->getUserInfo());
         $this->assertEquals('', $this->object->withUserInfo(null)->getUserInfo());
         $this->assertEquals('user:foo', $this->object->withUserInfo('user', 'foo')->getUserInfo());
@@ -122,7 +122,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
         $this->assertNull(Uri::create('https://www.foo.com/')->withPort(443)->getPort());
         $this->assertSame(1, $this->object->withPort(1)->getPort());
     }
-    
+
     /**
      * @expectedException \Exception
      */

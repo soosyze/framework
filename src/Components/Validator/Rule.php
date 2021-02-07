@@ -219,7 +219,7 @@ abstract class Rule
     {
         $this->propogation = true;
     }
-    
+
     /**
      * Stop les tests suivants immédiatement.
      *
@@ -239,7 +239,7 @@ abstract class Rule
     {
         return $this->propogation;
     }
-    
+
     /**
      * Si les tests suivants sont stoppés immédiatement.
      *

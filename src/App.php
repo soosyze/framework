@@ -278,7 +278,7 @@ abstract class App
     public function addHook($name, callable $func)
     {
         $this->container->addHook($name, $func);
-        
+
         return $this;
     }
 

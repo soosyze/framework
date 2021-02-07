@@ -30,11 +30,8 @@ class UploadedFileFactoryTest extends \PHPUnit\Framework\TestCase
     public function testCreateUploadedFile()
     {
         $stream     = $this->stream->createStream('test');
-        
-//        $resource = fopen('php://temp', 'r+');
-//        $stream   = $this->stream->createStreamFromResource($resource);
-        
         $uploadFile = $this->object->createUploadedFile($stream);
+
         $this->assertInstanceOf('\Psr\Http\Message\UploadedFileInterface', $uploadFile);
     }
 }

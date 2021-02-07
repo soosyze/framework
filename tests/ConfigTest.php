@@ -76,7 +76,7 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
     {
         $this->object->set('testConfig.key3', 'value3');
         $data = $this->object->get('testConfig.key3');
-        
+
         $this->assertEquals($data, 'value3');
     }
 
@@ -84,18 +84,18 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
     {
         $this->object->set('testConfig2.key1', 'value1');
         $data = $this->object->get('testConfig2.key1');
-        
+
         $this->assertEquals($data, 'value1');
     }
-    
+
     public function testSetFile()
     {
         $this->object->set('testConfig2', 'value1');
         $data = $this->object->get('testConfig2');
 
         $this->assertEquals($data, [ 'value1' ]);
-        
-        $this->object->set('testConfig2', ['value2']);
+
+        $this->object->set('testConfig2', [ 'value2' ]);
         $data2 = $this->object->get('testConfig2');
 
         $this->assertEquals($data2, [ 'value2' ]);
@@ -104,44 +104,44 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
     public function testDel()
     {
         $this->object->del('testConfig.key3');
-        
+
         $this->assertNull($this->object->get('testConfig.key3'));
     }
 
     public function testDelFile()
     {
         $this->object->del('testConfig2');
-        
+
         $this->assertNull($this->object->get('testConfig2.key1'));
     }
-    
+
     public function testDelVoid()
     {
         $this->assertNull($this->object->get('void'));
         $this->object->del('void');
         $this->assertNull($this->object->get('void'));
     }
-    
+
     public function testHasArrayAccess()
     {
-        $this->assertTrue(isset($this->object['testConfig.key1']));
+        $this->assertTrue(isset($this->object[ 'testConfig.key1' ]));
     }
-    
+
     public function testGetArrayAccess()
     {
-        $data = $this->object['testConfig.key1'];
+        $data = $this->object[ 'testConfig.key1' ];
 
         $this->assertEquals($data, 'value1');
     }
-    
+
     public function testSetArrayAccess()
     {
         $this->object[ 'testConfig.key3' ] = 'value3';
-        $data                            = $this->object[ 'testConfig.key3' ];
+        $data                              = $this->object[ 'testConfig.key3' ];
 
         $this->assertEquals($data, 'value3');
     }
-    
+
     public function testDelArrayAccess()
     {
         unset($this->object[ 'testConfig.key3' ]);

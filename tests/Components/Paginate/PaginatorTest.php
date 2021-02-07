@@ -23,7 +23,7 @@ class PaginatorTest extends \PHPUnit\Framework\TestCase
         $html      .= '<li><a href="page/1">&laquo;</a></li>' . PHP_EOL;
         $html      .= '</ul>' . PHP_EOL;
         $this->assertEquals($paginator1, $html);
-        
+
         $paginator2 = new Paginator(10, 0, 1, 'page/:id');
         $this->assertEquals($paginator2, '');
     }

@@ -180,7 +180,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $result = $this->object->getRequestByRoute('test.index');
 
         $this->assertEquals((string) $result->getUri(), 'http://test.com/?q=/');
-        
+
         /* Rewrite */
         $uriRewrite     = Uri::create('http://test.com/test');
         $requestRewrite = new Request('GET', $uriRewrite);

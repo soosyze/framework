@@ -46,7 +46,7 @@ class RequiredWithTest extends Rule
         ]);
 
         $this->assertTrue($this->object->isValid());
-        
+
         $this->object->setInputs([
             'field_1' => '',
             'field_2' => 1

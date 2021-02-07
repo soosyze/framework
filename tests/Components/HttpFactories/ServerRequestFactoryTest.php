@@ -25,7 +25,7 @@ class ServerRequestFactoryTest extends \PHPUnit\Framework\TestCase
         $serverRequest = $this->object->createServerRequest('GET', 'http://foo.com/path');
         $this->assertInstanceOf('\Psr\Http\Message\ServerRequestInterface', $serverRequest);
         $this->assertEquals('GET', $serverRequest->getMethod());
-        
+
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $serverRequest = $this->object->createServerRequest(null, 'http://foo.com/path', $_SERVER);
         $this->assertInstanceOf('\Psr\Http\Message\ServerRequestInterface', $serverRequest);

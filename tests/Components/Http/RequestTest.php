@@ -50,7 +50,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     {
         $this->object->withMethod($code);
     }
-    
+
     public function getInvalidMethods()
     {
         return [

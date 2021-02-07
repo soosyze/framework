@@ -24,7 +24,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \Exception
      */
-    public function testxception()
+    public function testException()
     {
         $this->object
             ->addInput('field', 4)
@@ -250,7 +250,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'string' => 'My message custom global for field !'
         ]);
     }
-    
+
     public function testCustomAttributs()
     {
         $this->object

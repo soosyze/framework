@@ -116,7 +116,7 @@ trait FormRenderTrait
             $html .= '<span class="form-required">*</span>';
             unset($item[ 'attr' ][ 'required' ]);
         }
-        
+
         return sprintf(
             '<label%s>%s%s</label>',
             $this->renderAttrInput($item[ 'attr' ]),

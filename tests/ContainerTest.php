@@ -43,7 +43,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $isOk = $this->object->get('service2')->isOk();
-        
+
         $this->assertTrue($isOk);
     }
 
@@ -57,7 +57,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertTrue($isOk);
     }
-    
+
     public function testSetServiceParam()
     {
         $this->object
@@ -68,7 +68,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals($str, '@service1');
     }
-    
+
     public function testSetServiceParamConfig()
     {
         $config = new \Soosyze\Config('tests/config', 'local');
@@ -227,7 +227,7 @@ class service3
         $this->service = $arg1;
         $this->str     = $arg2;
     }
-    
+
     public function getStr()
     {
         return $this->str;

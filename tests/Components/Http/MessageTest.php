@@ -129,7 +129,7 @@ class MessageTest extends \PHPUnit\Framework\TestCase
 
         $this->assertAttributeSame($stream, 'body', $clone);
     }
-    
+
     /**
      * @dataProvider getInvalidHeaderArguments
      * @expectedException \InvalidArgumentException
@@ -138,7 +138,7 @@ class MessageTest extends \PHPUnit\Framework\TestCase
     {
         $this->object->withHeader($name, $value);
     }
-    
+
     public function getInvalidHeaderArguments()
     {
         return [

@@ -90,7 +90,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
     {
         $this->object->withStatus(400, 1);
     }
-    
+
     /*
      * @runInSeparateProcess
      */

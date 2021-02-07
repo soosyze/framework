@@ -78,11 +78,11 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $body = new Stream('test');
         $body->detach();
         $this->assertEquals($body, '');
-        
+
         $body = new Stream(new objetTest());
         $this->assertEquals($body, 'test');
     }
-    
+
     public function testCreateStreamFromFile()
     {
         $stream = Stream::createStreamFromFile($this->file);
@@ -90,7 +90,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf('\Psr\Http\Message\StreamInterface', $stream);
         $this->assertEquals($stream, 'test content');
     }
-    
+
     /**
      * @expectedException \RuntimeException
      */
@@ -98,7 +98,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
     {
         Stream::createStreamFromFile('error');
     }
-    
+
     /**
      * @expectedException \InvalidArgumentException
      */

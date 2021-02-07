@@ -30,20 +30,20 @@ class AutoloadTest extends \PHPUnit\Framework\TestCase
         $this->object->setPrefix([]);
         $this->assertAttributeSame([], 'prefix', $this->object);
     }
-    
+
     public function testPrefix()
     {
-        $this->object->setPrefix(['Soosyze\Tests' => __DIR__ ]);
+        $this->object->setPrefix([ 'Soosyze\Tests' => __DIR__ ]);
         $class = $this->object->loader('Soosyze\Tests\AppTest');
 
-        $file  = __DIR__ . '\AppTest.php';
+        $file = __DIR__ . '\AppTest.php';
         $this->assertEquals($class, str_replace('\\', DIRECTORY_SEPARATOR, $file));
     }
-    
+
     public function testAutoloadPrefixError()
     {
-        $this->object->setPrefix(['Soosyze\Tests' => __DIR__ ]);
-        
+        $this->object->setPrefix([ 'Soosyze\Tests' => __DIR__ ]);
+
         $class = $this->object->loader('Soosyze\Tests\Error');
         $this->assertFalse($class);
     }

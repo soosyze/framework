@@ -156,7 +156,7 @@ class Validator
      * @var array
      */
     protected $attributesCustom = [];
-    
+
     /**
      * Ajoute un test global personnalisé.
      *
@@ -609,7 +609,7 @@ class Validator
             ? $inputs[ $key ]
             : '';
     }
-    
+
     /**
      * Retourne le nom, l'argument et la négation de la règle
      *
@@ -667,7 +667,7 @@ class Validator
 
         return (new $class)->hydrate($name, $key, $arg, $not);
     }
-    
+
     /**
      * Valorise la règle du label, attributs, messages personnalisés.
      *
