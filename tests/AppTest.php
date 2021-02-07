@@ -159,7 +159,7 @@ class TestModule extends \Soosyze\Controller
     public function __construct()
     {
         $this->pathRoutes   = __DIR__ . '/config/routes.php';
-        $this->pathServices = __DIR__ . '/config/testService.json';
+        $this->pathServices = __DIR__ . '/config/services.php';
     }
 
     public function index()

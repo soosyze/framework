@@ -426,7 +426,10 @@ abstract class App
             }
 
             if ($module->getPathServices()) {
-                $this->services += include_once $module->getPathServices();
+                $services = include_once $module->getPathServices();
+                if ($services !== true) {
+                    $this->services += $services;
+                }
             }
         }
     }
