@@ -38,6 +38,115 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($object->isValid());
     }
 
+    public function testGetInputs()
+    {
+        $this->object->setInputs([
+            'field_1' => 1,
+            'field_2' => 2,
+            'field_3' => 3,
+            'field_4' => 4,
+            'field_5' => 5
+            ])
+            ->setRules([
+            'field_1' => '!required',
+            'field_2' => '!required',
+            'field_3' => '!required'
+        ]);
+
+        $this->assertEquals(
+            $this->object->getInputs(),
+            [
+            'field_1' => 1,
+            'field_2' => 2,
+            'field_3' => 3
+        ]
+        );
+    }
+
+    public function testGetInputsWithout()
+    {
+        $this->object->setInputs([
+            'field_1' => 1,
+            'field_2' => 2,
+            'field_3' => 3,
+            'field_4' => 4,
+            'field_5' => 5
+        ]);
+
+        $this->assertEquals(
+            $this->object->getInputsWithout(),
+            []
+        );
+
+        $this->object->setRules([
+            'field_1' => '!required',
+            'field_2' => '!required',
+            'field_3' => '!required',
+            'field_4' => '!required',
+            'field_5' => '!required'
+        ]);
+
+        $this->assertEquals(
+            $this->object->getInputsWithout(),
+            [
+            'field_1' => 1,
+            'field_2' => 2,
+            'field_3' => 3,
+            'field_4' => 4,
+            'field_5' => 5
+        ]
+        );
+        $this->assertEquals(
+            $this->object->getInputsWithout([ 'field_1', 'field_2' ]),
+            [
+            'field_3' => 3,
+            'field_4' => 4,
+            'field_5' => 5
+        ]
+        );
+    }
+
+    public function testGetInputsWithoutObject()
+    {
+        $this->object->setInputs([
+            'field_1' => 1,
+            'field_2' => 2,
+            'field_3' => 3,
+            'field_4' => 4,
+            'field_5' => new \stdClass()
+        ]);
+
+        $this->assertEquals(
+            $this->object->getInputsWithoutObject(),
+            []
+        );
+
+        $this->object->setRules([
+            'field_1' => '!required',
+            'field_2' => '!required',
+            'field_3' => '!required',
+            'field_4' => '!required',
+            'field_5' => '!required'
+        ]);
+
+        $this->assertEquals(
+            $this->object->getInputsWithoutObject(),
+            [
+            'field_1' => 1,
+            'field_2' => 2,
+            'field_3' => 3,
+            'field_4' => 4
+        ]
+        );
+        $this->assertEquals(
+            $this->object->getInputsWithoutObject([ 'field_1', 'field_2' ]),
+            [
+            'field_3' => 3,
+            'field_4' => 4
+        ]
+        );
+    }
+
     public function testCustomTest()
     {
         Validator::addTestGlobal('cube', '\Soosyze\Tests\Components\Validator\Cube');

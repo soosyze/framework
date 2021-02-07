@@ -386,47 +386,38 @@ class Validator
     /**
      * Retourne les champs.
      *
-     * @codeCoverageIgnore getter
-     *
      * @return array Valeur des champs.
      */
     public function getInputs()
     {
-        $inputs = $this->inputs;
-        if (($diff   = array_diff_key($this->inputs, $this->rules))) {
-            foreach (array_keys($diff) as $key) {
-                unset($inputs[ $key ]);
-            }
-        }
-
-        return $inputs;
+        return array_intersect_key($this->inputs, $this->rules);
     }
 
     /**
      * Retourne les champs hors ceux précisés en paramètre.
      *
-     * @codeCoverageIgnore getter
+     * @return array Valeur des champs.
+     */
+    public function getInputsWithout(array $without = [])
+    {
+        return array_diff_key($this->getInputs(), array_flip($without));
+    }
+
+    /**
+     * Retourne les champs hors ceux précisés en paramètre et ceux de type objet.
      *
      * @return array Valeur des champs.
      */
-    public function getInputsWithout()
+    public function getInputsWithoutObject(array $without = [])
     {
-        $without = func_get_args();
-        $inputs  = [];
-        foreach ($without as $value) {
-            /* Dans le cas ou les colonnes sont normales. */
-            if (!\is_array($value)) {
-                $inputs[] = $value;
-
-                continue;
-            }
-            /* Dans le cas ou les colonnes sont dans un tableau. */
-            foreach ($value as $fields) {
-                $inputs[] = $fields;
+        $inputsWithout = $this->getInputsWithout($without);
+        foreach ($inputsWithout as $key => $input) {
+            if (is_object($input)) {
+                unset($inputsWithout[ $key ]);
             }
         }
 
-        return array_diff_key($this->getInputs(), array_flip($inputs));
+        return $inputsWithout;
     }
 
     /**
