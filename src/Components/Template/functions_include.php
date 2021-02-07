@@ -30,7 +30,7 @@ function isset_or(&$var, $default = '')
  *
  * @return mixed
  */
-function not_empty_or($var, $default = '')
+function not_empty_or(&$var, $default = '')
 {
     return empty($var)
         ? $default
