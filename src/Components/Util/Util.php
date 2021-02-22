@@ -110,7 +110,7 @@ class Util
             );
         }
 
-        $out = json_decode(file_get_contents($strFile), $assoc);
+        $out = json_decode(file_get_contents($strFile), $assoc, 512, JSON_UNESCAPED_UNICODE);
 
         if ((!is_array($out) && $assoc) || (!is_object($out) && !$assoc)) {
             throw new \Exception(
@@ -142,7 +142,7 @@ class Util
 
         if (!file_exists($pathFile)) {
             $file = fopen($pathFile, 'w+');
-            fwrite($file, json_encode($data));
+            fwrite($file, json_encode($data, JSON_UNESCAPED_UNICODE));
 
             return fclose($file);
         }
@@ -165,7 +165,7 @@ class Util
             self::cleanPath($strPath) . self::DS . $strFileName . '.json',
             'w'
         );
-        fwrite($fp, json_encode($data));
+        fwrite($fp, json_encode($data, JSON_UNESCAPED_UNICODE));
 
         return fclose($fp);
     }
