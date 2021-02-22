@@ -7,14 +7,14 @@ use Soosyze\Components\Http\UploadedFile;
 class UploadedFileTest extends \PHPUnit\Framework\TestCase
 {
     /**
+     * @var resource
+     */
+    const FILE = './test.txt';
+
+    /**
      * @var UplaodeFile
      */
     protected $object;
-
-    /**
-     * @var resource
-     */
-    protected $file = './test.txt';
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -23,11 +23,11 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
     protected function setUp()
     {
         /* Créer un fichier pour le test */
-        $stream = fopen($this->file, 'w');
+        $stream = fopen(self::FILE, 'w');
         fwrite($stream, 'test content');
         fclose($stream);
 
-        $this->object = new UploadedFile($this->file, 'file.txt', 1024, 'text/plain');
+        $this->object = new UploadedFile(self::FILE, 'file.txt', 1024, 'text/plain');
     }
 
     /**
@@ -37,14 +37,14 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
     protected function tearDown()
     {
         /* Supprime le fichier du test */
-        if (file_exists($this->file)) {
-            unlink($this->file);
+        if (file_exists(self::FILE)) {
+            unlink(self::FILE);
         }
     }
 
     public function testConstruct()
     {
-        $this->assertAttributeSame($this->file, 'file', $this->object);
+        $this->assertAttributeSame(self::FILE, 'file', $this->object);
         $this->assertAttributeSame('file.txt', 'name', $this->object);
         $this->assertAttributeSame(1024, 'size', $this->object);
         $this->assertAttributeSame('text/plain', 'type', $this->object);
@@ -94,14 +94,14 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
     public function testCreate()
     {
         $upFile = UploadedFile::create([
-                'tmp_name' => $this->file,
+                'tmp_name' => self::FILE,
                 'name'     => 'file.txt',
                 'size'     => 1024,
                 'type'     => 'text/plain',
                 'error'    => 0
         ]);
 
-        $this->assertAttributeSame($this->file, 'file', $upFile);
+        $this->assertAttributeSame(self::FILE, 'file', $upFile);
         $this->assertAttributeSame('file.txt', 'name', $upFile);
         $this->assertAttributeSame(1024, 'size', $upFile);
         $this->assertAttributeSame('text/plain', 'type', $upFile);

@@ -15,24 +15,24 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
     /**
      * @var resource
      */
-    protected $file_txt = 'testUplaodFile.txt';
+    const FILE_TXT = 'testUplaodFile.txt';
 
     /**
      * Image de dimensions 28 x 18
      *
      * @var resource
      */
-    protected $file_img = 'testUplaodFile.png';
+    const FILE_IMG = 'testUplaodFile.png';
 
     /**
      * @var resource
      */
-    protected $file_xml = 'testUploadFileError.xml';
+    const FILE_XML = 'testUploadFileError.xml';
 
     /**
      * @var resource
      */
-    protected $file_error = 'testUploadFile.gif';
+    const FILE_ERROR = 'testUploadFile.gif';
 
     /**
      * @var \UploadedFile
@@ -62,11 +62,11 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
     {
         $this->object = new Validator;
 
-        $stream = fopen($this->file_txt, 'w');
+        $stream = fopen(self::FILE_TXT, 'w');
         fwrite($stream, 'test content');
         fclose($stream);
 
-        $stream_js = fopen($this->file_xml, 'w');
+        $stream_js = fopen(self::FILE_XML, 'w');
         fwrite($stream_js, '<?xml version="1.0" encoding="UTF-8"?>'
             . '<note>'
             . '<to>Tove</to>'
@@ -82,17 +82,17 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
             . '8a5HSE35Q3eO2XP1A1wQkZSgETvDtKdQAAAABJRU5ErkJggg==';
         $data = base64_decode($data);
         $im   = imagecreatefromstring($data);
-        imagepng($im, $this->file_img);
+        imagepng($im, self::FILE_IMG);
 
-        $stream_err = fopen($this->file_error, 'w');
+        $stream_err = fopen(self::FILE_ERROR, 'w');
         fwrite($stream_err, '<?php echo "hello"; ?>');
         fclose($stream_err);
 
         /* Indroduction volontaire d'erreur dans la taille et le mine type. */
-        $this->uplaod_txt   = new UploadedFile($this->file_txt, 'test.txt', 1024, 'error/mine');
-        $this->uplaod_img   = new UploadedFile($this->file_img, 'test.png', 1, 'error/mine');
-        $this->upload_xml   = new UploadedFile($this->file_xml, 'test.xml', 1, 'error/mine');
-        $this->uplaod_error = new UploadedFile($this->file_error, 'test.gif', 1, 'error/mine');
+        $this->uplaod_txt   = new UploadedFile(self::FILE_TXT, 'test.txt', 1024, 'error/mine');
+        $this->uplaod_img   = new UploadedFile(self::FILE_IMG, 'test.png', 1, 'error/mine');
+        $this->upload_xml   = new UploadedFile(self::FILE_XML, 'test.xml', 1, 'error/mine');
+        $this->uplaod_error = new UploadedFile(self::FILE_ERROR, 'test.gif', 1, 'error/mine');
     }
 
     /**
@@ -102,21 +102,21 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
     protected function tearDown()
     {
         /* Supprime le fichier du test */
-        if (file_exists($this->file_txt)) {
+        if (file_exists(self::FILE_TXT)) {
             $this->uplaod_txt->getStream()->close();
-            unlink($this->file_txt);
+            unlink(self::FILE_TXT);
         }
-        if (file_exists($this->file_img)) {
+        if (file_exists(self::FILE_IMG)) {
             $this->uplaod_img->getStream()->close();
-            unlink($this->file_img);
+            unlink(self::FILE_IMG);
         }
-        if (file_exists($this->file_xml)) {
+        if (file_exists(self::FILE_XML)) {
             $this->upload_xml->getStream()->close();
-            unlink($this->file_xml);
+            unlink(self::FILE_XML);
         }
-        if (file_exists($this->file_error)) {
+        if (file_exists(self::FILE_ERROR)) {
             $this->uplaod_error->getStream()->close();
-            unlink($this->file_error);
+            unlink(self::FILE_ERROR);
         }
     }
 
@@ -151,13 +151,13 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
     public function testValidFileError()
     {
         $this->object->setInputs([
-            'field_file_ini_size'   => new UploadedFile($this->file_txt, '', 1, '', UPLOAD_ERR_INI_SIZE),
-            'field_file_form_size'  => new UploadedFile($this->file_txt, '', 1, '', UPLOAD_ERR_FORM_SIZE),
-            'field_file_partial'    => new UploadedFile($this->file_txt, '', 1, '', UPLOAD_ERR_PARTIAL),
-            'field_file_no_file'    => new UploadedFile($this->file_txt, '', 1, '', UPLOAD_ERR_NO_FILE),
-            'field_file_no_tmp_dir' => new UploadedFile($this->file_txt, '', 1, '', UPLOAD_ERR_NO_TMP_DIR),
-            'field_file_cant_write' => new UploadedFile($this->file_txt, '', 1, '', UPLOAD_ERR_CANT_WRITE),
-            'field_file_extension'  => new UploadedFile($this->file_txt, '', 1, '', UPLOAD_ERR_EXTENSION)
+            'field_file_ini_size'   => new UploadedFile(self::FILE_TXT, '', 1, '', UPLOAD_ERR_INI_SIZE),
+            'field_file_form_size'  => new UploadedFile(self::FILE_TXT, '', 1, '', UPLOAD_ERR_FORM_SIZE),
+            'field_file_partial'    => new UploadedFile(self::FILE_TXT, '', 1, '', UPLOAD_ERR_PARTIAL),
+            'field_file_no_file'    => new UploadedFile(self::FILE_TXT, '', 1, '', UPLOAD_ERR_NO_FILE),
+            'field_file_no_tmp_dir' => new UploadedFile(self::FILE_TXT, '', 1, '', UPLOAD_ERR_NO_TMP_DIR),
+            'field_file_cant_write' => new UploadedFile(self::FILE_TXT, '', 1, '', UPLOAD_ERR_CANT_WRITE),
+            'field_file_extension'  => new UploadedFile(self::FILE_TXT, '', 1, '', UPLOAD_ERR_EXTENSION)
         ])->setRules([
             'field_file_ini_size'   => 'file',
             'field_file_form_size'  => 'file',
@@ -179,7 +179,7 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
             'field_not_file_max'          => $this->uplaod_img,
             'field_file_max_required'     => $this->uplaod_txt,
             'field_file_max_not_required' => '',
-            'field_file_ext_error'        => new UploadedFile($this->file_txt, '', 1, '', UPLOAD_ERR_INI_SIZE)
+            'field_file_ext_error'        => new UploadedFile(self::FILE_TXT, '', 1, '', UPLOAD_ERR_INI_SIZE)
         ])->setRules([
             'field_file_max'              => 'max:15',
             'field_not_file_max'          => '!max:15',
@@ -293,7 +293,7 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
         $this->object->setInputs([
             'field_file_ext'       => $this->uplaod_img,
             'field_not_file_ext'   => $this->uplaod_txt,
-            'field_file_ext_error' => new UploadedFile($this->file_txt, '', 1, '', UPLOAD_ERR_INI_SIZE)
+            'field_file_ext_error' => new UploadedFile(self::FILE_TXT, '', 1, '', UPLOAD_ERR_INI_SIZE)
         ])->setRules([
             'field_file_ext'       => 'file_extensions:txt,jpg,gif',
             'field_not_file_ext'   => '!file_extensions:txt,jpg,gif',
@@ -323,7 +323,7 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
         $this->object->setInputs([
             'field_file_minetypes'       => $this->uplaod_img,
             'field_not_file_minetypes'   => $this->uplaod_txt,
-            'field_file_minetypes_error' => new UploadedFile($this->file_txt, '', 1, '', UPLOAD_ERR_INI_SIZE)
+            'field_file_minetypes_error' => new UploadedFile(self::FILE_TXT, '', 1, '', UPLOAD_ERR_INI_SIZE)
         ])->setRules([
             'field_file_minetypes'       => 'file_mimetypes:text',
             'field_not_file_minetypes'   => '!file_mimetypes:text',

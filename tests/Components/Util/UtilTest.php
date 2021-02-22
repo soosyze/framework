@@ -9,40 +9,40 @@ use Soosyze\Components\Util\Util;
  */
 class UtilTest extends \PHPUnit\Framework\TestCase
 {
-    public static $path = 'tests/Components/Util/build';
+    const PATH = 'tests/Components/Util/build';
 
-    public static $file = 'file';
+    const FILE = 'file';
 
-    public static $pathFile = 'tests/Components/Util/build/file.json';
+    const PATH_FILE = 'tests/Components/Util/build/file.json';
 
-    public static $pathFileError = 'tests/Components/Util/build/fileError.json';
+    const PATH_FILE_ERROR = 'tests/Components/Util/build/fileError.json';
 
     public static function tearDownAfterClass()
     {
-        if (file_exists(self::$pathFile)) {
-            unlink(self::$pathFile);
+        if (file_exists(self::PATH_FILE)) {
+            unlink(self::PATH_FILE);
         }
-        if (file_exists(self::$pathFileError)) {
-            unlink(self::$pathFileError);
+        if (file_exists(self::PATH_FILE_ERROR)) {
+            unlink(self::PATH_FILE_ERROR);
         }
-        if (is_dir(self::$path)) {
-            rmdir(self::$path);
+        if (is_dir(self::PATH)) {
+            rmdir(self::PATH);
         }
     }
 
     public function testCreateJson()
     {
-        $output = Util::createJson(self::$path, self::$file);
-        $this->assertFileExists(self::$pathFile);
+        $output = Util::createJson(self::PATH, self::FILE);
+        $this->assertFileExists(self::PATH_FILE);
         $this->assertTrue($output);
 
-        $output = Util::createJson(self::$path, self::$file);
+        $output = Util::createJson(self::PATH, self::FILE);
         $this->assertNull($output);
     }
 
     public function testSaveJson()
     {
-        $output = Util::saveJson(self::$path, self::$file, [ 'key' => 'value' ]);
+        $output = Util::saveJson(self::PATH, self::FILE, [ 'key' => 'value' ]);
         $this->assertTrue($output);
     }
 
@@ -51,8 +51,8 @@ class UtilTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetJsonExceptionContent()
     {
-        fopen(self::$pathFileError, 'w+');
-        Util::getJson(self::$pathFileError);
+        fopen(self::PATH_FILE_ERROR, 'w+');
+        Util::getJson(self::PATH_FILE_ERROR);
     }
 
     /**
@@ -81,7 +81,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
 
     public function testGetJson()
     {
-        $output = Util::getJson(self::$pathFile);
+        $output = Util::getJson(self::PATH_FILE);
         $this->assertArraySubset([ 'key' => 'value' ], $output);
     }
 
