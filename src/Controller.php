@@ -39,6 +39,14 @@ class Controller
     protected $pathServices = '';
 
     /**
+    /**
+     * Chemin du fichier de boot du module
+     *
+     * @var string
+     */
+    protected $pathBoot = '';
+
+    /**
      * Container d'injection de dépendance (CID).
      *
      * @var \Psr\Container\ContainerInterface
@@ -92,6 +100,11 @@ class Controller
     public function getPathServices()
     {
         return $this->pathServices;
+    }
+
+    public function getPathBoot()
+    {
+        return $this->pathBoot;
     }
 
     /**

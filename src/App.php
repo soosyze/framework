@@ -421,6 +421,9 @@ abstract class App
     {
         $modules = $this->loadModules();
         foreach ($modules as $module) {
+            if ($module->getPathBoot()) {
+                include_once $module->getPathBoot();
+            }
             if ($module->getPathRoutes()) {
                 include_once $module->getPathRoutes();
             }
