@@ -8,6 +8,7 @@
  * @see https://mlocati.github.io/php-cs-fixer-configurator/#version:2.16
  */
 $finder = PhpCsFixer\Finder::create()
+    ->exclude('build')
     ->in(__DIR__);
 
 return PhpCsFixer\Config::create()
@@ -77,8 +78,6 @@ return PhpCsFixer\Config::create()
             'no_unneeded_curly_braces'                   => true,
             /* Supprime les parenthèses superflus. */
             'no_unneeded_control_parentheses'            => true,
-            /* Une class final ne doit pas avoir de méthodes finales. */
-            'no_unneeded_final_method'                   => true,
             /* Ordonne les éléments des class. */
             'ordered_class_elements'                     => true,
             /* Ordonne les imports (use). */
