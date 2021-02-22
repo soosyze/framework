@@ -32,10 +32,10 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     {
         $this->object->SetServices([
             'service1' => [
-                'class' => 'Soosyze\\Tests\\service1'
+                'class' => 'Soosyze\Tests\service1'
             ],
             'service2' => [
-                'class'     => 'Soosyze\\Tests\\service2',
+                'class'     => 'Soosyze\Tests\service2',
                 'arguments' => [
                     '@service1'
                 ]
@@ -50,8 +50,8 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     public function testSetService()
     {
         $this->object
-            ->SetService('service2', 'Soosyze\\Tests\\service2', [ '@service1' ])
-            ->SetService('service1', 'Soosyze\\Tests\\service1');
+            ->SetService('service2', 'Soosyze\Tests\service2', [ '@service1' ])
+            ->SetService('service1', 'Soosyze\Tests\service1');
 
         $isOk = $this->object->get('service2')->isOk();
 
@@ -61,8 +61,8 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     public function testSetServiceParam()
     {
         $this->object
-            ->SetService('service3', 'Soosyze\\Tests\\service3', [ '@service1', '\@service1' ])
-            ->SetService('service1', 'Soosyze\\Tests\\service1');
+            ->SetService('service3', 'Soosyze\Tests\service3', [ '@service1', '\@service1' ])
+            ->SetService('service1', 'Soosyze\Tests\service1');
 
         $str = $this->object->get('service3')->getStr();
 
@@ -71,11 +71,10 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
 
     public function testSetServiceParamConfig()
     {
-        $config = new \Soosyze\Config('tests/config', 'local');
         $this->object
-            ->setConfig($config)
-            ->SetService('service3', 'Soosyze\\Tests\\service3', [ '@service1', '#testConfig.key1' ])
-            ->SetService('service1', 'Soosyze\\Tests\\service1');
+            ->setConfig([ 'testConfig.key1' => 'value1' ])
+            ->SetService('service3', 'Soosyze\Tests\service3', [ '@service1', '#testConfig.key1' ])
+            ->SetService('service1', 'Soosyze\Tests\service1');
 
         $str = $this->object->get('service3')->getStr();
 
@@ -134,7 +133,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetContainerException()
     {
-        $this->object->SetService('service', 'Soosyze\\Tests')->get('service');
+        $this->object->SetService('service', 'Soosyze\Tests')->get('service');
     }
 
     public function testHas()
@@ -168,7 +167,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     {
         $this->object->SetServices([
             'service1' => [
-                'class' => 'Soosyze\\Tests\\service1',
+                'class' => 'Soosyze\Tests\service1',
                 'hooks' => [ 'hook.double' => 'hookDouble' ]
             ]
         ]);

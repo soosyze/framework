@@ -629,12 +629,12 @@ class Validator
             : '';
 
         /* Si l'argument fait référence à un autre champ. */
-        if ($arg !== '' && isset($arg[ 0 ]) && $arg[ 0 ] === '@') {
+        if ($arg && $arg[ 0 ] === '@') {
             $keyArg = substr($arg, 1);
             $arg    = $this->inputs[ $keyArg ];
         }
 
-        return [ strtolower($name), $arg, $rule[ 0 ] !== '!' ];
+        return [ $name, $arg, $rule[ 0 ] !== '!' ];
     }
 
     /**

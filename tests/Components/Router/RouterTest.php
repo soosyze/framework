@@ -14,11 +14,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
      */
     protected $object;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         Route::useNamespace('');
         Route::get('test.index', '/', 'Soosyze\Tests\Components\Router\TestController@index');
@@ -37,6 +33,14 @@ class RouterTest extends \PHPUnit\Framework\TestCase
             ':id'  => '[0-9]+',
             ':ext' => 'json|xml'
         ]);
+    }
+
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    protected function setUp()
+    {
         $this->object = new Router();
     }
 

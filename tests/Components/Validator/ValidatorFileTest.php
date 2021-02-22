@@ -8,11 +8,6 @@ use Soosyze\Components\Validator\Validator;
 class ValidatorFileTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \Validator
-     */
-    protected $object;
-
-    /**
      * @var resource
      */
     const FILE_TXT = 'testUplaodFile.txt';
@@ -33,6 +28,11 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
      * @var resource
      */
     const FILE_ERROR = 'testUploadFile.gif';
+
+    /**
+     * @var \Validator
+     */
+    protected $object;
 
     /**
      * @var \UploadedFile

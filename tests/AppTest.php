@@ -7,93 +7,100 @@ class AppTest extends \PHPUnit\Framework\TestCase
     /**
      * @var AppCore
      */
-    protected $object;
+    protected static $object;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         $uri     = \Soosyze\Components\Http\Uri::create('http://test.com/?q=index');
-        $request = new \Soosyze\Components\Http\ServerRequest('GET', $uri, [], null, '1.1', [
+        $request = new \Soosyze\Components\Http\ServerRequest(
+            'GET',
+            $uri,
+            [],
+            null,
+            '1.1',
+            [
             'SCRIPT_FILENAME' => '/index.php',
             'SCRIPT_NAME'     => '/index.php'
-        ]);
+        ]
+        );
 
-        $this->object = AppCore::getInstance($request)->init();
+        self::$object = AppCore::getInstance($request)->init();
     }
 
     public function testRun()
     {
-        $run = $this->object->run();
+        $run = self::$object->run();
         $this->assertEquals($run->getBody()->__toString(), 'ok');
     }
 
     public function testGetRequest()
     {
-        $request = $this->object->getRequest();
+        $request = self::$object->getRequest();
         $this->assertInstanceOf('\Psr\Http\Message\RequestInterface', $request);
         $this->assertEquals('GET', $request->getMethod());
     }
 
     public function testRunJson()
     {
-        $this->object->addHook('app.response.before', function (&$request, $response) {
+        self::$object->addHook('app.response.before', function (&$request, $response) {
             $uri     = \Soosyze\Components\Http\Uri::create('http://test.com?q=json');
             $request = new \Soosyze\Components\Http\ServerRequest('GET', $uri);
         });
-        $this->assertEquals($this->object->run()->getBody()->__toString(), '{"a":1,"b":2,"c":3,"d":4,"e":5}');
+        $this->assertEquals(self::$object->run()->getBody()->__toString(), '{"a":1,"b":2,"c":3,"d":4,"e":5}');
     }
 
     public function testSetSettings()
     {
-        $this->object->setSettings([ 'app' => 'tests', 'config' => 'tests/config' ]);
-        $this->assertAttributeSame([ 'app' => 'tests', 'config' => 'tests/config' ], 'settings', $this->object);
+        self::$object->setSettings([ 'app' => 'tests', 'config' => 'tests/config' ]);
+        $this->assertAttributeSame([ 'app' => 'tests', 'config' => 'tests/config' ], 'settings', self::$object);
     }
 
     public function testGetSettings()
     {
-        $this->assertEquals($this->object->getSettings(), [ 'app' => 'tests', 'config' => 'tests/config' ]);
+        $this->assertEquals(self::$object->getSettings(), [ 'app' => 'tests', 'config' => 'tests/config' ]);
     }
 
     public function testSetEnvironnement()
     {
-        $this->object->setEnvironnement([ 'prod' => [ '' ] ]);
-        $this->assertAttributeSame([ 'prod' => [ '' ] ], 'environnement', $this->object);
+        self::$object->setEnvironnement([ 'prod' => [ '' ] ]);
+        $this->assertAttributeSame([ 'prod' => [ '' ] ], 'environnement', self::$object);
     }
 
     public function testGetEnvironnementHostname()
     {
-        $this->assertEquals($this->object->getEnvironment(), '');
+        $this->assertEquals(self::$object->getEnvironment(), '');
 
-        $this->object->setEnvironnement([
+        self::$object->setEnvironnement([
             'prod'  => [ '' ],
             'local' => [ gethostname() ]
         ]);
 
-        $this->assertEquals($this->object->getEnvironment(), 'local');
+        $this->assertEquals(self::$object->getEnvironment(), 'local');
     }
 
     public function testGetEnvironnementAuthority()
     {
-        $this->object->setEnvironnement([
+        self::$object->setEnvironnement([
             'prod'  => [ '' ],
             'local' => [ 'test.com' ]
         ]);
 
-        $this->assertEquals($this->object->getEnvironment(), 'local');
+        $this->assertEquals(self::$object->getEnvironment(), 'local');
     }
 
     public function testIsEnvironnement()
     {
-        $this->assertFalse($this->object->isEnvironnement('prod'));
-        $this->assertTrue($this->object->isEnvironnement('local'));
+        $this->assertFalse(self::$object->isEnvironnement('prod'));
+        $this->assertTrue(self::$object->isEnvironnement('local'));
     }
 
     public function testGetDir()
     {
-        $this->object->setSettings([
+        self::$object->setSettings([
             'root'  => __DIR__,
             'files' => 'files/public'
         ])->setEnvironnement([
@@ -102,7 +109,7 @@ class AppTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $test = str_replace('/', DIRECTORY_SEPARATOR, __DIR__ . '/files/public/prod');
-        $this->assertEquals($this->object->getDir('files'), $test);
+        $this->assertEquals(self::$object->getDir('files'), $test);
     }
 
     /**
@@ -110,14 +117,14 @@ class AppTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetDirException()
     {
-        $this->object->setSettings([
+        self::$object->setSettings([
             'files' => [ 'files/public' ]
         ])->getDir('files');
     }
 
     public function testGetPath()
     {
-        $this->object->setSettings([
+        self::$object->setSettings([
             'root'  => __DIR__,
             'files' => 'files/public'
         ])->setEnvironnement([
@@ -125,7 +132,7 @@ class AppTest extends \PHPUnit\Framework\TestCase
             'local' => [ gethostname() ]
         ]);
 
-        $this->assertEquals($this->object->getPath('files'), 'http://test.com/files/public/local');
+        $this->assertEquals(self::$object->getPath('files'), 'http://test.com/files/public/local');
     }
 
     /**
@@ -133,7 +140,7 @@ class AppTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetPathException()
     {
-        $this->object->setSettings([
+        self::$object->setSettings([
             'files' => [ 'files/public' ]
         ])->getPath('files');
     }

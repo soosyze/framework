@@ -191,7 +191,16 @@ class ServerRequestTest extends \PHPUnit\Framework\TestCase
         $cookies      = [];
         $uploadFiles  = [];
 
-        $this->object = new ServerRequest($method, $uri, $headers, $body, $version, $serverParams, $cookies, $uploadFiles);
+        $this->object = new ServerRequest(
+            $method,
+            $uri,
+            $headers,
+            $body,
+            $version,
+            $serverParams,
+            $cookies,
+            $uploadFiles
+        );
     }
 
     public function testCreate()

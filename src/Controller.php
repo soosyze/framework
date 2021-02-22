@@ -21,6 +21,10 @@ use Soosyze\Components\Http\Stream;
  * Il est l'élément de base de vos modules.
  *
  * @author Mathieu NOËL <mathieu@soosyze.com>
+ *
+ * @method static App core()
+ * @method static Config config()
+ * @method static Components\Router\Router router()
  */
 class Controller
 {
@@ -39,6 +43,12 @@ class Controller
     protected $pathServices = '';
 
     /**
+     * Chemin du répertoire contenant les vues.
+     *
+     * @var string
+     */
+    protected $pathViews = '';
+
     /**
      * Chemin du fichier de boot du module
      *
