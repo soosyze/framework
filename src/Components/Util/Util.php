@@ -183,6 +183,18 @@ class Util
     }
 
     /**
+     * Retourne l'extension d'un fichier passé en paramètre.
+     *
+     * @param string $pathFile Nom du fichier.
+     *
+     * @return string
+     */
+    public static function getFileBasename($pathFile)
+    {
+        return strtolower(pathinfo($pathFile, PATHINFO_BASENAME));
+    }
+
+    /**
      * Retourne le nom des dossier contenus dans un répertoire.
      *
      * @param string   $dir     Nom du répertoire.
