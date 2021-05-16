@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -95,18 +97,22 @@ abstract class Rule
     /**
      * Exécute le test de validation.
      *
-     * @param string $keyRule  Clé du test.
-     * @param string $keyValue Identifiant de la valeur.
-     * @param string $arg      Argument de test.
-     * @param bool   $not      Inverse le test.
+     * @param string     $keyRule  Clé du test.
+     * @param string     $keyValue Identifiant de la valeur.
+     * @param mixed|null $args     Argument de test, peut-être une valeur d'un champ.
+     * @param bool       $not      Inverse le test.
      *
      * @return $this
      */
-    public function hydrate($keyRule, $keyValue, $arg, $not = true)
-    {
+    public function hydrate(
+        string $keyRule,
+        string $keyValue,
+        $args,
+        bool $not = true
+    ): self {
         $this->name = $keyRule;
         $this->key  = $keyValue;
-        $this->args = $arg;
+        $this->args = $args;
         $this->not  = $not;
 
         return $this;
@@ -117,7 +123,7 @@ abstract class Rule
      *
      * @return array
      */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors;
     }
@@ -127,7 +133,7 @@ abstract class Rule
      *
      * @return bool
      */
-    public function hasErrors()
+    public function hasErrors(): bool
     {
         return !empty($this->errors);
     }
@@ -139,7 +145,7 @@ abstract class Rule
      *
      * @return $this
      */
-    public function setMessages(array $messages = [])
+    public function setMessages(array $messages = []): self
     {
         $this->messages = $messages;
 
@@ -149,13 +155,13 @@ abstract class Rule
     /**
      * Modifie les attributs des messages d'erreur.
      *
-     * @param array $attributs
+     * @param array $attributes
      *
      * @return $this
      */
-    public function setAttributs(array $attributs)
+    public function setAttributs(array $attributes): self
     {
-        $this->attributes = $attributs;
+        $this->attributes = $attributes;
 
         return $this;
     }
@@ -167,7 +173,7 @@ abstract class Rule
      *
      * @return $this
      */
-    public function setLabel($label)
+    public function setLabel(string $label): self
     {
         $this->label = $label;
 
@@ -195,7 +201,7 @@ abstract class Rule
      *
      * @return string
      */
-    public function getKey()
+    public function getKey(): string
     {
         return $this->key;
     }
@@ -205,7 +211,7 @@ abstract class Rule
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -215,7 +221,7 @@ abstract class Rule
      *
      * @return void
      */
-    public function stopPropagation()
+    public function stopPropagation(): void
     {
         $this->propogation = true;
     }
@@ -225,7 +231,7 @@ abstract class Rule
      *
      * @return void
      */
-    public function stopImmediatePropagation()
+    public function stopImmediatePropagation(): void
     {
         $this->immediatePropagation = true;
     }
@@ -235,7 +241,7 @@ abstract class Rule
      *
      * @return bool
      */
-    public function isStop()
+    public function isStop(): bool
     {
         return $this->propogation;
     }
@@ -245,7 +251,7 @@ abstract class Rule
      *
      * @return bool
      */
-    public function isStopImmediate()
+    public function isStopImmediate(): bool
     {
         return $this->immediatePropagation;
     }
@@ -270,27 +276,30 @@ abstract class Rule
      *
      * @return void
      */
-    abstract protected function test($keyRule, $value, $args, $not);
+    abstract protected function test(string $keyRule, $value, $args, bool $not): void;
 
     /**
      * Défini les messages de retours par défauts.
      *
      * @return string[]
      */
-    abstract protected function messages();
+    abstract protected function messages(): array;
 
     /**
      * Ajoute une valeur de retour formatées en cas d'erreur de validation.
      *
-     * @param string   $keyRule    Clé du test.
-     * @param string   $keyMessage Identifiant du message à formater avec la valeur de test.
-     * @param string[] $attributs  Liste d'arguments de remplacements pour personnaliser le message.
+     * @param string $keyRule    Clé du test.
+     * @param string $keyMessage Identifiant du message à formater avec la valeur de test.
+     * @param array  $attributes Liste d'arguments de remplacements pour personnaliser le message.
      *
      * @return void
      */
-    protected function addReturn($keyRule, $keyMessage, array $attributs = [])
-    {
-        $args           = $this->overrideAttributes($attributs);
+    protected function addReturn(
+        string $keyRule,
+        string $keyMessage,
+        array $attributes = []
+    ): void {
+        $args           = $this->overrideAttributes($attributes);
         $argsKey        = array_keys($args);
         $this->messages += $this->messages();
 
@@ -311,8 +320,11 @@ abstract class Rule
      *
      * @return numeric[] Tableau des valeurs min et max.
      */
-    protected function getParamMinMax($arg)
+    protected function getParamMinMax(?string $arg): array
     {
+        if ($arg === null) {
+            throw new \InvalidArgumentException('Between values are invalid.');
+        }
         $explode = explode(',', $arg);
         if (!isset($explode[ 0 ], $explode[ 1 ])) {
             throw new \InvalidArgumentException('Between values are invalid.');
@@ -337,19 +349,22 @@ abstract class Rule
     /**
      * Personnaliser les attributs de retour.
      *
-     * @param array $attributs
+     * @param array $attributes
      *
      * @return array
      */
-    private function overrideAttributes(array $attributs)
+    private function overrideAttributes(array $attributes): array
     {
-        $attributs += [ ':label' => $this->label ];
-        foreach ($attributs as $key => $value) {
-            if (isset($this->attributes[$key])) {
-                $attributs[$key] = call_user_func_array($this->attributes[$key], [$value]);
+        $attributes += [ ':label' => $this->label ];
+        foreach ($attributes as $key => $value) {
+            if (isset($this->attributes[ $key ])) {
+                $attributes[ $key ] = call_user_func_array(
+                    $this->attributes[ $key ],
+                    [ $value ]
+                );
             }
         }
 
-        return $attributs;
+        return $attributes;
     }
 }

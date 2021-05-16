@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class ArrayTest extends Rule
 {
-    public function testArray()
+    public function testArray(): void
     {
         $this->object->setInputs([
             'must'              => [ 0, 1, 2 ],

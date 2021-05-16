@@ -4,14 +4,14 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class TimezoneTest extends Rule
 {
-    public function testTimezone()
+    public function testTimezone(): void
     {
         $this->object->setInputs([
-            'must'              => 'Europe/Paris',
-            'not_must'          => 1
+            'must'     => 'Europe/Paris',
+            'not_must' => 1
         ])->setRules([
-            'must'              => 'timezone',
-            'not_must'           => '!timezone'
+            'must'     => 'timezone',
+            'not_must' => '!timezone'
         ]);
 
         $this->assertTrue($this->object->isValid());

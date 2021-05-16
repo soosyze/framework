@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class RequiredWithAllTest extends Rule
 {
-    public function testRequiredWith()
+    public function testRequiredWith(): void
     {
         $this->object->setInputs([
             'field_1' => '',
@@ -35,7 +35,7 @@ class RequiredWithAllTest extends Rule
         $this->assertCount(1, $this->object->getErrors());
     }
 
-    public function testRequiredWithAllIntegration()
+    public function testRequiredWithAllIntegration(): void
     {
         $this->object->setInputs([
             'field_1' => 1,
@@ -45,7 +45,7 @@ class RequiredWithAllTest extends Rule
         ]);
 
         $this->assertTrue($this->object->isValid());
-        
+
         $this->object->setInputs([
             'field_1' => '',
             'field_2' => 1
@@ -69,21 +69,15 @@ class RequiredWithAllTest extends Rule
         $this->assertCount(1, $this->object->getErrors());
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testRequiredWithException()
+    public function testRequiredWithException(): void
     {
-        $this->object->addRule('field', 'required_with_all:error')
-            ->isValid();
+        $this->expectException(\Exception::class);
+        $this->object->addRule('field', 'required_with_all:error')->isValid();
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testRequiredWithVoidException()
+    public function testRequiredWithVoidException(): void
     {
-        $this->object->addRule('field', 'required_with_all:')
-            ->isValid();
+        $this->expectException(\Exception::class);
+        $this->object->addRule('field', 'required_with_all:')->isValid();
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+//declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -49,7 +51,7 @@ class Stream implements StreamInterface
     /**
      * Flux de données.
      *
-     * @var resource
+     * @var null|resource
      */
     private $stream;
 
@@ -65,21 +67,13 @@ class Stream implements StreamInterface
      *
      * @see http://php.net/manual/fr/wrappers.php.php
      *
-     * @param scalar|resource|object $mixed
+     * @param null|object|resource|scalar $mixed
      *
      * @throws \InvalidArgumentException Le type de données n'est pas pris en charge par flux de données.
      */
     public function __construct($mixed = '')
     {
-        if (is_scalar($mixed) || $mixed === null) {
-            $this->createStreamFromScalar($mixed);
-        } elseif (is_resource($mixed)) {
-            $this->stream = $mixed;
-        } elseif (is_object($mixed) && method_exists($mixed, '__toString')) {
-            $this->createStreamFromScalar((string) $mixed);
-        } else {
-            throw new \InvalidArgumentException('Stream must be a resource');
-        }
+        $this->stream = $this->createStream($mixed);
 
         $this->meta = stream_get_meta_data($this->stream);
     }
@@ -91,9 +85,9 @@ class Stream implements StreamInterface
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
-        if (!$this->isAttached()) {
+        if (!isset($this->stream)) {
             return '';
         }
 
@@ -133,7 +127,7 @@ class Stream implements StreamInterface
      */
     public function close()
     {
-        if ($this->isAttached()) {
+        if (isset($this->stream)) {
             fclose($this->stream);
             $this->detach();
         }
@@ -162,14 +156,14 @@ class Stream implements StreamInterface
      */
     public function getSize()
     {
-        if (!$this->isAttached()) {
+        if (!isset($this->stream)) {
             return null;
         }
         $stats = fstat($this->stream);
 
-        return isset($stats[ 'size' ])
-            ? $stats[ 'size' ]
-            : null;
+        return $stats === false
+            ? null
+            :  $stats[ 'size' ] ?? null;
     }
 
     /**
@@ -181,7 +175,9 @@ class Stream implements StreamInterface
      */
     public function tell()
     {
-        $this->valideAttach();
+        if (!isset($this->stream)) {
+            throw new \RuntimeException('Stream is detached.');
+        }
         if (($handle = ftell($this->stream)) === false) {
             throw new \RuntimeException('An error has occurred.');
         }
@@ -196,7 +192,9 @@ class Stream implements StreamInterface
      */
     public function eof()
     {
-        $this->valideAttach();
+        if (!isset($this->stream)) {
+            throw new \RuntimeException('Stream is detached.');
+        }
 
         return feof($this->stream);
     }
@@ -228,7 +226,10 @@ class Stream implements StreamInterface
      */
     public function seek($offset, $whence = SEEK_SET)
     {
-        $this->valideAttach()->valideSeekable();
+        if (!isset($this->stream)) {
+            throw new \RuntimeException('Stream is detached.');
+        }
+        $this->valideSeekable();
         if (fseek($this->stream, $offset, $whence) === -1) {
             throw new \RuntimeException('An error has occurred.');
         }
@@ -243,7 +244,10 @@ class Stream implements StreamInterface
      */
     public function rewind()
     {
-        $this->valideAttach()->valideSeekable();
+        if (!isset($this->stream)) {
+            throw new \RuntimeException('Stream is detached.');
+        }
+        $this->valideSeekable();
         if (!rewind($this->stream)) {
             throw new \RuntimeException('An error has occurred.');
         }
@@ -270,7 +274,10 @@ class Stream implements StreamInterface
      */
     public function write($string)
     {
-        $this->valideAttach()->valideWrite();
+        if (!isset($this->stream)) {
+            throw new \RuntimeException('Stream is detached.');
+        }
+        $this->valideWrite();
         if (($handle = fwrite($this->stream, $string)) === false) {
             throw new \RuntimeException('An error has occurred.');
         }
@@ -301,7 +308,10 @@ class Stream implements StreamInterface
      */
     public function read($length)
     {
-        $this->valideAttach()->valideRead();
+        if (!isset($this->stream)) {
+            throw new \RuntimeException('Stream is detached.');
+        }
+        $this->valideRead();
         if (!is_numeric($length) || $length < 0) {
             throw new \RuntimeException('Byte value must be positive integer.');
         }
@@ -324,7 +334,10 @@ class Stream implements StreamInterface
      */
     public function getContents()
     {
-        $this->valideAttach()->valideRead();
+        if (!isset($this->stream)) {
+            throw new \RuntimeException('Stream is detached.');
+        }
+        $this->valideRead();
         if (($handle = stream_get_contents($this->stream)) === false) {
             throw new \RuntimeException('An error occurred while reading the stream.');
         }
@@ -350,62 +363,60 @@ class Stream implements StreamInterface
             return $this->meta;
         }
 
-        return isset($this->meta[ $key ])
-            ? $this->meta[ $key ]
-            : null;
+        return $this->meta[ $key ] ?? null;
     }
 
     /**
-     * Si le flux de données est attaché.
+     * Charge un flux à partir d'une valeur.
      *
-     * @return bool
+     * @param mixed $mixed
+     *
+     * @throws \InvalidArgumentException
+     * @return resource
      */
-    protected function isAttached()
+    private function createStream($mixed)
     {
-        return is_resource($this->stream);
+        if (is_scalar($mixed) || $mixed === null) {
+            return $this->createStreamFromScalar($mixed);
+        }
+        if (is_resource($mixed)) {
+            return $mixed;
+        }
+        if (is_object($mixed) && method_exists($mixed, '__toString')) {
+            return $this->createStreamFromScalar((string) $mixed);
+        }
+
+        throw new \InvalidArgumentException('Stream must be a resource.');
     }
 
     /**
      * Charge un flux à partir d'une valeur scalaire.
      *
      * @param mixed $scalar Valeur scalaire.
+     *
+     * @return resource
      */
     private function createStreamFromScalar($scalar)
     {
         $handle = fopen('php://temp', 'r+');
 
+        if ($handle === false) {
+            throw new \Exception();
+        }
         if ($scalar !== '') {
             fwrite($handle, $scalar);
             fseek($handle, 0);
         }
 
-        $this->stream = $handle;
-    }
-
-    /**
-     * Déclenche une exception si le flux de données est détaché.
-     *
-     * @throws \RuntimeException Le flux est détaché.
-     *
-     * @return $this
-     */
-    private function valideAttach()
-    {
-        if (!$this->isAttached()) {
-            throw new \RuntimeException('Stream is detached.');
-        }
-
-        return $this;
+        return $handle;
     }
 
     /**
      * Déclenche une exception si la position du flux ne peut-être modifié.
      *
      * @throws \RuntimeException La position du flux ne peut-être modifié.
-     *
-     * @return $this
      */
-    private function valideSeekable()
+    private function valideSeekable(): self
     {
         if (!$this->isSeekable()) {
             throw new \RuntimeException('Stream is not seekable.');
@@ -418,10 +429,8 @@ class Stream implements StreamInterface
      * Déclenche une exception si le flux ne peut-être lisible.
      *
      * @throws \RuntimeException Impossible de lire à partir d'un flux non lisible.
-     *
-     * @return $this
      */
-    private function valideRead()
+    private function valideRead(): self
     {
         if (!$this->isReadable()) {
             throw new \RuntimeException('Cannot read from non-readable stream.');
@@ -434,10 +443,8 @@ class Stream implements StreamInterface
      * Déclenche une exception si le flux est non accessible en écriture.
      *
      * @throws \RuntimeException Impossible d'écrire dans un flux non accessible en écriture.
-     *
-     * @return $this
      */
-    private function valideWrite()
+    private function valideWrite(): self
     {
         if (!$this->isWritable()) {
             throw new \RuntimeException('Cannot write to a non-writable stream.');

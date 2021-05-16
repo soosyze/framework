@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -22,18 +24,17 @@ class Image extends FileMimes
      *
      * @param string                $key   Clé du test.
      * @param UploadedFileInterface $value Valeur à tester.
-     * @param string                $arg   Liste d'extensions d'images autorisées.
+     * @param string                $args  Liste d'extensions d'images autorisées.
      * @param bool                  $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not)
+    protected function test(string $key, $value, $args, bool $not): void
     {
-        $extensions = empty($arg)
-            ? 'jpe,jpg,jpeg,png,gif,svg'
-            : $arg;
+        $extensions = $args
+            ?? 'jpe,jpg,jpeg,png,gif,svg';
         parent::test('file_mimes', $value, $extensions, $not);
 
         if ($this->hasErrors()) {
-            return 1;
+            return;
         }
 
         $this->validMimeImageByExtension($extensions);
@@ -44,13 +45,14 @@ class Image extends FileMimes
      *
      * @param string $extensions Liste d'extensions d'images autorisées.
      *
-     * @return bool
+     * @return void
      */
-    protected function validMimeImageByExtension($extensions)
+    protected function validMimeImageByExtension(string $extensions): void
     {
         foreach (explode(',', $extensions) as $ext) {
-            if (($mimes = $this->getMimeByExtension($ext)) === false) {
-                return false;
+            $mimes = $this->getMimeByExtension($ext);
+            if ($mimes === null) {
+                return;
             }
             $this->validMimeImage($ext, $mimes);
         }
@@ -64,7 +66,7 @@ class Image extends FileMimes
      *
      * @throws \InvalidArgumentException L'extension n'est pas une extension d'image.
      */
-    private function validMimeImage($extension, $mimes)
+    private function validMimeImage(string $extension, $mimes): void
     {
         if (is_array($mimes)) {
             foreach ($mimes as $mime) {
@@ -74,12 +76,10 @@ class Image extends FileMimes
                     ));
                 }
             }
-        } else {
-            if (!strstr($mimes, 'image/')) {
-                throw new \InvalidArgumentException(htmlspecialchars(
-                    "The extension $extension is not an image extension."
-                ));
-            }
+        } elseif (!strstr($mimes, 'image/')) {
+            throw new \InvalidArgumentException(htmlspecialchars(
+                "The extension $extension is not an image extension."
+            ));
         }
     }
 }

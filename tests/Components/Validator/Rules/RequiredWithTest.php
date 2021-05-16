@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class RequiredWithTest extends Rule
 {
-    public function testRequiredWith()
+    public function testRequiredWith(): void
     {
         $this->object->setInputs([
             'field_1' => '',
@@ -36,7 +36,7 @@ class RequiredWithTest extends Rule
         $this->assertCount(1, $this->object->getErrors());
     }
 
-    public function testRequiredWithIntegration()
+    public function testRequiredWithIntegration(): void
     {
         $this->object->setInputs([
             'field_1' => 1,
@@ -69,21 +69,15 @@ class RequiredWithTest extends Rule
         $this->assertCount(1, $this->object->getErrors());
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testRequiredWithException()
+    public function testRequiredWithException(): void
     {
-        $this->object->addRule('field', 'required_with:error')
-            ->isValid();
+        $this->expectException(\Exception::class);
+        $this->object->addRule('field', 'required_with:error')->isValid();
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testRequiredWithVoidException()
+    public function testRequiredWithVoidException(): void
     {
-        $this->object->addRule('field', 'required_with:')
-            ->isValid();
+        $this->expectException(\Exception::class);
+        $this->object->addRule('field', 'required_with:')->isValid();
     }
 }

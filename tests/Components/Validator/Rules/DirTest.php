@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class DirTest extends Rule
 {
-    public function testDir()
+    public function testDir(): void
     {
         $this->object->setInputs([
             'must'              => __DIR__,

@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class AcceptedTest extends Rule
 {
-    public function testAccepted()
+    public function testAccepted(): void
     {
         $this->object->setInputs([
             'true'      => true,

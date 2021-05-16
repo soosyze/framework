@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -8,6 +10,7 @@
 
 namespace Soosyze\Components\HttpFactories;
 
+use Psr\Http\Message\ResponseInterface;
 use Soosyze\Components\Http\Response;
 
 /**
@@ -27,9 +30,9 @@ class ResponseFactory
      *                             in the generated response. If none is provided, implementations MAY use
      *                             the defaults as suggested in the HTTP specification.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
-    public function createResponse($code = 200, $reasonPhrase = '')
+    public function createResponse(int $code = 200, string $reasonPhrase = ''): ResponseInterface
     {
         return new Response($code, null, [], $reasonPhrase);
     }

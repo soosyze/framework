@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Soosyze\Components\HttpClient\Exception;
 
 use Psr\Http\Message\RequestInterface;
@@ -31,8 +33,8 @@ class RequestException extends ClientException
      */
     public function __construct(
         RequestInterface $request,
-        $message = '',
-        $code = 0,
+        string $message = '',
+        int $code = 0,
         $previous = null
     ) {
         $this->request = $request;
@@ -47,7 +49,7 @@ class RequestException extends ClientException
      *
      * @return RequestInterface
      */
-    public function getRequest()
+    public function getRequest(): RequestInterface
     {
         return $this->request;
     }

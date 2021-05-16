@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework http://soosyze.com
  *
@@ -18,7 +20,7 @@ class Validator
     /**
      * Règles de validations.
      *
-     * @var string[]
+     * @var array<string, string|Validator>
      */
     protected $rules = [];
 
@@ -104,7 +106,7 @@ class Validator
     /**
      * Valeurs de retour.
      *
-     * @var string[]
+     * @var array
      */
     protected $errors = [];
 
@@ -125,7 +127,7 @@ class Validator
     /**
      * Tests globaux personnalisés par l'utilisateur.
      *
-     * @var Rule[]
+     * @var string[]
      */
     protected static $testsCustomGlobal = [];
 
@@ -139,14 +141,14 @@ class Validator
     /**
      * Messages de retours personnalisés global.
      *
-     * @var string[]
+     * @var array
      */
     protected static $messagesCustomGlobal = [];
 
     /**
      * Messages de retours personnalisés.
      *
-     * @var string[]
+     * @var array
      */
     protected $messagesCustom = [];
 
@@ -161,11 +163,11 @@ class Validator
      * Ajoute un test global personnalisé.
      *
      * @param string $key  Clé du test.
-     * @param Rule   $rule Function de test.
+     * @param string $rule Function de test.
      *
      * @return self
      */
-    public static function addTestGlobal($key, $rule)
+    public static function addTestGlobal(string $key, string $rule): self
     {
         self::$testsCustomGlobal[ $key ] = $rule;
 
@@ -180,7 +182,7 @@ class Validator
      *
      * @return $this
      */
-    public function addTest($key, Rule $rule)
+    public function addTest(string $key, Rule $rule): self
     {
         $this->testsCustom[ $key ] = $rule;
 
@@ -190,11 +192,11 @@ class Validator
     /**
      * Ajoute des messages globaux de retours personnalisés.
      *
-     * @param string[] $messages
+     * @param array $messages
      *
      * @return self
      */
-    public static function setMessagesGlobal(array $messages)
+    public static function setMessagesGlobal(array $messages): self
     {
         self::$messagesCustomGlobal = $messages;
 
@@ -204,11 +206,11 @@ class Validator
     /**
      * Ajoute des messages de retours personnalisés.
      *
-     * @param string[] $messages
+     * @param array $messages
      *
      * @return $this
      */
-    public function setMessages(array $messages)
+    public function setMessages(array $messages): self
     {
         $this->messagesCustom = $messages;
 
@@ -223,7 +225,7 @@ class Validator
      *
      * @return $this
      */
-    public function addMessage($key, array $message)
+    public function addMessage(string $key, array $message): self
     {
         $this->messagesCustom[ $key ] = $message;
 
@@ -237,7 +239,7 @@ class Validator
      *
      * @return $this
      */
-    public function setAttributs(array $attributs)
+    public function setAttributs(array $attributs): self
     {
         $this->attributesCustom = $attributs;
 
@@ -251,7 +253,7 @@ class Validator
      *
      * @return $this
      */
-    public function setLabels(array $labels)
+    public function setLabels(array $labels): self
     {
         $this->labelCustom = $labels;
 
@@ -268,7 +270,7 @@ class Validator
      *
      * @return $this
      */
-    public function addInput($key, $value)
+    public function addInput($key, $value): self
     {
         $this->inputs[ $key ] = $value;
 
@@ -285,7 +287,7 @@ class Validator
      *
      * @return $this
      */
-    public function addRule($key, $rule)
+    public function addRule(string $key, string $rule): self
     {
         $this->rules[ $key ] = $rule;
 
@@ -302,7 +304,7 @@ class Validator
      *
      * @return $this
      */
-    public function addLabel($key, $label)
+    public function addLabel(string $key, string $label): self
     {
         $this->labelCustom[ $key ] = $label;
 
@@ -318,7 +320,7 @@ class Validator
      *
      * @return $this
      */
-    public function addLabels(array $labels)
+    public function addLabels(array $labels): self
     {
         $this->labelCustom += $labels;
 
@@ -326,15 +328,15 @@ class Validator
     }
 
     /**
-     * Retourne une erreur à partir de son nom.
+     * Retourne une erreur à partir du nom du champ.
      *
      * @codeCoverageIgnore getter
      *
-     * @param string $key Nom de l'erreur.
+     * @param string $key Nom du champ.
      *
-     * @return string
+     * @return array
      */
-    public function getError($key)
+    public function getError(string $key): array
     {
         return $this->errors[ $key ];
     }
@@ -344,9 +346,9 @@ class Validator
      *
      * @codeCoverageIgnore getter
      *
-     * @return string[]
+     * @return array<string, array<string, array<string, string>>>
      */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors;
     }
@@ -356,7 +358,7 @@ class Validator
      *
      * @return string[]
      */
-    public function getKeyInputErrors()
+    public function getKeyInputErrors(): array
     {
         $out = [];
         foreach ($this->errors as $key => $error) {
@@ -374,11 +376,11 @@ class Validator
      * @param string $key     Nom du champ.
      * @param mixed  $default Valeur de retour par défaut.
      *
-     * @return array Valeur d'un champ.
+     * @return mixed Valeur d'un champ.
      */
-    public function getInput($key, $default = '')
+    public function getInput(string $key, $default = '')
     {
-        return isset($this->inputs[$key]) && $this->inputs[ $key ] !== ''
+        return isset($this->inputs[ $key ]) && $this->inputs[ $key ] !== ''
             ? $this->inputs[ $key ]
             : $default;
     }
@@ -388,7 +390,7 @@ class Validator
      *
      * @return array Valeur des champs.
      */
-    public function getInputs()
+    public function getInputs(): array
     {
         return array_intersect_key($this->inputs, $this->rules);
     }
@@ -398,7 +400,7 @@ class Validator
      *
      * @return array Valeur des champs.
      */
-    public function getInputsWithout(array $without = [])
+    public function getInputsWithout(array $without = []): array
     {
         return array_diff_key($this->getInputs(), array_flip($without));
     }
@@ -408,7 +410,7 @@ class Validator
      *
      * @return array Valeur des champs.
      */
-    public function getInputsWithoutObject(array $without = [])
+    public function getInputsWithoutObject(array $without = []): array
     {
         $inputsWithout = $this->getInputsWithout($without);
         foreach ($inputsWithout as $key => $input) {
@@ -427,7 +429,7 @@ class Validator
      *
      * @return string[]
      */
-    public function getKeyErrors()
+    public function getKeyErrors(): array
     {
         $out = [];
         foreach ($this->errors as $key => $error) {
@@ -446,7 +448,7 @@ class Validator
      *
      * @return bool
      */
-    public function hasError($key)
+    public function hasError(string $key): bool
     {
         return isset($this->errors[ $key ]);
     }
@@ -458,7 +460,7 @@ class Validator
      *
      * @return bool
      */
-    public function hasErrors()
+    public function hasErrors(): bool
     {
         return !empty($this->errors);
     }
@@ -472,7 +474,7 @@ class Validator
      *
      * @return bool
      */
-    public function hasInput($key)
+    public function hasInput(string $key): bool
     {
         return isset($this->inputs[ $key ]);
     }
@@ -482,7 +484,7 @@ class Validator
      *
      * @return bool Si le test à réussit.
      */
-    public function isValid()
+    public function isValid(): bool
     {
         $this->errors = [];
         foreach ($this->rules as $key => $tests) {
@@ -512,7 +514,7 @@ class Validator
      *
      * @return $this
      */
-    public function setInputs(array $fields)
+    public function setInputs(array $fields): self
     {
         $this->inputs = $fields;
 
@@ -528,7 +530,7 @@ class Validator
      *
      * @return $this
      */
-    public function setRules(array $rules)
+    public function setRules(array $rules): self
     {
         $this->rules = $rules;
 
@@ -544,8 +546,11 @@ class Validator
      *
      * @return array
      */
-    protected function resucrsiveError(array $errors, $strKey = '', $rule = true)
-    {
+    protected function resucrsiveError(
+        array $errors,
+        string $strKey = '',
+        bool $rule = true
+    ): array {
         $out = [];
         foreach ($errors as $key => $error) {
             if (is_array($error)) {
@@ -557,7 +562,7 @@ class Validator
             $out[ $rule
                 ? $strKey . '[' . $key . ']'
                 : $strKey
-            ] = $error;
+                ] = $error;
         }
 
         return $out;
@@ -571,7 +576,7 @@ class Validator
      *
      * @return void
      */
-    protected function execute($key, array $rules)
+    protected function execute(string $key, array $rules): void
     {
         foreach ($rules as $rule) {
             $value = $this->getCorrectInput($key, $this->inputs);
@@ -603,7 +608,7 @@ class Validator
      *
      * @return mixed|string
      */
-    protected function getCorrectInput($key, array $inputs)
+    protected function getCorrectInput(string $key, array $inputs)
     {
         return \array_key_exists($key, $inputs)
             ? $inputs[ $key ]
@@ -617,16 +622,14 @@ class Validator
      *
      * @return array
      */
-    protected function getInfosRule($rule)
+    protected function getInfosRule(string $rule): array
     {
         $exp  = explode(':', $rule, 2);
         /* Retire le caractère de négation de la fonction. */
         $name = $exp[ 0 ][ 0 ] === '!'
             ? substr($exp[ 0 ], 1)
             : $exp[ 0 ];
-        $arg  = isset($exp[ 1 ])
-            ? $exp[ 1 ]
-            : '';
+        $arg  = $exp[ 1 ] ?? null;
 
         /* Si l'argument fait référence à un autre champ. */
         if ($arg && $arg[ 0 ] === '@') {
@@ -645,9 +648,9 @@ class Validator
      *
      * @throws \BadMethodCallException The function does not exist.
      */
-    protected function parseRules($key, $strRule)
+    protected function parseRules(string $key, string $strRule): Rule
     {
-        list($name, $arg, $not) = $this->getInfosRule($strRule);
+        [ $name, $arg, $not ] = $this->getInfosRule($strRule);
 
         if (isset($this->testsCustom[ $name ])) {
             $class = $this->testsCustom[ $name ];
@@ -661,10 +664,6 @@ class Validator
             ));
         }
 
-        $label = isset($this->labelCustom[ $key ])
-            ? $this->labelCustom[ $key ]
-            : $key;
-
         return (new $class)->hydrate($name, $key, $arg, $not);
     }
 
@@ -676,11 +675,10 @@ class Validator
      *
      * @return Rule
      */
-    protected function valoriseRule($key, Rule $rule)
+    protected function valoriseRule(string $key, Rule $rule): Rule
     {
-        $label = isset($this->labelCustom[ $key ])
-            ? $this->labelCustom[ $key ]
-            : $key;
+        $label = $this->labelCustom[ $key ]
+            ?? $key;
 
         $name = $rule->setLabel($label)->getName();
 

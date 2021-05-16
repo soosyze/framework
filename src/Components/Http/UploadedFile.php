@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -98,10 +100,10 @@ class UploadedFile implements UploadedFileInterface
      */
     public function __construct(
         $file,
-        $name = null,
-        $size = null,
-        $type = null,
-        $error = UPLOAD_ERR_OK
+        ?string $name = null,
+        ?int $size = null,
+        ?string $type = null,
+        int $error = UPLOAD_ERR_OK
     ) {
         $this->name  = $this->filterName($name);
         $this->size  = $this->filterSize($size);
@@ -184,6 +186,7 @@ class UploadedFile implements UploadedFileInterface
      *                                   le deuxième ou suivant appel à la méthode.
      * @throws \InvalidArgumentException Si le $targetPath spécifié n'est pas valide.
      * @throws \InvalidArgumentException Une erreur est survenue.
+     * @return void
      */
     public function moveTo($targetPath)
     {
@@ -273,7 +276,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @return void
      */
-    protected function filterFile($file)
+    protected function filterFile($file): void
     {
         if (is_string($file)) {
             $this->file = $file;
@@ -295,7 +298,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @return string|null Nom du fichier filtré.
      */
-    protected function filterName($name)
+    protected function filterName($name): ?string
     {
         if (!is_string($name) && $name !== null) {
             throw new \InvalidArgumentException('The file name must be a string or null.');
@@ -313,7 +316,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @return int|null Taille du fichier filtré.
      */
-    protected function filterSize($size)
+    protected function filterSize($size): ?int
     {
         if (!is_int($size) && $size !== null) {
             throw new \InvalidArgumentException('The file size must be a integer or null');
@@ -331,7 +334,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @return string|null Type du fichier filtré.
      */
-    protected function filterType($type)
+    protected function filterType($type): ?string
     {
         if (!is_string($type) && $type !== null) {
             throw new \InvalidArgumentException('The file type must be a string or null.');
@@ -349,7 +352,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @return int Type d'erreur filtré.
      */
-    protected function filterError($error)
+    protected function filterError($error): int
     {
         if (!in_array($error, $this->errors, true)) {
             throw new \InvalidArgumentException('The type of error is invalid.');
@@ -365,7 +368,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @return bool
      */
-    private function moveToSapi($targetPath)
+    private function moveToSapi(string $targetPath): bool
     {
         return rename($this->file, $targetPath);
     }
@@ -373,14 +376,14 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Déplace le fichier dans un environnement non SAPI.
      *
-     * @param type $targetPath Cible du fichier.
+     * @param string $targetPath Cible du fichier.
      *
      * @throws \RuntimeException Le fichier n'a pas été téléchargé par HTTP POST.
      * @throws \RuntimeException Une erreur est survenue dans le déplacement du fichier.
      *
      * @return bool
      */
-    private function moveToNoSapi($targetPath)
+    private function moveToNoSapi(string $targetPath): bool
     {
         if (!is_uploaded_file($this->file)) {
             throw new \RuntimeException('The file was not downloaded by HTTP POST.');
@@ -397,7 +400,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @return bool
      */
-    private function isError()
+    private function isError(): bool
     {
         return $this->error !== UPLOAD_ERR_OK;
     }

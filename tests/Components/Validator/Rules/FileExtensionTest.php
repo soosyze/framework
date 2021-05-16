@@ -6,7 +6,7 @@ use Soosyze\Components\Http\UploadedFile;
 
 class FileExtensionTest extends RuleFile
 {
-    public function testExtensions()
+    public function testExtensions(): void
     {
         $this->object->setInputs([
             'file_ext'              => $this->uplaod_img,

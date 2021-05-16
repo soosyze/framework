@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class IpTest extends Rule
 {
-    public function testIp()
+    public function testIp(): void
     {
         $this->object->setInputs([
             'ip'              => '127.0.0.1',
@@ -44,11 +44,9 @@ class IpTest extends Rule
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testIpException()
+    public function testIpException(): void
     {
+        $this->expectException(\Exception::class);
         $this->object
             ->addInput('field', '127.0.0.1')
             ->addRule('field', 'ip:7')

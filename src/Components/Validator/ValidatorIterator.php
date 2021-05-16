@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework http://soosyze.com
  *
@@ -21,7 +23,7 @@ class ValidatorIterator extends Validator
      * @param string $key
      * @param array  $rules
      */
-    protected function execute($key, array $rules)
+    protected function execute(string $key, array $rules): void
     {
         foreach ($rules as $rule) {
             foreach ($this->inputs as $i => $input) {

@@ -4,73 +4,46 @@ namespace Soosyze\Tests\Components\Validator\Filters;
 
 class ToFloatTest extends Filter
 {
-    public function testToFloat()
+    /**
+     * @dataProvider providerToFloat
+     *
+     * @param float|int|string $value
+     */
+    public function testToFloat(string $key, $value): void
     {
-        $this->object->setInputs([
-            /* Standard */
-            'float'       => 1.0,
-            'txt'         => '1.0',
-            'decimal'     => 1,
-            'decimal_txt' => '1',
-            'zero'        => 0,
-            'zero_txt'    => '0',
-            /* Exponent */
-            'exp'         => 1.0e1,
-            'exp_2'       => 1E1,
-            'exp_txt'     => '1.0e1',
-            'exp_txt_2'   => '1E1',
-            /* Limit */
-            'min'         => PHP_INT_MIN - 1,
-            'max'         => PHP_INT_MAX + 1,
-            /* Cast type */
-            'cast'        => (float) 1,
-            'cast_txt'    => (float) '1'
-        ])->setRules([
-            /* Standard */
-            'float'       => 'to_float',
-            'txt'         => 'to_float',
-            'decimal'     => 'to_float',
-            'decimal_txt' => 'to_float',
-            'zero'        => 'to_float',
-            'zero_txt'    => 'to_float',
-            /* Exponent */
-            'exp'         => 'to_float',
-            'exp_2'       => 'to_float',
-            'exp_txt'     => 'to_float',
-            'exp_txt_2'   => 'to_float',
-            /* Limit */
-            'min'         => 'to_float',
-            'max'         => 'to_float',
-            /* Cast type */
-            'cast'        => 'to_float',
-            'cast_txt'    => 'to_float'
-        ])->isValid();
+        $this->object
+            ->addInput($key, $value)
+            ->addRule($key, 'to_float')
+            ->isValid();
 
-        /* Standard */
-        $this->assertTrue(is_float($this->object->getInput('float')));
-        $this->assertTrue(is_float($this->object->getInput('txt')));
-        $this->assertTrue(is_float($this->object->getInput('decimal')));
-        $this->assertTrue(is_float($this->object->getInput('decimal_txt')));
-        $this->assertTrue(is_float($this->object->getInput('zero')));
-        $this->assertTrue(is_float($this->object->getInput('zero_txt')));
-        /* Exponent */
-        $this->assertTrue(is_float($this->object->getInput('exp')));
-        $this->assertTrue(is_float($this->object->getInput('exp_2')));
-        $this->assertTrue(is_float($this->object->getInput('exp_txt')));
-        $this->assertTrue(is_float($this->object->getInput('exp_txt_2')));
-        /* Limit */
-        $this->assertTrue(is_float($this->object->getInput('min')));
-        $this->assertTrue(is_float($this->object->getInput('max')));
-        /* Cast type */
-        $this->assertTrue(is_float($this->object->getInput('cast')));
-        $this->assertTrue(is_float($this->object->getInput('cast_txt')));
+        $this->assertTrue(is_float($this->object->getInput($key)));
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testToFloatException()
+    public function providerToFloat(): \Generator
     {
+        /* Standard */
+        yield [ 'float', 1.0 ];
+        yield [ 'txt', '1.0' ];
+        yield [ 'decimal', 1 ];
+        yield [ 'decimal_txt', '1' ];
+        yield [ 'zero', 0 ];
+        yield [ 'zero_txt', '0' ];
+        /* Exponent */
+        yield [ 'exp', 1.0e1 ];
+        yield [ 'exp_2', 1E1 ];
+        yield [ 'exp_txt', '1.0e1' ];
+        yield [ 'exp_txt_2', '1E1' ];
+        /* Limit */
+        yield [ 'min', PHP_INT_MIN - 1 ];
+        yield [ 'max', PHP_INT_MAX + 1 ];
+        /* Cast type */
+        yield [ 'cast', (float) 1 ];
+        yield [ 'cast_txt', (float) '1' ];
+    }
+
+    public function testToFloatException(): void
+    {
+        $this->expectException(\Exception::class);
         $this->object
             ->addInput('field', 'error')
             ->addRule('field', 'to_float')

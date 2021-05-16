@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class DateTest extends Rule
 {
-    public function testDate()
+    public function testDate(): void
     {
         $this->object->setInputs([
             'must'              => '10/01/1994',
@@ -32,7 +32,7 @@ class DateTest extends Rule
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testDateFormat()
+    public function testDateFormat(): void
     {
         $this->object->setInputs([
             'must'              => '20/01/1994',
@@ -62,7 +62,7 @@ class DateTest extends Rule
         $this->assertCount(3, $this->object->getErrors());
     }
 
-    public function testDateAfter()
+    public function testDateAfter(): void
     {
         $this->object->setInputs([
             'must'              => '10/02/1994',
@@ -92,18 +92,16 @@ class DateTest extends Rule
         $this->assertCount(3, $this->object->getErrors());
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testDateAfterException()
+    public function testDateAfterException(): void
     {
+        $this->expectException(\Exception::class);
         $this->object
             ->addInput('field', 'not date')
             ->addRule('field', 'date_after:error')
             ->isValid();
     }
 
-    public function testDateAfterOrEqual()
+    public function testDateAfterOrEqual(): void
     {
         $this->object->setInputs([
             'must'              => '10/01/1994',
@@ -131,7 +129,7 @@ class DateTest extends Rule
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testDateBefore()
+    public function testDateBefore(): void
     {
         $this->object->setInputs([
             'must'              => '09/01/1994',
@@ -161,18 +159,16 @@ class DateTest extends Rule
         $this->assertCount(3, $this->object->getErrors());
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testDateBeforeException()
+    public function testDateBeforeException(): void
     {
+        $this->expectException(\Exception::class);
         $this->object
             ->addInput('field', 'not date')
             ->addRule('field', 'date_before:error')
             ->isValid();
     }
 
-    public function testDateBeforeOrEqual()
+    public function testDateBeforeOrEqual(): void
     {
         $this->object->setInputs([
             'must'              => '10/01/1994',

@@ -8,6 +8,7 @@
 
 namespace Soosyze\Components\HttpFactories;
 
+use Psr\Http\Message\StreamInterface;
 use Soosyze\Components\Http\Stream;
 
 /**
@@ -26,9 +27,9 @@ class StreamFactory
      *
      * @param string $content String content with which to populate the stream.
      *
-     * @return \Psr\Http\Message\StreamInterface
+     * @return StreamInterface
      */
-    public function createStream($content = '')
+    public function createStream(string $content = ''): StreamInterface
     {
         return new Stream($content);
     }
@@ -47,9 +48,9 @@ class StreamFactory
      * @throws \RuntimeException         If the file cannot be opened.
      * @throws \InvalidArgumentException If the mode is invalid.
      *
-     * @return \Psr\Http\Message\StreamInterface
+     * @return StreamInterface
      */
-    public function createStreamFromFile($filename, $mode = 'r')
+    public function createStreamFromFile(string $filename, string $mode = 'r'): StreamInterface
     {
         return Stream::createStreamFromFile($filename, $mode);
     }
@@ -61,9 +62,9 @@ class StreamFactory
      *
      * @param resource $resource The PHP resource to use as the basis for the stream.
      *
-     * @return \Psr\Http\Message\StreamInterface
+     * @return StreamInterface
      */
-    public function createStreamFromResource($resource)
+    public function createStreamFromResource($resource): StreamInterface
     {
         return new Stream($resource);
     }

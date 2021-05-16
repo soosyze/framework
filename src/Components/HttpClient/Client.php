@@ -52,7 +52,7 @@ class Client
      *
      * @return ResponseInterface
      */
-    public function sendRequest(RequestInterface $request)
+    public function sendRequest(RequestInterface $request): ResponseInterface
     {
         $this->setCurlInit();
         $this->setCurlOptions($request);
@@ -94,7 +94,7 @@ class Client
      *
      * @return ResponseInterface
      */
-    protected function curlParseHeaders($headers, ResponseInterface $response)
+    protected function curlParseHeaders($headers, ResponseInterface $response): ResponseInterface
     {
         foreach (explode("\n", $headers) as $header) {
             $colpos = strpos($header, ':');
@@ -103,7 +103,7 @@ class Client
                 continue;
             }
 
-            list($name, $value) = explode(':', $header, 2);
+            [ $name, $value ] = explode(':', $header, 2);
 
             $response = $response->withAddedHeader(trim($name), trim($value));
         }
@@ -116,7 +116,7 @@ class Client
      *
      * @return void
      */
-    protected function setCurlInit()
+    protected function setCurlInit(): void
     {
         $this->handle = curl_init();
 
@@ -134,7 +134,7 @@ class Client
      *
      * @return void
      */
-    protected function setCurlOptions(RequestInterface $request)
+    protected function setCurlOptions(RequestInterface $request): void
     {
         $this->curlOptions += [
             CURLOPT_AUTOREFERER     => true,

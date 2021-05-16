@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class ClassExistsTest extends Rule
 {
-    public function testClass()
+    public function testClass(): void
     {
         $this->object->setInputs([
             'must'              => '\StdClass',

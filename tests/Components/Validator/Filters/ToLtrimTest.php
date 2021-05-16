@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Filters;
 
 class ToLtrimTest extends Filter
 {
-    public function testToLtrim()
+    public function testToLtrim(): void
     {
         $this->object->setInputs([
             'start'     => '  test',
@@ -24,11 +24,9 @@ class ToLtrimTest extends Filter
         $this->assertEquals('test', $this->object->getInput('custom'));
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testToLtrimException()
+    public function testToLtrimException(): void
     {
+        $this->expectException(\Exception::class);
         $this->object
             ->addInput('field', 1)
             ->addRule('field', 'to_ltrim')

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -18,7 +20,7 @@ class ImageDimensionsHeight extends ImageDimensions
     /**
      * {@inheritdoc}
      */
-    protected function messages()
+    protected function messages(): array
     {
         $output               = parent::messages();
         $output[ 'must' ]     = 'The height of the :label image must be between :minpx and :maxpx.';

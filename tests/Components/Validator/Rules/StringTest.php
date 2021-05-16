@@ -4,11 +4,14 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class StringTest extends Rule
 {
+    /**
+     * @var string
+     */
     public $heredoc = <<<EOT
 bar
 EOT;
 
-    public function testString()
+    public function testString(): void
     {
         $this->object->setInputs([
             'single_quotes' => 'Lorem ipsum',

@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class EmailTest extends Rule
 {
-    public function testEmail()
+    public function testEmail(): void
     {
         $this->object->setInputs([
             'must'              => 'my-mail@mail.fr',

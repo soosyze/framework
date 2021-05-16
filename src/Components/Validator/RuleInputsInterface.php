@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -22,5 +24,5 @@ interface RuleInputsInterface
      *
      * @return void
      */
-    public function setInputs(array $inputs);
+    public function setInputs(array $inputs): void;
 }

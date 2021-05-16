@@ -2,12 +2,14 @@
 
 namespace Soosyze\Tests\Components\Http;
 
+use Psr\Http\Message\UploadedFileInterface;
 use Soosyze\Components\Http\ServerRequest;
+use Soosyze\Components\Http\UploadedFile;
 
 class ServerRequestTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var UplaodeFile
+     * @var ServerRequest
      */
     protected $object;
 
@@ -176,11 +178,7 @@ class ServerRequestTest extends \PHPUnit\Framework\TestCase
         ]
     ];
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         $method       = 'GET';
         $uri          = \Soosyze\Components\Http\Uri::create('http://exemple.com?key=value');
@@ -203,67 +201,62 @@ class ServerRequestTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testCreate()
+    public function testCreate(): void
     {
-        $_SERVER[ 'HTTP_HOST' ]     = 'exemple.com';
-        $_SERVER[ 'REQUEST_URI' ]   = '/test/index.php/other';
+        $_SERVER[ 'HTTP_HOST' ]       = 'exemple.com';
+        $_SERVER[ 'REQUEST_URI' ]     = '/test/index.php/other';
         $_SERVER[ 'REQUEST_METHOD' ]  = 'GET';
         $_SERVER[ 'SCRIPT_FILENAME' ] = '/test/index.php';
         $_SERVER[ 'SCRIPT_NAME' ]     = '/test/index.php';
 
         $request = ServerRequest::create();
 
-        $this->assertAttributeSame($_SERVER, 'serverParams', $request);
+        $this->assertEquals($_SERVER, $request->getServerParams());
         $this->assertEquals('http://exemple.com/test/', $request->getBasePath());
     }
 
-    public function testAttributes()
-    {
-        $this->assertAttributeSame([], 'serverParams', $this->object);
-        $this->assertAttributeSame([], 'cookieParams', $this->object);
-        $this->assertAttributeSame([], 'uploadFiles', $this->object);
-    }
-
-    public function testGetServerParams()
+    public function testGetServerParams(): void
     {
         $this->assertEquals([], $this->object->getServerParams());
     }
 
-    public function testGetCookieParams()
+    public function testGetCookieParams(): void
     {
         $this->assertEquals([], $this->object->getCookieParams());
     }
 
-    public function testWithCookieParams()
+    public function testWithCookieParams(): void
     {
         $clone = $this->object->withCookieParams([ 'cookie_key' => 'cookie_value' ]);
-        $this->assertAttributeSame([ 'cookie_key' => 'cookie_value' ], 'cookieParams', $clone);
+
+        $this->assertEquals([ 'cookie_key' => 'cookie_value' ], $clone->getCookieParams());
     }
 
-    public function testGetQueryParams()
+    public function testGetQueryParams(): void
     {
         $this->assertEquals([], $this->object->getQueryParams());
     }
 
-    public function testWithQueryParams()
+    public function testWithQueryParams(): void
     {
         $clone = $this->object->withQueryParams([ 'key' => 'value' ]);
-        $this->assertAttributeSame([ 'key' => 'value' ], 'queryParams', $clone);
+
+        $this->assertEquals([ 'key' => 'value' ], $clone->getQueryParams());
     }
 
-    public function testGetUploadedFiles()
+    public function testGetUploadedFiles(): void
     {
         $this->assertEquals([], $this->object->getUploadedFiles());
     }
 
-    public function testParseFiles()
+    public function testParseFiles(): void
     {
-        $output = ServerRequest::parseFiles($this->filesTest);
+        $parseFiles = ServerRequest::parseFiles($this->filesTest);
 
-        $this->assertEquals($output, $this->resultFiles);
+        $this->assertEquals($this->resultFiles, $parseFiles);
     }
 
-    public function testWithUploadedFiles()
+    public function testWithUploadedFiles(): void
     {
         $clone = $this->object->withUploadedFiles($this->filesTest);
 
@@ -273,84 +266,86 @@ class ServerRequestTest extends \PHPUnit\Framework\TestCase
         $file4   = $clone->getUploadedFiles()[ 'file4' ][ 'details' ][ 0 ];
         $file4_1 = $clone->getUploadedFiles()[ 'file4' ][ 'details' ][ 'avatars' ][ 0 ];
 
-        $this->assertInstanceOf('\Psr\Http\Message\UploadedFileInterface', $file);
-        $this->assertInstanceOf('\Psr\Http\Message\UploadedFileInterface', $file2);
-        $this->assertInstanceOf('\Psr\Http\Message\UploadedFileInterface', $file3);
-        $this->assertInstanceOf('\Psr\Http\Message\UploadedFileInterface', $file4);
-        $this->assertInstanceOf('\Psr\Http\Message\UploadedFileInterface', $file4_1);
+        $this->assertInstanceOf(UploadedFileInterface::class, $file);
+        $this->assertInstanceOf(UploadedFileInterface::class, $file2);
+        $this->assertInstanceOf(UploadedFileInterface::class, $file3);
+        $this->assertInstanceOf(UploadedFileInterface::class, $file4);
+        $this->assertInstanceOf(UploadedFileInterface::class, $file4_1);
     }
 
-    public function testWithUploadedFilesUpload()
+    public function testWithUploadedFilesUpload(): void
     {
-        $upl   = new \Soosyze\Components\Http\UploadedFile('');
-        $clone = $this->object->withUploadedFiles([ $upl ]);
-        $this->assertAttributeSame([ $upl ], 'uploadFiles', $clone);
+        $upl   = [ new UploadedFile('') ];
+        $clone = $this->object->withUploadedFiles($upl);
+
+        $this->assertEquals($upl, $clone->getUploadedFiles());
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testWithUploadedFilesException()
+    public function testWithUploadedFilesException(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectErrorMessage('The input parameter is not in the correct format.');
         $this->object->withUploadedFiles([ 'tmp_name' => '' ]);
     }
 
-    public function testGetParseBody()
+    public function testGetParseBody(): void
     {
         $this->assertEquals(null, $this->object->getParsedBody());
     }
 
-    public function testWithParseBody()
+    public function testWithParseBody(): void
     {
         $clone = $this->object->withParsedBody([ 'key' => 'value' ]);
-        $this->assertAttributeSame([ 'key' => 'value' ], 'parseBody', $clone);
+
+        $this->assertEquals([ 'key' => 'value' ], $clone->getParsedBody());
     }
 
-    public function testGetAttributes()
+    public function testGetAttributes(): void
     {
         $this->assertEquals([], $this->object->getAttributes());
     }
 
-    public function testGetAttribute()
+    public function testGetAttribute(): void
     {
         $this->assertEquals('default', $this->object->getAttribute('key', 'default'));
     }
 
-    public function testWithAttribute()
+    public function testWithAttribute(): void
     {
         $clone = $this->object->withAttribute('key', 'value');
 
-        $this->assertAttributeSame([ 'key' => 'value' ], 'attributes', $clone);
+        $this->assertEquals([ 'key' => 'value' ], $clone->getAttributes());
         $this->assertEquals('value', $clone->getAttribute('key'));
     }
 
-    public function testWithoutAttribute()
+    public function testWithoutAttribute(): void
     {
-        $clone = $this->object->withAttribute('key', 'value')
+        $clone = $this->object
+            ->withAttribute('key', 'value')
             ->withAttribute('key2', 'value2');
-        $this->assertAttributeSame([ 'key' => 'value', 'key2' => 'value2' ], 'attributes', $clone);
+        $this->assertEquals([ 'key' => 'value', 'key2' => 'value2' ], $clone->getAttributes());
 
         $clone2 = $clone->withoutAttribute('key');
-        $this->assertAttributeSame([ 'key2' => 'value2' ], 'attributes', $clone2);
+        $this->assertEquals([ 'key2' => 'value2' ], $clone2->getAttributes());
     }
 
     /**
-     * @dataProvider invalidParsedBodyParams
-     * @expectedException \Exception
+     * @dataProvider providerParsedBodyException
+     *
+     * @param mixed $data
      */
-    public function testParsedBodyException($value)
+    public function testParsedBodyException($data): void
     {
-        $clone = $this->object->withParsedBody($value);
-        $this->assertEquals($value, $clone->getParsedBody());
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectErrorMessage('First parameter to withParsedBody MUST be object, array or null.');
+        $this->object->withParsedBody($data);
     }
 
-    public function invalidParsedBodyParams()
+    public function providerParsedBodyException(): \Generator
     {
-        return [
-            [ 4711 ],
-            [ 47.11 ],
-            [ 'foobar' ],
-            [ true ],
-        ];
+        yield [ 4711 ];
+        yield [ 47.11 ];
+        yield [ 'foobar' ];
+        yield [ true ];
     }
 }

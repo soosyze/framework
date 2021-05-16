@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -32,7 +34,7 @@ class FormBuilder extends FormGroupBuilder
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         $html          = $this->form_open() . $this->render() . $this->form_close();
         self::$errors  = [];
@@ -48,7 +50,7 @@ class FormBuilder extends FormGroupBuilder
      *
      * @return $this
      */
-    public function openForm(array $attr = [])
+    public function openForm(array $attr = []): self
     {
         $this->form[ 'open' ] = [ 'type' => 'open', 'attr' => $attr ];
 
@@ -60,7 +62,7 @@ class FormBuilder extends FormGroupBuilder
      *
      * @return string HTML
      */
-    public function form_close()
+    public function form_close(): string
     {
         return '</form>' . self::EOL;
     }
@@ -72,10 +74,13 @@ class FormBuilder extends FormGroupBuilder
      *
      * @return string HTML
      */
-    public function form_open(array $attrAdd = [])
+    public function form_open(array $attrAdd = []): string
     {
         $attr = $this->merge_attr($this->form[ 'open' ][ 'attr' ], $attrAdd);
 
-        return '<form' . $this->renderAttrInput($attr) . '>' . self::EOL;
+        return sprintf(
+            '<form%s>',
+            $this->renderAttrInput($attr)
+        ) . self::EOL;
     }
 }

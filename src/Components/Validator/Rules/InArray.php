@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -20,24 +22,24 @@ class InArray extends \Soosyze\Components\Validator\Rule
      *
      * @param string $key   Clé du test.
      * @param scalar $value Valeur à tester.
-     * @param string $arg   Tableau de comparaison.
+     * @param string $args  Tableau de comparaison.
      * @param bool   $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not)
+    protected function test(string $key, $value, $args, bool $not): void
     {
-        $array = explode(',', $arg);
+        $array = explode(',', $args);
 
         if (!in_array($value, $array) && $not) {
-            $this->addReturn($key, 'must', [ ':list' => $arg ]);
+            $this->addReturn($key, 'must', [ ':list' => $args ]);
         } elseif (in_array($value, $array) && !$not) {
-            $this->addReturn($key, 'not', [ ':list' => $arg ]);
+            $this->addReturn($key, 'not', [ ':list' => $args ]);
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function messages()
+    protected function messages(): array
     {
         return [
             'must' => 'The :label field must be in the following list :list.',

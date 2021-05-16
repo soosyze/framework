@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class BoolTest extends Rule
 {
-    public function testBool()
+    public function testBool(): void
     {
         $this->object->setInputs([
             /* True */

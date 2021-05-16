@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -20,10 +22,10 @@ class BetweenNumeric extends Between
      *
      * @param string  $key   Clé du test.
      * @param numeric $value Valeur à tester.
-     * @param string  $arg   Liste de 2 valeurs de comparaison séparées par une virgule.
+     * @param string  $args  Liste de 2 valeurs de comparaison séparées par une virgule.
      * @param bool    $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not)
+    protected function test(string $key, $value, $args, bool $not): void
     {
         $length = $this->getSizeNumeric($value);
 
@@ -31,7 +33,7 @@ class BetweenNumeric extends Between
             return;
         }
 
-        list($min, $max) = $this->getParamMinMax($arg);
+        [ $min, $max ] = $this->getParamMinMax($args);
         $this->sizeBetween($key, $length, $min, $max, $not);
     }
 }

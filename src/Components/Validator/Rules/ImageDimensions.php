@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -20,20 +22,20 @@ abstract class ImageDimensions extends FileMimetypes
     /**
      * {@inheritdoc}
      *
-     * @param string                                  $key   Clé du test.
-     * @param \Psr\Http\Message\UploadedFileInterface $value Valeur à tester.
-     * @param string                                  $arg   Argument de test.
-     * @param bool                                    $not   Inverse le test.
+     * @param string                $key   Clé du test.
+     * @param UploadedFileInterface $value Valeur à tester.
+     * @param string                $args  Argument de test.
+     * @param bool                  $not   Inverse le test.
      */
-    public function test($key, $value, $arg, $not)
+    public function test(string $key, $value, $args, bool $not): void
     {
         parent::test('file_mimetypes', $value, 'image', true);
 
         if ($this->hasErrors()) {
-            return 1;
+            return;
         }
 
-        $between = $this->getParamMinMax($arg);
+        $between = $this->getParamMinMax($args);
 
         $length = $this->getDimensions($value);
         $type   = $key === 'image_dimensions_height'
@@ -49,14 +51,11 @@ abstract class ImageDimensions extends FileMimetypes
      *
      * @return int[] Dimensions
      */
-    protected function getDimensions(UploadedFileInterface $upload)
+    protected function getDimensions(UploadedFileInterface $upload): array
     {
-        $dimension = getimagesize($upload->getStream()->getMetadata('uri'));
+        [ $width, $height ] = getimagesize($upload->getStream()->getMetadata('uri'));
 
-        return [
-            'width'  => $dimension[ 0 ],
-            'height' => $dimension[ 1 ]
-        ];
+        return compact('width', 'height');
     }
 
     /**
@@ -68,8 +67,13 @@ abstract class ImageDimensions extends FileMimetypes
      * @param numeric $max         Hauteur maximum autorisée.
      * @param bool    $not         Inverse le test.
      */
-    protected function sizeBetween($key, $lengthValue, $min, $max, $not)
-    {
+    protected function sizeBetween(
+        string $key,
+        $lengthValue,
+        $min,
+        $max,
+        bool $not
+    ): void {
         if (!($lengthValue <= $max && $lengthValue >= $min) && $not) {
             $this->addReturn($key, 'must', [
                 ':min' => $min,

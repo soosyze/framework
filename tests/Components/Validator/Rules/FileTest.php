@@ -6,7 +6,7 @@ use Soosyze\Components\Http\UploadedFile;
 
 class FileTest extends RuleFile
 {
-    public function testFile()
+    public function testFile(): void
     {
         $this->object->setInputs([
             'file'              => $this->uplaod_txt,
@@ -34,7 +34,7 @@ class FileTest extends RuleFile
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testFileError()
+    public function testFileError(): void
     {
         $this->object->setInputs([
             'file_ini_size'   => new UploadedFile($this->file_txt, '', 1, '', UPLOAD_ERR_INI_SIZE),

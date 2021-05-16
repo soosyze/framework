@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class TokenTest extends Rule
 {
-    public function testToken()
+    public function testToken(): void
     {
         $_SESSION[ 'token' ]      = [
             'token'          => 'Lorem ipsum dolor sit amet',
@@ -28,21 +28,19 @@ class TokenTest extends Rule
         $this->assertTrue($this->object->isValid());
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testTokenException()
+    public function testTokenException(): void
     {
         $_SESSION[ 'token' ]      = 'Lorem ipsum dolor sit amet';
         $_SESSION[ 'token_time' ] = time();
 
+        $this->expectException(\Exception::class);
         $this->object
             ->addInput('field', 'error')
             ->addRule('field', 'token:error')
             ->isValid();
     }
 
-    public function testTokenErrorSession()
+    public function testTokenErrorSession(): void
     {
         @session_destroy();
         $this->object
@@ -53,7 +51,7 @@ class TokenTest extends Rule
         $this->assertCount(1, $this->object->getErrors());
     }
 
-    public function testTokenErrorSessionTime()
+    public function testTokenErrorSessionTime(): void
     {
         $_SESSION[ 'token' ][ 'field' ]      = 'Lorem ipsum dolor sit amet';
         $_SESSION[ 'token_time' ][ 'field' ] = time() - 1000;
@@ -66,7 +64,7 @@ class TokenTest extends Rule
         $this->assertCount(1, $this->object->getErrors());
     }
 
-    public function testTokenErrorSessionToken()
+    public function testTokenErrorSessionToken(): void
     {
         $_SESSION[ 'token' ][ 'field' ]      = 'Lorem ipsum dolor sit amet';
         $_SESSION[ 'token_time' ][ 'field' ] = time();

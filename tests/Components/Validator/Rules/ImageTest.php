@@ -6,7 +6,7 @@ use Soosyze\Components\Http\UploadedFile;
 
 class ImageTest extends RuleFile
 {
-    public function testImage()
+    public function testImage(): void
     {
         $this->object->setInputs([
             'image'               => $this->uplaod_img,
@@ -38,31 +38,21 @@ class ImageTest extends RuleFile
         $this->assertCount(3, $this->object->getErrors());
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testImageException()
+    public function testImageException(): void
     {
-        $this->object->setInputs([
-            'image' => $this->uplaod_txt
-        ])->setRules([
-            'image' => 'image:txt'
-        ]);
-
-        $this->object->isValid();
+        $this->expectException(\Exception::class);
+        $this->object
+            ->addInput('image', $this->uplaod_txt)
+            ->addRule('image', 'image:txt')
+            ->isValid();
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testImageExceptionMultiple()
+    public function testImageExceptionMultiple(): void
     {
-        $this->object->setInputs([
-            'image' => $this->upload_xml
-        ])->setRules([
-            'image' => 'image:xml'
-        ]);
-
-        $this->object->isValid();
+        $this->expectException(\Exception::class);
+        $this->object
+            ->addInput('image', $this->upload_xml)
+            ->addRule('image', 'image:xml')
+            ->isValid();
     }
 }

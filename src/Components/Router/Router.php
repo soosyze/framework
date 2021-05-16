@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -29,7 +31,7 @@ class Router
     /**
      * Configuration des routes.
      *
-     * @var array|ArrayAccess<string, scalar>
+     * @var array<string, scalar>|ArrayAccess<string, scalar>
      */
     protected $config = [];
 
@@ -52,7 +54,7 @@ class Router
      *
      * @param ContainerInterface|null $container
      */
-    public function __construct(ContainerInterface $container = null)
+    public function __construct(?ContainerInterface $container = null)
     {
         $this->container = $container;
     }
@@ -65,7 +67,7 @@ class Router
      *
      * @return array|null La route ou null si non trouvée.
      */
-    public function parse(RequestInterface $request, $key_query = 'q')
+    public function parse(RequestInterface $request, string $key_query = 'q'): ?array
     {
         /* Rempli un array des paramètres de l'Uri. */
         $query  = $this->parseQueryFromRequest($request, $key_query);
@@ -95,7 +97,7 @@ class Router
      *
      * @return mixed Le retour de la méthode appelée.
      */
-    public function execute(array $route, RequestInterface $request = null)
+    public function execute(array $route, ?RequestInterface $request = null)
     {
         $class   = strstr($route[ 'uses' ], '@', true);
         $methode = substr(strrchr($route[ 'uses' ], '@'), 1);
@@ -107,9 +109,7 @@ class Router
         }
 
         /* Ajoute la requête en dernier paramètre de fonction. */
-        $params[] = ($request === null)
-            ? $this->currentRequest
-            : $request;
+        $params[] = $request ?? $this->currentRequest;
 
         $obj        = new $class();
         $reflection = new \ReflectionClass($obj);
@@ -132,7 +132,7 @@ class Router
      *
      * @return string
      */
-    public function getRegexForPath($path, array $param)
+    public function getRegexForPath(string $path, array $param): string
     {
         array_walk($param, static function (&$with) {
             $with = str_replace([ '(', '/' ], [ '(?:', '\/' ], $with);
@@ -155,10 +155,10 @@ class Router
      * @return string
      */
     public function getPath(
-        $name,
-        array $params = null,
-        $strict = true
-    ) {
+        string $name,
+        ?array $params = null,
+        bool $strict = true
+    ): string {
         if (($route = Route::getRoute($name)) === null) {
             throw new Exception\RouteNotFoundException('The path does not exist.');
         }
@@ -194,11 +194,11 @@ class Router
      * @return string
      */
     public function getRoute(
-        $name,
-        array $params = null,
-        $strict = true,
-        $key_query = 'q'
-    ) {
+        string $name,
+        ?array $params = null,
+        bool $strict = true,
+        string $key_query = 'q'
+    ): string {
         $prefix = !$this->isRewrite()
             ? "?$key_query="
             : '';
@@ -217,11 +217,11 @@ class Router
      * @return RequestInterface
      */
     public function getRequestByRoute(
-        $name,
-        array $params = null,
-        $strict = true,
-        $key_query = 'q'
-    ) {
+        string $name,
+        ?array $params = null,
+        bool $strict = true,
+        string $key_query = 'q'
+    ): RequestInterface {
         $path = $this->getPath($name, $params, $strict);
 
         return $this->currentRequest->withUri(
@@ -239,7 +239,7 @@ class Router
      *
      * @return string
      */
-    public function makeRoute($path, $key_query = 'q')
+    public function makeRoute(string $path, string $key_query = 'q'): string
     {
         $prefix = $this->isRewrite()
             ? ''
@@ -255,7 +255,7 @@ class Router
      *
      * @return $this
      */
-    public function setBasePath($basePath)
+    public function setBasePath(string $basePath): self
     {
         $this->basePath = $basePath;
 
@@ -267,7 +267,7 @@ class Router
      *
      * @return string L'URL.
      */
-    public function getBasePath()
+    public function getBasePath(): string
     {
         return $this->basePath;
     }
@@ -276,14 +276,14 @@ class Router
      * Les configurations pour le router :
      * (bool)settings.rewrite_engine Si les routes doivent tenir compte de la réécriture d'URL.
      *
-     * @param array|ArrayAccess<string, scalar> $config
+     * @param mixed $config
      *
      * @return $this
      */
-    public function setConfig($config)
+    public function setConfig($config): self
     {
-        if (!\is_array($config) && !($config instanceof ArrayAccess)) {
-            throw new \InvalidArgumentException('The configuration must be an ArrayAccess array or instance.');
+        if (!(\is_array($config) || $config instanceof ArrayAccess)) {
+            throw new \InvalidArgumentException('The configuration must be an array or an ArrayAccess instance.');
         }
         $this->config = $config;
 
@@ -297,7 +297,7 @@ class Router
      *
      * @return $this
      */
-    public function setRequest(RequestInterface $request)
+    public function setRequest(RequestInterface $request): self
     {
         $this->currentRequest = $request;
 
@@ -309,7 +309,7 @@ class Router
      *
      * @return bool Si l'écriture d'url est possible.
      */
-    public function isRewrite()
+    public function isRewrite(): bool
     {
         return !empty($this->config[ 'settings.rewrite_engine' ]);
     }
@@ -324,9 +324,9 @@ class Router
      * @return string
      */
     public function parseQueryFromRequest(
-        RequestInterface $request = null,
-        $key_query = 'q'
-    ) {
+        ?RequestInterface $request = null,
+        string $key_query = 'q'
+    ): string {
         if ($request === null && $this->currentRequest === null) {
             throw new \InvalidArgumentException('No request is provided.');
         }
@@ -343,9 +343,8 @@ class Router
         /* Rempli un array des paramètres de l'Uri. */
         parse_str($uri->getQuery(), $parseQuery);
 
-        return empty($parseQuery[ $key_query ])
-            ? '/'
-            : $parseQuery[ $key_query ];
+        return $parseQuery[ $key_query ]
+            ?? '/';
     }
 
     /**
@@ -358,7 +357,7 @@ class Router
      *
      * @return array Paramètres présents dans la requête.
      */
-    public function parseParam($route, $query, array $param)
+    public function parseParam(string $route, string $query, array $param): array
     {
         $path = $this->getRegexForPath($route, $param);
 
