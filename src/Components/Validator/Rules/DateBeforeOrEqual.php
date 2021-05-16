@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -20,12 +22,12 @@ class DateBeforeOrEqual extends DateBefore
      *
      * @param string $key   Clé du test.
      * @param string $value Date à tester.
-     * @param string $arg   Date de comparaison.
+     * @param string $args  Date de comparaison.
      * @param bool   $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not)
+    protected function test(string $key, $value, $args, bool $not): void
     {
-        parent::test('date_before', $value, $arg, $not);
+        parent::test('date_before', $value, $args, $not);
     }
 
     /**
@@ -38,7 +40,7 @@ class DateBeforeOrEqual extends DateBefore
      *
      * @return void
      */
-    protected function testDateBefore($key, $value, $arg, $not)
+    protected function testDateBefore(string $key, $value, $arg, bool $not): void
     {
         if (!($value <= $arg) && $not) {
             $this->addReturn($key, 'before', [ ':datebefore' => $arg ]);
@@ -50,7 +52,7 @@ class DateBeforeOrEqual extends DateBefore
     /**
      * {@inheritdoc}
      */
-    protected function messages()
+    protected function messages(): array
     {
         $output                 = parent::messages();
         $output[ 'before' ]     = 'The :label field must be less than or equal to :datebefore.';

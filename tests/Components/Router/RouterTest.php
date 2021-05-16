@@ -14,13 +14,18 @@ class RouterTest extends \PHPUnit\Framework\TestCase
      */
     protected $object;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
-        Route::useNamespace('');
-        Route::get('test.index', '/', 'Soosyze\Tests\Components\Router\TestController@index');
-        Route::post('test.post', '/', 'Soosyze\Tests\Components\Router\TestController@indexPost');
+    }
 
-        Route::useNamespace('Soosyze\Tests\Components\Router');
+    protected function setUp(): void
+    {
+        $this->object = new Router();
+        Route::useNamespace('');
+        Route::get('test.index', '/', 'Soosyze\Tests\Resources\Router\TestController@index');
+        Route::post('test.post', '/', 'Soosyze\Tests\Resources\Router\TestController@indexPost');
+
+        Route::useNamespace('Soosyze\Tests\Resources\Router');
         Route::get('test.page', 'page/:id', 'TestController@page', [ ':id' => '[0-9]+' ]);
         Route::post('test.post', 'page/:id/post', 'TestController@post', [ ':id' => '[0-9]+' ]);
         Route::put('test.put', 'page/:id/put', 'TestController@put', [ ':id' => '[0-9]+' ]);
@@ -35,147 +40,133 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
-    {
-        $this->object = new Router();
-    }
-
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-    }
-
-    public function testParse()
+    public function testParse(): void
     {
         $uri     = Uri::create('http://test.com');
         $request = new Request('GET', $uri);
 
-        $route  = $this->object->parse($request);
-        $result = [
+        $expectedRoute = [
             'key'     => 'test.index',
             'methode' => 'get',
             'path'    => '/',
-            'uses'    => "\Soosyze\Tests\Components\Router\TestController@index",
+            'uses'    => "\Soosyze\Tests\Resources\Router\TestController@index",
             'with'    => []
         ];
 
-        $this->assertEquals($route, $result);
+        $this->assertEquals($expectedRoute, $this->object->parse($request));
 
         $uri     = Uri::create('http://test.com/?q=404');
         $request = new Request('GET', $uri);
 
-        $route = $this->object->parse($request);
-        $this->assertNull($route);
+        $this->assertNull($this->object->parse($request));
     }
 
-    public function testParseQueryFromRequest()
+    public function testParseQueryFromRequest(): void
     {
         $uri     = Uri::create('http://test.com');
         $request = new Request('GET', $uri);
         $out     = $this->object->setRequest($request)->parseQueryFromRequest();
 
-        $this->assertEquals($out, '/');
+        $this->assertEquals('/', $out);
 
         $uri     = Uri::create('http://test.com?q=foo');
         $request = new Request('GET', $uri);
         $out     = $this->object->setRequest($request)->parseQueryFromRequest();
 
-        $this->assertEquals($out, 'foo');
+        $this->assertEquals('foo', $out);
     }
 
-    public function testExecute()
+    public function testExecute(): void
     {
         $uri     = Uri::create('http://test.com');
         $request = new Request('GET', $uri);
 
         $route  = $this->object->parse($request);
-        $result = $this->object->execute($route, $request);
+        $result = $this->object->execute($route ?? [], $request);
 
-        $this->assertEquals($result, 'hello world !');
+        $this->assertEquals('hello world !', $result);
     }
 
-    public function testExecuteSetRequest()
+    public function testExecuteSetRequest(): void
     {
         $uri     = Uri::create('http://test.com');
         $request = new Request('GET', $uri);
 
         $route  = $this->object->parse($request);
-        $result = $this->object->setRequest($request)->execute($route);
+        $result = $this->object->setRequest($request)->execute($route ?? []);
 
-        $this->assertEquals($result, 'hello world !');
+        $this->assertEquals('hello world !', $result);
     }
 
-    public function testExecuteParam()
+    public function testExecuteParam(): void
     {
         $uri     = Uri::create('http://test.com/?q=page/1');
         $request = new Request('GET', $uri);
 
         $route  = $this->object->parse($request);
-        $result = $this->object->execute($route, $request);
+        $result = $this->object->execute($route ?? [], $request);
 
-        $this->assertEquals($result, 'hello page 1');
+        $this->assertEquals('hello page 1', $result);
 
         $uri     = Uri::create('http://test.com/?q=page/1#foo');
         $request = new Request('GET', $uri);
 
         $route  = $this->object->parse($request);
-        $result = $this->object->execute($route, $request);
+        $result = $this->object->execute($route ?? [], $request);
 
-        $this->assertEquals($result, 'hello page 1');
+        $this->assertEquals('hello page 1', $result);
     }
 
-    public function testExecuteParamMultiple()
+    public function testExecuteParamMultiple(): void
     {
         $uri     = Uri::create('http://test.com/?q=page/1.json');
         $request = new Request('GET', $uri);
 
         $route  = $this->object->parse($request);
-        $result = $this->object->execute($route, $request);
-        $this->assertEquals($result, 'hello json 1');
+        $result = $this->object->execute($route ?? [], $request);
+        $this->assertEquals('hello json 1', $result);
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testExecuteExceptionNotRequest()
+    public function testExecuteExceptionNotRequest(): void
     {
         $uri     = Uri::create('http://test.com/?q=page/1');
         $request = new Request('GET', $uri);
 
         $route = $this->object->parse($request);
-        $this->object->execute($route);
+
+        $this->expectException(\Exception::class);
+        $this->object->execute($route ?? []);
     }
 
-    public function testRelplaceRegex()
+    public function testRelplaceRegex(): void
     {
         $str = 'index/page/:id/edit';
 
-        $result = $this->object->getRegexForPath($str, [ ':id' => '\d+' ]);
-        $this->assertEquals($result, 'index\/page\/(\d+)\/edit');
+        $this->assertEquals(
+            'index\/page\/(\d+)\/edit',
+            $this->object->getRegexForPath($str, [ ':id' => '\d+' ])
+        );
 
-        $result2 = $this->object->getRegexForPath($str, [ ':id' => '(\d+)' ]);
-        $this->assertEquals($result2, 'index\/page\/((?:\d+))\/edit');
+        $this->assertEquals(
+            'index\/page\/((?:\d+))\/edit',
+            $this->object->getRegexForPath($str, [ ':id' => '(\d+)' ])
+        );
     }
 
-    public function testGetRoute()
+    public function testGetRoute(): void
     {
         $uri     = Uri::create('http://test.com/?q=test');
         $request = new Request('GET', $uri);
 
         $this->object->setRequest($request)->setBasePath('http://test.com/');
-        $result = $this->object->getRoute('test.index');
 
-        $this->assertEquals($result, 'http://test.com/?q=/');
+        $this->assertEquals(
+            'http://test.com/?q=/',
+            $this->object->getRoute('test.index')
+        );
     }
 
-    public function testGetRequestByRoute()
+    public function testGetRequestByRoute(): void
     {
         $uri     = Uri::create('http://test.com/?q=test');
         $request = new Request('GET', $uri);
@@ -183,7 +174,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $this->object->setRequest($request)->setBasePath('http://test.com/');
         $result = $this->object->getRequestByRoute('test.index');
 
-        $this->assertEquals((string) $result->getUri(), 'http://test.com/?q=/');
+        $this->assertEquals('http://test.com/?q=/', (string) $result->getUri());
 
         /* Rewrite */
         $uriRewrite     = Uri::create('http://test.com/test');
@@ -195,68 +186,57 @@ class RouterTest extends \PHPUnit\Framework\TestCase
             ->setRequest($requestRewrite);
         $resultRewrite = $this->object->getRequestByRoute('test.index');
 
-        $this->assertEquals((string) $resultRewrite->getUri(), 'http://test.com/');
+        $this->assertEquals('http://test.com/', (string) $resultRewrite->getUri());
     }
 
-    public function testGetRouteStrictParam()
+    public function testGetRouteStrictParam(): void
     {
         $uri     = Uri::create('http://test.com/?q=test');
         $request = new Request('GET', $uri);
 
         $this->object->setRequest($request)->setBasePath('http://test.com/');
-        $result = $this->object->getRoute('test.page', [ ':id' => '1' ]);
 
-        $this->assertEquals($result, 'http://test.com/?q=page/1');
+        $this->assertEquals(
+            'http://test.com/?q=page/1',
+            $this->object->getRoute('test.page', [ ':id' => '1' ])
+        );
     }
 
-    public function testGetRouteParam()
+    public function testGetRouteParam(): void
     {
         $uri     = Uri::create('http://test.com/?q=test');
         $request = new Request('GET', $uri);
 
         $this->object->setRequest($request)->setBasePath('http://test.com/');
-        $result = $this->object->getRoute('test.page.format', [ ':ext' => 'json' ], false);
 
-        $this->assertEquals($result, 'http://test.com/?q=page/:id.json');
+        $this->assertEquals(
+            'http://test.com/?q=page/:id.json',
+            $this->object->getRoute('test.page.format', [ ':ext' => 'json' ], false)
+        );
     }
 
     /**
-     * @expectedException \Exception
+     * @dataProvider providerGetRouteException
      */
-    public function testGetRouteException()
+    public function testGetRouteException(string $name, array $params): void
     {
         $uri     = Uri::create('http://test.com/');
         $request = new Request('GET', $uri);
 
         $this->object->setRequest($request);
-        $this->object->getRoute('error');
+
+        $this->expectException(\Exception::class);
+        $this->object->getRoute($name, $params);
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testGetRouteRouteArgumentException()
+    public function providerGetRouteException(): \Generator
     {
-        $uri     = Uri::create('http://test.com/');
-        $request = new Request('GET', $uri);
-
-        $this->object->setRequest($request);
-        $this->object->getRoute('test.page', [ ':id' => 'error' ]);
+        yield [ 'error', [] ];
+        yield [ 'test.page', [ ':id' => 'error' ] ];
+        yield [ 'test.page', [ ':error' => 1 ] ];
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testGetRouteInvalidArgumentException()
-    {
-        $uri     = Uri::create('http://test.com/');
-        $request = new Request('GET', $uri);
-
-        $this->object->setRequest($request);
-        $this->object->getRoute('test.page', [ ':error' => 1 ]);
-    }
-
-    public function testIsRewrite()
+    public function testIsRewrite(): void
     {
         $uri     = Uri::create('http://test.com/');
         $request = new Request('GET', $uri, [ 'HTTP_MOD_REWRITE' => 'On' ]);
@@ -266,60 +246,33 @@ class RouterTest extends \PHPUnit\Framework\TestCase
             ->setConfig([ 'settings.rewrite_engine' => 'on' ]);
 
         $this->assertTrue($this->object->isRewrite());
-
-        $result = $this->object->getRoute('test.page', [ ':id' => '1' ]);
-        $this->assertEquals($result, 'http://test.com/page/1');
+        $this->assertEquals(
+            'http://test.com/page/1',
+            $this->object->getRoute('test.page', [ ':id' => '1' ])
+        );
     }
 
-    public function testGetBasePath()
+    public function testGetBasePath(): void
     {
         $uri     = Uri::create('http://test.com/');
         $request = new Request('GET', $uri, [ 'HTTP_MOD_REWRITE' => 'On' ]);
 
         $this->object->setRequest($request);
-        $this->assertEquals($this->object->getBasePath(), '');
+        $this->assertEquals('', $this->object->getBasePath());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testSetConfigInvalidArgumentException()
+    public function testSetConfigInvalidArgumentException(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->object->setConfig('error');
     }
 
-    public function testMakeRoute()
+    public function testMakeRoute(): void
     {
         $url = $this->object
             ->setBasePath('http://test.com')
             ->makeRoute('foo/route');
 
-        $this->assertEquals($url, 'http://test.com?q=foo/route');
-    }
-}
-
-class TestController
-{
-    public function index()
-    {
-        return 'hello world !';
-    }
-
-    public function format($item, $ext)
-    {
-        return "hello $ext $item";
-    }
-
-    public function page($item)
-    {
-        return 'hello page ' . $item;
-    }
-}
-
-class TestControllerOther
-{
-    public function index()
-    {
-        return 'hello world !';
+        $this->assertEquals('http://test.com?q=foo/route', $url);
     }
 }

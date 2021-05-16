@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -20,15 +22,15 @@ class MaxNumeric extends Max
      *
      * @param string  $key   Clé du test.
      * @param numeric $value Valeur à tester.
-     * @param string  $arg   Valeur de comparraison.
+     * @param string  $args  Valeur de comparraison.
      * @param bool    $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not)
+    protected function test(string $key, $value, $args, bool $not): void
     {
         $length = $this->getSizeNumeric($value);
         if ($this->hasErrors()) {
             return;
         }
-        $this->sizeMax($key, $length, $arg, $not);
+        $this->sizeMax($key, $length, $args, $not);
     }
 }

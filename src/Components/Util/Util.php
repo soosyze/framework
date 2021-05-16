@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -15,7 +17,7 @@ namespace Soosyze\Components\Util;
  */
 class Util
 {
-    const DS = DIRECTORY_SEPARATOR;
+    public const DS = DIRECTORY_SEPARATOR;
 
     /**
      * Liste non exaustive des caractères accentués.
@@ -87,18 +89,13 @@ class Util
      *
      * @return array|object
      */
-    public static function getJson($strFile, $assoc = true)
+    public static function getJson(string $strFile, bool $assoc = true)
     {
         // @codeCoverageIgnoreStart
         if (!extension_loaded('json')) {
             throw new \Exception('The JSON extension is not loaded.');
         }
         // @codeCoverageIgnoreEnd
-        if (!is_string($strFile)) {
-            throw new \Exception(
-                htmlspecialchars('The file is not readable.')
-            );
-        }
         if (!file_exists($strFile)) {
             throw new \InvalidArgumentException(
                 htmlspecialchars("The $strFile file is missing.")
@@ -130,8 +127,11 @@ class Util
      *
      * @return bool|null Si le fichier JSON est créé.
      */
-    public static function createJson($strPath, $strFileName, array $data = [])
-    {
+    public static function createJson(
+        string $strPath,
+        string $strFileName,
+        array $data = []
+    ): ?bool {
         $cleanPath = self::cleanPath($strPath);
 
         if (!file_exists($strPath)) {
@@ -159,8 +159,11 @@ class Util
      *
      * @return bool Si le fichier JSON a été sauvegardé.
      */
-    public static function saveJson($strPath, $strFileName, array $data)
-    {
+    public static function saveJson(
+        string $strPath,
+        string $strFileName,
+        array $data
+    ): bool {
         $fp = fopen(
             self::cleanPath($strPath) . self::DS . $strFileName . '.json',
             'w'
@@ -177,7 +180,7 @@ class Util
      *
      * @return string Extension du fichier ou une chaine de caractère vide.
      */
-    public static function getFileExtension($pathFile)
+    public static function getFileExtension(string $pathFile): string
     {
         return strtolower(pathinfo($pathFile, PATHINFO_EXTENSION));
     }
@@ -189,7 +192,7 @@ class Util
      *
      * @return string
      */
-    public static function getFileBasename($pathFile)
+    public static function getFileBasename(string $pathFile): string
     {
         return strtolower(pathinfo($pathFile, PATHINFO_BASENAME));
     }
@@ -202,8 +205,10 @@ class Util
      *
      * @return array Liste des répertoires.
      */
-    public static function getFolder($dir, array $exclude = [ '.', '..' ])
-    {
+    public static function getFolder(
+        string $dir,
+        array $exclude = [ '.', '..' ]
+    ): array {
         $folder = [];
         foreach (new \DirectoryIterator($dir) as $file) {
             if ($file->isDir() && !\in_array($file->getBasename(), $exclude, true)) {
@@ -222,7 +227,7 @@ class Util
      *
      * @return array Tableau préfixer.
      */
-    public static function arrayPrefixValue(array $values, $prefix)
+    public static function arrayPrefixValue(array $values, string $prefix): array
     {
         foreach ($values as &$value) {
             $value = $prefix . $value;
@@ -240,7 +245,7 @@ class Util
      *
      * @return bool Si la valeur est trouvé.
      */
-    public static function inArrayToLower($needle, array $array)
+    public static function inArrayToLower(string $needle, array $array): bool
     {
         return in_array(strtolower($needle), array_map('strtolower', $array));
     }
@@ -253,7 +258,7 @@ class Util
      *
      * @return bool si toutes les clés sont présentes
      */
-    public static function arrayKeysExists(array $keys, array $data)
+    public static function arrayKeysExists(array $keys, array $data): bool
     {
         return count(array_intersect_key(array_flip($keys), $data)) === count($keys);
     }
@@ -266,8 +271,10 @@ class Util
      *
      * @return string Chemin nettoyé.
      */
-    public static function cleanPath($path, $character_mask = "/ \t\n\r\0\x0B")
-    {
+    public static function cleanPath(
+        string $path,
+        string $character_mask = "/ \t\n\r\0\x0B"
+    ): string {
         $str = str_replace('\\', '/', $path);
         $str = preg_replace('/\/+/', '/', $str);
 
@@ -282,8 +289,10 @@ class Util
      *
      * @return string Chemin nettoyé.
      */
-    public static function cleanDir($dir, $character_mask = "/ \t\n\r\0\x0B")
-    {
+    public static function cleanDir(
+        string $dir,
+        string $character_mask = "/ \t\n\r\0\x0B"
+    ): string {
         $str = self::cleanPath($dir, $character_mask);
 
         return str_replace('/', DIRECTORY_SEPARATOR, $str);
@@ -298,11 +307,14 @@ class Util
      *
      * @return string
      */
-    public static function strHighlight($needle, $haystack, $classHighlight = 'highlight')
-    {
+    public static function strHighlight(
+        string $needle,
+        string $haystack,
+        string $classHighlight = 'highlight'
+    ): string {
         return $needle === ''
             ? $haystack
-            : preg_replace('/' . preg_quote($needle, '/') . '/i', "<span class=\"$classHighlight\">$0</span>", $haystack);
+            : preg_replace('/' . preg_quote($needle, '/') . '/i', "<span class=\"$classHighlight\">$0</span>", $haystack) ?? $haystack;
     }
 
     /**
@@ -314,8 +326,11 @@ class Util
      *
      * @return string
      */
-    public static function strReplaceFirst($search, $replace, $subject)
-    {
+    public static function strReplaceFirst(
+        string $search,
+        string $replace,
+        string $subject
+    ): string {
         if (($pos = strpos($subject, $search)) !== false) {
             return substr_replace($subject, $replace, $pos, strlen($search));
         }
@@ -332,8 +347,11 @@ class Util
      *
      * @return string
      */
-    public static function strReplaceLast($search, $replace, $subject)
-    {
+    public static function strReplaceLast(
+        string $search,
+        string $replace,
+        string $subject
+    ): string {
         if (($pos = strrpos($subject, $search)) !== false) {
             return substr_replace($subject, $replace, $pos, strlen($search));
         }
@@ -350,9 +368,9 @@ class Util
      * @return string
      */
     public static function strRandom(
-        $length = 20,
-        $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_'
-    ) {
+        int $length = 20,
+        string $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_'
+    ): string {
         $str = '';
         for ($i = 0; $i < $length; $i++) {
             $str .= $chars[ rand(0, strlen($chars) - 1) ];
@@ -372,11 +390,14 @@ class Util
      *
      * @return string
      */
-    public static function strSlug($str, $separator = '_', $ignore = '')
-    {
+    public static function strSlug(
+        string $str,
+        string $separator = '_',
+        string $ignore = ''
+    ): string {
         $output = mb_strtolower($str, 'UTF-8');
-        $output = str_replace(self::$search, self::$replace, $output);
-        $output = preg_replace('/([^\w' . $ignore . ']|_)+/i', $separator, $output);
+        $output = str_replace(self::$search, self::$replace, $output) ?? '';
+        $output = preg_replace('/([^\w' . $ignore . ']|_)+/i', $separator, $output) ?? '';
 
         return trim($output, $separator);
     }
@@ -384,14 +405,17 @@ class Util
     /**
      * À partir d'une valeur numérique, calcul et retourne son équivalent en taille de fichier.
      *
-     * @param int   $size      Valeur numértique.
-     * @param int   $precision Le nombre de zéro après la virgule.
-     * @param mixed $default   Valeur par défaut en cas d'abence de valeur.
+     * @param int    $size      Valeur numértique.
+     * @param int    $precision Le nombre de zéro après la virgule.
+     * @param string $default   Valeur par défaut en cas d'abence de valeur.
      *
      * @return string
      */
-    public static function strFileSizeFormatted($size, $precision = 2, $default = '')
-    {
+    public static function strFileSizeFormatted(
+        int $size,
+        int $precision = 2,
+        string $default = ''
+    ): string {
         $units  = [ 'b', 'Kb', 'Mb', 'Gb', 'Tb', 'Pb', 'Eb', 'Zb', 'Yb' ];
         $power  = $size > 0
             ? floor(log($size, 1024))
@@ -411,21 +435,21 @@ class Util
      *
      * @return int|null
      */
-    public static function getOctetShortBytesPhp($shortBytes)
+    public static function getOctetShortBytesPhp(string $shortBytes): ?int
     {
         $unit = null;
         if (preg_match('/(?P<unit>k|m|g)+$/i', trim($shortBytes), $matches) !== false) {
-            $unit = isset($matches[ 'unit' ])
-                ? strtolower($matches[ 'unit' ])
-                : null;
+            $unit = strtolower($matches[ 'unit' ] ?? '');
         }
 
-        if (preg_match('/^(?P<value>\d+)+/i', trim($shortBytes), $matches) !== false) {
-            if (!isset($matches[ 'value' ])) {
-                return null;
-            }
-            $value = (int) $matches[ 'value' ];
+        if (preg_match('/^(?P<value>\d+)+/i', trim($shortBytes), $matches) === false) {
+            return null;
         }
+
+        if (!isset($matches[ 'value' ])) {
+            return null;
+        }
+        $value = (int) $matches[ 'value' ];
 
         switch ($unit) {
             case 'k':
@@ -441,16 +465,25 @@ class Util
 
     /**
      * Retourne la quantité de données maximum à l'upload autorisé par votre configuration.
-     *
-     * @return int
+     * memory_limit: -1 no limit
      */
-    public static function getOctetUploadLimit()
+    public static function getOctetUploadLimit(): int
     {
-        $max_upload   = self::getOctetShortBytesPhp(ini_get('upload_max_filesize'));
-        $max_post     = self::getOctetShortBytesPhp(ini_get('post_max_size'));
-        $memory_limit = self::getOctetShortBytesPhp(ini_get('memory_limit')); // -1 no limit
+        $limitMin = [];
+        foreach ([ 'upload_max_filesize', 'post_max_size', 'memory_limit' ] as $ini) {
+            $octet = ini_get($ini);
+            $limit = self::getOctetShortBytesPhp(
+                $octet === false
+                    ? ''
+                    : $octet
+            );
 
-        return min($max_upload, $max_post, $memory_limit);
+            if ($limit !== null) {
+                $limitMin[] = $limit;
+            }
+        }
+
+        return min(...$limitMin);
     }
 
     /**
@@ -462,8 +495,10 @@ class Util
      * @return array La première valeur est la chaine de caractère
      *               et la seconde la valeur numérique à remplacer.
      */
-    public static function strHumansTimeDiff(\DateTime $from, $to = 'now')
-    {
+    public static function strHumansTimeDiff(
+        \DateTime $from,
+        string $to = 'now'
+    ): array {
         $interval = \date_create($to)->diff($from);
 
         if (($value = $interval->y) >= 1) {

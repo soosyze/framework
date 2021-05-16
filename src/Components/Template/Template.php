@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -46,7 +48,7 @@ class Template
     /**
      * Les fonctions de filtre.
      *
-     * @var callable[]
+     * @var array<string,callable[]>
      */
     protected $filters = [];
 
@@ -70,7 +72,7 @@ class Template
      * @param string $name Nom du fichier.
      * @param string $path Chemin du fichier.
      */
-    public function __construct($name, $path)
+    public function __construct(string $name, string $path)
     {
         $this->name = $name;
         $this->path = $path;
@@ -81,7 +83,7 @@ class Template
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->render();
     }
@@ -94,7 +96,7 @@ class Template
      *
      * @return $this
      */
-    public function addFilterVar($key, callable $function)
+    public function addFilterVar(string $key, callable $function): self
     {
         return $this->addfilter('var.' . $key, $function);
     }
@@ -107,7 +109,7 @@ class Template
      *
      * @return $this
      */
-    public function addFilterBlock($key, callable $function)
+    public function addFilterBlock(string $key, callable $function): self
     {
         return $this->addfilter('block.' . $key, $function);
     }
@@ -119,7 +121,7 @@ class Template
      *
      * @return $this
      */
-    public function addFilterOutput(callable $function)
+    public function addFilterOutput(callable $function): self
     {
         return $this->addfilter('output', $function);
     }
@@ -132,7 +134,7 @@ class Template
      *
      * @return $this
      */
-    public function addVar($key, $var)
+    public function addVar(string $key, $var): self
     {
         $this->vars[ $key ] = $var;
 
@@ -146,7 +148,7 @@ class Template
      *
      * @return $this
      */
-    public function addVars(array $vars)
+    public function addVars(array $vars): self
     {
         foreach ($vars as $key => $var) {
             $this->addVar($key, $var);
@@ -163,7 +165,7 @@ class Template
      *
      * @return $this
      */
-    public function addBlock($key, Template $tpl = null)
+    public function addBlock(string $key, ?Template $tpl = null): self
     {
         $this->sections[ $key ] = $tpl !== null
             ? $tpl->addVar('id_block', "block-$key")
@@ -181,7 +183,7 @@ class Template
      *
      * @return mixed
      */
-    public function getVar($key)
+    public function getVar(string $key)
     {
         return $this->vars[ $key ];
     }
@@ -193,7 +195,7 @@ class Template
      *
      * @return array
      */
-    public function getVars()
+    public function getVars(): array
     {
         return $this->vars;
     }
@@ -207,7 +209,7 @@ class Template
      *
      * @return Template
      */
-    public function getBlock($key)
+    public function getBlock(string $key): Template
     {
         if (($find = $this->searchBlock($key)) !== null) {
             return $find;
@@ -223,7 +225,7 @@ class Template
      *
      * @return array<Template|null>
      */
-    public function getBlocks()
+    public function getBlocks(): array
     {
         return $this->sections;
     }
@@ -235,7 +237,7 @@ class Template
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -247,7 +249,7 @@ class Template
      *
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
@@ -261,7 +263,7 @@ class Template
      *
      * @return $this
      */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->name = $name;
 
@@ -273,7 +275,7 @@ class Template
      *
      * @return string La template compilée.
      */
-    public function render()
+    public function render(): string
     {
         require_once 'functions_include.php';
         $section = [];
@@ -292,7 +294,7 @@ class Template
         require $this->requireFile();
         $html = ob_get_clean();
 
-        return $this->filter('output', $html);
+        return $this->filter('output', $html === false ? '' : $html);
     }
 
     /**
@@ -302,7 +304,7 @@ class Template
      *
      * @return $this
      */
-    public function setNamesOverride(array $names)
+    public function setNamesOverride(array $names): self
     {
         $this->nameOverride = $names;
 
@@ -316,7 +318,7 @@ class Template
      *
      * @return $this
      */
-    public function addNameOverride($name)
+    public function addNameOverride(string $name): self
     {
         $this->nameOverride[] = $name;
 
@@ -330,7 +332,7 @@ class Template
      *
      * @return $this
      */
-    public function addNamesOverride(array $names)
+    public function addNamesOverride(array $names): self
     {
         foreach ($names as $name) {
             $this->addNameOverride($name);
@@ -346,11 +348,36 @@ class Template
      *
      * @return $this
      */
-    public function addPathOverride($name)
+    public function addPathOverride(string $name): self
     {
         $this->pathOverride[] = $name;
 
         return $this;
+    }
+
+    /**
+     * Recherche récursive d'un bloc de la template à partir de sa clé.
+     *
+     * @param string $key Clé unique.
+     *
+     * @return Template|null
+     */
+    public function searchBlock(string $key): ?Template
+    {
+        if (!empty($this->sections[ $key ])) {
+            return $this->sections[ $key ];
+        }
+
+        foreach ($this->sections as $block) {
+            if ($block === null) {
+                continue;
+            }
+            if (($find = $block->searchBlock($key)) !== null) {
+                return $find;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -361,7 +388,7 @@ class Template
      *
      * @return $this
      */
-    protected function addFilter($key, callable $function)
+    protected function addFilter(string $key, callable $function): self
     {
         $this->filters[ $key ][] = $function;
 
@@ -373,7 +400,7 @@ class Template
      *
      * @return string Chemin du template.
      */
-    private function requireFile()
+    private function requireFile(): string
     {
         foreach ($this->pathOverride as $path) {
             foreach ($this->nameOverride as $name) {
@@ -395,28 +422,6 @@ class Template
     }
 
     /**
-     * Recherche récursive d'un bloc de la template à partir de sa clé.
-     *
-     * @param string $key Clé unique.
-     *
-     * @return Template|null
-     */
-    private function searchBlock($key)
-    {
-        if (!empty($this->sections[ $key ])) {
-            return $this->sections[ $key ];
-        }
-
-        foreach ($this->sections as $block) {
-            if (($find = $block->searchBlock($key)) !== null) {
-                return $find;
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Exécute les fonctions de filtre.
      *
      * @param string $key   Nom du filtre.
@@ -424,7 +429,7 @@ class Template
      *
      * @return string
      */
-    private function filter($key, $value)
+    private function filter(string $key, string $value): string
     {
         if (isset($this->filters[ $key ])) {
             foreach ($this->filters[ $key ] as $filter) {

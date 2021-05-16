@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -8,6 +10,7 @@
 
 namespace Soosyze\Components\HttpFactories;
 
+use Psr\Http\Message\ServerRequestInterface;
 use Soosyze\Components\Http\ServerRequest;
 use Soosyze\Components\Http\Uri;
 
@@ -32,10 +35,13 @@ class ServerRequestFactory
      * @param array                                 $serverParams An array of Server API (SAPI) parameters with
      *                                                            which to seed the generated request instance.
      *
-     * @return \Psr\Http\Message\ServerRequestInterface
+     * @return ServerRequestInterface
      */
-    public function createServerRequest($method, $uri, array $serverParams = [])
-    {
+    public function createServerRequest(
+        string $method,
+        $uri,
+        array $serverParams = []
+    ): ServerRequestInterface {
         $method = empty($method) && !empty($serverParams[ 'REQUEST_METHOD' ])
             ? $serverParams[ 'REQUEST_METHOD' ]
             : $method;

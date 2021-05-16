@@ -12,16 +12,12 @@ class ValidatorIteratorTest extends \PHPUnit\Framework\TestCase
      */
     protected $object;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->object = new Validator;
     }
 
-    public function testIteratorSimple()
+    public function testIteratorSimple(): void
     {
         $this->object->setInputs([
             'field_1' => 'test',
@@ -70,7 +66,7 @@ class ValidatorIteratorTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getKeyErrors());
     }
 
-    public function testMultiple()
+    public function testMultiple(): void
     {
         $this->object
             ->setInputs([
@@ -87,7 +83,7 @@ class ValidatorIteratorTest extends \PHPUnit\Framework\TestCase
                     'sub_field_1' => 'required|string',
                     'sub_field_2' => 'required|string'
                 ])
-            ]);
+        ]);
 
         $this->assertTrue($this->object->isValid());
 
@@ -106,7 +102,7 @@ class ValidatorIteratorTest extends \PHPUnit\Framework\TestCase
                     'sub_field_1' => 'required|string',
                     'sub_field_2' => 'required|string'
                 ])
-            ]);
+        ]);
 
         $this->assertFalse($this->object->isValid());
         $this->assertCount(2, $this->object->getErrors());

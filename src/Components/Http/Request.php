@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -71,16 +73,18 @@ class Request extends Message implements RequestInterface
      * @param string               $version La version du protocole HTTP.
      */
     public function __construct(
-        $method,
+        string $method,
         UriInterface $uri,
         array $headers = [],
-        StreamInterface $body = null,
-        $version = '1.1'
+        ?StreamInterface $body = null,
+        string $version = '1.1'
     ) {
         $this->method          = $this->filterMethod($method);
         $this->uri             = $uri;
         $this->withHeaders($headers);
-        $this->body            = $body;
+        $this->body         = $body === null
+            ? new Stream(null)
+            : $body;
         $this->protocolVersion = $this->filterProtocolVersion($version);
 
         if (!isset($headers[ 'Host' ]) && $uri->getHost() !== '') {
@@ -206,7 +210,7 @@ class Request extends Message implements RequestInterface
      * @throws \InvalidArgumentException La méthode n'est pas prise en charge par la requête.
      * @return string                    Méthode HTTP filtré.
      */
-    protected function filterMethod($method)
+    protected function filterMethod($method): string
     {
         if (!is_string($method)) {
             throw new \InvalidArgumentException('The method must be a string');

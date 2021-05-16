@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class InstanceTest extends Rule
 {
-    public function testInstance()
+    public function testInstance(): void
     {
         $this->object->setInputs([
             'must'     => new \stdClass(),

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -27,32 +29,33 @@ class FileMimes extends FileExtensions
      *
      * @param string $key   Clé du test.
      * @param mixed  $value Valeur à tester.
-     * @param string $arg   Liste des extensions autorisées.
+     * @param string $args  Liste des extensions autorisées.
      * @param bool   $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not)
+    protected function test(string $key, $value, $args, bool $not): void
     {
-        parent::test('file_extensions', $value, $arg, $not);
+        parent::test('file_extensions', $value, $args, $not);
 
         if ($this->hasErrors()) {
             return;
         }
 
         $this->mimetypes = include 'mimetypes_by_extensions.php';
-        $info            = $this->getMime($value);
+
+        $info = $this->getMime($value);
 
         if ($not) {
             $extension = $this->getExtension($value);
             $this->validMime($info, $extension);
         } else {
-            $this->validNotMime($info, $arg);
+            $this->validNotMime($info, $args);
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function messages()
+    protected function messages(): array
     {
         $output                  = parent::messages();
         $output[ 'mimes' ]       = 'L\extension ne correspond pas au mimetype de :label !';
@@ -66,13 +69,14 @@ class FileMimes extends FileExtensions
      * Test si l'extension du fichier est autorisée.
      *
      * @param string $info      Information sur le mimetype du fichier.
-     * @param sting  $extension L'extension attendu.
+     * @param string $extension L'extension attendu.
      *
      * @return void
      */
-    protected function validMime($info, $extension)
+    protected function validMime(string $info, string $extension): void
     {
-        if (($mime = $this->getMimeByExtension($extension)) === false) {
+        $mime = $this->getMimeByExtension($extension);
+        if ($mime === null) {
             return;
         }
 
@@ -91,9 +95,10 @@ class FileMimes extends FileExtensions
      *
      * @return void
      */
-    protected function validNotMime($info, $extensions)
+    protected function validNotMime(string $info, string $extensions): void
     {
-        if (($mimes = $this->getMimesByExtensions(explode(',', $extensions))) === false) {
+        $mimes = $this->getMimesByExtensions(explode(',', $extensions));
+        if ($mimes === null) {
             return;
         }
 
@@ -107,14 +112,15 @@ class FileMimes extends FileExtensions
      *
      * @param string[] $extensions Liste d'extensions.
      *
-     * @return array|bool Retourne un tableau de mimestype ou 1 en cas d'erreur.
+     * @return array|null Retourne un tableau de mimestype ou null en cas d'erreur.
      */
-    protected function getMimesByExtensions(array $extensions)
+    protected function getMimesByExtensions(array $extensions): ?array
     {
         $output = [];
         foreach ($extensions as $ext) {
-            if (($mime = $this->getMimeByExtension($ext)) === false) {
-                return false;
+            $mime = $this->getMimeByExtension($ext);
+            if ($mime === null) {
+                return null;
             }
             if (is_array($mime)) {
                 $output = array_merge($output, $mime);
@@ -132,14 +138,14 @@ class FileMimes extends FileExtensions
      *
      * @param string $extension Nom de l'extension.
      *
-     * @return bool|string|array
+     * @return array|null|string
      */
-    protected function getMimeByExtension($extension)
+    protected function getMimeByExtension(string $extension)
     {
         if (!isset($this->mimetypes[ $extension ])) {
             $this->addReturn('file_mimes', 'error_mimes', [ ':ext' => $extension ]);
 
-            return false;
+            return null;
         }
 
         return $this->mimetypes[ $extension ];

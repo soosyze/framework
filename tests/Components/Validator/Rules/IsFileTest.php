@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class IsFileTest extends Rule
 {
-    public function testIsFile()
+    public function testIsFile(): void
     {
         $this->object->setInputs([
             'must'              => __DIR__ . '/IsFileTest.php',

@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class SlugTest extends Rule
 {
-    public function testSlug()
+    public function testSlug(): void
     {
         $this->object->setInputs([
             'must'              => 'hello-world',

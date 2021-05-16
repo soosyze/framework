@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -72,8 +74,12 @@ class Paginator
      * @param int    $current Numéro de l'item courant.
      * @param string $link    Lien à incrémenter.
      */
-    public function __construct($count, $limit, $current, $link)
-    {
+    public function __construct(
+        int $count,
+        int $limit,
+        int $current,
+        string $link
+    ) {
         $this->count  = $count;
         $this->limit  = $limit;
         $this->setCurrent($current);
@@ -88,7 +94,7 @@ class Paginator
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->render();
     }
@@ -103,7 +109,7 @@ class Paginator
      *
      * @return $this
      */
-    public function setCurrent($current)
+    public function setCurrent($current): self
     {
         if (!is_numeric($current) || $current < 1) {
             throw new \InvalidArgumentException('The current page must be a numeric number greater than 1.');
@@ -123,7 +129,7 @@ class Paginator
      *
      * @return $this
      */
-    public function setMaxPage($max = 3)
+    public function setMaxPage($max = 3): self
     {
         if (!is_numeric($max) || $max < 3) {
             throw new \InvalidArgumentException('The number of pages to display must be greater than or equal to three.');
@@ -143,11 +149,8 @@ class Paginator
      *
      * @return $this
      */
-    public function setKey($key)
+    public function setKey(string $key): self
     {
-        if (!\is_string($key) || empty($key)) {
-            throw new \InvalidArgumentException('The link key must be a non-null string.');
-        }
         $this->key = $key;
 
         return $this;
@@ -158,7 +161,7 @@ class Paginator
      *
      * @return string
      */
-    public function render()
+    public function render(): string
     {
         $out = '';
         if ($url = $this->getPreviousUrl()) {
@@ -185,7 +188,7 @@ class Paginator
      *
      * @return array
      */
-    public function getPages()
+    public function getPages(): array
     {
         $pages = [];
         if ($this->nbPage <= 2) {
@@ -228,7 +231,7 @@ class Paginator
      *
      * @return int|null
      */
-    public function getNextPage()
+    public function getNextPage(): ?int
     {
         return $this->current < $this->nbPage
             ? $this->current + 1
@@ -240,7 +243,7 @@ class Paginator
      *
      * @return int|null
      */
-    public function getPreviousPage()
+    public function getPreviousPage(): ?int
     {
         return $this->current > 1
             ? $this->current - 1
@@ -252,7 +255,7 @@ class Paginator
      *
      * @return string|null
      */
-    public function getNextUrl()
+    public function getNextUrl(): ?string
     {
         return $this->getUrl($this->getNextPage());
     }
@@ -262,7 +265,7 @@ class Paginator
      *
      * @return string|null
      */
-    public function getPreviousUrl()
+    public function getPreviousUrl(): ?string
     {
         return $this->getUrl($this->getPreviousPage());
     }
@@ -274,7 +277,7 @@ class Paginator
      *
      * @return array
      */
-    protected function getPage($key)
+    protected function getPage(int $key): array
     {
         return [
             'title'   => $key,
@@ -294,7 +297,7 @@ class Paginator
      *
      * @return string|null
      */
-    protected function getUrl($key)
+    protected function getUrl(?int $key): ?string
     {
         return $key === null
             ? null

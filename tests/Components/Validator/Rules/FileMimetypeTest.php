@@ -6,7 +6,7 @@ use Soosyze\Components\Http\UploadedFile;
 
 class FileMimetypeTest extends RuleFile
 {
-    public function testMimetypes()
+    public function testMimetypes(): void
     {
         $this->object->setInputs([
             'file_minetypes'              => $this->uplaod_img,

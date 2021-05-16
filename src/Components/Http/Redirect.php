@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -7,6 +9,8 @@
  */
 
 namespace Soosyze\Components\Http;
+
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Représentation d'une réponse sortante côté serveur provoquant une redirection.
@@ -35,9 +39,9 @@ class Redirect extends Response
      * @param array                             $headers  En-tête de la réponse.
      */
     public function __construct(
-        $location,
-        $code = 301,
-        \Psr\Http\Message\StreamInterface $body = null,
+        string $location,
+        int $code = 301,
+        ?StreamInterface $body = null,
         array $headers = []
     ) {
         parent::__construct($code, $body, $headers);
@@ -53,11 +57,11 @@ class Redirect extends Response
      *
      * @return int
      */
-    protected function filtreCode($code = 301)
+    protected function filtreCode($code = 301): int
     {
         $codeRedirectValid = \array_fill_keys($this->codeRedirectValid, true);
 
-        if (!isset($codeRedirectValid[$code])) {
+        if (!isset($codeRedirectValid[ $code ])) {
             throw new \InvalidArgumentException('Status code is invalid for redirect.');
         }
 

@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class NullTest extends Rule
 {
-    public function testNull()
+    public function testNull(): void
     {
         $this->object->setInputs([
             'must'              => null,

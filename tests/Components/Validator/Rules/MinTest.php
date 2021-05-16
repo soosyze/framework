@@ -4,10 +4,11 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class MinTest extends Rule
 {
-    public function testMin()
+    use \Soosyze\Tests\Traits\ResourceTrait;
+
+    public function testMin(): void
     {
-        $stream = fopen('php://temp', 'r+');
-        fwrite($stream, 'test content');
+        $stream = $this->streamFactory('test content', 'r+');
 
         $this->object->setInputs([
             /* Text */
@@ -74,7 +75,7 @@ class MinTest extends Rule
         fclose($stream);
     }
 
-    public function testMinNumeric()
+    public function testMinNumeric(): void
     {
         $this->object->setInputs([
             /* Integer */
@@ -124,11 +125,9 @@ class MinTest extends Rule
         $this->assertCount(3, $this->object->getErrors());
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testMinExceptionMin()
+    public function testMinExceptionMin(): void
     {
+        $this->expectException(\Exception::class);
         $this->object
             ->addInput('field', 4)
             ->addRule('field', 'min:error')
@@ -138,7 +137,7 @@ class MinTest extends Rule
 
 class ObjectTest
 {
-    public function __toString()
+    public function __toString(): string
     {
         return 'test content';
     }

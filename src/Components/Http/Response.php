@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -115,16 +117,18 @@ class Response extends Message implements ResponseInterface
      * @param string               $reasonPhrase La phrase de raison allant de paire avec le code d'état.
      */
     public function __construct(
-        $code = 200,
-        StreamInterface $body = null,
+        int $code = 200,
+        ?StreamInterface $body = null,
         array $headers = [],
-        $reasonPhrase = ''
+        string $reasonPhrase = ''
     ) {
         $this->code         = $this->filtreCode($code);
         $this->reasonPhrase = $reasonPhrase === '' && isset($this->reasonPhraseDefault[ $this->code ])
             ? $this->reasonPhraseDefault[ $this->code ]
             : (string) $reasonPhrase;
-        $this->body         = $body;
+        $this->body         = $body === null
+            ? new Stream(null)
+            : $body;
         $this->withHeaders($headers);
     }
 
@@ -133,7 +137,7 @@ class Response extends Message implements ResponseInterface
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         header('HTTP/' . $this->protocolVersion . ' ' . $this->code . ' ' . $this->reasonPhrase, true, $this->code);
 
@@ -151,7 +155,7 @@ class Response extends Message implements ResponseInterface
      *
      * @return int Code d'état.
      */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return $this->code;
     }
@@ -190,7 +194,7 @@ class Response extends Message implements ResponseInterface
      *
      * @return string Code d'état.
      */
-    public function getReasonPhrase()
+    public function getReasonPhrase(): string
     {
         return $this->reasonPhrase;
     }
@@ -204,7 +208,7 @@ class Response extends Message implements ResponseInterface
      *
      * @return int Le code d'état filtré.
      */
-    protected function filtreCode($code)
+    protected function filtreCode($code): int
     {
         if (!is_int($code) || !isset($this->reasonPhraseDefault[ $code ])) {
             throw new \InvalidArgumentException('Status code is invalid.');

@@ -11,28 +11,24 @@ class RedirectTest extends \PHPUnit\Framework\TestCase
      */
     protected $object;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->object = new Redirect('http://exemple.com');
     }
 
-    public function testSetUpResponse()
+    public function testSetUpResponse(): void
     {
-        $this->assertAttributeSame(301, 'code', $this->object);
-        $this->assertAttributeSame('Moved Permanently', 'reasonPhrase', $this->object);
-        $this->assertAttributeSame(null, 'body', $this->object);
-        $this->assertAttributeSame([ 'location' => [ 'http://exemple.com' ] ], 'headers', $this->object);
+        $this->assertEquals(301, $this->object->getStatusCode());
+        $this->assertEquals('Moved Permanently', $this->object->getReasonPhrase());
+
+        $this->assertEquals(null, (string) $this->object->getBody());
+        $this->assertEquals([ 'location' => [ 'http://exemple.com' ] ], $this->object->getHeaders());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testRedirectException()
+    public function testRedirectException(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectErrorMessage('Status code is invalid for redirect.');
         new Redirect('http://exemple.com', 200);
     }
 }

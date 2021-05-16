@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class NumericTest extends Rule
 {
-    public function testNumeric()
+    public function testNumeric(): void
     {
         $this->object->setInputs([
             /* -------- STANDARD ------- */

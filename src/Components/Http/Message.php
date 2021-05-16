@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -228,7 +230,7 @@ class Message implements MessageInterface
      *
      * @return string Le protocole si celui-ci est conforme.
      */
-    protected function filterProtocolVersion($version)
+    protected function filterProtocolVersion($version): string
     {
         if (!is_string($version) || !in_array($version, $this->protocols)) {
             throw new \InvalidArgumentException('The specified protocol is invalid.');
@@ -244,7 +246,7 @@ class Message implements MessageInterface
      *
      * @return void
      */
-    protected function withHeaders(array $headers)
+    protected function withHeaders(array $headers): void
     {
         $this->headers = [];
         foreach ($headers as $key => $value) {
@@ -279,7 +281,7 @@ class Message implements MessageInterface
      *
      * @return array
      */
-    private function validateAndTrimHeader($header, $values)
+    private function validateAndTrimHeader($header, $values): array
     {
         if (!\is_string($header) || \preg_match('@^[!#$%&\'*+.^_`|~0-9A-Za-z-]+$@', $header) !== 1) {
             throw new \InvalidArgumentException('Header name must be an RFC 7230 compatible string.');

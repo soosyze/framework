@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -22,10 +24,10 @@ class FileExtensions extends File
      *
      * @param string                $key   Clé du test.
      * @param UploadedFileInterface $value Valeur à tester.
-     * @param string                $arg   Liste d'extensions séparé par une virgule.
+     * @param string                $args  Liste d'extensions séparé par une virgule.
      * @param bool                  $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not)
+    protected function test(string $key, $value, $args, bool $not): void
     {
         parent::test('file', $value, '', true);
 
@@ -33,20 +35,20 @@ class FileExtensions extends File
             return;
         }
 
-        $extensions = explode(',', $arg);
+        $extensions = explode(',', $args);
         $extension  = $this->getExtension($value);
 
         if (!in_array($extension, $extensions) && $not) {
-            $this->addReturn($key, 'ext', [ ':list' => $arg ]);
+            $this->addReturn($key, 'ext', [ ':list' => $args ]);
         } elseif (in_array($extension, $extensions) && !$not) {
-            $this->addReturn($key, 'not_ext', [ ':list' => $arg ]);
+            $this->addReturn($key, 'not_ext', [ ':list' => $args ]);
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function messages()
+    protected function messages(): array
     {
         $output              = parent::messages();
         $output[ 'ext' ]     = 'The :label field must be a file of type :list.';

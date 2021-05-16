@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -66,14 +68,14 @@ abstract class Size extends \Soosyze\Components\Validator\Rule
             $size = count($value);
         } elseif ($value instanceof UploadedFileInterface) {
             $size = $value->getError() === UPLOAD_ERR_OK
-                ? $value->getStream()->getSize()
+                ? $value->getStream()->getSize() ?? 0
                 : 0;
         } elseif (is_resource($value)) {
             $stats = fstat($value);
 
-            $size = isset($stats[ 'size' ])
-                ? $stats[ 'size' ]
-                : 0;
+            $size = $stats === false
+                ? 0
+                : $stats[ 'size' ];
         } else {
             $this->addReturn('size', 'size');
         }
@@ -104,7 +106,7 @@ abstract class Size extends \Soosyze\Components\Validator\Rule
     /**
      * {@inheritdoc}
      */
-    protected function messages()
+    protected function messages(): array
     {
         return [
             'size'         => 'The value of the :label field must be of integer, floating point, character string, array, file or resource type.',

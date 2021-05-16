@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class MaxTest extends Rule
 {
-    public function testMax()
+    public function testMax(): void
     {
         $this->object->setInputs([
             /* Text */
@@ -52,7 +52,7 @@ class MaxTest extends Rule
         $this->assertCount(3, $this->object->getErrors());
     }
 
-    public function testMaxNumeric()
+    public function testMaxNumeric(): void
     {
         $this->object->setInputs([
             /* Integer */
@@ -90,11 +90,9 @@ class MaxTest extends Rule
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testMaxExceptionMin()
+    public function testMaxExceptionMin(): void
     {
+        $this->expectException(\Exception::class);
         $this->object
             ->addInput('field', 4)
             ->addRule('field', 'max:error')

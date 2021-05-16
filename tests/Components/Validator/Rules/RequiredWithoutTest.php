@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class RequiredWithoutTest extends Rule
 {
-    public function testRequiredWithout()
+    public function testRequiredWithout(): void
     {
         $this->object->setInputs([
             'field_1' => 1,
@@ -35,12 +35,12 @@ class RequiredWithoutTest extends Rule
         $this->assertFalse($this->object->isValid());
         $this->assertCount(1, $this->object->getErrors());
     }
-    
-    public function testRequiredWithoutIntegration()
+
+    public function testRequiredWithoutIntegration(): void
     {
         $this->object->setInputs([
-            'field_1'  => '',
-            'field_2'  => ''
+            'field_1' => '',
+            'field_2' => ''
         ])->setRules([
             'required' => '!required_without:field_1,field_2|int'
         ]);
@@ -48,8 +48,8 @@ class RequiredWithoutTest extends Rule
         $this->assertTrue($this->object->isValid());
 
         $this->object->setInputs([
-            'field_1'  => 1,
-            'field_2'  => ''
+            'field_1' => 1,
+            'field_2' => ''
         ])->setRules([
             'required' => '!required_without:field_1,field_2|int'
         ]);
@@ -68,19 +68,15 @@ class RequiredWithoutTest extends Rule
         $this->assertCount(1, $this->object->getErrors());
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testRequiredWithoutException()
+    public function testRequiredWithoutException(): void
     {
+        $this->expectException(\Exception::class);
         $this->object->addRule('field', 'required_without:error')->isValid();
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testRequiredWithoutVoidException()
+    public function testRequiredWithoutVoidException(): void
     {
+        $this->expectException(\Exception::class);
         $this->object->addRule('field', 'required_without:')->isValid();
     }
 }

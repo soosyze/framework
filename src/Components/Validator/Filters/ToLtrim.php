@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -18,22 +20,21 @@ class ToLtrim extends \Soosyze\Components\Validator\Filter
     /**
      * Filtre une valeur avec la méthode htmlspecialchars.
      *
-     * @param string $key   Identifiant de la valeur.
-     * @param mixed  $value Valeur à filtrer.
-     * @param string $arg   Argument de filtre.
+     * @param string     $key   Identifiant de la valeur.
+     * @param mixed      $value Valeur à filtrer.
+     * @param mixed|null $args  Argument de filtre.
      *
      * @throws \InvalidArgumentException The type must be validated before being filtered.
      *
      * @return string
      */
-    protected function clean($key, $value, $arg)
+    protected function clean(string $key, $value, $args)
     {
         if (!is_string($value)) {
             throw new \InvalidArgumentException('The type must be validated before being filtered.');
         }
 
-        return ltrim($value, empty($arg)
-            ? " \t\n\r\0\x0B"
-            : $arg);
+        return ltrim($value, $args
+            ?? " \t\n\r\0\x0B");
     }
 }

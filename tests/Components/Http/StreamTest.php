@@ -2,201 +2,186 @@
 
 namespace Soosyze\Tests\Components\Http;
 
+use InvalidArgumentException;
+use Psr\Http\Message\StreamInterface;
+use RuntimeException;
 use Soosyze\Components\Http\Stream;
+use Soosyze\Tests\Traits\ResourceTrait;
 
 class StreamTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var resource
-     */
-    protected $file = './testStream.txt';
+    use ResourceTrait;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
+    private const FILE = './testStream.txt';
+
+    protected function setUp(): void
     {
-        /* Créer un fichier pour le test */
-        $stream = fopen($this->file, 'w');
-        fwrite($stream, 'test content');
+        $stream = $this->streamFileFactory(self::FILE, 'test content', 'w');
         fclose($stream);
     }
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
+    protected function tearDown(): void
     {
-        /* Supprime le fichier du test */
-        if (file_exists($this->file)) {
-            unlink($this->file);
+        if (file_exists(self::FILE)) {
+            unlink(self::FILE);
         }
     }
 
-    public function streamFactory($mode = 'r+')
-    {
-        $stream = fopen('php://temp', $mode);
-        fwrite($stream, 'test');
-        rewind($stream);
+    /**
+     * @dataProvider providerConstructException
+     *
+     * @param mixed                    $mixed
+     * @param class-string<\Throwable> $exceptionClass
+     */
+    public function testConstructException(
+        $mixed,
+        string $exceptionClass,
+        string $exceptionMessage
+    ): void {
+        $this->expectException($exceptionClass);
+        $this->expectExceptionMessage($exceptionMessage);
+        new Stream($mixed);
+    }
 
-        return $stream;
+    public function providerConstructException(): \Generator
+    {
+        yield [
+            [],
+            \InvalidArgumentException::class,
+            'Stream must be a resource.'
+        ];
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @dataProvider providerToString
      */
-    public function testConstructException()
+    public function testToString(string $expectedStream, Stream $stream): void
     {
-        $body = new Stream([]);
+        $this->assertEquals($expectedStream, $stream);
     }
 
-    public function testToString()
+    public function providerToString(): \Generator
     {
-        $body = new Stream();
-        $this->assertEquals($body, '');
-
-        $body = new Stream(null);
-        $this->assertEquals($body, '');
-
-        $body = new Stream(true);
-        $this->assertEquals($body, '1');
-
-        $body = new Stream('test');
-        $this->assertEquals($body, 'test');
-
-        $body = new Stream(1970);
-        $this->assertEquals($body, '1970');
-
-        $body = new Stream(1970.01);
-        $this->assertEquals($body, '1970.01');
-
-        $body = new Stream($this->streamFactory());
-        $this->assertEquals($body, 'test');
-
-        $body = new Stream('test');
-        $body->detach();
-        $this->assertEquals($body, '');
-
-        $body = new Stream(new objetTest());
-        $this->assertEquals($body, 'test');
+        yield [ '', new Stream() ];
+        yield [ '', new Stream(null) ];
+        yield [ '1', new Stream(true) ];
+        yield [ 'test', new Stream('test') ];
+        yield [ '1970', new Stream(1970) ];
+        yield [ '1970.01', new Stream(1970.01) ];
+        yield [ 'test', new Stream($this->streamFactory('test')) ];
+        yield [ 'test', new Stream(new ObjetTest()) ];
     }
 
-    public function testCreateStreamFromFile()
+    public function testCreateStreamFromFile(): void
     {
-        $stream = Stream::createStreamFromFile($this->file);
+        $stream = Stream::createStreamFromFile(self::FILE);
 
-        $this->assertInstanceOf('\Psr\Http\Message\StreamInterface', $stream);
-        $this->assertEquals($stream, 'test content');
+        $this->assertInstanceOf(StreamInterface::class, $stream);
+        $this->assertEquals('test content', $stream);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
-    public function testCreateStreamFromFileRuntime()
+    public function testCreateStreamFromFileRuntime(): void
     {
+        $this->expectException(RuntimeException::class);
         Stream::createStreamFromFile('error');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testCreateStreamFromFileInvalidArgument()
+    public function testCreateStreamFromFileInvalidArgument(): void
     {
-        Stream::createStreamFromFile($this->file, 'error');
+        $this->expectException(InvalidArgumentException::class);
+        Stream::createStreamFromFile(self::FILE, 'error');
     }
 
-    public function testDetach()
+    public function testDetach(): void
     {
-        $stream       = fopen('php://temp', 'r+');
-        $body         = new Stream($stream);
-        $streamDetach = $body->detach();
-        $this->assertEquals($streamDetach, $stream);
+        $stream = fopen('php://temp', 'r+');
+        $body   = new Stream($stream);
+
+        $this->assertEquals($stream, $body->detach());
     }
 
-    public function testGetSize()
+    public function testGetSize(): void
     {
         $body = new Stream('test');
-        $this->assertEquals($body->getSize(), 4);
+        $this->assertEquals(4, $body->getSize());
+
         $body->detach();
         $this->assertNull($body->getSize());
+
         $body->close();
         $this->assertNull($body->getSize());
     }
 
-    public function testTell()
+    public function testTell(): void
     {
         $body = new Stream('test');
-        $this->assertEquals($body->tell(), 0);
+        $this->assertEquals(0, $body->tell());
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
-    public function testTellException()
+    public function testTellException(): void
     {
         $body = new Stream('test');
         $body->close();
+
+        $this->expectException(RuntimeException::class);
         $body->tell();
     }
 
-    public function testEof()
+    public function testEof(): void
     {
         $body = new Stream('test');
         $this->assertFalse($body->eof());
 
         /* Va lire caractère par caractère jusqu'a arriver à la fin de la chaine. */
-        while (!$body->eof()) {
+        while ($body->eof() === false) {
             $body->read(1);
         }
         $this->assertTrue($body->eof());
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
-    public function testEofException()
+    public function testEofException(): void
     {
         $body = new Stream('test');
         $body->close();
+
+        $this->expectException(RuntimeException::class);
         $body->eof();
     }
 
-    public function testIsSeekable()
+    public function testIsSeekable(): void
     {
         $body = new Stream('test');
         $this->assertTrue($body->isSeekable());
+
         $body->detach();
         $this->assertFalse($body->isSeekable());
     }
 
-    public function testSeek()
+    public function testSeek(): void
     {
         $body = new Stream('test');
         $body->seek(2);
-        $this->assertEquals($body->read(4), 'st');
+        $this->assertEquals('st', $body->read(4));
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
-    public function testSeekException()
+    public function testSeekException(): void
     {
         $body = new Stream('test');
+
+        $this->expectException(RuntimeException::class);
         $body->seek(5);
     }
 
-    public function testRewind()
+    public function testRewind(): void
     {
         $body = new Stream('test');
         $body->seek(2);
         $body->rewind();
 
-        $this->assertEquals($body->read(4), 'test');
+        $this->assertEquals('test', $body->read(4));
     }
 
-    public function testIsWritable()
+    public function testIsWritable(): void
     {
         $body = new Stream('test');
         $this->assertTrue($body->isWritable());
@@ -204,28 +189,27 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $body->detach();
         $this->assertFalse($body->isWritable());
 
-        $body = new Stream($this->streamFactory('r'));
+        $body = new Stream($this->streamFactory('test', 'r'));
         $this->assertFalse($body->isWritable());
     }
 
-    public function testWrite()
+    public function testWrite(): void
     {
         $body = new Stream();
         $body->write('test');
-        $this->assertEquals($body, 'test');
+        $this->assertEquals('test', $body);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
-    public function testWriteException()
+    public function testWriteException(): void
     {
         $body = new Stream();
         $body->close();
+
+        $this->expectException(RuntimeException::class);
         $body->write('test');
     }
 
-    public function testIsReadable()
+    public function testIsReadable(): void
     {
         $body = new Stream();
         $this->assertTrue($body->isReadable());
@@ -238,105 +222,98 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($body->isReadable());
     }
 
-    public function testRead()
+    public function testRead(): void
     {
         $body = new Stream('test');
-        $read = $body->read(2);
-        $this->assertEquals($read, 'te');
 
-        $read = $body->read(2);
-        $this->assertEquals($read, 'st');
+        $this->assertEquals('te', $body->read(2));
+        $this->assertEquals('st', $body->read(2));
     }
 
-    public function testReadNumericLength()
+    public function testReadNumericLength(): void
     {
         $body = new Stream('test');
-        $read = $body->read('1');
-        $this->assertEquals($read, 't');
+        $this->assertEquals('t', $body->read(1));
     }
 
-    public function testReadZeroLength()
+    public function testReadZeroLength(): void
     {
         $body = new Stream('test');
-        $read = $body->read(0);
-        $this->assertEquals($read, '');
+        $this->assertEquals('', $body->read(0));
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
-    public function testReadLengthException()
+    public function testReadLengthException(): void
     {
         $body = new Stream('test');
+
+        $this->expectException(RuntimeException::class);
         $body->read(-1);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
-    public function testReadStringLengthException()
+    public function testReadStringLengthException(): void
     {
         $body = new Stream('test');
+
+        $this->expectException(RuntimeException::class);
         $body->read('error');
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
-    public function testReadException()
+    public function testReadException(): void
     {
         $body = new Stream();
         $body->close();
+
+        $this->expectException(RuntimeException::class);
         $body->read(4);
     }
 
-    public function testGetContent()
+    public function testGetContent(): void
     {
         $body = new Stream('test');
         $this->assertEquals($body->getContents(), 'test');
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
-    public function testGetContentException()
+    public function testGetContentException(): void
     {
         $body = new Stream('test');
         $body->close();
-        $this->assertEquals($body->getContents(), 'test');
+
+        $this->expectException(RuntimeException::class);
+        $body->getContents();
     }
 
-    public function testGetMetadata()
+    /**
+     * @dataProvider providerGetMetadata
+     * @param string|null $expectedMeta
+     */
+    public function testGetMetadataKey($expectedMeta, ?string $key): void
     {
         $body = new Stream('test');
-        $data = $body->getMetadata();
-        $this->assertEquals($data, [
-            'wrapper_type' => 'PHP',
-            'stream_type'  => 'TEMP',
-            'mode'         => 'w+b',
-            'unread_bytes' => 0,
-            'seekable'     => true,
-            'uri'          => 'php://temp' ]);
+
+        $this->assertEquals($expectedMeta, $body->getMetadata($key));
     }
 
-    public function testGetMetadataKey()
+    public function providerGetMetadata(): \Generator
     {
-        $body = new Stream('test');
-        $data = $body->getMetadata('uri');
-        $this->assertEquals($data, 'php://temp');
-    }
-
-    public function testGetMetadataErrorKey()
-    {
-        $body = new Stream('test');
-        $data = $body->getMetadata('error');
-        $this->assertNull($data);
+        yield [ 'php://temp', 'uri' ];
+        yield [ null, 'error' ];
+        yield [
+            [
+                'wrapper_type' => 'PHP',
+                'stream_type'  => 'TEMP',
+                'mode'         => 'w+b',
+                'unread_bytes' => 0,
+                'seekable'     => true,
+                'uri'          => 'php://temp'
+            ],
+            null
+        ];
     }
 }
 
-class objetTest
+class ObjetTest
 {
-    public function __toString()
+    public function __toString(): string
     {
         return 'test';
     }

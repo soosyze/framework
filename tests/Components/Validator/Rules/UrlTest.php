@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class UrlTest extends Rule
 {
-    public function testUrl()
+    public function testUrl(): void
     {
         $this->object->setInputs([
             'must'              => 'http://localhost.fr',

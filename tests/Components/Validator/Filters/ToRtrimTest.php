@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Filters;
 
 class ToRtrimTest extends Filter
 {
-    public function testToRtrim()
+    public function testToRtrim(): void
     {
         $this->object->setInputs([
             'start'     => '  test',
@@ -24,11 +24,9 @@ class ToRtrimTest extends Filter
         $this->assertEquals('test', $this->object->getInput('custom'));
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testToRtrimException()
+    public function testToRtrimException(): void
     {
+        $this->expectException(\Exception::class);
         $this->object
             ->addInput('field', 1)
             ->addRule('field', 'to_rtrim')

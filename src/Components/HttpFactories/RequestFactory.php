@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -8,6 +10,7 @@
 
 namespace Soosyze\Components\HttpFactories;
 
+use Psr\Http\Message\RequestInterface;
 use Soosyze\Components\Http\Request;
 use Soosyze\Components\Http\Uri;
 
@@ -26,9 +29,9 @@ class RequestFactory
      * @param string                                $method The HTTP method associated with the request.
      * @param \Psr\Http\Message\UriInterface|string $uri    The URI associated with the request.
      *
-     * @return \Psr\Http\Message\RequestInterface
+     * @return RequestInterface
      */
-    public function createRequest($method, $uri)
+    public function createRequest(string $method, $uri): RequestInterface
     {
         $uri = \is_string($uri)
             ? Uri::create($uri)

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -20,22 +22,22 @@ class Equal extends \Soosyze\Components\Validator\Rule
      *
      * @param string $key   Clé du test.
      * @param scalar $value Valeur à tester.
-     * @param string $arg   Valeur de comparaison.
+     * @param string $args  Valeur de comparaison.
      * @param bool   $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not)
+    protected function test(string $key, $value, $args, bool $not): void
     {
-        if ($value != $arg && $not) {
-            $this->addReturn($key, 'must', [ ':value' => $arg ]);
-        } elseif ($value == $arg && !$not) {
-            $this->addReturn($key, 'not', [ ':value' => $arg ]);
+        if ($value != $args && $not) {
+            $this->addReturn($key, 'must', [ ':value' => $args ]);
+        } elseif ($value == $args && !$not) {
+            $this->addReturn($key, 'not', [ ':value' => $args ]);
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function messages()
+    protected function messages(): array
     {
         return [
             'must' => 'The :label field must be equal to :value.',

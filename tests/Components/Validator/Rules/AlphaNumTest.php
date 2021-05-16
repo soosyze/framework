@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class AlphaNumTest extends Rule
 {
-    public function testAlphaNum()
+    public function testAlphaNum(): void
     {
         $this->object->setInputs([
             'must'              => 'hello2000',
@@ -32,7 +32,7 @@ class AlphaNumTest extends Rule
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testAlphaNumText()
+    public function testAlphaNumText(): void
     {
         $this->object->setInputs([
             'must'              => 'hello2000.',

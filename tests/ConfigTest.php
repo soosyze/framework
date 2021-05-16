@@ -11,138 +11,114 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
      */
     protected $object;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
-        $this->object = new Config('tests/config', 'local');
+        $this->object = new Config(__DIR__ . '/Resources/App/config', 'local');
     }
 
-    public function testhas()
+    public function testhas(): void
     {
-        $out  = $this->object->has('testConfig.key1');
-        $out2 = $this->object->has('testConfig');
-
-        $this->assertTrue($out);
-        $this->assertTrue($out2);
-
-        $out3 = $this->object->has('testConfig.notExist');
-        $out4 = $this->object->has('notExist');
-
-        $this->assertFalse($out3);
-        $this->assertFalse($out4);
+        $this->assertTrue($this->object->has('testConfig.key1'));
+        $this->assertTrue($this->object->has('testConfig'));
+        $this->assertFalse($this->object->has('testConfig.notExist'));
+        $this->assertFalse($this->object->has('notExist'));
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @dataProvider providerConfigGet
+     *
+     * @param array|string $expectedValue
      */
-    public function testHasInvalidArgumentException()
+    public function testGet($expectedValue, string $config): void
     {
-        $this->object->has(1);
+        $this->assertEquals($expectedValue, $this->object->get($config));
     }
 
-    public function testGet()
+    public function providerConfigGet(): \Generator
     {
-        $data = $this->object->get('testConfig.key1');
-
-        $this->assertEquals($data, 'value1');
+        yield [ 'value1', 'testConfig.key1' ];
+        yield [ [ 'key1' => 'value1', 'key2' => 'value2' ], 'testConfig' ];
     }
 
-    public function testGetAll()
-    {
-        $data = $this->object->get('testConfig');
-
-        $this->assertEquals($data, [
-            'key1' => 'value1',
-            'key2' => 'value2'
-        ]);
+    /**
+     * @dataProvider providerConfigKeyDefault
+     */
+    public function testGetConfigKeyDefault(
+        string $config,
+        string $valueDefault
+    ): void {
+        $this->assertNull($this->object->get($config));
+        $this->assertEquals($valueDefault, $this->object->get($config, $valueDefault));
     }
 
-    public function testGetConfigKeyDefault()
+    public function providerConfigKeyDefault(): \Generator
     {
-        $this->assertNull($this->object->get('testConfig.error'));
-        $this->assertNull($this->object->get('error'));
-
-        $config = $this->object->get('testConfig.error', 'valueDefault');
-        $this->assertEquals($config, 'valueDefault');
-
-        $config2 = $this->object->get('error', 'valueDefault');
-        $this->assertEquals($config2, 'valueDefault');
+        yield [ 'testConfig.error', 'valueDefault' ];
+        yield [ 'error', 'valueDefault' ];
     }
 
-    public function testSet()
+    /**
+     * @dataProvider providerSetConfig
+     *
+     * @param array|string $value
+     * @param array|string $expectedValue
+     */
+    public function testSet(string $config, $value, $expectedValue): void
     {
-        $this->object->set('testConfig.key3', 'value3');
-        $data = $this->object->get('testConfig.key3');
+        $this->object->set($config, $value);
 
-        $this->assertEquals($data, 'value3');
+        $this->assertEquals($expectedValue, $this->object->get($config));
     }
 
-    public function testSetNewFile()
+    public function providerSetConfig(): \Generator
     {
-        $this->object->set('testConfig2.key1', 'value1');
-        $data = $this->object->get('testConfig2.key1');
-
-        $this->assertEquals($data, 'value1');
+        /* Par clé */
+        yield [ 'testConfig.key3', 'value3', 'value3' ];
+        yield [ 'testConfig2.key1', 'value1', 'value1' ];
+        /* Par fichiers */
+        yield [ 'testConfig2', 'value1', [ 'value1' ] ];
+        yield [ 'testConfig2', [ 'value1', 'value2' ], [ 'value1', 'value2' ] ];
     }
 
-    public function testSetFile()
-    {
-        $this->object->set('testConfig2', 'value1');
-        $data = $this->object->get('testConfig2');
-
-        $this->assertEquals($data, [ 'value1' ]);
-
-        $this->object->set('testConfig2', [ 'value2' ]);
-        $data2 = $this->object->get('testConfig2');
-
-        $this->assertEquals($data2, [ 'value2' ]);
-    }
-
-    public function testDel()
+    public function testDel(): void
     {
         $this->object->del('testConfig.key3');
 
         $this->assertNull($this->object->get('testConfig.key3'));
     }
 
-    public function testDelFile()
+    public function testDelFile(): void
     {
         $this->object->del('testConfig2');
 
         $this->assertNull($this->object->get('testConfig2.key1'));
     }
 
-    public function testDelVoid()
+    public function testDelVoid(): void
     {
         $this->assertNull($this->object->get('void'));
         $this->object->del('void');
         $this->assertNull($this->object->get('void'));
     }
 
-    public function testHasArrayAccess()
+    public function testHasArrayAccess(): void
     {
         $this->assertTrue(isset($this->object[ 'testConfig.key1' ]));
     }
 
-    public function testGetArrayAccess()
+    public function testGetArrayAccess(): void
     {
-        $data = $this->object[ 'testConfig.key1' ];
-
-        $this->assertEquals($data, 'value1');
+        $this->assertEquals('value1', $this->object[ 'testConfig.key1' ]);
     }
 
-    public function testSetArrayAccess()
+    public function testSetArrayAccess(): void
     {
         $this->object[ 'testConfig.key3' ] = 'value3';
-        $data                              = $this->object[ 'testConfig.key3' ];
 
-        $this->assertEquals($data, 'value3');
+        $this->assertEquals('value3', $this->object[ 'testConfig.key3' ]);
     }
 
-    public function testDelArrayAccess()
+    public function testDelArrayAccess(): void
     {
         unset($this->object[ 'testConfig.key3' ]);
 

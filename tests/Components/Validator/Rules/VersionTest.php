@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class VersionTest extends Rule
 {
-    public function testVersion()
+    public function testVersion(): void
     {
         $this->object->setInputs([
             'must_1'  => '1.2.3',
