@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class IterableTest extends Rule
 {
-    public function testIterable()
+    public function testIterable(): void
     {
         $this->object->setInputs([
             'must'             => [ 0, 1, 2 ],
@@ -32,7 +32,7 @@ class IterableTest extends Rule
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    protected function mus_func_array()
+    protected function mus_func_array(): array
     {
         return [ 0, 1, 2 ];
     }

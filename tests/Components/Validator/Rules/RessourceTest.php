@@ -4,11 +4,11 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class RessourceTest extends Rule
 {
-    public function testAccepted()
+    use \Soosyze\Tests\Traits\ResourceTrait;
+
+    public function testAccepted(): void
     {
-        $stream = fopen('php://temp', 'r+');
-        fwrite($stream, 'test');
-        rewind($stream);
+        $stream = $this->streamFactory('test', 'r+');
 
         $this->object->setInputs([
             'must'     => $stream,

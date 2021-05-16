@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -21,13 +23,13 @@ class Token extends Size
      *
      * @param string $key   Clé du test.
      * @param string $value Valeur à tester.
-     * @param string $arg   Nombre de seconde ou le token est valide (défaut 15 minutes),
+     * @param string $args  Nombre de seconde ou le token est valide (défaut 15 minutes),
      *                      si la valeur du time = 0 alors le test du temps de validation n'est pas effectif.
      * @param bool   $not   Inverse le test.
      *
      * @throws \InvalidArgumentException La valeur time n'est pas numérique.
      */
-    protected function test($key, $value, $arg, $not)
+    protected function test(string $key, $value, $args, bool $not): void
     {
         if (session_id() === '') {
             @session_start([
@@ -36,10 +38,10 @@ class Token extends Size
             ]);
         }
 
-        if (empty($arg)) {
-            $arg = 900;
+        if (empty($args)) {
+            $args = 900;
         }
-        $intervale = $this->getComparator($arg);
+        $intervale = $this->getComparator($args);
         $name      = $this->getKey();
 
         if (!isset($_SESSION[ 'token' ][ $name ]) && !isset($_SESSION[ 'token_time' ][ $name ])) {
@@ -54,7 +56,7 @@ class Token extends Size
     /**
      * {@inheritdoc}
      */
-    protected function messages()
+    protected function messages(): array
     {
         $output              = parent::messages();
         $output[ 'error' ]   = 'An error has occurred.';

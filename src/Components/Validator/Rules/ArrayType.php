@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -20,10 +22,10 @@ class ArrayType extends \Soosyze\Components\Validator\Rule
      *
      * @param string $key    Clé du test.
      * @param mixed  $values Valeur à tester.
-     * @param string $arg    Argument de test.
+     * @param string $args   Argument de test.
      * @param bool   $not    Inverse le test.
      */
-    protected function test($key, $values, $arg, $not)
+    protected function test(string $key, $values, $args, bool $not): void
     {
         if (!\is_array($values) && $not) {
             $this->addReturn($key, 'must');
@@ -39,7 +41,7 @@ class ArrayType extends \Soosyze\Components\Validator\Rule
     /**
      * {@inheritdoc}
      */
-    protected function messages()
+    protected function messages(): array
     {
         return [
             'must' => 'The value of the :label field must be an array.',

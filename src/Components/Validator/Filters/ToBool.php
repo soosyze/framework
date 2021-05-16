@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -20,13 +22,13 @@ class ToBool extends \Soosyze\Components\Validator\Filter
      *
      * @param string $key   Identifiant de la valeur.
      * @param mixed  $value Valeur à filtrer.
-     * @param string $arg   Argument de filtre.
+     * @param mixed  $args  Argument de filtre.
      *
      * @throws \InvalidArgumentException The type must be validated before being filtered.
      *
      * @return bool
      */
-    protected function clean($key, $value, $arg)
+    protected function clean(string $key, $value, $args)
     {
         if (!$this->isBool($value)) {
             throw new \InvalidArgumentException('The type must be validated before being filtered.');
@@ -45,10 +47,8 @@ class ToBool extends \Soosyze\Components\Validator\Filter
      *
      * @return bool
      */
-    protected function isBool($var)
+    protected function isBool($var): bool
     {
-        return filter_var($var, FILTER_VALIDATE_BOOLEAN)
-            || filter_var($var, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null
-            || $var === false;
+        return filter_var($var, FILTER_VALIDATE_BOOLEAN) || filter_var($var, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null || $var === false;
     }
 }

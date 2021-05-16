@@ -2,8 +2,9 @@
 
 namespace Soosyze\Tests\Components\Validator;
 
-use Soosyze\Components\Validator\Rule;
 use Soosyze\Components\Validator\Validator;
+use Soosyze\Tests\Resources\Validator\Cube;
+use Soosyze\Tests\Resources\Validator\DoubleR;
 
 class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
@@ -12,58 +13,52 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
      */
     protected $object;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->object = new Validator;
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testException()
+    public function testException(): void
     {
+        $this->expectException(\Exception::class);
         $this->object
             ->addInput('field', 4)
             ->addRule('field', 'exception')
             ->isValid();
     }
 
-    public function testVoid()
+    public function testVoid(): void
     {
         $object = new Validator();
         $this->assertTrue($object->isValid());
     }
 
-    public function testGetInputs()
+    public function testGetInputs(): void
     {
         $this->object->setInputs([
-            'field_1' => 1,
-            'field_2' => 2,
-            'field_3' => 3,
-            'field_4' => 4,
-            'field_5' => 5
+                'field_1' => 1,
+                'field_2' => 2,
+                'field_3' => 3,
+                'field_4' => 4,
+                'field_5' => 5
             ])
             ->setRules([
-            'field_1' => '!required',
-            'field_2' => '!required',
-            'field_3' => '!required'
+                'field_1' => '!required',
+                'field_2' => '!required',
+                'field_3' => '!required'
         ]);
 
         $this->assertEquals(
-            $this->object->getInputs(),
             [
-            'field_1' => 1,
-            'field_2' => 2,
-            'field_3' => 3
-        ]
+                'field_1' => 1,
+                'field_2' => 2,
+                'field_3' => 3
+            ],
+            $this->object->getInputs()
         );
     }
 
-    public function testGetInputsWithout()
+    public function testGetInputsWithout(): void
     {
         $this->object->setInputs([
             'field_1' => 1,
@@ -74,8 +69,8 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertEquals(
-            $this->object->getInputsWithout(),
-            []
+            [],
+            $this->object->getInputsWithout()
         );
 
         $this->object->setRules([
@@ -87,26 +82,26 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertEquals(
-            $this->object->getInputsWithout(),
             [
-            'field_1' => 1,
-            'field_2' => 2,
-            'field_3' => 3,
-            'field_4' => 4,
-            'field_5' => 5
-        ]
+                'field_1' => 1,
+                'field_2' => 2,
+                'field_3' => 3,
+                'field_4' => 4,
+                'field_5' => 5
+            ],
+            $this->object->getInputsWithout()
         );
         $this->assertEquals(
-            $this->object->getInputsWithout([ 'field_1', 'field_2' ]),
             [
-            'field_3' => 3,
-            'field_4' => 4,
-            'field_5' => 5
-        ]
+                'field_3' => 3,
+                'field_4' => 4,
+                'field_5' => 5
+            ],
+            $this->object->getInputsWithout([ 'field_1', 'field_2' ])
         );
     }
 
-    public function testGetInputsWithoutObject()
+    public function testGetInputsWithoutObject(): void
     {
         $this->object->setInputs([
             'field_1' => 1,
@@ -116,10 +111,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             'field_5' => new \stdClass()
         ]);
 
-        $this->assertEquals(
-            $this->object->getInputsWithoutObject(),
-            []
-        );
+        $this->assertEquals([], $this->object->getInputsWithoutObject());
 
         $this->object->setRules([
             'field_1' => '!required',
@@ -130,27 +122,27 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertEquals(
-            $this->object->getInputsWithoutObject(),
             [
-            'field_1' => 1,
-            'field_2' => 2,
-            'field_3' => 3,
-            'field_4' => 4
-        ]
+                'field_1' => 1,
+                'field_2' => 2,
+                'field_3' => 3,
+                'field_4' => 4
+            ],
+            $this->object->getInputsWithoutObject()
         );
         $this->assertEquals(
-            $this->object->getInputsWithoutObject([ 'field_1', 'field_2' ]),
             [
-            'field_3' => 3,
-            'field_4' => 4
-        ]
+                'field_3' => 3,
+                'field_4' => 4
+            ],
+            $this->object->getInputsWithoutObject([ 'field_1', 'field_2' ])
         );
     }
 
-    public function testCustomTest()
+    public function testCustomTest(): void
     {
-        Validator::addTestGlobal('cube', '\Soosyze\Tests\Components\Validator\Cube');
-        Validator::addTestGlobal('double', '\Soosyze\Tests\Components\Validator\DoubleR');
+        Validator::addTestGlobal('cube', Cube::class);
+        Validator::addTestGlobal('double', DoubleR::class);
         $this->object->setInputs([
             'custom_cube'      => 4,
             'custom_not_cube'  => 2,
@@ -166,9 +158,9 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($this->object->isValid());
     }
 
-    public function testCustomTestReturn()
+    public function testCustomTestReturn(): void
     {
-        Validator::addTestGlobal('cube', new Cube());
+        Validator::addTestGlobal('cube', Cube::class);
         $this->object->setInputs([
             'custom_cube'     => 5,
             'custom_not_cube' => 4
@@ -178,9 +170,10 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertFalse($this->object->isValid());
-        $this->assertEquals($this->object->getError('custom_cube'), [
-            'cube' => 'La valeur au cube de custom_cube n\'est pas égale à 4.'
-        ]);
+        $this->assertEquals(
+            [ 'cube' => 'La valeur au cube de custom_cube n\'est pas égale à 4.' ],
+            $this->object->getError('custom_cube')
+        );
 
         $this->object->setInputs([
             'custom_cube2'     => 4,
@@ -193,7 +186,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($this->object->isValid());
     }
 
-    public function testCustomLabel()
+    public function testCustomLabel(): void
     {
         $this->object
             ->setLabels([ 'field' => 'Text input' ])
@@ -201,12 +194,13 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->addRule('field', 'string');
 
         $this->assertFalse($this->object->isValid());
-        $this->assertEquals($this->object->getError('field'), [
-            'string' => 'The value of the Text input field must be a character string.'
-        ]);
+        $this->assertEquals(
+            [ 'string' => 'The value of the Text input field must be a character string.' ],
+            $this->object->getError('field')
+        );
     }
 
-    public function testCustomMessage()
+    public function testCustomMessage(): void
     {
         $this->object
             ->setInputs([
@@ -224,12 +218,13 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ])
             ->isValid();
 
-        $this->assertEquals($this->object->getError('field'), [
-            'string' => 'My message custom for field !'
-        ]);
+        $this->assertEquals(
+            [ 'string' => 'My message custom for field !' ],
+            $this->object->getError('field')
+        );
     }
 
-    public function testCustomMessageGlobal()
+    public function testCustomMessageGlobal(): void
     {
         Validator::setMessagesGlobal([
             'string' => [
@@ -246,12 +241,13 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ])
             ->isValid();
 
-        $this->assertEquals($this->object->getError('field'), [
-            'string' => 'My message custom global for field !'
-        ]);
+        $this->assertEquals(
+            [ 'string' => 'My message custom global for field !' ],
+            $this->object->getError('field')
+        );
     }
 
-    public function testCustomAttributs()
+    public function testCustomAttributs(): void
     {
         $this->object
             ->setInputs([
@@ -263,7 +259,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ])
             ->setAttributs([
                 'field' => [
-                    'equal' => [
+                    'equal'  => [
                         ':label' => function ($label) {
                             return strtoupper($label);
                         },
@@ -275,12 +271,13 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ])
             ->isValid();
 
-        $this->assertEquals($this->object->getError('field'), [
-            'equal' => 'The FIELD field must be equal to field_2 : OtherValue.'
-        ]);
+        $this->assertEquals(
+            [ 'equal' => 'The FIELD field must be equal to field_2 : OtherValue.' ],
+            $this->object->getError('field')
+        );
     }
 
-    public function testNoInput()
+    public function testNoInput(): void
     {
         $this->object->setInputs([
             'field'  => 'Lorem ipsum',
@@ -292,7 +289,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($this->object->isValid());
     }
 
-    public function testNoRule()
+    public function testNoRule(): void
     {
         $this->object->setInputs([
             'field' => 'Lorem ipsum',
@@ -303,45 +300,5 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
         $this->assertFalse($this->object->isValid());
         $this->assertCount(1, $this->object->getErrors());
-    }
-}
-
-class Cube extends Rule
-{
-    protected function test($key, $value, $arg, $not = true)
-    {
-        if ($value * $value != $arg && $not) {
-            $this->addReturn($key, 'must');
-        } elseif ($value * $value == $arg && !$not) {
-            $this->addReturn($key, 'not');
-        }
-    }
-
-    protected function messages()
-    {
-        return [
-            'must' => 'La valeur au cube de :label n\'est pas égale à 4.',
-            'not'  => 'La valeur au cube de :label ne doit pas être égale à 4.'
-        ];
-    }
-}
-
-class DoubleR extends Rule
-{
-    protected function test($key, $value, $arg, $not = true)
-    {
-        if ($value * 2 != 16 && $not) {
-            $this->addReturn($key, 'must');
-        } elseif ($value * 2 == 16 && !$not) {
-            $this->addReturn($key, 'not');
-        }
-    }
-
-    protected function messages()
-    {
-        return [
-            'must' => 'Le double de la valeur de :label n\'est pas égale à 16.',
-            'not'  => 'Le double de la valeur de :label ne doit pas être égale à 16.'
-        ];
     }
 }

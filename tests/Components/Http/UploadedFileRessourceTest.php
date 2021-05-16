@@ -6,34 +6,30 @@ use Soosyze\Components\Http\UploadedFile;
 
 class UploadedFileRessourceTest extends \PHPUnit\Framework\TestCase
 {
+    use \Soosyze\Tests\Traits\ResourceTrait;
+
     /**
-     * @var UplaodeFile
+     * @var UploadedFile
      */
     protected $object;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         /* Créer un fichier pour le test */
-        $resource = fopen('php://temp', 'w');
-        fwrite($resource, 'test content ressource');
-        rewind($resource);
+        $stream = $this->streamFactory('test content ressource', 'w');
 
-        $this->object = new UploadedFile($resource);
+        $this->object = new UploadedFile($stream);
     }
 
-    public function testGetStream()
+    public function testGetStream(): void
     {
         $stream = $this->object->getStream();
-        $this->assertEquals((string) $stream, 'test content ressource');
+        $this->assertEquals('test content ressource', (string) $stream);
         /* Si nous ne fermons pas le flux le fichier sera vérouillé pour le reste des opérations */
         $stream->close();
     }
 
-    public function testMoveTo()
+    public function testMoveTo(): void
     {
         $targetPath = './moveTest.txt';
 
@@ -42,55 +38,52 @@ class UploadedFileRessourceTest extends \PHPUnit\Framework\TestCase
         unlink($targetPath);
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testMoveExceptionMoved()
+    public function testMoveExceptionMoved(): void
     {
         $targetPath = './error.txt';
         $this->object->moveTo($targetPath);
         unlink($targetPath);
 
+        $this->expectException(\RuntimeException::class);
+        $this->expectErrorMessage('The file has already been moved.');
         $this->object->moveTo($targetPath);
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testMoveExceptionTarget()
+    public function testMoveExceptionTarget(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectErrorMessage('Target is incorrect.');
         $this->object->moveTo(1);
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testGetStreamException()
+    public function testGetStreamException(): void
     {
         $targetPath = './error.txt';
         $this->object->moveTo($targetPath);
         unlink($targetPath);
 
+        $this->expectException(\RuntimeException::class);
+        $this->expectErrorMessage('The file has already been moved.');
         $this->object->getStream();
     }
 
-    public function testGetSize()
+    public function testGetSize(): void
     {
-        $this->assertEquals($this->object->getSize(), null);
+        $this->assertEquals(null, $this->object->getSize());
     }
 
-    public function testGetError()
+    public function testGetError(): void
     {
-        $this->assertEquals($this->object->getError(), 0);
+        $this->assertEquals(0, $this->object->getError());
     }
 
-    public function testGetClientFilename()
+    public function testGetClientFilename(): void
     {
-        $this->assertEquals($this->object->getClientFilename(), null);
+        $this->assertEquals(null, $this->object->getClientFilename());
     }
 
-    public function testGetClientMediaType()
+    public function testGetClientMediaType(): void
     {
-        $this->assertEquals($this->object->getClientMediaType(), null);
+        $this->assertEquals(null, $this->object->getClientMediaType());
     }
 }

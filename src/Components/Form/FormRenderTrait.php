@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -48,7 +50,7 @@ trait FormRenderTrait
      *
      * @return string
      */
-    protected function renderAttrInput(array $attr)
+    protected function renderAttrInput(array $attr): string
     {
         $html = '';
         foreach ($attr as $key => $value) {
@@ -71,7 +73,7 @@ trait FormRenderTrait
      *
      * @return string HTML
      */
-    protected function renderInputs($key, array $input)
+    protected function renderInputs(string $key, array $input): string
     {
         $html = '';
         if (in_array($input[ 'type' ], self::$typeInputBasic)) {
@@ -101,11 +103,9 @@ trait FormRenderTrait
      *
      * @return string HTML
      */
-    protected function renderLabel($key, array $item)
+    protected function renderLabel(string $key, array $item): string
     {
-        $label = isset($item[ 'attr' ][ ':label' ])
-            ? $item[ 'attr' ][ ':label' ]
-            : $item[ 'label' ];
+        $label = $item[ 'attr' ][ ':label' ] ?? $item[ 'label' ];
         unset($item[ 'attr' ][ ':label' ]);
 
         $html = '';
@@ -133,7 +133,7 @@ trait FormRenderTrait
      *
      * @return string HTML
      */
-    protected function renderInput($key, array $item)
+    protected function renderInput(string $key, array $item): string
     {
         return sprintf(
             '<input name="%s" type="%s"%s>',
@@ -151,7 +151,7 @@ trait FormRenderTrait
      *
      * @return string HTML
      */
-    protected function renderGroup($key, array $item)
+    protected function renderGroup(string $key, array $item): string
     {
         $tag = in_array($item[ 'balise' ], self::$baliseGroup)
             ? $item[ 'balise' ]
@@ -178,11 +178,9 @@ trait FormRenderTrait
      *
      * @return string HTML
      */
-    protected function renderLegend($key, array $item)
+    protected function renderLegend(string $key, array $item): string
     {
-        $legend = isset($item[ 'attr' ][ ':legend' ])
-            ? $item[ 'attr' ][ ':legend' ]
-            : $item[ 'legend' ];
+        $legend = $item[ 'attr' ][ ':legend' ] ?? $item[ 'legend' ];
         unset($item[ 'attr' ][ ':legend' ]);
 
         return sprintf(
@@ -200,7 +198,7 @@ trait FormRenderTrait
      *
      * @return string HTML
      */
-    protected function renderTextarea($key, array $item)
+    protected function renderTextarea(string $key, array $item): string
     {
         return sprintf(
             '<textarea name="%s"%s>%s</textarea>',
@@ -218,11 +216,9 @@ trait FormRenderTrait
      *
      * @return string HTML
      */
-    protected function renderSelect($key, array $item)
+    protected function renderSelect(string $key, array $item): string
     {
-        $select = isset($item[ 'attr' ][ ':selected' ])
-            ? $item[ 'attr' ][ ':selected' ]
-            : '';
+        $select = $item[ 'attr' ][ ':selected' ] ?? '';
         unset($item[ 'attr' ][ ':selected' ]);
 
         return sprintf(
@@ -241,7 +237,7 @@ trait FormRenderTrait
      *
      * @return string
      */
-    protected function renderSelectOptionGroup(array $options, $select)
+    protected function renderSelectOptionGroup(array $options, $select): string
     {
         $html = '';
 
@@ -269,7 +265,7 @@ trait FormRenderTrait
      *
      * @return string
      */
-    protected function renderSelectOption(array $option, $select)
+    protected function renderSelectOption(array $option, $select): string
     {
         $selected   = isset($option[ 'selected' ]) || ($select !== '' && $select === $option[ 'value' ])
             ? ' selected'
@@ -280,7 +276,7 @@ trait FormRenderTrait
 
         return sprintf(
             '<option value="%s"%s%s>%s</option>',
-            htmlspecialchars($option[ 'value' ]),
+            htmlspecialchars((string) $option[ 'value' ]),
             $attrOption,
             $selected,
             htmlentities($option[ 'label' ])
@@ -295,7 +291,7 @@ trait FormRenderTrait
      *
      * @return string HTML
      */
-    protected function renderHtml($key, array $item)
+    protected function renderHtml(string $key, array $item): string
     {
         $content = isset($item[ 'attr' ][ ':content' ])
             ? $item[ 'attr' ][ ':content' ]
@@ -316,7 +312,7 @@ trait FormRenderTrait
      *
      * @return string HTML
      */
-    protected function renderFeedback($key)
+    protected function renderFeedback(string $key): string
     {
         $html = '';
         if (isset(self::$errors[ $key ])) {

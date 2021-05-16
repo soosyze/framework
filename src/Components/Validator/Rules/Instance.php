@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -20,14 +22,14 @@ class Instance extends \Soosyze\Components\Validator\Rule
      *
      * @param string $key    Clé du test.
      * @param string $values Valeur à tester.
-     * @param string $arg    Argument de test.
+     * @param string $args   Argument de test.
      * @param bool   $not    Inverse le test.
      */
-    protected function test($key, $values, $arg, $not)
+    protected function test(string $key, $values, $args, bool $not): void
     {
-        if (!($values instanceof $arg) && $not) {
+        if (!($values instanceof $args) && $not) {
             $this->addReturn($key, 'must');
-        } elseif ($values instanceof $arg && !$not) {
+        } elseif ($values instanceof $args && !$not) {
             $this->addReturn($key, 'not');
         }
     }
@@ -35,7 +37,7 @@ class Instance extends \Soosyze\Components\Validator\Rule
     /**
      * {@inheritdoc}
      */
-    protected function messages()
+    protected function messages(): array
     {
         return [
             'must' => 'The :label field must be an instance of :class.',

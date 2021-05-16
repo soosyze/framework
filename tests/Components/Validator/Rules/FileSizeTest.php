@@ -6,7 +6,7 @@ use Soosyze\Components\Http\UploadedFile;
 
 class FileSizeTest extends RuleFile
 {
-    public function testMax()
+    public function testMax(): void
     {
         $this->object->setInputs([
             'file_max'              => $this->uplaod_txt,
@@ -48,7 +48,7 @@ class FileSizeTest extends RuleFile
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testMin()
+    public function testMin(): void
     {
         $this->object->setInputs([
             'file_min'              => $this->uplaod_img,
@@ -78,7 +78,7 @@ class FileSizeTest extends RuleFile
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testBetween()
+    public function testBetween(): void
     {
         $this->object->setInputs([
             'file_between_min'          => $this->uplaod_txt,

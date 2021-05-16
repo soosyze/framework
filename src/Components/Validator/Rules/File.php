@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -20,12 +22,12 @@ class File extends \Soosyze\Components\Validator\Rule
     /**
      * Test si la valeur est un fichier.
      *
-     * @param string $key   Clé du test.
-     * @param mixed  $value Valeur à tester.
-     * @param string $arg   Argument de test.
-     * @param bool   $not   Inverse le test.
+     * @param string     $key   Clé du test.
+     * @param mixed      $value Valeur à tester.
+     * @param mixed|null $args  Argument de test.
+     * @param bool       $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not)
+    protected function test(string $key, $value, $args, bool $not): void
     {
         if (!($value instanceof UploadedFileInterface) && $not) {
             $this->addReturn($key, 'must');
@@ -47,7 +49,7 @@ class File extends \Soosyze\Components\Validator\Rule
     /**
      * {@inheritdoc}
      */
-    protected function messages()
+    protected function messages(): array
     {
         return [
             'must'        => 'The :label field is not a file.',
@@ -70,7 +72,7 @@ class File extends \Soosyze\Components\Validator\Rule
      *
      * @return void
      */
-    protected function checkErrorFile($key, UploadedFileInterface $value)
+    protected function checkErrorFile(string $key, UploadedFileInterface $value): void
     {
         switch ($value->getError()) {
             case UPLOAD_ERR_INI_SIZE:
@@ -109,13 +111,19 @@ class File extends \Soosyze\Components\Validator\Rule
      *
      * @param UploadedFileInterface $upload
      *
-     * @return string|false Mimetype ou FALSE si une erreur s'est produite.
+     * @return string
      */
-    protected function getMime(UploadedFileInterface $upload)
+    protected function getMime(UploadedFileInterface $upload): string
     {
         $file = $upload->getStream()->getMetadata('uri');
 
-        return (new \finfo(FILEINFO_MIME_TYPE))->file($file);
+        $mime = (new \finfo(FILEINFO_MIME_TYPE))->file($file);
+
+        if ($mime === false) {
+            throw new \Exception();
+        }
+
+        return $mime;
     }
 
     /**
@@ -123,12 +131,14 @@ class File extends \Soosyze\Components\Validator\Rule
      *
      * @param UploadedFileInterface $upload
      *
-     * @return string|false Extension du fichier ou FALSE si une erreur s'est produite.
+     * @return string Extension du fichier
      */
-    protected function getExtension(UploadedFileInterface $upload)
+    protected function getExtension(UploadedFileInterface $upload): string
     {
         $filename = $upload->getClientFilename();
 
-        return strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        return $filename
+            ? strtolower(pathinfo($filename, PATHINFO_EXTENSION))
+            : '';
     }
 }

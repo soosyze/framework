@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class IntTest extends Rule
 {
-    public function testInt()
+    public function testInt(): void
     {
         $this->object->setInputs([
             /* Standard */

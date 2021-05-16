@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -17,7 +19,7 @@ namespace Soosyze;
  */
 class Autoload
 {
-    const DS = DIRECTORY_SEPARATOR;
+    private const DS = DIRECTORY_SEPARATOR;
 
     /**
      * Tableau avec comme clés un namespace et en valeur la racine de son arborescence.
@@ -57,7 +59,7 @@ class Autoload
      *
      * @return $this
      */
-    public function setLib(array $lib)
+    public function setLib(array $lib): self
     {
         $this->lib = $lib;
 
@@ -71,7 +73,7 @@ class Autoload
      *
      * @return $this
      */
-    public function setMap(array $map)
+    public function setMap(array $map): self
     {
         $this->map = $map;
 
@@ -85,7 +87,7 @@ class Autoload
      *
      * @return $this
      */
-    public function setPrefix(array $prefix)
+    public function setPrefix(array $prefix): self
     {
         $this->prefix = $prefix;
 
@@ -97,9 +99,11 @@ class Autoload
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
-        spl_autoload_register([ self::class, 'loader' ]);
+        spl_autoload_register(function ($class) {
+            $this->loader($class);
+        });
     }
 
     /**
@@ -110,12 +114,12 @@ class Autoload
      *
      * @param string $class Nom de la classe appelée.
      *
-     * @return string|bool Nom de la classe appelée ou FALSE.
+     * @return string|null Nom de la classe appelée.
      */
-    public function loader($class)
+    public function loader(string $class): ?string
     {
         /* On explose la classe par '\' */
-        $parts = preg_split('#\\\#', $class);
+        $parts = explode('\\', $class);
 
         /* On extrait le dernier element. */
         $className = array_pop($parts);
@@ -166,7 +170,7 @@ class Autoload
             }
         }
 
-        return false;
+        return null;
     }
 
     /**
@@ -177,7 +181,7 @@ class Autoload
      *
      * @return bool
      */
-    protected function requireFile($file)
+    private function requireFile(string $file): bool
     {
         if (file_exists($file)) {
             require_once $file;
@@ -195,7 +199,7 @@ class Autoload
      *
      * @return string
      */
-    protected function relplaceSlash($str)
+    private function relplaceSlash($str): string
     {
         return str_replace('\\', self::DS, $str);
     }

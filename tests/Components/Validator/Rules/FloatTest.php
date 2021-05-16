@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class FloatTest extends Rule
 {
-    public function testFloat()
+    public function testFloat(): void
     {
         $this->object->setInputs([
             /* Standard */

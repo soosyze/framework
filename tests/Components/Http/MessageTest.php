@@ -3,153 +3,155 @@
 namespace Soosyze\Tests\Components\Http;
 
 use Soosyze\Components\Http\Message;
+use Soosyze\Components\Http\Stream;
 
 class MessageTest extends \PHPUnit\Framework\TestCase
 {
+    /**
+     * @var Message
+     */
     protected $object;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->object = new Message();
     }
 
-    public function testWithProtocolVersion()
-    {
-        $clone = $this->object->withProtocolVersion('2.0');
-        $this->assertAttributeSame('2.0', 'protocolVersion', $clone);
-    }
-
     /**
-     * @expectedException \Exception
+     * @dataProvider providerWithProtocolVersionException
+     *
+     * @param mixed $version
      */
-    public function testWithProtocolVersionTypeException()
+    public function testWithProtocolVersionValueException($version): void
     {
-        $this->object->withProtocolVersion(1.1);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectErrorMessage('The specified protocol is invalid.');
+        $this->object->withProtocolVersion($version);
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testWithProtocolVersionValueException()
+    public function providerWithProtocolVersionException(): \Generator
     {
-        $this->object->withProtocolVersion('9.0');
+        yield [ 1.1 ];
+        yield [ '9.0' ];
     }
 
-    public function testGetProtocolVersion()
+    public function testGetProtocolVersion(): void
     {
         $clone = $this->object->withProtocolVersion('2.0');
         $this->assertEquals($clone->getProtocolVersion(), '2.0');
     }
 
-    public function testWithHeader()
+    public function testWithHeader(): void
     {
         $clone = $this->object->withHeader('Location', 'http://www.example.com/');
-        $this->assertAttributeSame([ 'Location' => [ 'http://www.example.com/' ] ], 'headers', $clone);
+        $this->assertEquals([ 'Location' => [ 'http://www.example.com/' ] ], $clone->getHeaders());
 
-        $clone2 = $this->object->withHeader('Location', ['http://www.example.com/']);
-        $this->assertAttributeSame([ 'Location' => [ 'http://www.example.com/' ] ], 'headers', $clone2);
+        $clone2 = $this->object->withHeader('Location', [ 'http://www.example.com/' ]);
+        $this->assertEquals([ 'Location' => [ 'http://www.example.com/' ] ], $clone2->getHeaders());
     }
 
-    public function testGetHeaders()
+    public function testGetHeaders(): void
     {
-        $this->assertArraySubset($this->object->getHeaders(), []);
+        $this->assertEquals([], $this->object->getHeaders());
         $clone = $this->object->withHeader('Location', 'http://www.example.com/');
-        $this->assertArraySubset($clone->getHeaders(), [ 'Location' => [ 'http://www.example.com/' ] ]);
+        $this->assertEquals([ 'Location' => [ 'http://www.example.com/' ] ], $clone->getHeaders());
     }
 
-    public function testHasHeader()
+    public function testHasHeader(): void
     {
         $this->assertFalse($this->object->hasHeader('Location'));
         $clone = $this->object->withHeader('Location', 'http://www.example.com/');
         $this->assertTrue($clone->hasHeader('Location'));
     }
 
-    public function testGetHeader()
+    public function testGetHeader(): void
     {
-        $this->assertArraySubset($this->object->getHeader('Location'), []);
+        $this->assertEquals([], $this->object->getHeader('Location'));
         $clone = $this->object->withHeader('Location', 'http://www.example.com/');
-        $this->assertArraySubset($clone->getHeader('location'), [ 'http://www.example.com/' ]);
+        $this->assertEquals([ 'http://www.example.com/' ], $clone->getHeader('location'));
     }
 
-    public function testGetHeaderLine()
+    public function testGetHeaderLine(): void
     {
         $clone = $this->object->withHeader('Location', 'http://www.foo.com/');
 
         $this->assertEquals($clone->getHeaderLine('location'), 'http://www.foo.com/');
-
         $this->assertEquals(
-            $clone->withAddedHeader('Location', 'http://www.bar.com/')
-                ->getHeaderLine('location'),
-            'http://www.foo.com/,http://www.bar.com/'
+            'http://www.foo.com/,http://www.bar.com/',
+            $clone->withAddedHeader('Location', 'http://www.bar.com/')->getHeaderLine('location')
         );
     }
 
-    public function testWithAddedHeader()
+    public function testWithAddedHeader(): void
     {
         $clone = $this->object->withAddedHeader('Location', 'http://www.example.com/');
-        $this->assertArraySubset($clone->getHeader('location'), [ 'http://www.example.com/' ]);
+        $this->assertEquals([ 'http://www.example.com/' ], $clone->getHeader('location'));
     }
 
-    public function testWithAddedHeaderMultiple()
+    public function testWithAddedHeaderMultiple(): void
     {
         $clone = $this->object
             ->withAddedHeader('Location', 'http://www.example.com/')
             ->withAddedHeader('Location', 'http://www.example.com/');
-        $this->assertAttributeSame([
-            'Location' => [ 'http://www.example.com/', 'http://www.example.com/' ]
-            ], 'headers', $clone);
+
+        $this->assertEquals(
+            [ 'Location' => [ 'http://www.example.com/', 'http://www.example.com/' ] ],
+            $clone->getHeaders()
+        );
     }
 
-    public function testWithoutHeader()
+    public function testWithoutHeader(): void
     {
         $clone = $this->object
             ->withHeader('TestHeader1', 'ValueTest1')
             ->withHeader('TestHeader2', 'ValueTest2');
 
-        $cloneError = $clone->withoutHeader('ErrorHeader');
-        $this->assertAttributeSame([
-            'TestHeader1' => [ 'ValueTest1' ],
-            'TestHeader2' => [ 'ValueTest2' ]
-            ], 'headers', $cloneError);
+        $this->assertEquals(
+            [ 'TestHeader1' => [ 'ValueTest1' ], 'TestHeader2' => [ 'ValueTest2' ] ],
+            $clone->withoutHeader('ErrorHeader')->getHeaders()
+        );
 
-        $cloneSuccess = $clone->withoutHeader('testheader1');
-        $this->assertAttributeSame([
-            'TestHeader2' => [ 'ValueTest2' ]
-            ], 'headers', $cloneSuccess);
+        $this->assertEquals(
+            [ 'TestHeader2' => [ 'ValueTest2' ] ],
+            $clone->withoutHeader('testheader1')->getHeaders()
+        );
     }
 
-    public function testWithBody()
+    public function testWithBody(): void
     {
-        $stream = new \Soosyze\Components\Http\Stream;
+        $stream = new Stream;
         $clone  = $this->object->withBody($stream);
 
-        $this->assertAttributeSame($stream, 'body', $clone);
+        $this->assertEquals($stream, $clone->getBody());
     }
 
     /**
-     * @dataProvider getInvalidHeaderArguments
-     * @expectedException \InvalidArgumentException
+     * @dataProvider providerInvalidHeaderArguments
+
+     * @param mixed $name
+     * @param mixed $value
      */
-    public function testWithHeaderInvalidArguments($name, $value)
-    {
+    public function testWithHeaderInvalidArguments(
+        $name,
+        $value,
+        string $exceptionMessage
+    ): void {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectErrorMessage($exceptionMessage);
         $this->object->withHeader($name, $value);
     }
 
-    public function getInvalidHeaderArguments()
+    public function providerInvalidHeaderArguments(): \Generator
     {
-        return [
-            [[], 'foo'],
-            ['foo', []],
-            ['', ''],
-            ['foo', false],
-            [false, 'foo'],
-            ['foo', new \stdClass()],
-            [new \stdClass(), 'foo'],
-            ['foo', [new \stdClass()]]
-        ];
+        yield [ [], 'foo', 'Header name must be an RFC 7230 compatible string.'];
+        yield [ '', '', 'Header name must be an RFC 7230 compatible string.' ];
+        yield [ false, 'foo', 'Header name must be an RFC 7230 compatible string.' ];
+        yield [ new \stdClass(), 'foo', 'Header name must be an RFC 7230 compatible string.' ];
+
+        yield [ 'foo', [], 'Header values must be a string or an array of strings, empty array given.' ];
+
+        yield [ 'foo', false, 'Header values must be RFC 7230 compatible strings.' ];
+        yield [ 'foo', new \stdClass(), 'Header values must be RFC 7230 compatible strings.' ];
+        yield [ 'foo', [ new \stdClass() ], 'Header values must be RFC 7230 compatible strings.' ];
     }
 }

@@ -7,85 +7,81 @@ use Soosyze\Components\Validator\Validator;
 
 class ValidatorFileTest extends \PHPUnit\Framework\TestCase
 {
+    use \Soosyze\Tests\Traits\ResourceTrait;
+
     /**
-     * @var resource
+     * @var string
      */
-    const FILE_TXT = 'testUplaodFile.txt';
+    private const FILE_TXT = 'testUplaodFile.txt';
 
     /**
      * Image de dimensions 28 x 18
      *
-     * @var resource
+     * @var string
      */
-    const FILE_IMG = 'testUplaodFile.png';
+    private const FILE_IMG = 'testUplaodFile.png';
 
     /**
-     * @var resource
+     * @var string
      */
-    const FILE_XML = 'testUploadFileError.xml';
+    private const FILE_XML = 'testUploadFileError.xml';
 
     /**
-     * @var resource
+     * @var string
      */
-    const FILE_ERROR = 'testUploadFile.gif';
+    private const FILE_ERROR = 'testUploadFile.gif';
 
     /**
-     * @var \Validator
+     * @var Validator
      */
     protected $object;
 
     /**
-     * @var \UploadedFile
+     * @var UploadedFile
      */
     protected $uplaod_txt;
 
     /**
-     * @var \UploadedFile
+     * @var UploadedFile
      */
     protected $uplaod_img;
 
     /**
-     * @var \UploadedFile
+     * @var UploadedFile
      */
     protected $upload_xml;
 
     /**
-     * @var \UploadedFile
+     * @var UploadedFile
      */
     protected $uplaod_error;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->object = new Validator;
 
-        $stream = fopen(self::FILE_TXT, 'w');
-        fwrite($stream, 'test content');
+        $stream = $this->streamFileFactory(self::FILE_TXT, 'test content', 'w');
         fclose($stream);
 
-        $stream_js = fopen(self::FILE_XML, 'w');
-        fwrite($stream_js, '<?xml version="1.0" encoding="UTF-8"?>'
+        $content_xml = '<?xml version="1.0" encoding="UTF-8"?>'
             . '<note>'
             . '<to>Tove</to>'
             . '<from>Jani</from>'
             . '<heading>Reminder</heading>'
             . '<body>Don\'t forget me this weekend!</body>'
-            . '</note>');
-        fclose($stream_js);
+            . '</note>';
+        $stream_xml  = $this->streamFileFactory(self::FILE_XML, $content_xml, 'w');
+        fclose($stream_xml);
 
         $data = 'iVBORw0KGgoAAAANSUhEUgAAABwAAAASCAMAAAB/2U7WAAAABl'
             . 'BMVEUAAAD///+l2Z/dAAAASUlEQVR4XqWQUQoAIAxC2/0vXZDr'
             . 'EX4IJTRkb7lobNUStXsB0jIXIAMSsQnWlsV+wULF4Avk9fLq2r'
             . '8a5HSE35Q3eO2XP1A1wQkZSgETvDtKdQAAAABJRU5ErkJggg==';
         $data = base64_decode($data);
-        $im   = imagecreatefromstring($data);
+        $im   = $this->streamImageFactory($data);
         imagepng($im, self::FILE_IMG);
 
-        $stream_err = fopen(self::FILE_ERROR, 'w');
-        fwrite($stream_err, '<?php echo "hello"; ?>');
+        $stream_err = $this->streamFileFactory(self::FILE_ERROR, '<?php echo "hello"; ?>', 'w');
         fclose($stream_err);
 
         /* Indroduction volontaire d'erreur dans la taille et le mine type. */
@@ -95,11 +91,7 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
         $this->uplaod_error = new UploadedFile(self::FILE_ERROR, 'test.gif', 1, 'error/mine');
     }
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         /* Supprime le fichier du test */
         if (file_exists(self::FILE_TXT)) {
@@ -120,7 +112,7 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testValidFile()
+    public function testValidFile(): void
     {
         $this->object->setInputs([
             'field_file'              => $this->uplaod_txt,
@@ -148,7 +140,7 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testValidFileError()
+    public function testValidFileError(): void
     {
         $this->object->setInputs([
             'field_file_ini_size'   => new UploadedFile(self::FILE_TXT, '', 1, '', UPLOAD_ERR_INI_SIZE),
@@ -172,7 +164,7 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(7, $this->object->getErrors());
     }
 
-    public function testValidMax()
+    public function testValidMax(): void
     {
         $this->object->setInputs([
             'field_file_max'              => $this->uplaod_txt,
@@ -214,7 +206,7 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testValidMin()
+    public function testValidMin(): void
     {
         $this->object->setInputs([
             'field_file_min'              => $this->uplaod_img,
@@ -244,7 +236,7 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testValidBetween()
+    public function testValidBetween(): void
     {
         $this->object->setInputs([
             'field_file_between_min'          => $this->uplaod_txt,
@@ -272,257 +264,5 @@ class ValidatorFileTest extends \PHPUnit\Framework\TestCase
 
         $this->assertFalse($this->object->isValid());
         $this->assertCount(2, $this->object->getErrors());
-    }
-
-    public function testValiExtensions()
-    {
-        $this->object->setInputs([
-            'field_file_ext'              => $this->uplaod_img,
-            'field_not_file_ext'          => $this->uplaod_txt,
-            'field_file_ext_required'     => $this->uplaod_img,
-            'field_file_ext_not_required' => ''
-        ])->setRules([
-            'field_file_ext'              => 'file_extensions:png,jpg,gif',
-            'field_not_file_ext'          => '!file_extensions:png,jpg,gif',
-            'field_file_ext_required'     => 'required|file_extensions:png,jpg,gif',
-            'field_file_ext_not_required' => '!required|file_extensions:txt'
-        ]);
-
-        $this->assertTrue($this->object->isValid());
-
-        $this->object->setInputs([
-            'field_file_ext'       => $this->uplaod_img,
-            'field_not_file_ext'   => $this->uplaod_txt,
-            'field_file_ext_error' => new UploadedFile(self::FILE_TXT, '', 1, '', UPLOAD_ERR_INI_SIZE)
-        ])->setRules([
-            'field_file_ext'       => 'file_extensions:txt,jpg,gif',
-            'field_not_file_ext'   => '!file_extensions:txt,jpg,gif',
-            'field_file_ext_error' => 'file_extensions:png,jpg,gif'
-        ]);
-
-        $this->assertFalse($this->object->isValid());
-        $this->assertCount(3, $this->object->getErrors());
-    }
-
-    public function testValiMimetypes()
-    {
-        $this->object->setInputs([
-            'field_file_minetypes'              => $this->uplaod_img,
-            'field_not_file_minetypes'          => $this->uplaod_txt,
-            'field_file_minetypes_required'     => $this->uplaod_img,
-            'field_file_minetypes_not_required' => ''
-        ])->setRules([
-            'field_file_minetypes'              => 'file_mimetypes:image',
-            'field_not_file_minetypes'          => '!file_mimetypes:image',
-            'field_file_minetypes_required'     => 'required|file_mimetypes:image',
-            'field_file_minetypes_not_required' => '!required|file_mimetypes:image'
-        ]);
-
-        $this->assertTrue($this->object->isValid());
-
-        $this->object->setInputs([
-            'field_file_minetypes'       => $this->uplaod_img,
-            'field_not_file_minetypes'   => $this->uplaod_txt,
-            'field_file_minetypes_error' => new UploadedFile(self::FILE_TXT, '', 1, '', UPLOAD_ERR_INI_SIZE)
-        ])->setRules([
-            'field_file_minetypes'       => 'file_mimetypes:text',
-            'field_not_file_minetypes'   => '!file_mimetypes:text',
-            'field_file_minetypes_error' => '!file_mimetypes:text'
-        ]);
-
-        $this->assertFalse($this->object->isValid());
-        $this->assertCount(3, $this->object->getErrors());
-    }
-
-    public function testValidMimes()
-    {
-        $this->object->setInputs([
-            'field_file_mimes'              => $this->uplaod_img,
-            'field_not_file_mimes'          => $this->uplaod_txt,
-            'field_file_mimes_required'     => $this->uplaod_img,
-            'field_file_mimes_not_required' => ''
-        ])->setRules([
-            'field_file_mimes'              => 'file_mimes:png',
-            'field_not_file_mimes'          => '!file_mimes:png',
-            'field_file_mimes_required'     => 'required|file_mimes:png',
-            'field_file_mimes_not_required' => '!required|file_mimes:png'
-        ]);
-
-        $this->assertTrue($this->object->isValid());
-
-        $this->object->setInputs([
-            'field_file_mimes_error'     => $this->uplaod_error,
-            'field_file_mimes'           => $this->uplaod_img,
-            'field_file_mimes_not'       => $this->uplaod_img,
-            'field_file_mimes_error_ext' => $this->uplaod_img
-        ])->setRules([
-            'field_file_mimes_error'     => 'file_mimes:gif',
-            'field_file_mimes'           => 'file_mimes:txt',
-            'field_file_mimes_not'       => '!file_mimes:png',
-            'field_file_mimes_error_ext' => 'file_mimes:error'
-        ]);
-
-        $this->assertFalse($this->object->isValid());
-        $this->assertCount(4, $this->object->getErrors());
-    }
-
-    public function testValidImage()
-    {
-        $this->object->setInputs([
-            'field_image'               => $this->uplaod_img,
-            'field_not_image'           => $this->uplaod_txt,
-            'field_image_required'      => $this->uplaod_img,
-            'field_image_not_required'  => new UploadedFile('', '', 1, '', UPLOAD_ERR_NO_FILE),
-            'field_image_not_required2' => ''
-        ])->setRules([
-            'field_image'               => 'image',
-            'field_not_image'           => '!image',
-            'field_image_required'      => 'required|image',
-            'field_image_not_required'  => '!required|image',
-            'field_image_not_required2' => '!required|image'
-        ]);
-
-        $this->assertTrue($this->object->isValid());
-
-        $this->object->setInputs([
-            'field_image'          => $this->uplaod_txt,
-            'field_not_image'      => $this->uplaod_img,
-            'field_image_required' => new UploadedFile('', '', 1, '', UPLOAD_ERR_NO_FILE)
-        ])->setRules([
-            'field_image'          => 'image',
-            'field_not_image'      => '!image',
-            'field_image_required' => 'image'
-        ]);
-
-        $this->assertFalse($this->object->isValid());
-        $this->assertCount(3, $this->object->getErrors());
-    }
-
-    /**
-     * @expectedException \Exception
-     */
-    public function testValidImageException()
-    {
-        $this->object->setInputs([
-            'field_image' => $this->uplaod_txt
-        ])->setRules([
-            'field_image' => 'image:txt'
-        ]);
-
-        $this->object->isValid();
-    }
-
-    /**
-     * @expectedException \Exception
-     */
-    public function testValidImageExceptionMultiple()
-    {
-        $this->object->setInputs([
-            'field_image' => $this->upload_xml
-        ])->setRules([
-            'field_image' => 'image:xml'
-        ]);
-
-        $this->object->isValid();
-    }
-
-    public function testImageDimensionsHeight()
-    {
-        $this->object->setInputs([
-            'field_image_dimensions'              => $this->uplaod_img,
-            'field_image_dimensions_required'     => $this->uplaod_img,
-            'field_image_dimensions_not_required' => ''
-        ])->setRules([
-            'field_image_dimensions'              => 'image_dimensions_height:0,20',
-            'field_image_dimensions_required'     => 'required|image_dimensions_height:0,20',
-            'field_image_dimensions_not_required' => '!required|image_dimensions_height:0,20'
-        ]);
-
-        $this->assertTrue($this->object->isValid());
-
-        $this->object->setInputs([
-            'field_image_dimensions'              => $this->uplaod_txt,
-            'field_image_dimensions_required'     => $this->uplaod_img,
-            'field_image_dimensions_not_required' => $this->uplaod_img
-        ])->setRules([
-            'field_image_dimensions'              => 'image_dimensions_height:0,20',
-            'field_image_dimensions_required'     => 'image_dimensions_height:0,10',
-            'field_image_dimensions_not_required' => '!image_dimensions_height:0,20'
-        ]);
-
-        $this->assertFalse($this->object->isValid());
-        $this->assertCount(3, $this->object->getErrors());
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testImageDimensionsMissingException()
-    {
-        $this->object
-            ->addInput('field_image_dimensions', $this->uplaod_img)
-            ->addRule('field_image_dimensions', 'image_dimensions_height')
-            ->isValid();
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testImageDimensionsTypeMin()
-    {
-        $this->object
-            ->addInput('field_image_dimensions', $this->uplaod_img)
-            ->addRule('field_image_dimensions', 'image_dimensions_height:error,5')
-            ->isValid();
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testImageDimensionsTypeMax()
-    {
-        $this->object
-            ->addInput('field_image_dimensions', $this->uplaod_img)
-            ->addRule('field_image_dimensions', 'image_dimensions_height:5,error')
-            ->isValid();
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testImageDimensionsUpperMax()
-    {
-        $this->object
-            ->addInput('field_image_dimensions', $this->uplaod_img)
-            ->addRule('field_image_dimensions', 'image_dimensions_height:10,5')
-            ->isValid();
-    }
-
-    public function testImageDimensionsWidth()
-    {
-        $this->object->setInputs([
-            'field_image_dimensions'              => $this->uplaod_img,
-            'field_image_dimensions_required'     => $this->uplaod_img,
-            'field_image_dimensions_not_required' => ''
-        ])->setRules([
-            'field_image_dimensions'              => 'image_dimensions_width:0,30',
-            'field_image_dimensions_required'     => 'required|image_dimensions_width:0,30',
-            'field_image_dimensions_not_required' => '!required|image_dimensions_width:0,30'
-        ]);
-
-        $this->assertTrue($this->object->isValid());
-
-        $this->object->setInputs([
-            'field_image_dimensions'              => $this->uplaod_txt,
-            'field_image_dimensions_required'     => $this->uplaod_img,
-            'field_image_dimensions_not_required' => $this->uplaod_img
-        ])->setRules([
-            'field_image_dimensions'              => 'image_dimensions_width:0,30',
-            'field_image_dimensions_required'     => 'image_dimensions_width:0,10',
-            'field_image_dimensions_not_required' => '!image_dimensions_width:0,30'
-        ]);
-
-        $this->assertFalse($this->object->isValid());
-        $this->assertCount(3, $this->object->getErrors());
     }
 }

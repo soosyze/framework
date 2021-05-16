@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class JsonTest extends Rule
 {
-    public function testJson()
+    public function testJson(): void
     {
         $json = '{"key":"value"}';
 

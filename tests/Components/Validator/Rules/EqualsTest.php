@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class EqualsTest extends Rule
 {
-    public function testEqual()
+    public function testEqual(): void
     {
         $this->object->setInputs([
             /* Standard */
@@ -48,7 +48,7 @@ class EqualsTest extends Rule
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testEqualStrict()
+    public function testEqualStrict(): void
     {
         $this->object->setInputs([
             /* Standard */

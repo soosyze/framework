@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -22,22 +24,22 @@ class Max extends Size
      *
      * @param string                                       $key   Clé du test.
      * @param int|float|string|array|UploadedFileInterface $value Valeur à tester.
-     * @param string                                       $arg   Valeur de comparraison.
+     * @param string                                       $args  Valeur de comparraison.
      * @param bool                                         $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not)
+    protected function test(string $key, $value, $args, bool $not): void
     {
         $length = $this->getSize($value);
         if ($this->hasErrors()) {
             return;
         }
-        $this->sizeMax($key, $length, $arg, $not);
+        $this->sizeMax($key, $length, $args, $not);
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function messages()
+    protected function messages(): array
     {
         $output           = parent::messages();
         $output[ 'must' ] = 'The :label field must not be greater than :max.';
@@ -56,7 +58,7 @@ class Max extends Size
      *
      * @return void
      */
-    protected function sizeMax($key, $length, $max, $not)
+    protected function sizeMax(string $key, $length, $max, bool $not): void
     {
         $sizeMax = $this->getComparator($max);
 

@@ -44,7 +44,7 @@ function not_empty_or(&$var, $default = '')
  * @param mixed $value_true
  * @param mixed $value_false
  *
- * @return type
+ * @return mixed
  */
 function if_or($condition, $value_true, $value_false = '')
 {

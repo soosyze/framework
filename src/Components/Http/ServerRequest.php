@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -78,11 +80,11 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @param array           $uploadFiles  Fichiers transmis au serveur.
      */
     public function __construct(
-        $method,
+        string $method,
         UriInterface $uri,
         array $headers = [],
         StreamInterface $body = null,
-        $version = '1.1',
+        string $version = '1.1',
         array $serverParams = [],
         array $cookies = [],
         array $uploadFiles = []
@@ -98,11 +100,10 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @return ServerRequest
      */
-    public static function create()
+    public static function create(): ServerRequest
     {
-        $method = isset($_SERVER[ 'REQUEST_METHOD' ])
-            ? $_SERVER[ 'REQUEST_METHOD' ]
-            : 'GET';
+        $method = $_SERVER[ 'REQUEST_METHOD' ]
+            ?? 'GET';
         $scheme = isset($_SERVER[ 'HTTPS' ]) && ($_SERVER[ 'HTTPS' ] === 'on' || $_SERVER[ 'HTTPS' ] == 1) ||
             isset($_SERVER[ 'HTTP_X_FORWARDED_PROTO' ]) && $_SERVER[ 'HTTP_X_FORWARDED_PROTO' ] === 'https'
             ? 'https'
@@ -126,9 +127,8 @@ class ServerRequest extends Request implements ServerRequestInterface
         $headers  = function_exists('getallheaders')
             ? getallheaders()
             : [];
-        $protocol = isset($_SERVER[ 'SERVER_PROTOCOL' ])
-            ? str_replace('HTTP/', '', $_SERVER[ 'SERVER_PROTOCOL' ])
-            : '1.1';
+        $protocol = str_replace('HTTP/', '', $_SERVER[ 'SERVER_PROTOCOL' ]
+            ?? '1.1');
 
         $request = new ServerRequest(
             $method,
@@ -323,11 +323,8 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function withParsedBody($data)
     {
-        if (!\is_array($data) && !\is_object($data) && $data !== null) {
-            throw new \InvalidArgumentException('First parameter to withParsedBody MUST be object, array or null');
-        }
-
-        $clone            = clone $this;
+        $this->filtreBody($data);
+        $clone = clone $this;
         $clone->parseBody = $data;
 
         return $clone;
@@ -429,7 +426,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @return array
      */
-    public static function parseFiles(array $files)
+    public static function parseFiles(array $files): array
     {
         $output = [];
         /* Premier parcour, détermine les fichier simple ou multiple. */
@@ -460,7 +457,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @return UploadedFileInterface[]
      */
-    public static function parseFilesToUploadFiles(array $files)
+    public static function parseFilesToUploadFiles(array $files): array
     {
         $filesParse = self::parseFiles($files);
 
@@ -475,24 +472,21 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @return string
      */
-    protected function getScriptName($default = '/')
+    protected function getScriptName(string $default = '/'): string
     {
         $filename = basename(!empty($this->serverParams[ 'SCRIPT_FILENAME' ])
             ? $this->serverParams[ 'SCRIPT_FILENAME' ]
             : '');
-        if (basename(!empty($this->serverParams[ 'SCRIPT_NAME' ])
-                    ? $this->serverParams[ 'SCRIPT_NAME' ]
-                    : null) === $filename) {
+        if (basename($this->serverParams[ 'SCRIPT_NAME' ]
+                    ?? null) === $filename) {
             return $this->serverParams[ 'SCRIPT_NAME' ];
         }
-        if (basename(!empty($this->serverParams[ 'PHP_SELF' ])
-                    ? $this->serverParams[ 'PHP_SELF' ]
-                    : null) === $filename) {
+        if (basename($this->serverParams[ 'PHP_SELF' ]
+                    ?? null) === $filename) {
             return $this->serverParams[ 'PHP_SELF' ];
         }
-        if (basename(!empty($this->serverParams[ 'ORIG_SCRIPT_NAME' ])
-                    ? $this->serverParams[ 'ORIG_SCRIPT_NAME' ]
-                    : null) === $filename) {
+        if (basename($this->serverParams[ 'ORIG_SCRIPT_NAME' ]
+                    ?? null) === $filename) {
             return $this->serverParams[ 'ORIG_SCRIPT_NAME' ];
         }
 
@@ -507,7 +501,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @return array
      */
-    private static function normaliseMultiFile(array $files)
+    private static function normaliseMultiFile(array $files): array
     {
         $output = [];
         /* Second parcour. */
@@ -528,7 +522,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @return void
      */
-    private static function normaliseFile(&$output, array $array, $name)
+    private static function normaliseFile(&$output, array $array, string $name): void
     {
         /* Troisième parcour. */
         foreach ($array as $key => $value) {
@@ -547,9 +541,9 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @param array $files Variable superglobale $_FILES parsée.
      *
-     * @return UploadedFileInterface[]
+     * @return array
      */
-    private static function normaliseUplaod(array $files)
+    private static function normaliseUplaod(array $files): array
     {
         $output = [];
         foreach ($files as $key => $value) {
@@ -563,5 +557,20 @@ class ServerRequest extends Request implements ServerRequestInterface
         }
 
         return $output;
+    }
+
+    /**
+     * Filtre le corp.
+     *
+     * @param mixed $data
+     *
+     * @throws \InvalidArgumentException
+     * @return void
+     */
+    private function filtreBody($data): void
+    {
+        if (!\is_array($data) && !\is_object($data) && $data !== null) {
+            throw new \InvalidArgumentException('First parameter to withParsedBody MUST be object, array or null.');
+        }
     }
 }

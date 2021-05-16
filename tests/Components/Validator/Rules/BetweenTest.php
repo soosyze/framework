@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class BetweenTest extends Rule
 {
-    public function testBetween()
+    public function testBetween(): void
     {
         $this->object->setInputs([
             /* Text */
@@ -69,50 +69,26 @@ class BetweenTest extends Rule
     }
 
     /**
-     * @expectedException \Exception
+     * @dataProvider providerBetweenException
      */
-    public function testBetweenMissingException()
+    public function testBetweenException(string $rule): void
     {
+        $this->expectException(\Exception::class);
         $this->object
             ->addInput('field', 4)
-            ->addRule('field', 'between')
+            ->addRule('field', $rule)
             ->isValid();
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testBetweenExceptionTypeMin()
+    public function providerBetweenException(): \Generator
     {
-        $this->object
-            ->addInput('field', 4)
-            ->addRule('field', 'between:error,5')
-            ->isValid();
+        yield [ 'between' ];
+        yield [ 'between:error,5' ];
+        yield [ 'between:1,error' ];
+        yield [ 'between:10,1' ];
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testBetweenExceptionTypeMax()
-    {
-        $this->object
-            ->addInput('field', 4)
-            ->addRule('field', 'between:1,error')
-            ->isValid();
-    }
-
-    /**
-     * @expectedException \Exception
-     */
-    public function testBetweenMinUpperMax()
-    {
-        $this->object
-            ->addInput('field', 4)
-            ->addRule('field', 'between:10,1')
-            ->isValid();
-    }
-
-    public function testBetweenNumeric()
+    public function testBetweenNumeric(): void
     {
         $this->object->setInputs([
             /* Integer */

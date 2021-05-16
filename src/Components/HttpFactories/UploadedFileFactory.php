@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -9,6 +11,7 @@
 namespace Soosyze\Components\HttpFactories;
 
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use Soosyze\Components\Http\UploadedFile;
 
 /**
@@ -36,16 +39,17 @@ class UploadedFileFactory
      * @param string          $clientFilename  The filename as provided by the client, if any.
      * @param string          $clientMediaType The media type as provided by the client, if any.
      *
-     * @throws \InvalidArgumentException               If the file resource is not readable.
-     * @return \Psr\Http\Message\UploadedFileInterface
+     * @throws \InvalidArgumentException If the file resource is not readable.
+     *
+     * @return UploadedFileInterface
      */
     public function createUploadedFile(
         StreamInterface $stream,
-        $size = null,
-        $error = \UPLOAD_ERR_OK,
-        $clientFilename = null,
-        $clientMediaType = null
-    ) {
+        int $size = null,
+        int $error = \UPLOAD_ERR_OK,
+        string $clientFilename = null,
+        string $clientMediaType = null
+    ): UploadedFileInterface {
         return new UploadedFile($stream, $clientFilename, $size, $clientMediaType, $error);
     }
 }

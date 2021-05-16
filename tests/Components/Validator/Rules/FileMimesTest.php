@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class FileMimesTest extends RuleFile
 {
-    public function testMimes()
+    public function testMimes(): void
     {
         $this->object->setInputs([
             'file_mimes'              => $this->uplaod_img,

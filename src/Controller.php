@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -68,12 +70,12 @@ class Controller
      *
      * @codeCoverageIgnore Fonction testé directement avec l'objet Container.
      *
-     * @param string $key Nom du service.
-     * @param array  $arg Paramètres passés à la fonction.
+     * @param string $key  Nom du service.
+     * @param array  $args Paramètres passés à la fonction.
      *
      * @return object
      */
-    public function __call($key, array $arg)
+    public function __call(string $key, array $args)
     {
         return $this->container->get($key);
     }
@@ -87,7 +89,7 @@ class Controller
      *
      * @return object Service dans le container.
      */
-    public function get($key)
+    public function get(string $key): object
     {
         return $this->container->get($key);
     }
@@ -97,7 +99,7 @@ class Controller
      *
      * @return string
      */
-    public function getPathRoutes()
+    public function getPathRoutes(): string
     {
         return $this->pathRoutes;
     }
@@ -107,12 +109,12 @@ class Controller
      *
      * @return string
      */
-    public function getPathServices()
+    public function getPathServices(): string
     {
         return $this->pathServices;
     }
 
-    public function getPathBoot()
+    public function getPathBoot(): string
     {
         return $this->pathBoot;
     }
@@ -126,15 +128,15 @@ class Controller
      *
      * @return Response
      */
-    protected function get404(RequestInterface $request = null)
+    protected function get404(?RequestInterface $request = null): Response
     {
         $text = 'Page %s Not Found. Sorry, but the page you were trying to view does not exist.';
 
         $stream_output = sprintf(
             $text,
             $request === null
-                ? ''
-                : $request->getUri()->getQuery()
+            ? ''
+            : $request->getUri()->getQuery()
         );
 
         return new Response(404, new Stream($stream_output));
@@ -148,11 +150,11 @@ class Controller
      *
      * @return Response
      */
-    protected function json($code = 200, array $content = [])
+    protected function json(int $code = 200, array $content = []): Response
     {
         $stream = new Stream(json_encode($content));
 
         return (new Response($code, $stream))
-            ->withHeader('content-type', 'application/json');
+                ->withHeader('content-type', 'application/json');
     }
 }

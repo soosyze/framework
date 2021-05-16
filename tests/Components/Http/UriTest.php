@@ -11,86 +11,101 @@ class UriTest extends \PHPUnit\Framework\TestCase
      */
     protected $object;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->object = new Uri('http', 'hostname', '/path', 80, 'arg=value', 'anchor', 'username', 'password');
     }
 
-    public function testCreate()
+    public function testNewUri(): void
     {
-        $this->assertAttributeSame('http', 'scheme', $this->object);
-        $this->assertAttributeSame('username', 'user', $this->object);
-        $this->assertAttributeSame('password', 'pass', $this->object);
-        $this->assertAttributeSame('hostname', 'host', $this->object);
-        $this->assertAttributeSame(null, 'port', $this->object);
-        $this->assertAttributeSame('/path', 'path', $this->object);
-        $this->assertAttributeSame('arg=value', 'query', $this->object);
-        $this->assertAttributeSame('anchor', 'fragment', $this->object);
+        $this->assertEquals('http', $this->object->getScheme());
+        $this->assertEquals('username:password', $this->object->getUserInfo());
+        $this->assertEquals('hostname', $this->object->getHost());
+        $this->assertEquals(null, $this->object->getPort());
+        $this->assertEquals('/path', $this->object->getPath());
+        $this->assertEquals('arg=value', $this->object->getQuery());
+        $this->assertEquals('anchor', $this->object->getFragment());
     }
 
-    public function testCreateUri()
+    public function testCreate(): void
     {
         $uri = Uri::create('http://username:password@hostname:80/path?arg=value#anchor');
 
-        $this->assertAttributeSame('http', 'scheme', $uri);
-        $this->assertAttributeSame('username', 'user', $uri);
-        $this->assertAttributeSame('password', 'pass', $uri);
-        $this->assertAttributeSame('hostname', 'host', $uri);
-        $this->assertAttributeSame(null, 'port', $uri);
-        $this->assertAttributeSame('/path', 'path', $uri);
-        $this->assertAttributeSame('arg=value', 'query', $uri);
-        $this->assertAttributeSame('anchor', 'fragment', $uri);
+        $this->assertEquals('http', $uri->getScheme());
+        $this->assertEquals('username:password', $uri->getUserInfo());
+        $this->assertEquals('hostname', $uri->getHost());
+        $this->assertEquals(null, $uri->getPort());
+        $this->assertEquals('/path', $uri->getPath());
+        $this->assertEquals('arg=value', $uri->getQuery());
+        $this->assertEquals('anchor', $uri->getFragment());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testCreateUriInvalidArgument()
+    public function testCreateUriInvalidArgument(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
         Uri::create('http:///www.error.org');
     }
 
-    public function testScheme()
+    public function testScheme(): void
     {
-        $this->assertSame('', Uri::create('/')->getScheme());
+        $this->assertEquals('', Uri::create('/')->getScheme());
         $this->assertEquals('https', Uri::create('https://foo.com/')->getScheme());
-
         $this->assertEquals('http', Uri::create('')->withScheme('http')->getScheme());
     }
 
     /**
-     * @dataProvider getInvalidSchemaArguments
-     * @expectedException \Exception
+     * @dataProvider providerWithSchemeInvalidArgumentException
+     *
+     * @param mixed $schema
      */
-    public function testWithSchemeException($schema)
+    public function testWithSchemeInvalidArgumentException($schema): void
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->object->withScheme($schema);
     }
 
-    public function getInvalidSchemaArguments()
+    public function providerWithSchemeInvalidArgumentException(): \Generator
     {
-        return [
-            [ 'error' ],
-            [ true ],
-            [ [ 'error' ] ],
-            [ 1 ],
-            [ new \stdClass() ],
-        ];
+        yield [ [ 'error' ] ];
+        yield [ true ];
+        yield [ 1.1 ];
+        yield [ 1 ];
+        yield [ new \stdClass() ];
+        yield [ 'error' ];
     }
 
-    public function testGetAuthority()
+    /**
+     * @dataProvider providerGetAuthority
+     */
+    public function testGetAuthority(string $expectedAuthority, string $uri): void
     {
-        $this->assertEquals('', Uri::create('/')->getAuthority());
-        $this->assertEquals('foo@bar.com', Uri::create('http://foo@bar.com:80/')->getAuthority());
-        $this->assertEquals('foo@bar.com:81', Uri::create('http://foo@bar.com:81/')->getAuthority());
-        $this->assertEquals('user:foo@bar.com', Uri::create('http://user:foo@bar.com/')->getAuthority());
+        $this->assertEquals($expectedAuthority, Uri::create($uri)->getAuthority());
     }
 
-    public function testUserInfo()
+    public function providerGetAuthority(): \Generator
+    {
+        yield [ '', '/' ];
+        yield [ 'foo@bar.com', 'http://foo@bar.com:80/' ];
+        yield [ 'foo@bar.com:81', 'http://foo@bar.com:81/' ];
+        yield [ 'user:foo@bar.com', 'http://user:foo@bar.com/' ];
+    }
+
+    /**
+     * @dataProvider providerGetQuery
+     */
+    public function testGetQuery(string $expectedQuery, string $uri): void
+    {
+        $this->assertEquals($expectedQuery, Uri::create($uri)->getQuery());
+    }
+
+    public function providerGetQuery(): \Generator
+    {
+        yield [ '', 'http://hostname:1/path' ];
+        yield [ 'arg=value&arg2=value2', 'http://hostname/path?arg=value&arg2=value2' ];
+        yield [ 'arg=val%25ue', 'http://hostname/path?arg=val%ue' ];
+    }
+
+    public function testUserInfo(): void
     {
         $this->assertEquals('', Uri::create('/')->getUserInfo());
         $this->assertEquals('user:foo', Uri::create('http://user:foo@bar.com/')->getUserInfo());
@@ -102,15 +117,15 @@ class UriTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('foo', $this->object->withUserInfo('foo')->getUserInfo());
     }
 
-    public function testGetHost()
+    public function testGetHost(): void
     {
-        $this->assertEquals($this->object->getHost(), 'hostname');
+        $this->assertEquals('hostname', $this->object->getHost());
 
         $uri = Uri::create('http://HostName/path?arg=value#anchor');
-        $this->assertEquals($uri->getHost(), 'hostname');
+        $this->assertEquals('hostname', $uri->getHost());
     }
 
-    public function testPort()
+    public function testPort(): void
     {
         $this->assertNull(Uri::create('http://www.foo.com/')->getPort());
         $this->assertNull(Uri::create('http://www.foo.com:80/')->getPort());
@@ -123,133 +138,95 @@ class UriTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $this->object->withPort(1)->getPort());
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testWithPortException()
+    public function testWithPortException(): void
     {
         $uri = new Uri();
+
+        $this->expectException(\Exception::class);
         $uri->withPort('error');
     }
 
-    public function testGetPath()
-    {
-        $this->assertEquals($this->object->getPath(), '/path');
-    }
-
-    public function testGetQuery()
-    {
-        $this->assertEquals($this->object->getQuery(), 'arg=value');
-    }
-
-    public function testGetQueryVoid()
+    public function testGetFragmentVoid(): void
     {
         $uri = Uri::create('http://hostname:1/path');
-        $this->assertEquals($uri->getQuery(), '');
+        $this->assertEquals('', $uri->getFragment());
     }
 
-    public function testGetQueryMultiple()
-    {
-        $uri = Uri::create('http://hostname/path?arg=value&arg2=value2');
-        $this->assertEquals($uri->getQuery(), 'arg=value&arg2=value2');
-    }
-
-    public function testGetQueryEncode()
-    {
-        $uri = Uri::create('http://hostname/path?arg=val%ue');
-        $this->assertEquals($uri->getQuery(), 'arg=val%25ue');
-    }
-
-    public function testGetFragment()
-    {
-        $this->assertEquals($this->object->getFragment(), 'anchor');
-    }
-
-    public function testGetFragmentVoid()
-    {
-        $uri = Uri::create('http://hostname:1/path');
-        $this->assertEquals($uri->getFragment(), '');
-    }
-
-    public function testGetFragmentEncode()
+    public function testGetFragmentEncode(): void
     {
         $uri = Uri::create('http://username:password@hostname:1/path#anc%hor');
-        $this->assertEquals($uri->getFragment(), 'anc%25hor');
+        $this->assertEquals('anc%25hor', $uri->getFragment());
     }
 
-    public function testWithScheme()
+    public function testWithScheme(): void
     {
         $uri = new Uri();
-        $this->assertAttributeSame('http', 'scheme', $uri->withScheme('http'));
-        $this->assertAttributeSame('http', 'scheme', $uri->withScheme('HTTP'));
+        $this->assertEquals('http', $uri->withScheme('http')->getScheme());
+        $this->assertEquals('http', $uri->withScheme('HTTP')->getScheme());
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testWithUserInfoException()
+    public function testWithUserInfoException(): void
     {
         $uri = new Uri();
+
+        $this->expectException(\Exception::class);
         $uri->withUserInfo(1);
     }
 
-    public function testWithHost()
+    public function testWithHost(): void
     {
         $uri = new Uri();
-        $this->assertAttributeSame('hostname', 'host', $uri->withHost('hostname'));
-        $this->assertAttributeSame('hostname', 'host', $uri->withHost('HostName'));
+        $this->assertEquals('hostname', $uri->withHost('hostname')->getHost());
+        $this->assertEquals('hostname', $uri->withHost('HostName')->getHost());
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testWithHostException()
+    public function testWithHostException(): void
     {
         $uri = new Uri();
+
+        $this->expectException(\Exception::class);
         $uri->withHost(1);
     }
 
-    public function testWithPath()
+    public function testWithPath(): void
     {
         $uri = new Uri();
-        $this->assertAttributeSame('/path', 'path', $uri->withPath('/path'));
-        $this->assertAttributeSame('path', 'path', $uri->withPath('path'));
+        $this->assertEquals('/path', $uri->withPath('/path')->getPath());
+        $this->assertEquals('path', $uri->withPath('path')->getPath());
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testWithPathException()
+    public function testWithPathException(): void
     {
         $uri = new Uri();
+
+        $this->expectException(\Exception::class);
         $uri->withPath(1);
     }
 
-    public function testWithQuery()
+    public function testWithQuery(): void
     {
         $uri = new Uri();
-        $this->assertAttributeSame('arg=value', 'query', $uri->withQuery('arg=value'));
-        $this->assertAttributeSame('arg=value/value2', 'query', $uri->withQuery('arg=value/value2'));
+        $this->assertEquals('arg=value', $uri->withQuery('arg=value')->getQuery());
+        $this->assertEquals('arg=value/value2', $uri->withQuery('arg=value/value2')->getQuery());
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testWithQueryException()
+    public function testWithQueryException(): void
     {
         $uri = new Uri();
+
+        $this->expectException(\Exception::class);
         $uri->withQuery(1);
     }
 
-    public function testWithFragment()
+    public function testWithFragment(): void
     {
         $uri = new Uri();
-        $this->assertAttributeSame('fragment', 'fragment', $uri->withFragment('fragment'));
+        $this->assertEquals('fragment', $uri->withFragment('fragment')->getFragment());
     }
 
-    public function testToString()
+    public function testToString(): void
     {
-        $this->assertEquals((string) $this->object, 'http://username:password@hostname/path?arg=value#anchor');
-        $this->assertEquals((string) $this->object->withPath('path'), 'http://username:password@hostname/path?arg=value#anchor');
+        $this->assertEquals('http://username:password@hostname/path?arg=value#anchor', (string) $this->object);
+        $this->assertEquals('http://username:password@hostname/other/path?arg=value#anchor', (string) $this->object->withPath('other/path'));
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -20,10 +22,10 @@ class Between extends Size
      *
      * @param string                                                        $key   Clé du test.
      * @param array|float|int|object|ressource|string|UploadedFileInterface $value Valeur à tester.
-     * @param string                                                        $arg   Liste de 2 valeurs de comparaison séparées par une virgule.
+     * @param string                                                        $args  Liste de 2 valeurs de comparaison séparées par une virgule.
      * @param bool                                                          $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not)
+    protected function test(string $key, $value, $args, bool $not): void
     {
         $length = $this->getSize($value);
 
@@ -31,14 +33,14 @@ class Between extends Size
             return;
         }
 
-        list($min, $max) = $this->getParamMinMax($arg);
+        [ $min, $max ] = $this->getParamMinMax($args);
         $this->sizeBetween($key, $length, $min, $max, $not);
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function messages()
+    protected function messages(): array
     {
         $output           = parent::messages();
         $output[ 'must' ] = 'The :label field must be between :min and :max.';
@@ -58,8 +60,13 @@ class Between extends Size
      *
      * @return void
      */
-    protected function sizeBetween($key, $length, array $min, array $max, $not)
-    {
+    protected function sizeBetween(
+        string $key,
+        $length,
+        array $min,
+        array $max,
+        bool $not
+    ): void {
         if (!($length <= $max[ 'size' ] && $length >= $min[ 'size' ]) && $not) {
             $this->addReturn($key, 'must', [ ':min' => $min[ 'value' ], ':max' => $max[ 'value' ] ]);
         } elseif ($length <= $max[ 'size' ] && $length >= $min[ 'size' ] && !$not) {
@@ -70,16 +77,19 @@ class Between extends Size
     /**
      * {@inheritdoc}
      *
-     * @param string $arg
+     * @param string $args
      *
      * @throws \InvalidArgumentException Between values are invalid.
      * @throws \InvalidArgumentException The minimum value must not be greater than the maximum value.
      *
      * @return array
      */
-    protected function getParamMinMax($arg)
+    protected function getParamMinMax(?string $args): array
     {
-        $explode = explode(',', $arg);
+        if ($args === null) {
+            throw new \InvalidArgumentException('Between values are invalid.');
+        }
+        $explode = explode(',', $args);
         if (!isset($explode[ 0 ], $explode[ 1 ])) {
             throw new \InvalidArgumentException('Between values are invalid.');
         }

@@ -2,6 +2,11 @@
 
 namespace Soosyze\Tests;
 
+use Psr\Http\Message\RequestInterface;
+use Soosyze\Components\Http\ServerRequest;
+use Soosyze\Components\Http\Uri;
+use Soosyze\Tests\Resources\App\AppCore;
+
 class AppTest extends \PHPUnit\Framework\TestCase
 {
     /**
@@ -9,68 +14,63 @@ class AppTest extends \PHPUnit\Framework\TestCase
      */
     protected static $object;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
-        $uri     = \Soosyze\Components\Http\Uri::create('http://test.com/?q=index');
-        $request = new \Soosyze\Components\Http\ServerRequest(
+    }
+
+    protected function setUp(): void
+    {
+        $serverRequest = new ServerRequest(
             'GET',
-            $uri,
+            Uri::create('http://test.com/?q=index'),
             [],
             null,
             '1.1',
             [
             'SCRIPT_FILENAME' => '/index.php',
             'SCRIPT_NAME'     => '/index.php'
-        ]
+            ]
         );
 
-        self::$object = AppCore::getInstance($request)->init();
+        self::$object = AppCore::getInstance($serverRequest);
+        self::$object->init();
     }
 
-    public function testRun()
+    public function testRun(): void
     {
         $run = self::$object->run();
-        $this->assertEquals($run->getBody()->__toString(), 'ok');
+        $this->assertEquals('ok', (string) $run->getBody());
     }
 
-    public function testGetRequest()
+    public function testGetRequest(): void
     {
         $request = self::$object->getRequest();
-        $this->assertInstanceOf('\Psr\Http\Message\RequestInterface', $request);
+
+        $this->assertInstanceOf(RequestInterface::class, $request);
         $this->assertEquals('GET', $request->getMethod());
     }
 
-    public function testRunJson()
+    public function testRunJson(): void
     {
         self::$object->addHook('app.response.before', function (&$request, $response) {
-            $uri     = \Soosyze\Components\Http\Uri::create('http://test.com?q=json');
-            $request = new \Soosyze\Components\Http\ServerRequest('GET', $uri);
+            $uri     = Uri::create('http://test.com?q=json');
+            $request = new ServerRequest('GET', $uri);
         });
-        $this->assertEquals(self::$object->run()->getBody()->__toString(), '{"a":1,"b":2,"c":3,"d":4,"e":5}');
+
+        $this->assertEquals('{"a":1,"b":2,"c":3,"d":4,"e":5}', (string) self::$object->run()->getBody());
     }
 
-    public function testSetSettings()
+    public function testGetSettings(): void
     {
         self::$object->setSettings([ 'app' => 'tests', 'config' => 'tests/config' ]);
-        $this->assertAttributeSame([ 'app' => 'tests', 'config' => 'tests/config' ], 'settings', self::$object);
+
+        $this->assertEquals(
+            [ 'app' => 'tests', 'config' => 'tests/config' ],
+            self::$object->getSettings()
+        );
     }
 
-    public function testGetSettings()
-    {
-        $this->assertEquals(self::$object->getSettings(), [ 'app' => 'tests', 'config' => 'tests/config' ]);
-    }
-
-    public function testSetEnvironnement()
-    {
-        self::$object->setEnvironnement([ 'prod' => [ '' ] ]);
-        $this->assertAttributeSame([ 'prod' => [ '' ] ], 'environnement', self::$object);
-    }
-
-    public function testGetEnvironnementHostname()
+    public function testGetEnvironnementHostname(): void
     {
         $this->assertEquals(self::$object->getEnvironment(), '');
 
@@ -79,26 +79,26 @@ class AppTest extends \PHPUnit\Framework\TestCase
             'local' => [ gethostname() ]
         ]);
 
-        $this->assertEquals(self::$object->getEnvironment(), 'local');
+        $this->assertEquals('local', self::$object->getEnvironment());
     }
 
-    public function testGetEnvironnementAuthority()
+    public function testGetEnvironnementAuthority(): void
     {
         self::$object->setEnvironnement([
             'prod'  => [ '' ],
             'local' => [ 'test.com' ]
         ]);
 
-        $this->assertEquals(self::$object->getEnvironment(), 'local');
+        $this->assertEquals('local', self::$object->getEnvironment());
     }
 
-    public function testIsEnvironnement()
+    public function testIsEnvironnement(): void
     {
         $this->assertFalse(self::$object->isEnvironnement('prod'));
         $this->assertTrue(self::$object->isEnvironnement('local'));
     }
 
-    public function testGetDir()
+    public function testGetDir(): void
     {
         self::$object->setSettings([
             'root'  => __DIR__,
@@ -108,21 +108,20 @@ class AppTest extends \PHPUnit\Framework\TestCase
             'local' => [ '' ]
         ]);
 
-        $test = str_replace('/', DIRECTORY_SEPARATOR, __DIR__ . '/files/public/prod');
-        $this->assertEquals(self::$object->getDir('files'), $test);
+        $expectedDir = str_replace('/', DIRECTORY_SEPARATOR, __DIR__ . '/files/public/prod');
+        $this->assertEquals($expectedDir, self::$object->getDir('files'));
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testGetDirException()
+    public function testGetDirException(): void
     {
-        self::$object->setSettings([
-            'files' => [ 'files/public' ]
-        ])->getDir('files');
+        self::$object->setSettings(['files' => [ 'files/public' ] ]);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectErrorMessage('The framework parameter must return a string.');
+        self::$object->getDir('files');
     }
 
-    public function testGetPath()
+    public function testGetPath(): void
     {
         self::$object->setSettings([
             'root'  => __DIR__,
@@ -132,50 +131,15 @@ class AppTest extends \PHPUnit\Framework\TestCase
             'local' => [ gethostname() ]
         ]);
 
-        $this->assertEquals(self::$object->getPath('files'), 'http://test.com/files/public/local');
+        $this->assertEquals('http://test.com/files/public/local', self::$object->getPath('files'));
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testGetPathException()
+    public function testGetPathException(): void
     {
-        self::$object->setSettings([
-            'files' => [ 'files/public' ]
-        ])->getPath('files');
-    }
-}
+        self::$object->setSettings([ 'files' => [ 'files/public' ] ]);
 
-class AppCore extends \Soosyze\App
-{
-    protected function loadModules()
-    {
-        return [
-            new TestModule()
-        ];
-    }
-
-    protected function loadServices()
-    {
-        return [];
-    }
-}
-
-class TestModule extends \Soosyze\Controller
-{
-    public function __construct()
-    {
-        $this->pathRoutes   = __DIR__ . '/config/routes.php';
-        $this->pathServices = __DIR__ . '/config/services.php';
-    }
-
-    public function index()
-    {
-        return 'ok';
-    }
-
-    public function api()
-    {
-        return $this->json(200, [ 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ]);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectErrorMessage('The framework parameter must return a string.');
+        self::$object->getPath('files');
     }
 }

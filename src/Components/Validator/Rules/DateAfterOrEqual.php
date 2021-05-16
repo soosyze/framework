@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -20,12 +22,12 @@ class DateAfterOrEqual extends DateAfter
      *
      * @param string $key   Clé du test.
      * @param string $value Date à tester.
-     * @param string $arg   Date de comparaison.
+     * @param string $args  Date de comparaison.
      * @param bool   $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not)
+    protected function test(string $key, $value, $args, bool $not): void
     {
-        parent::test('date_after', $value, $arg, $not);
+        parent::test('date_after', $value, $args, $not);
     }
 
     /**
@@ -36,7 +38,7 @@ class DateAfterOrEqual extends DateAfter
      * @param string $arg   Date de comparaison.
      * @param bool   $not   Inverse le test.
      */
-    protected function testDateAfter($key, $value, $arg, $not)
+    protected function testDateAfter(string $key, $value, $arg, bool $not): void
     {
         if (!($value >= $arg) && $not) {
             $this->addReturn('date_after_or_equal', 'after', [ ':dateafter' => $arg ]);
@@ -48,7 +50,7 @@ class DateAfterOrEqual extends DateAfter
     /**
      * {@inheritdoc}
      */
-    protected function messages()
+    protected function messages(): array
     {
         $output                = parent::messages();
         $output[ 'after' ]     = 'The :label field must be greater than or equal to :dateafter.';

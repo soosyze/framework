@@ -6,35 +6,24 @@ use Soosyze\Components\Http\UploadedFile;
 
 class UploadedFileTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var resource
-     */
-    const FILE = './test.txt';
+    use \Soosyze\Tests\Traits\ResourceTrait;
+
+    private const FILE = './test.txt';
 
     /**
-     * @var UplaodeFile
+     * @var UploadedFile
      */
     protected $object;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
-        /* Créer un fichier pour le test */
-        $stream = fopen(self::FILE, 'w');
-        fwrite($stream, 'test content');
+        $stream = $this->streamFileFactory(self::FILE, 'test content', 'w');
         fclose($stream);
 
         $this->object = new UploadedFile(self::FILE, 'file.txt', 1024, 'text/plain');
     }
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         /* Supprime le fichier du test */
         if (file_exists(self::FILE)) {
@@ -42,89 +31,50 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testConstruct()
-    {
-        $this->assertAttributeSame(self::FILE, 'file', $this->object);
-        $this->assertAttributeSame('file.txt', 'name', $this->object);
-        $this->assertAttributeSame(1024, 'size', $this->object);
-        $this->assertAttributeSame('text/plain', 'type', $this->object);
-        $this->assertAttributeSame(0, 'error', $this->object);
-    }
-
     /**
-     * @expectedException \Exception
+     * @dataProvider providerConstructException
+     *
+     * @param class-string<\Throwable> $exceptionClass
      */
-    public function testConstructFileException()
-    {
-        new UploadedFile(1);
+    public function testConstructFileException(
+        array $args,
+        string $exceptionClass,
+        string $exceptionMessage
+    ): void {
+        $this->expectException($exceptionClass);
+        $this->expectExceptionMessage($exceptionMessage);
+        new UploadedFile(...$args);
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testConstructNameException()
+    public function providerConstructException(): \Generator
     {
-        new UploadedFile('', 1);
+        yield [
+            [ 1 ],
+            \InvalidArgumentException::class,
+            'The file resource is not readable.'
+        ];
+        yield [
+            [ '', null, null, null, 1000 ],
+            \InvalidArgumentException::class,
+            'The type of error is invalid.'
+        ];
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testConstructSizeException()
+    public function testCreateInvalidArgument(): void
     {
-        new UploadedFile('', null, '1');
-    }
-
-    /**
-     * @expectedException \Exception
-     */
-    public function testConstructTypeException()
-    {
-        new UploadedFile('', null, null, 1);
-    }
-
-    /**
-     * @expectedException \Exception
-     */
-    public function testConstructErrorException()
-    {
-        $upFile = new UploadedFile('', null, null, null, 'bonjour');
-    }
-
-    public function testCreate()
-    {
-        $upFile = UploadedFile::create([
-                'tmp_name' => self::FILE,
-                'name'     => 'file.txt',
-                'size'     => 1024,
-                'type'     => 'text/plain',
-                'error'    => 0
-        ]);
-
-        $this->assertAttributeSame(self::FILE, 'file', $upFile);
-        $this->assertAttributeSame('file.txt', 'name', $upFile);
-        $this->assertAttributeSame(1024, 'size', $upFile);
-        $this->assertAttributeSame('text/plain', 'type', $upFile);
-        $this->assertAttributeSame(0, 'error', $upFile);
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testCreateInvalidArgument()
-    {
+        $this->expectException(\InvalidArgumentException::class);
         UploadedFile::create([]);
     }
 
-    public function testGetStream()
+    public function testGetStream(): void
     {
         $stream = $this->object->getStream();
-        $this->assertEquals((string) $stream, 'test content');
+        $this->assertEquals('test content', (string) $stream);
         /* Si nous ne fermons pas le flux le fichier sera vérouillé pour le reste des opérations */
         $stream->close();
     }
 
-    public function testMoveTo()
+    public function testMoveTo(): void
     {
         $targetPath = './moveTest.txt';
 
@@ -133,64 +83,57 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
         unlink($targetPath);
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testMoveExceptionMoved()
+    public function testMoveExceptionMoved(): void
     {
         $targetPath = './error.txt';
         $this->object->moveTo($targetPath);
         unlink($targetPath);
 
+        $this->expectException(\Exception::class);
         $this->object->moveTo($targetPath);
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testMoveExceptionTarget()
+    public function testMoveExceptionTarget(): void
     {
+        $this->expectException(\Exception::class);
         $this->object->moveTo(1);
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testMoveExceptionFileError()
+    public function testMoveExceptionFileError(): void
     {
         $upl = new UploadedFile('error');
+
+        $this->expectException(\Exception::class);
         $upl->moveTo('test');
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testGetStreamException()
+    public function testGetStreamException(): void
     {
         $targetPath = './error.txt';
         $this->object->moveTo($targetPath);
         unlink($targetPath);
 
+        $this->expectException(\Exception::class);
         $this->object->getStream();
     }
 
-    public function testGetSize()
+    public function testGetSize(): void
     {
-        $this->assertEquals($this->object->getSize(), 1024);
+        $this->assertEquals(1024, $this->object->getSize());
     }
 
-    public function testGetError()
+    public function testGetError(): void
     {
-        $this->assertEquals($this->object->getError(), 0);
+        $this->assertEquals(0, $this->object->getError());
     }
 
-    public function testGetClientFilename()
+    public function testGetClientFilename(): void
     {
-        $this->assertEquals($this->object->getClientFilename(), 'file.txt');
+        $this->assertEquals('file.txt', $this->object->getClientFilename());
     }
 
-    public function testGetClientMediaType()
+    public function testGetClientMediaType(): void
     {
-        $this->assertEquals($this->object->getClientMediaType(), 'text/plain');
+        $this->assertEquals('text/plain', $this->object->getClientMediaType());
     }
 }

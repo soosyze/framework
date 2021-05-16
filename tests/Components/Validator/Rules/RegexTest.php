@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class RegexTest extends Rule
 {
-    public function testRegex()
+    public function testRegex(): void
     {
         $this->object->setInputs([
             'must'              => 'hello world',

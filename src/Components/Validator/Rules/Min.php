@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -22,24 +24,24 @@ class Min extends Size
      *
      * @param string                                       $key   Clé du test.
      * @param int|float|string|array|UploadedFileInterface $value Valeur à tester.
-     * @param string                                       $arg   Valeur de comparraison.
+     * @param string                                       $args  Valeur de comparraison.
      * @param bool                                         $not   Inverse le test.
      *
      * @throws \InvalidArgumentException La valeur min n'est pas numérique.
      */
-    protected function test($key, $value, $arg, $not)
+    protected function test(string $key, $value, $args, bool $not): void
     {
         $length = $this->getSize($value);
         if ($this->hasErrors()) {
             return;
         }
-        $this->sizeMin($key, $length, $arg, $not);
+        $this->sizeMin($key, $length, $args, $not);
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function messages()
+    protected function messages(): array
     {
         $output           = parent::messages();
         $output[ 'must' ] = 'The :label field must not be less than :min.';
@@ -58,7 +60,7 @@ class Min extends Size
      *
      * @return void.
      */
-    protected function sizeMin($key, $length, $min, $not)
+    protected function sizeMin(string $key, $length, $min, bool $not): void
     {
         $sizeMin = $this->getComparator($min);
 

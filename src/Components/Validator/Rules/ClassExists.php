@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -18,16 +20,16 @@ class ClassExists extends \Soosyze\Components\Validator\Rule
     /**
      * Test si une valeur est une adresse IP.
      *
-     * @param string $key   Clé du test.
-     * @param string $value Valeur à tester.
-     * @param string $arg   Argument de test.
-     * @param bool   $not   Inverse le test.
+     * @param string     $key   Clé du test.
+     * @param string     $value Valeur à tester.
+     * @param mixed|null $args  Argument de test.
+     * @param bool       $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not)
+    protected function test(string $key, $value, $args, bool $not): void
     {
-        if (!class_exists($value, (bool) $arg) && $not) {
+        if (!class_exists($value, (bool) $args) && $not) {
             $this->addReturn($key, 'must');
-        } elseif (class_exists($value, (bool) $arg) && !$not) {
+        } elseif (class_exists($value, (bool) $args) && !$not) {
             $this->addReturn($key, 'not');
         }
     }
@@ -35,7 +37,7 @@ class ClassExists extends \Soosyze\Components\Validator\Rule
     /**
      * {@inheritdoc}
      */
-    protected function messages()
+    protected function messages(): array
     {
         return [
             'must' => 'The :label field must be an instantiable class.',

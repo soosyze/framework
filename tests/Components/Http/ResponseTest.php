@@ -5,6 +5,8 @@ namespace Soosyze\Tests\Components\Http;
 use Soosyze\Components\Http\Response;
 use Soosyze\Components\Http\Stream;
 
+require_once __DIR__ . '/../../Resources/Functions.php';
+
 class ResponseTest extends \PHPUnit\Framework\TestCase
 {
     /**
@@ -12,91 +14,84 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
      */
     protected $object;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->object = new Response;
     }
 
-    public function testSetUpResponse()
+    public function testSetUpResponse(): void
     {
-        $this->assertAttributeSame(200, 'code', $this->object);
-        $this->assertAttributeSame('OK', 'reasonPhrase', $this->object);
-        $this->assertAttributeSame(null, 'body', $this->object);
-        $this->assertAttributeSame([], 'headers', $this->object);
+        $this->assertEquals(200, $this->object->getStatusCode());
+        $this->assertEquals('OK', $this->object->getReasonPhrase());
+        $this->assertEquals('', (string) $this->object->getBody());
+        $this->assertEquals([], $this->object->getHeaders());
     }
 
-    public function testConstructResponse()
+    public function testConstructResponse(): void
     {
-        $rep = new Response(404, new Stream('Page not found, sorry'), [ 'Localtion' => ['/error'] ]);
-        $this->assertAttributeSame(404, 'code', $rep);
-        $this->assertAttributeSame('Not Found', 'reasonPhrase', $rep);
+        $rep = new Response(
+            404,
+            new Stream('Page not found, sorry'),
+            [ 'Localtion' => [ '/error' ] ],
+            'Page not found'
+        );
+
+        $this->assertEquals(404, $rep->getStatusCode());
+        $this->assertEquals('Page not found', $rep->getReasonPhrase());
         $this->assertEquals('Page not found, sorry', (string) $rep->getBody());
-        $this->assertAttributeSame([ 'localtion' => ['/error'] ], 'headers', $rep);
+        $this->assertEquals([ 'localtion' => [ '/error' ] ], $rep->getHeaders());
     }
 
-    public function testGetStatusCode()
-    {
-        $this->assertEquals($this->object->getStatusCode(), 200);
-    }
-
-    public function testGetReasonPhrase()
-    {
-        $this->assertEquals($this->object->getReasonPhrase(), 'OK');
-    }
-
-    public function testWithStatus()
+    public function testWithStatus(): void
     {
         $clone = $this->object->withStatus(404);
-        $this->assertAttributeSame(404, 'code', $clone);
-        $this->assertAttributeSame('Not Found', 'reasonPhrase', $clone);
+
+        $this->assertEquals(404, $clone->getStatusCode());
+        $this->assertEquals('Not Found', $clone->getReasonPhrase());
     }
 
     /**
-     * @dataProvider getInvalidStatusCodeArguments
-     * @expectedException \InvalidArgumentException
+     * @dataProvider providerInvalidStatusCodeArguments
+     *
+     * @param mixed $code
+     * @param mixed $reasonPhrase
      */
-    public function testWithStatusException($code)
+    public function testWithStatusInvalidArgumentException($code, $reasonPhrase): void
     {
-        $this->object->withStatus($code);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->object->withStatus($code, $reasonPhrase);
     }
 
-    public function getInvalidStatusCodeArguments()
+    public function providerInvalidStatusCodeArguments(): \Generator
     {
-        return [
-            [true],
-            ['foobar'],
-            [99],
-            [600],
-            [200.34],
-            [new \stdClass()],
-        ];
+        yield [ true, '' ];
+        yield [ 'foobar', '' ];
+        yield [ 99, '' ];
+        yield [ 600, '' ];
+        yield [ 200.34, '' ];
+        yield [ new \stdClass(), '' ];
+        yield [ 400, 1 ];
     }
 
-    public function testWithStatusAndReasonPhrase()
+    public function testWithStatusAndReasonPhrase(): void
     {
         $clone = $this->object->withStatus(404, 'Not Found perso');
-        $this->assertAttributeSame(404, 'code', $clone);
-        $this->assertAttributeSame('Not Found perso', 'reasonPhrase', $clone);
+
+        $this->assertEquals(404, $clone->getStatusCode());
+        $this->assertEquals('Not Found perso', $clone->getReasonPhrase());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testWithStatusAndReasonPhraseException()
+    public function testToString(): void
     {
-        $this->object->withStatus(400, 1);
-    }
+        $rep = new Response(404, new Stream('Page not found, sorry'), [ 'Localtion' => '/error' ]);
 
-    /*
-     * @runInSeparateProcess
-     */
-//    public function testToString()
-//    {
-//        $rep = new Response(404, new Stream('Page not found, sorry'), [ 'Localtion' => '/error' ]);
-//        $this->assertEquals('Page not found, sorry', (string) $rep);
-//    }
+        $this->assertEquals('Page not found, sorry', (string) $rep);
+        $this->assertEquals(
+            [
+                'HTTP/1.0 404 Not Found',
+                'localtion: /error'
+            ],
+            \Soosyze\Components\Http\Output::$headers
+        );
+    }
 }

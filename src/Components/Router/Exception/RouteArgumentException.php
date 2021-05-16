@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -25,19 +27,18 @@ class RouteArgumentException extends \Exception
      * @param \Exception|null $previous  Exception précédente.
      */
     public function __construct(
-    $param,
-        $condition,
-        $path,
-        $code = 0,
-        \Exception $previous = null
+        string $param,
+        string $condition,
+        string $path,
+        int $code = 0,
+        ?\Exception $previous = null
     ) {
-        $msg = 'The parameter '
-            . $param
-            . ' of the '
-            . $path
-            . ' route does not fulfill the '
-            . $condition
-            . ' condition.';
+        $msg = sprintf(
+            'The parameter %s of the %s route does not fulfill the %s condition.',
+            $param,
+            $path,
+            $condition
+        );
         parent::__construct(htmlspecialchars($msg), $code, $previous);
     }
 }

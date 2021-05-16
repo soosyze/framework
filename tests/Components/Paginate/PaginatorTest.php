@@ -6,29 +6,25 @@ use Soosyze\Components\Paginate\Paginator;
 
 class PaginatorTest extends \PHPUnit\Framework\TestCase
 {
-    protected function setUp()
-    {
-    }
-
-    public function testPaginatorSimple()
+    public function testPaginatorSimple(): void
     {
         $paginator = new Paginator(10, 5, 1, 'page/:id');
         $html      = '<ul class="pagination">' . PHP_EOL;
         $html      .= '<li><a href="page/2"> &raquo;</a></li>' . PHP_EOL;
         $html      .= '</ul>' . PHP_EOL;
-        $this->assertEquals($paginator, $html);
+        $this->assertEquals($html, $paginator);
 
         $paginator1 = new Paginator(10, 5, 2, 'page/:id');
-        $html      = '<ul class="pagination">' . PHP_EOL;
-        $html      .= '<li><a href="page/1">&laquo;</a></li>' . PHP_EOL;
-        $html      .= '</ul>' . PHP_EOL;
-        $this->assertEquals($paginator1, $html);
+        $html       = '<ul class="pagination">' . PHP_EOL;
+        $html       .= '<li><a href="page/1">&laquo;</a></li>' . PHP_EOL;
+        $html       .= '</ul>' . PHP_EOL;
+        $this->assertEquals($html, $paginator1);
 
         $paginator2 = new Paginator(10, 0, 1, 'page/:id');
-        $this->assertEquals($paginator2, '');
+        $this->assertEquals('', $paginator2);
     }
 
-    public function testPaginatorMultiple()
+    public function testPaginatorMultiple(): void
     {
         $paginator = new Paginator(20, 3, 1, 'page/:id');
         $html      = '<ul class="pagination">' . PHP_EOL;
@@ -39,7 +35,7 @@ class PaginatorTest extends \PHPUnit\Framework\TestCase
         $html      .= '<li class=""><a href="page/5">5</a></li>' . PHP_EOL;
         $html      .= '<li><a href="page/2"> &raquo;</a></li>' . PHP_EOL;
         $html      .= '</ul>' . PHP_EOL;
-        $this->assertEquals($paginator, $html);
+        $this->assertEquals($html, $paginator);
 
         $paginator = new Paginator(20, 3, 4, 'page/:id');
         $html      = '<ul class="pagination">' . PHP_EOL;
@@ -51,7 +47,7 @@ class PaginatorTest extends \PHPUnit\Framework\TestCase
         $html      .= '<li class=""><a href="page/6">6</a></li>' . PHP_EOL;
         $html      .= '<li><a href="page/5"> &raquo;</a></li>' . PHP_EOL;
         $html      .= '</ul>' . PHP_EOL;
-        $this->assertEquals($paginator, $html);
+        $this->assertEquals($html, $paginator);
 
         $paginator = new Paginator(20, 3, 7, 'page/:id');
         $html      = '<ul class="pagination">' . PHP_EOL;
@@ -62,7 +58,7 @@ class PaginatorTest extends \PHPUnit\Framework\TestCase
         $html      .= '<li class=""><a href="page/6">6</a></li>' . PHP_EOL;
         $html      .= '<li class="active"><span aria-current="page">7</span></li>' . PHP_EOL;
         $html      .= '</ul>' . PHP_EOL;
-        $this->assertEquals($paginator, $html);
+        $this->assertEquals($html, $paginator);
 
         $paginator = new Paginator(20, 6, 1, 'page/:id');
         $html      = '<ul class="pagination">' . PHP_EOL;
@@ -72,18 +68,10 @@ class PaginatorTest extends \PHPUnit\Framework\TestCase
         $html      .= '<li class=""><a href="page/4">4</a></li>' . PHP_EOL;
         $html      .= '<li><a href="page/2"> &raquo;</a></li>' . PHP_EOL;
         $html      .= '</ul>' . PHP_EOL;
-        $this->assertEquals($paginator, $html);
+        $this->assertEquals($html, $paginator);
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testCurrentException()
-    {
-        new Paginator(20, 6, 'error', 'page/:id');
-    }
-
-    public function testSetMaxPage()
+    public function testSetMaxPage(): void
     {
         $paginator = new Paginator(20, 3, 1, 'page/:id');
 
@@ -94,19 +82,42 @@ class PaginatorTest extends \PHPUnit\Framework\TestCase
         $html .= '<li class=""><a href="page/3">3</a></li>' . PHP_EOL;
         $html .= '<li><a href="page/2"> &raquo;</a></li>' . PHP_EOL;
         $html .= '</ul>' . PHP_EOL;
-        $this->assertEquals($paginator, $html);
+        $this->assertEquals($html, $paginator);
     }
 
     /**
-     * @expectedException \Exception
+     * @dataProvider providerSetMaxPageException
+     *
+     * @param mixed                    $max
+     * @param class-string<\Throwable> $exceptionClass
      */
-    public function testSetMaxPageException()
-    {
+    public function testSetMaxPageException(
+        $max,
+        string $exceptionClass,
+        string $exceptionMessage
+    ): void {
         $paginator = new Paginator(20, 3, 4, 'page/:id');
-        $paginator->setMaxPage('error');
+
+        $this->expectException($exceptionClass);
+        $this->expectExceptionMessage($exceptionMessage);
+        $paginator->setMaxPage($max);
     }
 
-    public function testSetKey()
+    public function providerSetMaxPageException(): \Generator
+    {
+        yield [
+            'error',
+            \InvalidArgumentException::class,
+            'The number of pages to display must be greater than or equal to three.'
+        ];
+        yield [
+            2,
+            \InvalidArgumentException::class,
+            'The number of pages to display must be greater than or equal to three.'
+        ];
+    }
+
+    public function testSetKey(): void
     {
         $paginator = new Paginator(20, 3, 1, 'page/:num');
 
@@ -119,15 +130,6 @@ class PaginatorTest extends \PHPUnit\Framework\TestCase
         $html .= '<li class=""><a href="page/5">5</a></li>' . PHP_EOL;
         $html .= '<li><a href="page/2"> &raquo;</a></li>' . PHP_EOL;
         $html .= '</ul>' . PHP_EOL;
-        $this->assertEquals($paginator, $html);
-    }
-
-    /**
-     * @expectedException \Exception
-     */
-    public function testSetKeyException()
-    {
-        $paginator = new Paginator(20, 3, 4, 'page/:id');
-        $paginator->setKey(1);
+        $this->assertEquals($html, $paginator);
     }
 }

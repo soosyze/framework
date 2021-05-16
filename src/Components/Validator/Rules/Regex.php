@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -20,22 +22,22 @@ class Regex extends \Soosyze\Components\Validator\Rule
      *
      * @param string $key   Clé du test.
      * @param string $value Valeur à tester.
-     * @param string $arg   Expression régulière.
+     * @param string $args  Expression régulière.
      * @param bool   $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not)
+    protected function test(string $key, $value, $args, bool $not): void
     {
-        if (!preg_match($arg, $value) && $not) {
-            $this->addReturn($key, 'must', [ ':regex' => $arg ]);
-        } elseif (preg_match($arg, $value) && !$not) {
-            $this->addReturn($key, 'not', [ ':regex' => $arg ]);
+        if (!preg_match($args, $value) && $not) {
+            $this->addReturn($key, 'must', [ ':regex' => $args ]);
+        } elseif (preg_match($args, $value) && !$not) {
+            $this->addReturn($key, 'not', [ ':regex' => $args ]);
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function messages()
+    protected function messages(): array
     {
         return [
             'must' => 'The :label field must correspond to the validation rule :regex',

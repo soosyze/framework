@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -39,7 +41,7 @@ class Config implements \ArrayAccess
      * @param string $pathConfig Chemin de base des fichiers de configuration
      * @param string $pathEnv    Chemin des fichiers de configuration par environnement.
      */
-    public function __construct($pathConfig, $pathEnv = '')
+    public function __construct(string $pathConfig, string $pathEnv = '')
     {
         $this->path = Util::cleanPath($pathConfig) . Util::DS;
         $this->path .= $pathEnv !== ''
@@ -54,9 +56,9 @@ class Config implements \ArrayAccess
      *
      * @return bool
      */
-    public function has($strKey)
+    public function has(string $strKey): bool
     {
-        list($file, $key) = $this->prepareKey($strKey);
+        [ $file, $key ] = $this->prepareKey($strKey);
         $this->loadConfig($file);
 
         return $key
@@ -73,20 +75,18 @@ class Config implements \ArrayAccess
      *
      * @return array|mixed|null Tableau des paramètres ou le paramètre si la clé est renseignée ou null.
      */
-    public function get($strKey, $default = null)
+    public function get(string $strKey, $default = null)
     {
-        list($file, $key) = $this->prepareKey($strKey);
+        [ $file, $key ] = $this->prepareKey($strKey);
         $this->loadConfig($file);
 
         if ($key) {
-            return isset($this->data[ $file ][ $key ])
-                ? $this->data[ $file ][ $key ]
-                : $default;
+            return $this->data[ $file ][ $key ]
+                ?? $default;
         }
 
-        return isset($this->data[ $file ])
-            ? $this->data[ $file ]
-            : $default;
+        return $this->data[ $file ]
+            ?? $default;
     }
 
     /**
@@ -99,9 +99,9 @@ class Config implements \ArrayAccess
      *
      * @return $this
      */
-    public function set($strKey, $value)
+    public function set(string $strKey, $value): self
     {
-        list($file, $key) = $this->prepareKey($strKey);
+        [ $file, $key ] = $this->prepareKey($strKey);
         $this->loadConfig($file);
 
         if ($key) {
@@ -129,9 +129,9 @@ class Config implements \ArrayAccess
      *
      * @return $this
      */
-    public function del($strKey)
+    public function del(string $strKey): self
     {
-        list($file, $key) = $this->prepareKey($strKey);
+        [ $file, $key ] = $this->prepareKey($strKey);
         $this->loadConfig($file);
 
         if (!isset($this->data[ $file ])) {
@@ -156,7 +156,7 @@ class Config implements \ArrayAccess
      *
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
@@ -170,7 +170,7 @@ class Config implements \ArrayAccess
      *
      * @return bool
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return $this->has($offset);
     }
@@ -199,7 +199,7 @@ class Config implements \ArrayAccess
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->set($offset, $value);
     }
@@ -213,7 +213,7 @@ class Config implements \ArrayAccess
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         $this->del($offset);
     }
@@ -223,24 +223,16 @@ class Config implements \ArrayAccess
      *
      * @param string $strKey Nom de la clé.
      *
-     * @throws \InvalidArgumentException The key must be a non-empty string.
-     *
      * @return array
      */
-    protected function prepareKey($strKey)
+    protected function prepareKey(string $strKey): array
     {
-        if (!is_string($strKey) || $strKey === '') {
-            throw new \InvalidArgumentException(
-                'The key must be a non-empty string.'
-            );
+        $file = strstr($strKey, '.');
+        if ($file !== false) {
+            return [ strstr($strKey, '.', true), trim($file, '.') ];
         }
 
-        $str = trim($strKey, '.');
-        if (strpos($str, '.') !== false) {
-            return [ strstr($str, '.', true), trim(strstr($str, '.'), '.') ];
-        }
-
-        return [ $str, null ];
+        return [ $strKey, null ];
     }
 
     /**
@@ -250,7 +242,7 @@ class Config implements \ArrayAccess
      *
      * @return void
      */
-    protected function loadConfig($nameConfig)
+    protected function loadConfig(string $nameConfig): void
     {
         if (isset($this->data[ $nameConfig ])) {
             return;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -13,7 +15,7 @@ namespace Soosyze\Components\Router;
  *
  * @author Mathieu NOËL <mathieu@soosyze.com>
  */
-final class Route
+abstract class Route
 {
     /**
      * La liste des routes par clé.
@@ -46,8 +48,12 @@ final class Route
      *
      * @return void
      */
-    public static function get($key, $path, $uses, array $withs = [])
-    {
+    public static function get(
+        string$key,
+        string $path,
+        string $uses,
+        array $withs = []
+    ): void {
         self::addMethode('get', $key, $path, $uses, $withs);
     }
 
@@ -61,8 +67,12 @@ final class Route
      *
      * @return void
      */
-    public static function post($key, $path, $uses, array $withs = [])
-    {
+    public static function post(
+        string $key,
+        string $path,
+        string $uses,
+        array $withs = []
+    ): void {
         self::addMethode('post', $key, $path, $uses, $withs);
     }
 
@@ -76,8 +86,12 @@ final class Route
      *
      * @return void
      */
-    public static function put($key, $path, $uses, array $withs = [])
-    {
+    public static function put(
+        string $key,
+        string $path,
+        string $uses,
+        array $withs = []
+    ): void {
         self::addMethode('put', $key, $path, $uses, $withs);
     }
 
@@ -91,8 +105,12 @@ final class Route
      *
      * @return void
      */
-    public static function path($key, $path, $uses, array $withs = [])
-    {
+    public static function path(
+        string $key,
+        string $path,
+        string $uses,
+        array $withs = []
+    ): void {
         self::addMethode('path', $key, $path, $uses, $withs);
     }
 
@@ -106,8 +124,12 @@ final class Route
      *
      * @return void
      */
-    public static function delete($key, $path, $uses, array $withs = [])
-    {
+    public static function delete(
+        string $key,
+        string $path,
+        string $uses,
+        array $withs = []
+    ): void {
         self::addMethode('delete', $key, $path, $uses, $withs);
     }
 
@@ -121,8 +143,12 @@ final class Route
      *
      * @return void
      */
-    public static function option($key, $path, $uses, array $withs = [])
-    {
+    public static function option(
+        string $key,
+        string $path,
+        string $uses,
+        array $withs = []
+    ): void {
         self::addMethode('option', $key, $path, $uses, $withs);
     }
 
@@ -133,7 +159,7 @@ final class Route
      *
      * @return array|null
      */
-    public static function getRoute($key)
+    public static function getRoute(string $key): ?array
     {
         return !empty(self::$routes[ strtolower($key) ])
             ? self::$routes[ strtolower($key) ]
@@ -145,7 +171,7 @@ final class Route
      *
      * @return array
      */
-    public static function getRoutes()
+    public static function getRoutes(): array
     {
         return self::$routes;
     }
@@ -157,7 +183,7 @@ final class Route
      *
      * @return void
      */
-    public static function useNamespace($namespace)
+    public static function useNamespace(string $namespace): void
     {
         self::$namespace = trim($namespace, '\\/');
     }
@@ -169,11 +195,10 @@ final class Route
      *
      * @return array
      */
-    public static function getRouteByMethode($methode)
+    public static function getRouteByMethode(string $methode): array
     {
-        return !empty(self::$routeByMethode[ strtolower($methode) ])
-            ? self::$routeByMethode[ strtolower($methode) ]
-            : [];
+        return self::$routeByMethode[ strtolower($methode) ]
+            ?? [];
     }
 
     /**
@@ -188,12 +213,12 @@ final class Route
      * @return void
      */
     protected static function addMethode(
-    $methode,
-        $key,
-        $path,
-        $uses,
+        string $methode,
+        string $key,
+        string $path,
+        string $uses,
         array $withs = []
-    ) {
+    ): void {
         self::$routes[ $key ]               = [
             'methode' => $methode,
             'path'    => $path,

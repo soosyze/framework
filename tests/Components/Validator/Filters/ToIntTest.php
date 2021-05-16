@@ -4,61 +4,42 @@ namespace Soosyze\Tests\Components\Validator\Filters;
 
 class ToIntTest extends Filter
 {
-    public function testToInt()
-    {
-        $this->object->setInputs([
-            /* Standard */
-            'int'      => 1234,
-            'txt'      => '1234',
-            'octal'    => 0123,
-            'hexa'     => 0x1A,
-            'binaire'  => 0b11111111,
-            'zero'     => 0,
-            'zero_txt' => '0',
-            /* Cast type */
-            'cast'     => (int) 1.1,
-            'cast_txt' => (int) '1.1',
-            /* Limit */
-            'min'      => PHP_INT_MIN,
-            'max'      => PHP_INT_MAX
-        ])->setRules([
-            /* Standard */
-            'int'      => 'to_int',
-            'txt'      => 'to_int',
-            'octal'    => 'to_int',
-            'hexa'     => 'to_int',
-            'binaire'  => 'to_int',
-            'zero'     => 'to_int',
-            'zero_txt' => 'to_int',
-            /* Cast type */
-            'cast'     => 'to_int',
-            'cast_txt' => 'to_int',
-            /* Limit */
-            'min'      => 'to_int',
-            'max'      => 'to_int'
-        ])->isValid();
-
-        /* Standard */
-        $this->assertTrue(is_int($this->object->getInput('int')));
-        $this->assertTrue(is_int($this->object->getInput('txt')));
-        $this->assertTrue(is_int($this->object->getInput('octal')));
-        $this->assertTrue(is_int($this->object->getInput('hexa')));
-        $this->assertTrue(is_int($this->object->getInput('binaire')));
-        $this->assertTrue(is_int($this->object->getInput('zero')));
-        $this->assertTrue(is_int($this->object->getInput('zero_txt')));
-        /* Cast type */
-        $this->assertTrue(is_int($this->object->getInput('cast')));
-        $this->assertTrue(is_int($this->object->getInput('cast_txt')));
-        /* Limit */
-        $this->assertTrue(is_int($this->object->getInput('min')));
-        $this->assertTrue(is_int($this->object->getInput('max')));
-    }
-    
     /**
-     * @expectedException \Exception
+     * @dataProvider providerToInt
+     *
+     * @param int|string $value
      */
-    public function testToIntException()
+    public function testToInt(string $key, $value): void
     {
+        $this->object
+            ->addInput($key, $value)
+            ->addRule($key, 'to_int')
+            ->isValid();
+
+        $this->assertTrue(is_int($this->object->getInput($key)));
+    }
+
+    public function providerToInt(): \Generator
+    {
+        /* Standard */
+        yield [ 'int', 1234 ];
+        yield [ 'txt', '1234' ];
+        yield [ 'octal', 0123 ];
+        yield [ 'hexa', 0x1A ];
+        yield [ 'binaire', 0b11111111 ];
+        yield [ 'zero', 0 ];
+        yield [ 'zero_txt', '0' ];
+        /* Cast type */
+        yield [ 'cast', (int) 1.1 ];
+        yield [ 'cast_txt', (int) '1.1' ];
+        /* Limit */
+        yield [ 'min', PHP_INT_MIN ];
+        yield [ 'max', PHP_INT_MAX ];
+    }
+
+    public function testToIntException(): void
+    {
+        $this->expectException(\Exception::class);
         $this->object
             ->addInput('field', 'error')
             ->addRule('field', 'to_int')

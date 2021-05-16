@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -8,6 +10,7 @@
 
 namespace Soosyze\Components\HttpFactories;
 
+use Psr\Http\Message\UriInterface;
 use Soosyze\Components\Http\Uri;
 
 /**
@@ -24,10 +27,11 @@ class UriFactory
      *
      * @param string $uri The URI to parse.
      *
-     * @throws \InvalidArgumentException      If the given URI cannot be parsed.
-     * @return \Psr\Http\Message\UriInterface
+     * @throws \InvalidArgumentException If the given URI cannot be parsed.
+     *
+     * @return UriInterface
      */
-    public function createUri($uri = '')
+    public function createUri(string $uri = ''): UriInterface
     {
         return Uri::create($uri);
     }

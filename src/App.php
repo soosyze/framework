@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -86,7 +88,7 @@ abstract class App
      *
      * @param ServerRequestInterface $request Requête courante de l'application.
      */
-    private function __construct(ServerRequestInterface $request)
+    final private function __construct(ServerRequestInterface $request)
     {
         $this->request = $request;
     }
@@ -94,15 +96,14 @@ abstract class App
     /**
      * Singleton pour une classe abstraite.
      *
-     * @param ServerRequestInterface|null $request Requête courante de l'application.
+     * @param ServerRequestInterface $request Requête courante de l'application.
      *
      * @return self Instance unique de App.
      */
-    public static function getInstance(ServerRequestInterface $request = null)
+    public static function getInstance(ServerRequestInterface $request): self
     {
-        $class = get_called_class();
         if (self::$instance === null) {
-            self::$instance = new $class($request);
+            self::$instance = new static($request);
         }
 
         return self::$instance;
@@ -115,7 +116,7 @@ abstract class App
      *
      * @return $this
      */
-    public function setSettings(array $settings)
+    public function setSettings(array $settings): self
     {
         $this->settings = $settings;
 
@@ -127,7 +128,7 @@ abstract class App
      *
      * @return array
      */
-    public function getSettings()
+    public function getSettings(): array
     {
         return $this->settings;
     }
@@ -140,11 +141,9 @@ abstract class App
      *
      * @return mixed
      */
-    public function getSetting($key, $default = '')
+    public function getSetting(string $key, $default = '')
     {
-        return isset($this->settings[ $key ])
-            ? $this->settings[ $key ]
-            : $default;
+        return $this->settings[ $key ] ?? $default;
     }
 
     /**
@@ -158,8 +157,11 @@ abstract class App
      *
      * @return string
      */
-    public function getSettingEnv($key, $default = '', $addEnv = true)
-    {
+    public function getSettingEnv(
+        string $key,
+        string $default = '',
+        bool $addEnv = true
+    ): string {
         $setting = $this->getSetting($key, $default);
         if (!\is_string($setting)) {
             throw new \InvalidArgumentException('The framework parameter must return a string.');
@@ -177,7 +179,7 @@ abstract class App
      *
      * @return $this
      */
-    public function init()
+    public function init(): self
     {
         $config = new Config($this->getDir('config'));
 
@@ -207,7 +209,7 @@ abstract class App
      *
      * @return ResponseInterface La magie de l'application.
      */
-    public function run()
+    public function run(): ResponseInterface
     {
         $request  = clone $this->request;
         $response = new Response(404, new Stream(null));
@@ -247,7 +249,7 @@ abstract class App
      *
      * @return object Service du container.
      */
-    public function get($key)
+    public function get(string $key): object
     {
         return $this->container->get($key);
     }
@@ -262,7 +264,7 @@ abstract class App
      *
      * @return mixed Résultat final des exécutions des hooks.
      */
-    public function callHook($name, array $args = [])
+    public function callHook(string $name, array $args = [])
     {
         return $this->container->callHook($name, $args);
     }
@@ -275,7 +277,7 @@ abstract class App
      *
      * @return $this
      */
-    public function addHook($name, callable $func)
+    public function addHook(string $name, callable $func): self
     {
         $this->container->addHook($name, $func);
 
@@ -289,7 +291,7 @@ abstract class App
      *
      * @return $this
      */
-    public function setEnvironnement(array $env)
+    public function setEnvironnement(array $env): self
     {
         $this->environnement = $env;
 
@@ -303,7 +305,7 @@ abstract class App
      *
      * @return $this
      */
-    public function setEnvironmentDefault($nameEnv)
+    public function setEnvironmentDefault(string $nameEnv): self
     {
         $this->environnementDefault = $nameEnv;
 
@@ -315,7 +317,7 @@ abstract class App
      *
      * @return ServerRequestInterface
      */
-    public function getRequest()
+    public function getRequest(): ServerRequestInterface
     {
         return $this->request;
     }
@@ -325,7 +327,7 @@ abstract class App
      *
      * @return string
      */
-    public function getEnvironment()
+    public function getEnvironment(): string
     {
         if (!empty($this->environnement)) {
             $host      = gethostname();
@@ -348,7 +350,7 @@ abstract class App
      *
      * @return bool
      */
-    public function isEnvironnement($nameEnv)
+    public function isEnvironnement(string $nameEnv): bool
     {
         $authority = $this->request->getUri()->getAuthority();
 
@@ -370,8 +372,11 @@ abstract class App
      *
      * @return string
      */
-    public function getDir($key, $default = '', $addEnv = true)
-    {
+    public function getDir(
+        string $key,
+        string $default = '',
+        bool $addEnv = true
+    ): string {
         $root = $this->getSetting('root', '');
         $dir  = $this->getSettingEnv($key, $default, $addEnv);
 
@@ -390,8 +395,11 @@ abstract class App
      *
      * @return string
      */
-    public function getPath($key, $default = '', $addEnv = true)
-    {
+    public function getPath(
+        string $key,
+        string $default = '',
+        bool $addEnv = true
+    ): string {
         $root = $this->request->getBasePath();
         $dir  = $this->getSettingEnv($key, $default, $addEnv);
 
@@ -403,21 +411,21 @@ abstract class App
      *
      * @return array
      */
-    abstract protected function loadServices();
+    abstract protected function loadServices(): array;
 
     /**
      * Charge les instances des contrôleurs dans la table des modules (clé => objet).
      *
      * @return Controller[]
      */
-    abstract protected function loadModules();
+    abstract protected function loadModules(): array;
 
     /**
      * Cherche les routes des modules et les charge dans l'application.
      *
      * @return void
      */
-    protected function loadRoutesAndServices()
+    protected function loadRoutesAndServices(): void
     {
         $modules = $this->loadModules();
         foreach ($modules as $module) {
@@ -447,7 +455,7 @@ abstract class App
      *
      * @return ResponseInterface
      */
-    protected function parseResponse($response)
+    protected function parseResponse($response): ResponseInterface
     {
         return !($response instanceof ResponseInterface)
             ? new Response(200, new Stream($response))

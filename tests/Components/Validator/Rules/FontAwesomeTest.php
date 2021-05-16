@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class FontAwesomeTest extends Rule
 {
-    public function testFontAwesome()
+    public function testFontAwesome(): void
     {
         $this->object->setInputs([
             'field_font'     => 'fa fa-user',

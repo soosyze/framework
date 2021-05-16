@@ -4,20 +4,22 @@ namespace Soosyze\Tests\Components\Util;
 
 use Soosyze\Components\Util\Util;
 
+require_once __DIR__ . '/../../Resources/Functions.php';
+
 /**
  * @requires extension json
  */
 class UtilTest extends \PHPUnit\Framework\TestCase
 {
-    const PATH = 'tests/Components/Util/build';
+    private const PATH = 'tests/Components/Util/build';
 
-    const FILE = 'file';
+    private const FILE = 'file';
 
-    const PATH_FILE = 'tests/Components/Util/build/file.json';
+    private const PATH_FILE = 'tests/Components/Util/build/file.json';
 
-    const PATH_FILE_ERROR = 'tests/Components/Util/build/fileError.json';
+    private const PATH_FILE_ERROR = 'tests/Components/Util/build/fileError.json';
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         if (file_exists(self::PATH_FILE)) {
             unlink(self::PATH_FILE);
@@ -30,7 +32,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testCreateJson()
+    public function testCreateJson(): void
     {
         $output = Util::createJson(self::PATH, self::FILE);
         $this->assertFileExists(self::PATH_FILE);
@@ -40,76 +42,61 @@ class UtilTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($output);
     }
 
-    public function testSaveJson()
+    public function testSaveJson(): void
     {
         $output = Util::saveJson(self::PATH, self::FILE, [ 'key' => 'value' ]);
         $this->assertTrue($output);
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testGetJsonExceptionContent()
+    public function testGetJsonExceptionContent(): void
     {
         fopen(self::PATH_FILE_ERROR, 'w+');
+
+        $this->expectException(\Exception::class);
         Util::getJson(self::PATH_FILE_ERROR);
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testGetJsonExceptionFile()
+    public function testGetJsonExceptionFile(): void
     {
+        $this->expectException(\Exception::class);
         Util::getJson('error');
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testGetJsonExceptionExtension()
+    public function testGetJsonExceptionExtension(): void
     {
+        $this->expectException(\Exception::class);
         Util::getJson(__FILE__);
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testGetJsonExceptionGetContents()
+    public function testGetJson(): void
     {
-        Util::getJson(fopen('php://temp', '+r'));
+        $this->assertEquals([ 'key' => 'value' ], Util::getJson(self::PATH_FILE));
     }
 
-    public function testGetJson()
+    public function testGetFileExtension(): void
     {
-        $output = Util::getJson(self::PATH_FILE);
-        $this->assertArraySubset([ 'key' => 'value' ], $output);
+        $this->assertEquals('php', Util::getFileExtension(__FILE__));
     }
 
-    public function testGetFileExtension()
+    public function testGetFolder(): void
     {
-        $output = Util::getFileExtension(__FILE__);
-        $this->assertEquals('php', $output);
+        $this->assertEquals([ 'build' ], Util::getFolder(__DIR__));
     }
 
-    public function testGetFolder()
+    public function testArrayPrefixValue(): void
     {
-        $output = Util::getFolder(__DIR__);
-        $this->assertArraySubset([], $output);
+        $this->assertEquals(
+            [ 'prefixtest', 'prefixtest1' ],
+            Util::arrayPrefixValue([ 'test', 'test1' ], 'prefix')
+        );
     }
 
-    public function testArrayPrefixValue()
+    public function testInArrayToLower(): void
     {
-        $output = Util::arrayPrefixValue([ 'test', 'test1' ], 'prefix');
-        $this->assertArraySubset([ 'prefixtest', 'prefixtest1' ], $output);
+        $this->assertTrue(Util::inArrayToLower('Key', [ 'KEY', 'key2', 'KeY3' ]));
     }
 
-    public function testInArrayToLower()
-    {
-        $output = Util::inArrayToLower('Key', [ 'KEY', 'key2', 'KeY3' ]);
-        $this->assertTrue($output);
-    }
-
-    public function testArrayKeysExists()
+    public function testArrayKeysExists(): void
     {
         $output = Util::arrayKeysExists([ 'key1', 'key2' ], [
                 'key'  => 0,
@@ -119,37 +106,36 @@ class UtilTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($output);
     }
 
-    public function testCleanPath()
+    public function testCleanPath(): void
     {
-        $output = Util::cleanPath('\path//test\\file/');
-        $this->assertEquals($output, '/path/test/file');
+        $this->assertEquals('/path/test/file', Util::cleanPath('\path//test\\file/'));
     }
 
-    public function testcleanDir()
+    public function testcleanDir(): void
     {
         $output = Util::cleanDir('\path//test\\file/');
         $this->assertEquals($output, DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'test' . DIRECTORY_SEPARATOR . 'file');
     }
 
-    public function testStrReplaceFirst()
+    public function testStrReplaceFirst(): void
     {
         $output = Util::strReplaceFirst('e', 'a', 'hello');
-        $this->assertEquals($output, 'hallo');
+        $this->assertEquals('hallo', $output);
 
         $output2 = Util::strReplaceFirst('z', 'e', 'hello');
-        $this->assertEquals($output2, 'hello');
+        $this->assertEquals('hello', $output2);
     }
 
-    public function testStrReplaceLast()
+    public function testStrReplaceLast(): void
     {
         $output = Util::strReplaceLast('l', 'o', 'hello');
-        $this->assertEquals($output, 'heloo');
+        $this->assertEquals('heloo', $output);
 
         $output2 = Util::strReplaceLast('z', 'e', 'hello');
-        $this->assertEquals($output2, 'hello');
+        $this->assertEquals('hello', $output2);
     }
 
-    public function testStrRandom()
+    public function testStrRandom(): void
     {
         $output = Util::strRandom();
         $this->assertEquals(20, strlen($output));
@@ -158,7 +144,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(30, strlen($output2));
     }
 
-    public function testStrHighlight()
+    public function testStrHighlight(): void
     {
         $needle   = 'hello';
         $haystack = 'hello wolrd';
@@ -179,7 +165,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testStrSlug()
+    public function testStrSlug(): void
     {
         $str1 = '-_L\'amBiguïTé PhoNétiQue- ';
         $this->assertEquals('l_ambiguite_phonetique', Util::strSlug($str1));
@@ -191,7 +177,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('stoechiometrie_chimie', Util::strSlug($str3));
     }
 
-    public function testStrFileSizeFormatted()
+    public function testStrFileSizeFormatted(): void
     {
         $this->assertEquals('', Util::strFileSizeFormatted(0));
         $this->assertEquals('1 Kb', Util::strFileSizeFormatted(1024));
@@ -200,86 +186,80 @@ class UtilTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('2.429 Kb', Util::strFileSizeFormatted(2487, 3));
     }
 
-    public function testGetOctetShortBytesPhp()
+    /**
+     * @dataProvider providerGetOctetShortBytesPhp
+     */
+    public function testGetOctetShortBytesPhp(?int $expectedOctet, string $octet): void
     {
-        $this->assertEquals(0, Util::getOctetShortBytesPhp(0));
-        $this->assertEquals(1, Util::getOctetShortBytesPhp('1 k b'));
-        $this->assertEquals(1024, Util::getOctetShortBytesPhp('1 m k'));
-        $this->assertEquals(1024, Util::getOctetShortBytesPhp('1 rqgJdsg5k'));
-        $this->assertEquals(1024, Util::getOctetShortBytesPhp('1 kk'));
-        $this->assertEquals(1024, Util::getOctetShortBytesPhp(1024));
-        $this->assertEquals(1024, Util::getOctetShortBytesPhp('1K'));
-        $this->assertEquals(1048576, Util::getOctetShortBytesPhp('1M'));
-        $this->assertEquals(1073741824, Util::getOctetShortBytesPhp('1G'));
-        $this->assertEquals(null, Util::getOctetShortBytesPhp('G'));
-        $this->assertEquals(null, Util::getOctetShortBytesPhp('G1'));
-        $this->assertEquals(null, Util::getOctetShortBytesPhp('G1k'));
-        $this->assertEquals(null, Util::getOctetShortBytesPhp('-1'));
-        $this->assertEquals(null, Util::getOctetShortBytesPhp(-1));
-        $this->assertEquals(1, Util::getOctetShortBytesPhp(1.5));
-        $this->assertEquals(15, Util::getOctetShortBytesPhp(15.875));
+        $this->assertEquals($expectedOctet, Util::getOctetShortBytesPhp($octet));
     }
 
-    public function testStrTimeDiffHumans()
+    public function providerGetOctetShortBytesPhp(): \Generator
+    {
+        yield [0, '0'];
+        yield [1, '1 k b'];
+        yield [1024, '1 m k'];
+        yield [1024, '1 rqgJdsg5k'];
+        yield [1024, '1 kk'];
+        yield [1024, '1024'];
+        yield [1024, '1K'];
+        yield [1048576, '1M'];
+        yield [1073741824, '1G'];
+        yield [null, 'G'];
+        yield [null, 'G1'];
+        yield [null, 'G1k'];
+        yield [null, '-1'];
+        yield [null, '-1'];
+        yield [1, '1.5'];
+        yield [ 15, '15.875' ];
+    }
+
+    public function testGetOctetUploadLimit(): void
+    {
+        \Soosyze\Components\Util\Input::reset();
+        $this->assertEquals(1024, Util::getOctetUploadLimit());
+    }
+
+    /**
+     * @dataProvider providerStrTimeDiffHumans
+     */
+    public function testStrTimeDiffHumans(string $expectedHumansTime, string $date): void
+    {
+        $data = Util::strHumansTimeDiff(date_create($date));
+        $this->assertEquals($expectedHumansTime, sprintf($data[ 0 ], $data[ 1 ]));
+    }
+
+    public function providerStrTimeDiffHumans(): \Generator
     {
         /* YEARS */
-        $year = Util::strHumansTimeDiff(date_create('now +1 year +1second'));
-        $this->assertEquals('1 year', sprintf($year[ 0 ], $year[ 1 ]));
-        $year = Util::strHumansTimeDiff(date_create('now -1 year'));
-        $this->assertEquals('1 year ago', sprintf($year[ 0 ], $year[ 1 ]));
-        $year = Util::strHumansTimeDiff(date_create('now +2 year +1 second'));
-        $this->assertEquals('2 years', sprintf($year[ 0 ], $year[ 1 ]));
-        $year = Util::strHumansTimeDiff(date_create('now -2 year'));
-        $this->assertEquals('2 years ago', sprintf($year[ 0 ], $year[ 1 ]));
-
+        yield ['1 year', 'now +1 year +1 second'];
+        yield ['1 year ago', 'now -1 year'];
+        yield ['2 years', 'now +2 year +1 second'];
+        yield ['2 years ago', 'now -2 years'];
         /* MONTH */
-        $month = Util::strHumansTimeDiff(date_create('now +1 month +1 second'));
-        $this->assertEquals('1 month', sprintf($month[ 0 ], $month[ 1 ]));
-        $month = Util::strHumansTimeDiff(date_create('now -1 month'));
-        $this->assertEquals('1 month ago', sprintf($month[ 0 ], $month[ 1 ]));
-        $month = Util::strHumansTimeDiff(date_create('now +2 month +1 second'));
-        $this->assertEquals('2 months', sprintf($month[ 0 ], $month[ 1 ]));
-        $month = Util::strHumansTimeDiff(date_create('now -2 month'));
-        $this->assertEquals('2 months ago', sprintf($month[ 0 ], $month[ 1 ]));
-
+        yield ['1 month', 'now +1 month +1 second'];
+        yield ['1 month ago', 'now -1 month'];
+        yield ['2 months', 'now +2 month +1 second'];
+        yield ['2 months ago', 'now -2 month'];
         /* WEEK */
-        $week = Util::strHumansTimeDiff(date_create('now +1 week +1 second'));
-        $this->assertEquals('1 week', sprintf($week[ 0 ], $week[ 1 ]));
-        $week = Util::strHumansTimeDiff(date_create('now -1 week'));
-        $this->assertEquals('1 week ago', sprintf($week[ 0 ], $week[ 1 ]));
-        $week = Util::strHumansTimeDiff(date_create('now +2 week +1 second'));
-        $this->assertEquals('2 weeks', sprintf($week[ 0 ], $week[ 1 ]));
-        $week = Util::strHumansTimeDiff(date_create('now -2 week'));
-        $this->assertEquals('2 weeks ago', sprintf($week[ 0 ], $week[ 1 ]));
-
+        yield ['1 week', 'now +1 week +1 second'];
+        yield ['1 week ago', 'now -1 week'];
+        yield ['2 weeks', 'now +2 week +1 second'];
+        yield ['2 weeks ago', 'now -2 week'];
         /* DAY */
-        $day = Util::strHumansTimeDiff(date_create('now +1 day +1 second'));
-        $this->assertEquals('1 day', sprintf($day[ 0 ], $day[ 1 ]));
-        $day = Util::strHumansTimeDiff(date_create('now -1 day'));
-        $this->assertEquals('1 day ago', sprintf($day[ 0 ], $day[ 1 ]));
-        $day = Util::strHumansTimeDiff(date_create('now +2 day +1 second'));
-        $this->assertEquals('2 days', sprintf($day[ 0 ], $day[ 1 ]));
-        $day = Util::strHumansTimeDiff(date_create('now -2 day'));
-        $this->assertEquals('2 days ago', sprintf($day[ 0 ], $day[ 1 ]));
-
+        yield ['1 day', 'now +1 day +1 second'];
+        yield ['1 day ago', 'now -1 day'];
+        yield ['2 days', 'now +2 day +1 second'];
+        yield ['2 days ago', 'now -2 day'];
         /* HOUR */
-        $hour = Util::strHumansTimeDiff(date_create('now +1 hour +1 second'));
-        $this->assertEquals('1 hour', sprintf($hour[ 0 ], $hour[ 1 ]));
-        $hour = Util::strHumansTimeDiff(date_create('now -1 hour'));
-        $this->assertEquals('1 hour ago', sprintf($hour[ 0 ], $hour[ 1 ]));
-        $hour = Util::strHumansTimeDiff(date_create('now +2 hour +1 second'));
-        $this->assertEquals('2 hours', sprintf($hour[ 0 ], $hour[ 1 ]));
-        $hour = Util::strHumansTimeDiff(date_create('now -2 hour'));
-        $this->assertEquals('2 hours ago', sprintf($hour[ 0 ], $hour[ 1 ]));
-
+        yield ['1 hour', 'now +1 hour +1 second'];
+        yield ['1 hour ago', 'now -1 hour'];
+        yield ['2 hours', 'now +2 hour +1 second'];
+        yield ['2 hours ago', 'now -2 hour'];
         /* MINUTE */
-        $minute = Util::strHumansTimeDiff(date_create('now +1 minute +1 second'));
-        $this->assertEquals('1 minute', sprintf($minute[ 0 ], $minute[ 1 ]));
-        $minute = Util::strHumansTimeDiff(date_create('now -1 minute'));
-        $this->assertEquals('1 minute ago', sprintf($minute[ 0 ], $minute[ 1 ]));
-        $minute = Util::strHumansTimeDiff(date_create('now +2 minute +1 second'));
-        $this->assertEquals('2 minutes', sprintf($minute[ 0 ], $minute[ 1 ]));
-        $minute = Util::strHumansTimeDiff(date_create('now -2 minute'));
-        $this->assertEquals('2 minutes ago', sprintf($minute[ 0 ], $minute[ 1 ]));
+        yield ['1 minute', 'now +1 minute +1 second'];
+        yield ['1 minute ago', 'now -1 minute'];
+        yield ['2 minutes', 'now +2 minute +1 second'];
+        yield ['2 minutes ago', 'now -2 minute'];
     }
 }

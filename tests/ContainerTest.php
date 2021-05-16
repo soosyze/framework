@@ -2,7 +2,13 @@
 
 namespace Soosyze\Tests;
 
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Soosyze\Container;
+use Soosyze\Tests\Resources\Container\Service1;
+use Soosyze\Tests\Resources\Container\Service2;
+use Soosyze\Tests\Resources\Container\Service3;
+use Throwable;
 
 class ContainerTest extends \PHPUnit\Framework\TestCase
 {
@@ -11,132 +17,135 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
      */
     protected $object;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
-        $this->object = new \Soosyze\Container;
+        $this->object = new Container;
     }
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
+    public function testSetServices(): void
     {
-    }
-
-    public function testSetServices()
-    {
-        $this->object->SetServices([
+        $this->object->setServices([
             'service1' => [
-                'class' => 'Soosyze\Tests\service1'
+                'class' => Service1::class
             ],
             'service2' => [
-                'class'     => 'Soosyze\Tests\service2',
+                'class'     => Service2::class,
                 'arguments' => [
                     '@service1'
                 ]
             ]
         ]);
 
-        $isOk = $this->object->get('service2')->isOk();
-
-        $this->assertTrue($isOk);
+        $this->assertInstanceOf(Service2::class, $this->object->get('service2'));
     }
 
-    public function testSetService()
+    public function testSetService(): void
     {
         $this->object
-            ->SetService('service2', 'Soosyze\Tests\service2', [ '@service1' ])
-            ->SetService('service1', 'Soosyze\Tests\service1');
+            ->setService('service2', Service2::class, [ '@service1' ])
+            ->setService('service1', Service1::class);
 
-        $isOk = $this->object->get('service2')->isOk();
-
-        $this->assertTrue($isOk);
+        $this->assertInstanceOf(Service2::class, $this->object->get('service2'));
     }
 
-    public function testSetServiceParam()
+    public function testSetServiceParam(): void
     {
         $this->object
-            ->SetService('service3', 'Soosyze\Tests\service3', [ '@service1', '\@service1' ])
-            ->SetService('service1', 'Soosyze\Tests\service1');
+            ->setService('service3', Service3::class, [ '@service1', '\@service1' ])
+            ->setService('service1', Service1::class);
 
-        $str = $this->object->get('service3')->getStr();
+        $service3 = $this->object->get('service3');
 
-        $this->assertEquals($str, '@service1');
+        $this->assertInstanceOf(Service3::class, $service3);
+        $this->assertEquals('@service1', $service3->getStr());
     }
 
-    public function testSetServiceParamConfig()
+    public function testSetServiceParamConfig(): void
     {
         $this->object
             ->setConfig([ 'testConfig.key1' => 'value1' ])
-            ->SetService('service3', 'Soosyze\Tests\service3', [ '@service1', '#testConfig.key1' ])
-            ->SetService('service1', 'Soosyze\Tests\service1');
+            ->setService('service3', Service3::class, [ '@service1', '#testConfig.key1' ])
+            ->setService('service1', Service1::class);
 
-        $str = $this->object->get('service3')->getStr();
+        $service3 = $this->object->get('service3');
 
-        $this->assertEquals($str, 'value1');
+        $this->assertInstanceOf(Service3::class, $service3);
+        $this->assertEquals('value1', $service3->getStr());
     }
 
-    public function testSetInstance()
+    public function testSetInstance(): void
     {
         $this->object->setInstance('service1', new Service1);
 
-        $isOk = $this->object->get('service1')->isOk();
+        $service1 = $this->object->get('service1');
 
-        $this->assertTrue($isOk);
+        $this->assertInstanceOf(Service1::class, $service1);
+        $this->assertTrue($service1->isOk());
     }
 
-    public function testSetInstances()
+    public function testSetInstances(): void
     {
         $service1 = new Service1;
-        $service2 = new Service2($service1, '');
+        $service2 = new Service2($service1);
 
         $this->object->setInstances([ 'service1' => $service1, 'service2' => $service2 ]);
 
-        $isOk = $this->object->get('service2')->isOk();
+        $getService2 = $this->object->get('service2');
 
-        $this->assertTrue($isOk);
+        $this->assertInstanceOf(Service2::class, $getService2);
+        $this->assertTrue($getService2->isOk());
     }
 
-    public function testGet()
+    public function testGet(): void
     {
         $this->object->setInstance('service1', new Service1);
 
-        $isOk = $this->object->get('service1')->isOk();
-        $this->assertTrue($isOk);
-        $isOk = $this->object->service1()->isOk();
-        $this->assertTrue($isOk);
+        $service1 = $this->object->get('service1');
+        $this->assertInstanceOf(Service1::class, $service1);
+        $this->assertTrue($service1->isOk());
+
+        $service1snd = $this->object->service1();
+        $this->assertInstanceOf(Service1::class, $service1snd);
+        $this->assertTrue($service1snd->isOk());
     }
 
     /**
-     * @expectedException \Exception
+     * @dataProvider providerGetException
+     *
+     * @param mixed                   $key
+     * @param class-string<Throwable> $exceptionClass
      */
-    public function testGetInvalidArgumentException()
-    {
-        $this->object->get(1);
+    public function testGetInvalidArgumentException(
+        $key,
+        string $exceptionClass,
+        string $exceptionMessage
+    ): void {
+        $this->expectException($exceptionClass);
+        $this->expectExceptionMessage($exceptionMessage);
+        $this->object->setService('exception', 'Soosyze\Tests');
+        $this->object->get($key);
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testGetNotFoundException()
+    public function providerGetException(): \Generator
     {
-        $this->object->get('error');
+        yield [
+            1,
+            \InvalidArgumentException::class,
+            'Get function only accepts strings. Input was : 1.'
+        ];
+        yield [
+            'error',
+            NotFoundExceptionInterface::class,
+            'Service error does not exist.'
+        ];
+        yield [
+            'exception',
+            ContainerExceptionInterface::class,
+            'Class exception is not exist.'
+        ];
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testGetContainerException()
-    {
-        $this->object->SetService('service', 'Soosyze\Tests')->get('service');
-    }
-
-    public function testHas()
+    public function testHas(): void
     {
         $this->object->setInstance('service1', new Service1);
 
@@ -144,14 +153,32 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * @dataProvider providerHasException
+     *
+     * @param mixed                   $key
+     * @param class-string<Throwable> $exceptionClass
      */
-    public function testHasException()
-    {
-        $this->object->has(1);
+    public function testHasException(
+        $key,
+        string $exceptionClass,
+        string $exceptionMessage
+    ): void {
+        $this->expectException($exceptionClass);
+        $this->expectExceptionMessage($exceptionMessage);
+        $this->expectException(\Exception::class);
+        $this->object->has($key);
     }
 
-    public function testHook()
+    public function providerHasException(): \Generator
+    {
+        yield [
+            1,
+            \InvalidArgumentException::class,
+            'Get function only accepts strings. Input was: 1.'
+        ];
+    }
+
+    public function testHook(): void
     {
         $this->object->addHook('hook.Double', function (&$output) {
             $output *= 2;
@@ -163,11 +190,11 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(4, $var);
     }
 
-    public function testHookForService()
+    public function testHookForService(): void
     {
-        $this->object->SetServices([
+        $this->object->setServices([
             'service1' => [
-                'class' => 'Soosyze\Tests\service1',
+                'class' => Service1::class,
                 'hooks' => [ 'hook.double' => 'hookDouble' ]
             ]
         ]);
@@ -178,57 +205,9 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(4, $var);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testSetConfigInvalidArgumentException()
+    public function testSetConfigInvalidArgumentException(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->object->setConfig('error');
-    }
-}
-
-class service1
-{
-    public function isOk()
-    {
-        return true;
-    }
-
-    public function hookDouble(&$var)
-    {
-        $var *= 2;
-    }
-}
-
-class service2
-{
-    protected $service;
-
-    public function __construct(Service1 $arg1)
-    {
-        $this->service = $arg1;
-    }
-
-    public function isOk()
-    {
-        return $this->service->isOk();
-    }
-}
-
-class service3
-{
-    protected $service;
-
-    protected $str;
-
-    public function __construct(Service1 $arg1, $arg2)
-    {
-        $this->service = $arg1;
-        $this->str     = $arg2;
-    }
-
-    public function getStr()
-    {
-        return $this->str;
     }
 }

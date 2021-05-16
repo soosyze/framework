@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -18,20 +20,20 @@ class Ip extends \Soosyze\Components\Validator\Rule
     /**
      * Test si une valeur est une adresse IP.
      *
-     * @param string $key   Clé du test.
-     * @param string $value Valeur à tester.
-     * @param string $arg   Argument de test.
-     * @param bool   $not   Inverse le test.
+     * @param string     $key   Clé du test.
+     * @param string     $value Valeur à tester.
+     * @param mixed|null $args  Argument de test.
+     * @param bool       $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not)
+    protected function test(string $key, $value, $args, bool $not): void
     {
         $version = 'IP';
-        if (empty($arg)) {
+        if (empty($args)) {
             $options = null;
-        } elseif ($arg === '4') {
+        } elseif ($args === '4') {
             $version = 'IPv4';
             $options = FILTER_FLAG_IPV4;
-        } elseif ($arg === '6') {
+        } elseif ($args === '6') {
             $version = 'IPv6';
             $options = FILTER_FLAG_IPV6;
         } else {
@@ -48,7 +50,7 @@ class Ip extends \Soosyze\Components\Validator\Rule
     /**
      * {@inheritdoc}
      */
-    protected function messages()
+    protected function messages(): array
     {
         return [
             'must' => 'The :label field must be a valid :version address.',

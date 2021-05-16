@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class Base64Test extends Rule
 {
-    public function testBase64()
+    public function testBase64(): void
     {
         $this->object->setInputs([
             'must'     => $this->getBase64(),
@@ -28,7 +28,7 @@ class Base64Test extends Rule
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    protected function getBase64()
+    protected function getBase64(): string
     {
         return 'iVBORw0KGgoAAAANSUhEUgAAABwAAAASCAMAAAB/2U7WAAAABl'
             . 'BMVEUAAAD///+l2Z/dAAAASUlEQVR4XqWQUQoAIAxC2/0vXZDr'

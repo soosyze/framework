@@ -11,11 +11,7 @@ class AutoloadTest extends \PHPUnit\Framework\TestCase
      */
     protected $object;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->object = new Autoload([
             'Soosyze\Tests'            => __DIR__,
@@ -25,61 +21,41 @@ class AutoloadTest extends \PHPUnit\Framework\TestCase
         $this->object->register();
     }
 
-    public function testSetPrefix()
-    {
-        $this->object->setPrefix([]);
-        $this->assertAttributeSame([], 'prefix', $this->object);
-    }
-
-    public function testPrefix()
+    public function testPrefix(): void
     {
         $this->object->setPrefix([ 'Soosyze\Tests' => __DIR__ ]);
         $class = $this->object->loader('Soosyze\Tests\AppTest');
 
-        $file = __DIR__ . '\AppTest.php';
-        $this->assertEquals($class, str_replace('\\', DIRECTORY_SEPARATOR, $file));
+        $expectedClass = str_replace('\\', DIRECTORY_SEPARATOR, __DIR__ . '\AppTest.php');
+        $this->assertEquals($expectedClass, $class);
     }
 
-    public function testAutoloadPrefixError()
+    public function testAutoloadPrefixError(): void
     {
         $this->object->setPrefix([ 'Soosyze\Tests' => __DIR__ ]);
 
         $class = $this->object->loader('Soosyze\Tests\Error');
-        $this->assertFalse($class);
+        $this->assertNull($class);
     }
 
-    public function testSetLib()
+    public function testAutoloadLib(): void
     {
-        $this->object->setLib([]);
-        $this->assertAttributeSame([], 'lib', $this->object);
+        $class         = $this->object->loader('Soosyze\Tests\AppTest');
+        $expectedClass = str_replace('\\', DIRECTORY_SEPARATOR, __DIR__ . '\AppTest.php');
+        $this->assertEquals($expectedClass, $class);
+
+        $class         = $this->object->loader('Soosyze\Tests\Components\Http\MessageTest');
+        $expectedClass = str_replace('\\', DIRECTORY_SEPARATOR, __DIR__ . '\Components\Http\MessageTest.php');
+        $this->assertEquals($expectedClass, $class);
     }
 
-    public function testLib()
-    {
-        $this->assertAttributeSame([
-            'Soosyze\Tests'            => __DIR__,
-            'Soosyze\Tests\Components' => __DIR__ . '\Components'
-            ], 'lib', $this->object);
-    }
-
-    public function testAutoloadLib()
-    {
-        $class = $this->object->loader('Soosyze\Tests\AppTest');
-        $file  = __DIR__ . '\AppTest.php';
-        $this->assertEquals($class, str_replace('\\', DIRECTORY_SEPARATOR, $file));
-
-        $class = $this->object->loader('Soosyze\Tests\Components\Http\MessageTest');
-        $file  = __DIR__ . '\Components\Http\MessageTest.php';
-        $this->assertEquals($class, str_replace('\\', DIRECTORY_SEPARATOR, $file));
-    }
-
-    public function testAutoloadLibError()
+    public function testAutoloadLibError(): void
     {
         $class = $this->object->loader('Soosyze\Tests\Components\Http\Error');
-        $this->assertFalse($class);
+        $this->assertNull($class);
     }
 
-    public function testAutoloadMap()
+    public function testAutoloadMap(): void
     {
         $auto = new Autoload;
         $auto->setMap([
@@ -87,11 +63,11 @@ class AutoloadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $class = $auto->loader('Components\Http\MessageTest');
-        $file  = __DIR__ . '\Components\Http\MessageTest.php';
-        $this->assertEquals($class, str_replace('\\', DIRECTORY_SEPARATOR, $file));
+        $expectedClass  = str_replace('\\', DIRECTORY_SEPARATOR, __DIR__ . '\Components\Http\MessageTest.php');
+        $this->assertEquals($expectedClass, $class);
     }
 
-    public function testAutoloadMapError()
+    public function testAutoloadMapError(): void
     {
         $auto = new Autoload;
         $auto->setMap([
@@ -99,6 +75,6 @@ class AutoloadTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $class = $auto->loader('Soosyze\Tests\Components\Http\MessageTest');
-        $this->assertFalse($class);
+        $this->assertNull($class);
     }
 }

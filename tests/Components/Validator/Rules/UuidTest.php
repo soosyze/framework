@@ -4,9 +4,12 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class UuidTest extends Rule
 {
+    /**
+     * @var string
+     */
     protected $uuid = 'e325f454-f722-43fd-99d4-c06a1eee1abf';
 
-    public function testUuid()
+    public function testUuid(): void
     {
         $this->object->setInputs([
             'must'              => $this->uuid,

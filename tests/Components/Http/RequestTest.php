@@ -12,110 +12,103 @@ class RequestTest extends \PHPUnit\Framework\TestCase
      */
     protected $object;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->object = new Request('GET', new Uri());
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testConstructException()
+    public function testConstructException(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectErrorMessage('The method is not valid (only CONNECT|DELETE|GET|HEAD|OPTIONS|PATCH|POST|PURGE|PUT|TRACE).');
         new Request('error', new Uri());
     }
 
-    public function testWithMethod()
+    public function testWithMethod(): void
     {
-        $clone = $this->object->withMethod('POST');
-        $this->assertAttributeSame('POST', 'method', $clone);
-        $clone = $this->object->withMethod('post');
-        $this->assertAttributeSame('post', 'method', $clone);
+        $this->assertEquals('POST', $this->object->withMethod('POST')->getMethod());
+        $this->assertEquals('post', $this->object->withMethod('post')->getMethod());
     }
 
-    public function testGetMethod()
+    public function testGetMethod(): void
     {
         $this->assertEquals('GET', $this->object->getMethod());
     }
 
     /**
-     * @dataProvider getInvalidMethods
-     * @expectedException \Exception
+     * @dataProvider providerInvalidMethods
+     *
+     * @param mixed $method
      */
-    public function testWithMethodException($code)
+    public function testWithMethodException($method): void
     {
-        $this->object->withMethod($code);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectErrorMessage('The method must be a string');
+        $this->object->withMethod($method);
     }
 
-    public function getInvalidMethods()
+    public function providerInvalidMethods(): \Generator
     {
-        return [
-            [null],
-            [1],
-            [1.01],
-            [false],
-            [['foo']],
-            [new \stdClass()],
-        ];
+        yield [ null ];
+        yield [ 1 ];
+        yield [ 1.01 ];
+        yield [ false ];
+        yield [ [ 'foo' ] ];
+        yield [ new \stdClass() ];
     }
 
-    public function testGetRequestTargetVoid()
+    public function testGetRequestTargetVoid(): void
     {
         $target = $this->object->getRequestTarget();
-        $this->assertEquals($target, '/');
+        $this->assertEquals('/', $target);
     }
 
-    public function testGetRequestTargetWithUri()
+    public function testGetRequestTargetWithUri(): void
     {
         $uri   = Uri::create('http://hostname/path');
         $clone = $this->object->withUri($uri);
-        $this->assertEquals($clone->getRequestTarget(), '/path');
+        $this->assertEquals('/path', $clone->getRequestTarget());
 
         $uri    = Uri::create('http://username:password@hostname:80/path/?arg=value#anchor');
         $target = $this->object->withUri($uri)->getRequestTarget();
-        $this->assertEquals($target, '/path/?arg=value');
+        $this->assertEquals('/path/?arg=value', $target);
     }
 
-    public function testGetRequestTargetWithTarget()
+    public function testGetRequestTargetWithTarget(): void
     {
         $target = $this->object->withRequestTarget('/path')->getRequestTarget();
-        $this->assertEquals($target, '/path');
+        $this->assertEquals('/path', $target);
     }
 
-    public function testWithRequestTarget()
+    public function testWithRequestTarget(): void
     {
         $clone = $this->object->withRequestTarget('/path');
-        $this->assertAttributeSame('/path', 'requestTarget', $clone);
+        $this->assertEquals('/path', $clone->getRequestTarget());
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testWithRequestTargetException()
+    public function testWithRequestTargetException(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectErrorMessage('The target of the request must be a string.');
         $this->object->withRequestTarget(0);
     }
 
-    public function testWithUri()
+    public function testWithUri(): void
     {
         $uri   = Uri::create('http://hostname/path');
         $clone = $this->object->withUri($uri);
-        $this->assertAttributeSame($uri, 'uri', $clone);
+        $this->assertEquals($uri, $clone->getUri());
     }
 
-    public function testWithUriPreserveHost()
+    public function testWithUriPreserveHost(): void
     {
         $uri = Uri::create('http://hostname/path');
 
         $clone = $this->object->withUri($uri, true);
-        $this->assertAttributeSame([ 'Host' => [ 'hostname' ] ], 'headers', $clone);
+        $this->assertEquals([ 'Host' => [ 'hostname' ] ], $clone->getHeaders());
         $this->assertEquals('hostname', $clone->getHeaderLine('host'));
 
         $clone = $this->object->withHeader('Host', 'other')->withUri($uri, true);
-        $this->assertAttributeSame([ 'Host' => [ 'other' ] ], 'headers', $clone);
+        $this->assertEquals([ 'Host' => [ 'other' ] ], $clone->getHeaders());
     }
 }

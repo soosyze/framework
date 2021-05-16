@@ -2,6 +2,7 @@
 
 namespace Soosyze\Tests\Components\HttpFactories;
 
+use Psr\Http\Message\RequestInterface;
 use Soosyze\Components\HttpFactories\RequestFactory;
 
 class RequestFactoryTest extends \PHPUnit\Framework\TestCase
@@ -11,18 +12,14 @@ class RequestFactoryTest extends \PHPUnit\Framework\TestCase
      */
     protected $object;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->object = new RequestFactory;
     }
 
-    public function testCreateRequest()
+    public function testCreateRequest(): void
     {
         $request = $this->object->createRequest('GET', 'http://hostname/path');
-        $this->assertInstanceOf('\Psr\Http\Message\RequestInterface', $request);
+        $this->assertInstanceOf(RequestInterface::class, $request);
     }
 }

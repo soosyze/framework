@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -18,15 +20,15 @@ class RequiredWith extends Required
     /**
      * Test si une valeur est requise si un ensemble de champs est présent.
      *
-     * @param string $key   Clé du test.
-     * @param mixed  $value Valeur à tester.
-     * @param string $arg   Argument de test.
-     * @param bool   $not   Inverse le test.
+     * @param string     $key   Clé du test.
+     * @param mixed      $value Valeur à tester.
+     * @param mixed|null $args  Argument de test.
+     * @param bool       $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not)
+    protected function test(string $key, $value, $args, bool $not): void
     {
         if ($this->isOneValue()) {
-            parent::test($key, $value, $arg, $not);
+            parent::test($key, $value, $args, $not);
         }
     }
 
@@ -37,7 +39,7 @@ class RequiredWith extends Required
      *
      * @return bool
      */
-    protected function isOneValue()
+    protected function isOneValue(): bool
     {
         if (empty($this->args)) {
             throw new \InvalidArgumentException('A field must be provided for the required with rule.');
@@ -51,7 +53,7 @@ class RequiredWith extends Required
             }
 
             $require = (new Required)
-                ->hydrate('required', $field, '', true)
+                ->hydrate('required', $field, null, true)
                 ->execute($this->inputs[ $field ]);
             if (!$require->hasErrors()) {
                 return true;

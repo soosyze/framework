@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -22,7 +24,7 @@ abstract class Filter extends Rule
      *
      * @return $this
      */
-    public function execute($value)
+    public function execute($value): self
     {
         $this->value = $this->clean($this->name, $value, $this->args);
 
@@ -34,16 +36,16 @@ abstract class Filter extends Rule
      *
      * @param string $key   Identifiant de la valeur.
      * @param mixed  $value Valeur à filtrer.
-     * @param string $arg   Argument de filtre.
+     * @param mixed  $args  Argument de filtre.
      *
      * @return mixed
      */
-    abstract protected function clean($key, $value, $arg);
+    abstract protected function clean(string $key, $value, $args);
 
     /**
      * {@inheritdoc}
      */
-    protected function messages()
+    protected function messages(): array
     {
         throw new \BadMethodCallException;
     }
@@ -53,10 +55,10 @@ abstract class Filter extends Rule
      *
      * @param string $keyRule Clé du test.
      * @param string $value   Valeur à tester.
-     * @param string $args    Argument de test.
+     * @param mixed  $args    Argument de test.
      * @param bool   $not     Inverse le test.
      */
-    protected function test($keyRule, $value, $args, $not = true)
+    protected function test(string $keyRule, $value, $args, bool $not = true): void
     {
         throw new \BadMethodCallException;
     }

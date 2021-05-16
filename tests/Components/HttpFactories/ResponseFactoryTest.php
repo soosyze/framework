@@ -2,6 +2,7 @@
 
 namespace Soosyze\Tests\Components\HttpFactories;
 
+use Psr\Http\Message\ResponseInterface;
 use Soosyze\Components\HttpFactories\ResponseFactory;
 
 class ResponseFactoryTest extends \PHPUnit\Framework\TestCase
@@ -11,18 +12,14 @@ class ResponseFactoryTest extends \PHPUnit\Framework\TestCase
      */
     protected $object;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->object = new ResponseFactory;
     }
 
-    public function testCreateResponse()
+    public function testCreateResponse(): void
     {
         $response = $this->object->createResponse();
-        $this->assertInstanceOf('\Psr\Http\Message\ResponseInterface', $response);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -23,7 +25,7 @@ class Uri implements UriInterface
 {
     const CHAR_UNRESERVED = 'a-zA-Z0-9_\-\.~';
 
-    const CHAR_SUB_DELIMS = '!\$&\'\(\)\*\+,;=';
+    const CHAR_SUB_DELIMS   = '!\$&\'\(\)\*\+,;=';
 
     /**
      * Schéma de l'URI (http(s)|ftp|mailto|file...).
@@ -106,14 +108,14 @@ class Uri implements UriInterface
      * @param string   $password
      */
     public function __construct(
-        $scheme = '',
-        $host = '',
-        $path = '/',
-        $port = null,
-        $query = '',
-        $fragment = '',
-        $user = '',
-        $password = ''
+        string $scheme = '',
+        string $host = '',
+        string $path = '/',
+        ?int $port = null,
+        string $query = '',
+        string $fragment = '',
+        string $user = '',
+        string $password = ''
     ) {
         $this->scheme   = $this->filterScheme($scheme);
         $this->host     = $this->filterStringToLower($host);
@@ -132,7 +134,7 @@ class Uri implements UriInterface
      *
      * @return string L'URI.
      */
-    public function __toString()
+    public function __toString(): string
     {
         $uri = $this->scheme !== ''
             ? $this->scheme . ':'
@@ -399,7 +401,7 @@ class Uri implements UriInterface
      *
      * @return bool
      */
-    public static function validePort($port)
+    public static function validePort($port): bool
     {
         return is_int($port) && ($port > 0 && $port <= 65535);
     }
@@ -415,37 +417,29 @@ class Uri implements UriInterface
      *
      * @return UriInterface Nouvelle instance d'URI.
      */
-    public static function create($uri)
+    public static function create($uri): UriInterface
     {
         if (($parse = parse_url($uri)) === false) {
             throw new \InvalidArgumentException('Unable to parse URI');
         }
 
         return new Uri(
-            isset($parse[ 'scheme' ])
-                ? $parse[ 'scheme' ]
-                : '',
-            isset($parse[ 'host' ])
-                ? $parse[ 'host' ]
-                : '',
-            isset($parse[ 'path' ])
-                ? $parse[ 'path' ]
-                : '',
-            isset($parse[ 'port' ])
-                ? $parse[ 'port' ]
-                : null,
-            isset($parse[ 'query' ])
-                ? $parse[ 'query' ]
-                : '',
-            isset($parse[ 'fragment' ])
-                ? $parse[ 'fragment' ]
-                : '',
-            isset($parse[ 'user' ])
-                ? $parse[ 'user' ]
-                : '',
-            isset($parse[ 'pass' ])
-                ? $parse[ 'pass' ]
-                : ''
+            $parse[ 'scheme' ]
+            ?? '',
+            $parse[ 'host' ]
+            ?? '',
+            $parse[ 'path' ]
+            ?? '',
+            $parse[ 'port' ]
+            ?? null,
+            $parse[ 'query' ]
+            ?? '',
+            $parse[ 'fragment' ]
+            ?? '',
+            $parse[ 'user' ]
+            ?? '',
+            $parse[ 'pass' ]
+            ?? ''
         );
     }
 
@@ -458,7 +452,7 @@ class Uri implements UriInterface
      *
      * @return string Schéma normalisé.
      */
-    protected function filterScheme($sch = '')
+    protected function filterScheme($sch = ''): string
     {
         if (empty($sch)) {
             return '';
@@ -484,7 +478,7 @@ class Uri implements UriInterface
      *
      * @return int|null Port normalisé.
      */
-    protected function filterPort($port)
+    protected function filterPort($port): ?int
     {
         if (empty($port)) {
             return null;
@@ -506,7 +500,7 @@ class Uri implements UriInterface
      *
      * @return string Requête normalisée.
      */
-    protected function filterQuery($query)
+    protected function filterQuery($query): string
     {
         $queryStr = $this->filterString($query);
 
@@ -520,7 +514,7 @@ class Uri implements UriInterface
      *
      * @return string Ancre normalisée.
      */
-    protected function filterFragment($fragment)
+    protected function filterFragment($fragment): string
     {
         $fragmentStr = $this->filterString($fragment);
 
@@ -534,7 +528,7 @@ class Uri implements UriInterface
      *
      * @return string Chemin normalisé.
      */
-    protected function filterPath($path)
+    protected function filterPath($path): string
     {
         $pathStr = $this->filterString($path);
 
@@ -548,7 +542,7 @@ class Uri implements UriInterface
      *
      * @return string Chaine de caractère normalisée.
      */
-    protected function filterString($value)
+    protected function filterString($value): string
     {
         if ($value === null) {
             return '';
@@ -567,7 +561,7 @@ class Uri implements UriInterface
      *
      * @return string Chaine de caractère filtré.
      */
-    protected function filterStringToLower($value)
+    protected function filterStringToLower($value): string
     {
         return strtolower($this->filterString($value));
     }
@@ -579,7 +573,7 @@ class Uri implements UriInterface
      *
      * @return bool
      */
-    protected function validPortStandard($port)
+    protected function validPortStandard($port): bool
     {
         return in_array($port, $this->ports) &&
             $this->scheme === array_keys($this->ports, $port)[ 0 ];
@@ -592,7 +586,7 @@ class Uri implements UriInterface
      *
      * @return string Chaine de requête en encodage URL.
      */
-    protected function rawurldecodeValue($query)
+    protected function rawurldecodeValue($query): string
     {
         return preg_replace_callback(
             '/(?:[^' . self::CHAR_UNRESERVED . self::CHAR_SUB_DELIMS . '%:@\/]++|%(?![A-Fa-f0-9]{2}))/',
@@ -600,6 +594,6 @@ class Uri implements UriInterface
                 return rawurlencode($match[ 0 ]);
             },
             $query
-        );
+        ) ?? '';
     }
 }

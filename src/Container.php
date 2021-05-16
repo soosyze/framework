@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -54,11 +56,11 @@ class Container implements ContainerInterface
      * Appel un service comme une fonction.
      *
      * @param string $name Nom du service.
-     * @param array  $arg  Paramètres passés à la fonction.
+     * @param array  $args Paramètres passés à la fonction.
      *
      * @return object
      */
-    public function __call($name, array $arg)
+    public function __call(string $name, array $args)
     {
         return $this->get($name);
     }
@@ -73,8 +75,12 @@ class Container implements ContainerInterface
      *
      * @return $this
      */
-    public function setService($key, $class, array $arg = [], array $hooks = [])
-    {
+    public function setService(
+        string $key,
+        string $class,
+        array $arg = [],
+        array $hooks = []
+    ): self {
         $this->services[ $key ] = [ 'class' => $class, 'arguments' => $arg, 'hooks' => $hooks ];
         $this->loadHooks([ $this->services[ $key ] ]);
 
@@ -88,7 +94,7 @@ class Container implements ContainerInterface
      *
      * @return $this
      */
-    public function setServices(array $services)
+    public function setServices(array $services): self
     {
         $this->services = $services;
         $this->loadHooks($services);
@@ -103,7 +109,7 @@ class Container implements ContainerInterface
      *
      * @return $this
      */
-    public function addServices(array $services)
+    public function addServices(array $services): self
     {
         $this->services += $services;
         $this->loadHooks($services);
@@ -119,7 +125,7 @@ class Container implements ContainerInterface
      *
      * @return $this
      */
-    public function setInstance($key, $instance)
+    public function setInstance($key, $instance): self
     {
         $this->instances[ $key ] = $instance;
 
@@ -133,7 +139,7 @@ class Container implements ContainerInterface
      *
      * @return $this
      */
-    public function setInstances(array $instances)
+    public function setInstances(array $instances): self
     {
         $this->instances = $instances;
 
@@ -149,6 +155,7 @@ class Container implements ContainerInterface
      * @throws \InvalidArgumentException La fonction get accepte uniquement les chaînes de caractères.
      * @throws NotFoundException         Le service appelé n'existe pas.
      * @throws ContainerException        La classe n'est pas instanciable.
+     *
      * @return object
      */
     public function get($key)
@@ -194,6 +201,7 @@ class Container implements ContainerInterface
      * @param string $key Nom du service.
      *
      * @throws \InvalidArgumentException La fonction get accepte uniquement les chaînes de caractères.
+     *
      * @return bool
      */
     public function has($key)
@@ -215,7 +223,7 @@ class Container implements ContainerInterface
      *
      * @return $this
      */
-    public function addHook($name, callable $func)
+    public function addHook(string $name, callable $func): self
     {
         $this->hooks[ strtolower($name) ][] = $func;
 
@@ -231,30 +239,31 @@ class Container implements ContainerInterface
      *
      * @return mixed|void le résultat des fonctions appelées ou rien
      */
-    public function callHook($name, array $args = [])
+    public function callHook(string $name, array $args = [])
     {
         $key = strtolower($name);
         /* Si mes hooks existent, ils sont exécutés. */
+        $out = '';
         if (!isset($this->hooks[ $key ])) {
-            return '';
+            return $out;
         }
         foreach ($this->hooks[ $key ] as $services => $func) {
-            $return = \is_string($func)
+            $out = \is_string($func)
                 ? call_user_func_array([ $this->get($services), $func ], $args)
                 : call_user_func_array($func, $args);
         }
 
-        return $return;
+        return $out;
     }
 
     /**
      * Ajoute le composant de configuration pour les services.
      *
-     * @param array|ArrayAccess<string, scalar> $config
+     * @param mixed $config
      *
      * @return $this
      */
-    public function setConfig($config)
+    public function setConfig($config): self
     {
         if (!\is_array($config) && !($config instanceof \ArrayAccess)) {
             throw new \InvalidArgumentException(
@@ -273,7 +282,7 @@ class Container implements ContainerInterface
      *
      * @return void
      */
-    protected function loadHooks(array $services)
+    protected function loadHooks(array $services): void
     {
         foreach ($services as $service => $value) {
             if (!isset($value[ 'hooks' ])) {
@@ -293,7 +302,7 @@ class Container implements ContainerInterface
      *
      * @return array Arguments chargés.
      */
-    private function matchArgs($key)
+    private function matchArgs(string $key): array
     {
         if (!isset($this->services[ $key ][ 'arguments' ])) {
             return [];

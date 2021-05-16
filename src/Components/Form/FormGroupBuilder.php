@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -14,12 +16,41 @@ namespace Soosyze\Components\Form;
  * @see http://www.w3schools.com/html/html_forms.asp
  *
  * @author Mathieu NOËL <mathieu@soosyze.com>
+ *
+ * @method form_group( string $key, array $attr = [] ): self
+ * @method form_html( string $key, array $attr = [] ): self
+ * @method form_label( string $key, array $attr = [] ): self
+ * @method form_legend( string $key, array $attr = [] ): self
+ * @method form_select( string $key, array $attr = [] ): self
+ * @method form_input( string $key, array $attr = [] ): self
+ * @method form_textarea( string $key, array $attr = [] ): self
+ * @method form_token( string $key, array $attr = [] ): self
+ *
+ * @method button( string $key, array $attr = [] ): self
+ * @method checkbox( string $key, array $attr = [] ): self
+ * @method color( string $key, array $attr = [] ): self
+ * @method date( string $key, array $attr = [] ): self
+ * @method email( string $key, array $attr = [] ): self
+ * @method file( string $key, array $attr = [] ): self
+ * @method hidden( string $key, array $attr = [] ): self
+ * @method image( string $key, array $attr = [] ): self
+ * @method month( string $key, array $attr = [] ): self
+ * @method password( string $key, array $attr = [] ): self
+ * @method radio( string $key, array $attr = [] ): self
+ * @method range( string $key, array $attr = [] ): self
+ * @method reset( string $key, array $attr = [] ): self
+ * @method search( string $key, array $attr = [] ): self
+ * @method tel( string $key, array $attr = [] ): self
+ * @method text( string $key, array $attr = [] ): self
+ * @method time( string $key, array $attr = [] ): self
+ * @method url( string $key, array $attr = [] ): self
+ * @method week( string $key, array $attr = [] ): self
  */
 class FormGroupBuilder
 {
     use FormRenderTrait;
 
-    const EOL = PHP_EOL;
+    protected const EOL = PHP_EOL;
 
     /**
      * Types des champs standards.
@@ -31,19 +62,16 @@ class FormGroupBuilder
         'checkbox',
         'color',
         'date',
-        'datetime-local',
         'email',
         'file',
         'hidden',
         'image',
         'month',
-        'number',
         'password',
         'radio',
         'range',
         'reset',
         'search',
-        'submit',
         'tel',
         'text',
         'time',
@@ -93,7 +121,7 @@ class FormGroupBuilder
      *
      * @return string HTML
      */
-    public function __toString()
+    public function __toString(): string
     {
         $html          = $this->render();
         self::$errors  = [];
@@ -112,25 +140,22 @@ class FormGroupBuilder
      *
      * @return $this
      */
-    public function __call($type, array $arg)
+    public function __call(string $type, array $arg)
     {
         if (in_array($type, self::$typeInputBasic)) {
             array_unshift($arg, $type);
 
-            return call_user_func_array([ $this, 'inputBasic' ], $arg);
+            return $this->inputBasic(...$arg);
         }
         if (isset(self::$typeInputRender[ $type ])) {
             $item = $this->getItem($arg[ 0 ]);
-            $attr = isset($arg[ 1 ])
-                ? $arg[ 1 ]
-                : [];
+            $attr = $arg[ 1 ] ?? [];
 
             $item[ 'attr' ] = $this->merge_attr($item[ 'attr' ], $attr);
 
-            return call_user_func_array(
-                [ $this, self::$typeInputRender[ $type ] ],
-                [ $arg[ 0 ], $item ]
-            );
+            $method = self::$typeInputRender[ $type ];
+
+            return $this->$method($arg[ 0 ], $item);
         }
 
         throw new \BadMethodCallException(htmlspecialchars(
@@ -145,9 +170,10 @@ class FormGroupBuilder
      * @param callable $callback Fonction de création du sous-formulaire.
      *
      * @throws \OutOfBoundsException L'élément n'a pas été trouvé.
+     *
      * @return $this
      */
-    public function before($key, callable $callback)
+    public function before(string $key, callable $callback): self
     {
         if ($this->addItem($key, $callback)) {
             return $this;
@@ -163,9 +189,10 @@ class FormGroupBuilder
      * @param callable $callback Fonction de création du sous-formulaire.
      *
      * @throws \OutOfBoundsException L'élément n'a pas été trouvé.
+     *
      * @return $this
      */
-    public function after($key, callable $callback)
+    public function after(string $key, callable $callback): self
     {
         if ($this->addItem($key, $callback, true)) {
             return $this;
@@ -181,9 +208,10 @@ class FormGroupBuilder
      * @param callable $callback
      *
      * @throws \OutOfBoundsException
+     *
      * @return $this
      */
-    public function prepend($key, callable $callback)
+    public function prepend(string $key, callable $callback): self
     {
         if ($this->addItemInto($key, $callback)) {
             return $this;
@@ -199,9 +227,10 @@ class FormGroupBuilder
      * @param callable $callback
      *
      * @throws \OutOfBoundsException
+     *
      * @return $this
      */
-    public function append($key, callable $callback)
+    public function append(string $key, callable $callback): self
     {
         if ($this->addItemInto($key, $callback, true)) {
             return $this;
@@ -215,7 +244,7 @@ class FormGroupBuilder
      *
      * @return array
      */
-    public function getForm()
+    public function getForm(): array
     {
         return $this->form;
     }
@@ -231,10 +260,10 @@ class FormGroupBuilder
      *
      * @return $this
      */
-    public function html($name, $html, array $attr = [])
+    public function html(string $name, string $html, array $attr = []): self
     {
         return $this->input($name, [
-            'type' => 'html', 'html' => $html, 'attr' => $attr + [ 'id' => $name ]
+                'type' => 'html', 'html' => $html, 'attr' => $attr + [ 'id' => $name ]
         ]);
     }
 
@@ -248,8 +277,12 @@ class FormGroupBuilder
      *
      * @return $this
      */
-    public function group($name, $balise, callable $callback, array $attr = [])
-    {
+    public function group(
+        string $name,
+        string $balise,
+        callable $callback,
+        array $attr = []
+    ): self {
         $subform = new FormGroupBuilder;
         $callback($subform);
 
@@ -270,7 +303,7 @@ class FormGroupBuilder
      *
      * @return $this
      */
-    public function label($name, $label, array $attr = [])
+    public function label(string $name, $label, array $attr = []): self
     {
         if (!\is_string($label) && \is_callable($label)) {
             $subform = new FormGroupBuilder;
@@ -292,7 +325,7 @@ class FormGroupBuilder
      *
      * @return $this
      */
-    public function legend($name, $legend, array $attr = [])
+    public function legend(string $name, string $legend, array $attr = []): self
     {
         return $this->input($name, [
             'type' => 'legend', 'legend' => $legend, 'attr' => $attr
@@ -307,7 +340,7 @@ class FormGroupBuilder
      *
      * @return $this
      */
-    public function number($name, array $attr = [])
+    public function number(string $name, array $attr = []): self
     {
         $actions = !empty($attr[ ':actions' ]);
         unset($attr[ ':actions' ]);
@@ -315,18 +348,14 @@ class FormGroupBuilder
         $this->input($name, [ 'type' => 'number', 'attr' => $attr + [ 'id' => $name ] ]);
 
         if ($actions) {
-            $value = empty($attr[ 'value' ])
-                ? 0
-                : $attr[ 'value' ];
-            $step  = empty($attr[ 'step' ])
-                ? 1
-                : $attr[ 'step' ];
-            $min   = empty($attr[ 'min' ])
-                ? null
-                : $attr[ 'min' ];
-            $max   = empty($attr[ 'max' ])
-                ? null
-                : $attr[ 'max' ];
+            $value = $attr[ 'value' ]
+                ?? 0;
+            $step  = $attr[ 'step' ]
+                ?? 1;
+            $min   = $attr[ 'min' ]
+                ?? null;
+            $max   = $attr[ 'max' ]
+                ?? null;
 
             $this->html("$name-decrement", '<button:attr>:content</button>', [
                 ':content'    => '<i class="fa fa-minus" aria-hidden="true"></i>',
@@ -356,8 +385,11 @@ class FormGroupBuilder
      *
      * @return $this
      */
-    public function textarea($name, $content = '', array $attr = [])
-    {
+    public function textarea(
+        string $name,
+        string $content = '',
+        array $attr = []
+    ): self {
         return $this->input($name, [
             'type' => 'textarea', 'content' => $content, 'attr' => $attr + [ 'id' => $name ]
         ]);
@@ -371,7 +403,7 @@ class FormGroupBuilder
      *
      * @return $this
      */
-    public function datetime($name, array $attr = [])
+    public function datetime(string $name, array $attr = []): self
     {
         return $this->input($name, [
             'type' => 'datetime-local', 'attr' => $attr + [ 'id' => $name ]
@@ -387,7 +419,7 @@ class FormGroupBuilder
      *
      * @return $this
      */
-    public function select($name, $options = [], array $attr = [])
+    public function select(string $name, array $options = [], array $attr = []): self
     {
         return $this->input($name, [
             'type' => 'select', 'options' => $options, 'attr' => $attr + [ 'id' => $name ]
@@ -403,7 +435,7 @@ class FormGroupBuilder
      *
      * @return $this
      */
-    public function inputBasic($type, $name, array $attr = [])
+    public function inputBasic(string $type, string $name, array $attr = []): self
     {
         return $this->input($name, [
             'type' => $type, 'attr' => $attr + [ 'id' => $name ]
@@ -419,11 +451,10 @@ class FormGroupBuilder
      *
      * @return $this
      */
-    public function submit($name, $value, array $attr = [])
+    public function submit(string $name, string $value, array $attr = []): self
     {
         return $this->input($name, [
-            'type' => 'submit',
-            'attr' => $attr + [ 'id' => $name, 'value' => $value ]
+            'type' => 'submit', 'attr' => $attr + [ 'id' => $name, 'value' => $value ]
         ]);
     }
 
@@ -434,7 +465,7 @@ class FormGroupBuilder
      *
      * @return $this
      */
-    public function token($name)
+    public function token(string $name): self
     {
         if (session_id() === '') {
             @session_start([
@@ -443,7 +474,7 @@ class FormGroupBuilder
             ]);
         }
         /* On génère un token unique. */
-        $token = uniqid(rand(), true);
+        $token = uniqid((string) rand(), true);
 
         /* Et on le stocke. */
         $_SESSION[ 'token' ][ $name ] = $token;
@@ -466,7 +497,7 @@ class FormGroupBuilder
      *
      * @return array Les erreurs.
      */
-    public function getErrors()
+    public function getErrors(): array
     {
         return self::$errors;
     }
@@ -478,7 +509,7 @@ class FormGroupBuilder
      *
      * @return array Les succès.
      */
-    public function getSucces()
+    public function getSucces(): array
     {
         return self::$success;
     }
@@ -492,7 +523,7 @@ class FormGroupBuilder
      *
      * @return $this
      */
-    public function setErrors(array $errs)
+    public function setErrors(array $errs): self
     {
         self::$errors = $errs;
 
@@ -508,7 +539,7 @@ class FormGroupBuilder
      *
      * @return $this
      */
-    public function addError($err)
+    public function addError(string $err): self
     {
         self::$errors[] = $err;
 
@@ -524,7 +555,7 @@ class FormGroupBuilder
      *
      * @return $this
      */
-    public function addErrors(array $errs)
+    public function addErrors(array $errs): self
     {
         foreach ($errs as $err) {
             $this->addError($err);
@@ -542,7 +573,7 @@ class FormGroupBuilder
      *
      * @return $this
      */
-    public function setSuccess(array $success)
+    public function setSuccess(array $success): self
     {
         self::$success = $success;
 
@@ -558,7 +589,7 @@ class FormGroupBuilder
      *
      * @return $this
      */
-    public function addSuccess($success)
+    public function addSuccess($success): self
     {
         self::$success[] = $success;
 
@@ -573,7 +604,7 @@ class FormGroupBuilder
      *
      * @return $this
      */
-    public function addAttr($key, array $attr)
+    public function addAttr(string $key, array $attr): self
     {
         $this->addAttrRecurses($key, $attr);
 
@@ -588,7 +619,7 @@ class FormGroupBuilder
      *
      * @return $this
      */
-    public function addAttrs(array $keys, array $attr)
+    public function addAttrs(array $keys, array $attr): self
     {
         foreach ($keys as $key => $value) {
             if (\is_array($value)) {
@@ -611,7 +642,7 @@ class FormGroupBuilder
      *
      * @return array Les données de l'élément.
      */
-    public function getItem($key)
+    public function getItem(string $key): array
     {
         if (($find = $this->searchItem($key)) !== null) {
             return $find;
@@ -629,7 +660,7 @@ class FormGroupBuilder
      *
      * @return void
      */
-    protected function addAttrsArray($key, array $value, array $attr = [])
+    protected function addAttrsArray(string $key, array $value, array $attr = []): void
     {
         foreach ($value as $i => $data) {
             if (!\is_array($data)) {
@@ -646,11 +677,11 @@ class FormGroupBuilder
      *
      * @return string HTML
      */
-    protected function render()
+    protected function render(): string
     {
         $html = '';
         foreach ($this->form as $key => $input) {
-            $html .= $this->renderInputs($key, $input);
+            $html .= $this->renderInputs((string) $key, $input);
         }
 
         return $html;
@@ -664,7 +695,7 @@ class FormGroupBuilder
      *
      * @return $this
      */
-    protected function input($name, array $attr)
+    protected function input(string $name, array $attr): self
     {
         /**
          * Si le for n'est pas précisé dans le label précédent
@@ -691,26 +722,25 @@ class FormGroupBuilder
     protected function merge_attr(
         array $tab1 = [],
         array $tab2 = [],
-        $crushed = false
-    ) {
+        bool $crushed = false
+    ): array {
         if (!$tab1 && $tab2) {
             return $tab2;
         }
         if ($tab1 && !$tab2) {
             return $tab1;
         }
-        if ($tab1 && $tab2) {
-            $intersect = array_intersect_key($tab1, $tab2);
-            if ($intersect && !$crushed) {
-                foreach ($intersect as $key => $value) {
-                    $tab2[ $key ] .= ' ' . $value;
-                }
+        if (!$tab1 && !$tab2) {
+            return [];
+        }
+        $intersect = array_intersect_key($tab1, $tab2);
+        if ($intersect && !$crushed) {
+            foreach ($intersect as $key => $value) {
+                $tab2[ $key ] .= ' ' . $value;
             }
-
-            return array_merge($tab1, $tab2);
         }
 
-        return [];
+        return array_merge($tab1, $tab2);
     }
 
     /**
@@ -720,7 +750,7 @@ class FormGroupBuilder
      *
      * @return bool
      */
-    protected function isRequired($key)
+    protected function isRequired(string $key): bool
     {
         return !empty($this->form[ $key ][ 'attr' ][ 'required' ]);
     }
@@ -734,7 +764,7 @@ class FormGroupBuilder
      *
      * @return bool
      */
-    protected function addAttrRecurses($key, array $attr)
+    protected function addAttrRecurses(string $key, array $attr): bool
     {
         if (isset($this->form[ $key ])) {
             $this->form[ $key ][ 'attr' ] = $this->merge_attr($this->form[ $key ][ 'attr' ], $attr);
@@ -762,7 +792,7 @@ class FormGroupBuilder
      *
      * @return array|null Les données de l'élément recherché.
      */
-    protected function searchItem($key)
+    protected function searchItem(string $key): ?array
     {
         if (isset($this->form[ $key ])) {
             return $this->form[ $key ];
@@ -788,7 +818,7 @@ class FormGroupBuilder
      *
      * @return void
      */
-    protected function addFirst(FormGroupBuilder $form)
+    protected function addFirst(FormGroupBuilder $form): void
     {
         $this->form = $form->getForm() + $this->form;
     }
@@ -800,7 +830,7 @@ class FormGroupBuilder
      *
      * @return void
      */
-    protected function addEnd(FormGroupBuilder $form)
+    protected function addEnd(FormGroupBuilder $form): void
     {
         $this->form += $form->getForm();
     }
@@ -823,8 +853,8 @@ class FormGroupBuilder
         $offset,
         $length,
         array $replacement,
-        $after = false
-    ) {
+        bool $after = false
+    ): void {
         $key_indices = array_flip(array_keys($input));
 
         if (isset($input[ $offset ]) && is_string($offset)) {
@@ -848,8 +878,11 @@ class FormGroupBuilder
      *
      * @return bool
      */
-    private function addItem($key, callable $callback, $after = false)
-    {
+    private function addItem(
+        string $key,
+        callable $callback,
+        bool $after = false
+    ): bool {
         if (isset($this->form[ $key ])) {
             $subform = new FormGroupBuilder;
             $callback($subform);
@@ -882,8 +915,11 @@ class FormGroupBuilder
      *
      * @return bool
      */
-    private function addItemInto($key, callable $callback, $after = false)
-    {
+    private function addItemInto(
+        string $key,
+        callable $callback,
+        bool $after = false
+    ): bool {
         if (isset($this->form[ $key ][ 'form' ])) {
             $subform = new FormGroupBuilder;
             $callback($subform);

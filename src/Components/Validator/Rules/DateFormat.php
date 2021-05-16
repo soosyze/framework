@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Soosyze Framework https://soosyze.com
  *
@@ -22,25 +24,25 @@ class DateFormat extends \Soosyze\Components\Validator\Rule
      *
      * @param string $key   Clé du test.
      * @param string $value Valeur à tester.
-     * @param string $arg   Format de la date (ex: Y-m-d).
+     * @param string $args  Format de la date (ex: Y-m-d).
      * @param bool   $not   Inverse le test.
      */
-    protected function test($key, $value, $arg, $not)
+    protected function test(string $key, $value, $args, bool $not): void
     {
-        $dateFormat  = date_parse_from_format($arg, $value);
+        $dateFormat  = date_parse_from_format($args, $value);
         $errorFormat = $dateFormat[ 'error_count' ] === 0 && $dateFormat[ 'warning_count' ] === 0;
 
         if (!$errorFormat && $not) {
-            $this->addReturn($key, 'must', [ ':format' => $arg ]);
+            $this->addReturn($key, 'must', [ ':format' => $args ]);
         } elseif ($errorFormat && !$not) {
-            $this->addReturn($key, 'not', [ ':format' => $arg ]);
+            $this->addReturn($key, 'not', [ ':format' => $args ]);
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function messages()
+    protected function messages(): array
     {
         return [
             'must' => 'The :label field must be a date in the format :format.',

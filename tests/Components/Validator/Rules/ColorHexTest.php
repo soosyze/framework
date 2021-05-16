@@ -4,7 +4,7 @@ namespace Soosyze\Tests\Components\Validator\Rules;
 
 class ColorHexTest extends Rule
 {
-    public function testColorHex()
+    public function testColorHex(): void
     {
         $this->object->setInputs([
             'color3_default'     => '#FFF',
@@ -48,11 +48,9 @@ class ColorHexTest extends Rule
         $this->assertCount(6, $this->object->getErrors());
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testColorHexException()
+    public function testColorHexException(): void
     {
+        $this->expectException(\Exception::class);
         $this->object->addInput('field', '#FFF')
             ->addRule('field', 'colorhex:4')
             ->isValid();
