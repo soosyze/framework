@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Soosyze\Components\HttpClient\Exception;
 
+use Psr\Http\Client\NetworkExceptionInterface;
 use Psr\Http\Message\RequestInterface;
 use Soosyze\Components\HttpClient\Exception\ClientException;
 
@@ -14,7 +15,7 @@ use Soosyze\Components\HttpClient\Exception\ClientException;
  *
  * Example: the target host name can not be resolved or the connection failed.
  */
-class NetworkException extends ClientException
+class NetworkException extends ClientException implements NetworkExceptionInterface
 {
     /**
      * Request instance
