@@ -31,7 +31,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
             'service2' => [
                 'class'     => Service2::class,
                 'arguments' => [
-                    '@service1'
+                    'service1' => '@service1'
                 ]
             ]
         ]);
@@ -42,7 +42,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     public function testSetService(): void
     {
         $this->object
-            ->setService('service2', Service2::class, [ '@service1' ])
+            ->setService('service2', Service2::class, [ 'service1' => '@service1' ])
             ->setService('service1', Service1::class);
 
         $this->assertInstanceOf(Service2::class, $this->object->get('service2'));
@@ -51,7 +51,9 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     public function testSetServiceParam(): void
     {
         $this->object
-            ->setService('service3', Service3::class, [ '@service1', '\@service1' ])
+            ->setService('service3', Service3::class, [
+                'str'      => '\@service1'
+            ])
             ->setService('service1', Service1::class);
 
         $service3 = $this->object->get('service3');
@@ -64,7 +66,9 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     {
         $this->object
             ->setConfig([ 'testConfig.key1' => 'value1' ])
-            ->setService('service3', Service3::class, [ '@service1', '#testConfig.key1' ])
+            ->setService('service3', Service3::class, [
+                'str'      => '#testConfig.key1'
+            ])
             ->setService('service1', Service1::class);
 
         $service3 = $this->object->get('service3');
@@ -145,6 +149,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $this->object->setInstance('service1', new Service1);
 
         $this->assertTrue($this->object->has('service1'));
+        $this->assertFalse($this->object->has('service9999'));
     }
 
     public function testHook(): void

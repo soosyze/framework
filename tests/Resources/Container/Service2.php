@@ -9,7 +9,7 @@ class Service2
      */
     protected $service1;
 
-    public function __construct(Service1 $service1)
+    public function __construct(Service1 $service1, int $count = null)
     {
         $this->service1 = $service1;
     }
