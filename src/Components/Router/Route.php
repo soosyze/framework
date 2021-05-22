@@ -15,7 +15,7 @@ namespace Soosyze\Components\Router;
  *
  * @author Mathieu NOËL <mathieu@soosyze.com>
  */
-abstract class Route
+final class Route
 {
     /**
      * La liste des routes par clé.
@@ -29,7 +29,7 @@ abstract class Route
      *
      * @var array
      */
-    protected static $routeByMethode = [];
+    protected static $routeByMethod = [];
 
     /**
      * Le namespace courant des routes.
@@ -37,6 +37,20 @@ abstract class Route
      * @var string
      */
     protected static $namespace = '';
+
+    /**
+     * Préfix des chemins.
+     *
+     * @var string
+     */
+    protected static $prefix = '';
+
+    /**
+     * Prefix des nom.
+     *
+     * @var string
+     */
+    protected static $name = '';
 
     /**
      * Ajoute une route avec la méthode GET.
@@ -54,7 +68,7 @@ abstract class Route
         string $uses,
         array $withs = []
     ): void {
-        self::addMethode('get', $key, $path, $uses, $withs);
+        self::addMethod('get', $key, $path, $uses, $withs);
     }
 
     /**
@@ -73,7 +87,7 @@ abstract class Route
         string $uses,
         array $withs = []
     ): void {
-        self::addMethode('post', $key, $path, $uses, $withs);
+        self::addMethod('post', $key, $path, $uses, $withs);
     }
 
     /**
@@ -92,7 +106,7 @@ abstract class Route
         string $uses,
         array $withs = []
     ): void {
-        self::addMethode('put', $key, $path, $uses, $withs);
+        self::addMethod('put', $key, $path, $uses, $withs);
     }
 
     /**
@@ -111,7 +125,7 @@ abstract class Route
         string $uses,
         array $withs = []
     ): void {
-        self::addMethode('path', $key, $path, $uses, $withs);
+        self::addMethod('path', $key, $path, $uses, $withs);
     }
 
     /**
@@ -130,7 +144,7 @@ abstract class Route
         string $uses,
         array $withs = []
     ): void {
-        self::addMethode('delete', $key, $path, $uses, $withs);
+        self::addMethod('delete', $key, $path, $uses, $withs);
     }
 
     /**
@@ -149,7 +163,46 @@ abstract class Route
         string $uses,
         array $withs = []
     ): void {
-        self::addMethode('option', $key, $path, $uses, $withs);
+        self::addMethod('option', $key, $path, $uses, $withs);
+    }
+
+    /**
+     * @param callable $group
+     */
+    public function group(callable $group): void
+    {
+        $group();
+        self::$namespace = '';
+        self::$name      = '';
+        self::$prefix    = '';
+    }
+
+    /**
+     * Spécifie le prefixe des chemins.
+     *
+     * @param string $prefix
+     *
+     * @return static
+     */
+    public static function prefix(string $prefix)
+    {
+        self::$prefix = $prefix;
+
+        return new static;
+    }
+
+    /**
+     * Spécifie le prefixe des noms.
+     *
+     * @param string $name
+     *
+     * @return static
+     */
+    public static function name(string $name)
+    {
+        self::$name = $name;
+
+        return new static;
     }
 
     /**
@@ -161,9 +214,7 @@ abstract class Route
      */
     public static function getRoute(string $key): ?array
     {
-        return !empty(self::$routes[ strtolower($key) ])
-            ? self::$routes[ strtolower($key) ]
-            : null;
+        return self::$routes[ strtolower($key) ] ?? null;
     }
 
     /**
@@ -181,56 +232,52 @@ abstract class Route
      *
      * @param string $namespace
      *
-     * @return void
+     * @return self
      */
-    public static function useNamespace(string $namespace): void
+    public static function useNamespace(string $namespace = '')
     {
         self::$namespace = trim($namespace, '\\/');
+
+        return new static;
     }
 
     /**
      * Retourne la liste des routes par méthodes.
      *
-     * @param string $methode Nom de la méthode.
+     * @param string $method Nom de la méthode.
      *
      * @return array
      */
-    public static function getRouteByMethode(string $methode): array
+    public static function getRouteByMethod(string $method): array
     {
-        return self::$routeByMethode[ strtolower($methode) ]
-            ?? [];
+        return self::$routeByMethod[ strtolower($method) ] ?? [];
     }
 
     /**
      * Ajoute une route.
      *
-     * @param string $methode Type de la méthode.
-     * @param string $key     La clé unique de la route.
-     * @param string $path    La route
-     * @param string $uses    Nom de la classe et sa méthode séparées par '@'
-     * @param array  $withs   Liste des arguments.
+     * @param string $method Type de la méthode.
+     * @param string $key    La clé unique de la route.
+     * @param string $path   La route
+     * @param string $uses   Nom de la classe et sa méthode séparées par '@'
+     * @param array  $withs  Liste des arguments.
      *
      * @return void
      */
-    protected static function addMethode(
-        string $methode,
+    protected static function addMethod(
+        string $method,
         string $key,
         string $path,
         string $uses,
         array $withs = []
     ): void {
-        self::$routes[ $key ]               = [
-            'methode' => $methode,
-            'path'    => $path,
-            'uses'    => self::$namespace . '\\' . ltrim($uses, '\\/'),
-            'with'    => $withs
+        self::$routes[ self::$name . $key ] = [
+            'key'    => self::$name . $key,
+            'method' => $method,
+            'path'   => self::$prefix . $path,
+            'uses'   => self::$namespace . '\\' . ltrim($uses, '\\/'),
+            'with'   => $withs
         ];
-        self::$routeByMethode[ $methode ][] = [
-            'key'     => $key,
-            'methode' => $methode,
-            'path'    => $path,
-            'uses'    => self::$namespace . '\\' . ltrim($uses, '\\/'),
-            'with'    => $withs
-        ];
+        self::$routeByMethod[ $method ][]   = self::$name . $key;
     }
 }

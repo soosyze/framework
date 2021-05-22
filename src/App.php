@@ -195,7 +195,6 @@ abstract class App
 
         $this->router = (new Router($this->container))
             ->setRequest($this->request)
-            ->setConfig($config)
             ->setBasePath($this->request->getBasePath());
 
         $this->container->addServices($this->services)

@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Soosyze\Components\Router;
 
-use ArrayAccess;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\RequestInterface;
 
@@ -27,13 +26,6 @@ class Router
      * @var RequestInterface
      */
     protected $currentRequest = null;
-
-    /**
-     * Configuration des routes.
-     *
-     * @var array<string, scalar>|ArrayAccess<string, scalar>
-     */
-    protected $config = [];
 
     /**
      * La base de l'URL de vos routes.
@@ -63,17 +55,19 @@ class Router
      * Appel un objet et sa méthode en fonction de la requête.
      *
      * @param RequestInterface $request
-     * @param string           $key_query Le préfixe de la route.
      *
      * @return array|null La route ou null si non trouvée.
      */
-    public function parse(RequestInterface $request, string $key_query = 'q'): ?array
+    public function parse(RequestInterface $request): ?array
     {
         /* Rempli un array des paramètres de l'Uri. */
-        $query  = $this->parseQueryFromRequest($request, $key_query);
-        $routes = Route::getRouteByMethode($request->getMethod());
+        $query = $this->parseQueryFromRequest($request);
 
-        foreach ($routes as $route) {
+        $routesByMethod = Route::getRouteByMethod($request->getMethod());
+
+        foreach ($routesByMethod as $key) {
+            $route = Route::getRoute($key);
+
             if (!empty($route[ 'with' ])) {
                 $path = $this->getRegexForPath($route[ 'path' ], $route[ 'with' ]);
 
@@ -99,8 +93,8 @@ class Router
      */
     public function execute(array $route, ?RequestInterface $request = null)
     {
-        $class   = strstr($route[ 'uses' ], '@', true);
-        $methode = substr(strrchr($route[ 'uses' ], '@'), 1);
+        $class  = strstr($route[ 'uses' ], '@', true);
+        $method = substr(strrchr($route[ 'uses' ], '@'), 1);
 
         /* Cherche les différents paramètres de l'URL pour l'injecter dans la méthode. */
         if (!empty($route[ 'with' ])) {
@@ -121,7 +115,7 @@ class Router
             $obj->container = $this->container;
         }
 
-        return $reflection->getMethod($methode)->invokeArgs($obj, $params);
+        return $reflection->getMethod($method)->invokeArgs($obj, $params);
     }
 
     /**
@@ -186,66 +180,51 @@ class Router
     /**
      * Retourne une route à partir de son nom.
      *
-     * @param string $name      Nom de la route.
-     * @param array  $params    Variables requises par la route.
-     * @param bool   $strict    Autorise la construction de routes partielles.
-     * @param string $key_query Le préfixe de la route.
+     * @param string $name   Nom de la route.
+     * @param array  $params Variables requises par la route.
+     * @param bool   $strict Autorise la construction de routes partielles.
      *
      * @return string
      */
     public function getRoute(
         string $name,
         ?array $params = null,
-        bool $strict = true,
-        string $key_query = 'q'
+        bool $strict = true
     ): string {
-        $prefix = !$this->isRewrite()
-            ? "?$key_query="
-            : '';
-
-        return $this->basePath . $prefix . $this->getPath($name, $params, $strict);
+        return $this->basePath . $this->getPath($name, $params, $strict);
     }
 
     /**
      * Retourne une instance de RequestInterface à partir du nom d'une route.
      *
-     * @param string $name      Nom de la route.
-     * @param array  $params    Variables requises par la route.
-     * @param bool   $strict    Autorise la construction de routes partielles.
-     * @param string $key_query Le préfixe de la route.
+     * @param string $name   Nom de la route.
+     * @param array  $params Variables requises par la route.
+     * @param bool   $strict Autorise la construction de routes partielles.
      *
      * @return RequestInterface
      */
     public function getRequestByRoute(
         string $name,
         ?array $params = null,
-        bool $strict = true,
-        string $key_query = 'q'
+        bool $strict = true
     ): RequestInterface {
         $path = $this->getPath($name, $params, $strict);
 
         return $this->currentRequest->withUri(
-            $this->isRewrite()
-                ? $this->currentRequest->getUri()->withPath($path)
-                : $this->currentRequest->getUri()->withQuery("?$key_query=$path")
+            $this->currentRequest->getUri()->withPath($path)
         );
     }
 
     /**
      * Construit une route manuellement.
      *
-     * @param string $path      Le chemin de la route.
-     * @param string $key_query Le préfixe de la route.
+     * @param string $path Le chemin de la route.
      *
      * @return string
      */
-    public function makeRoute(string $path, string $key_query = 'q'): string
+    public function makeRoute(string $path): string
     {
-        $prefix = $this->isRewrite()
-            ? ''
-            : "?$key_query=";
-
-        return $this->basePath . $prefix . $path;
+        return $this->basePath . $path;
     }
 
     /**
@@ -273,24 +252,6 @@ class Router
     }
 
     /**
-     * Les configurations pour le router :
-     * (bool)settings.rewrite_engine Si les routes doivent tenir compte de la réécriture d'URL.
-     *
-     * @param mixed $config
-     *
-     * @return $this
-     */
-    public function setConfig($config): self
-    {
-        if (!(\is_array($config) || $config instanceof ArrayAccess)) {
-            throw new \InvalidArgumentException('The configuration must be an array or an ArrayAccess instance.');
-        }
-        $this->config = $config;
-
-        return $this;
-    }
-
-    /**
      * Ajoute une nouvelle requête courante.
      *
      * @param RequestInterface $request
@@ -305,46 +266,27 @@ class Router
     }
 
     /**
-     * Si le module de réécriture est activé et si la configuration l'exige.
-     *
-     * @return bool Si l'écriture d'url est possible.
-     */
-    public function isRewrite(): bool
-    {
-        return !empty($this->config[ 'settings.rewrite_engine' ]);
-    }
-
-    /**
      * Parse les paramètres de la requête et retourne la chaine qui servira à
      *
      * @param RequestInterface $request
-     * @param string           $key_query Le préfixe de la route.
      *
      * @throws \InvalidArgumentException
+     *
      * @return string
      */
-    public function parseQueryFromRequest(
-        ?RequestInterface $request = null,
-        string $key_query = 'q'
-    ): string {
+    public function parseQueryFromRequest(?RequestInterface $request = null): string
+    {
         if ($request === null && $this->currentRequest === null) {
             throw new \InvalidArgumentException('No request is provided.');
         }
 
-        $uri = $request === null
-            ? $this->currentRequest->getUri()
-            : $request->getUri();
+        $path = $request === null
+            ? $this->currentRequest->getUri()->getPath()
+            : $request->getUri()->getPath();
 
-        if ($this->isRewrite()) {
-            return $uri->getPath() === '/'
-                ? '/'
-                : ltrim($uri->getPath(), '/');
-        }
-        /* Rempli un array des paramètres de l'Uri. */
-        parse_str($uri->getQuery(), $parseQuery);
-
-        return $parseQuery[ $key_query ]
-            ?? '/';
+        return $path === ''
+            ? '/'
+            : $path;
     }
 
     /**
