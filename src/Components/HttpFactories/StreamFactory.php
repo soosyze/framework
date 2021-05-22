@@ -8,6 +8,7 @@
 
 namespace Soosyze\Components\HttpFactories;
 
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 use Soosyze\Components\Http\Stream;
 
@@ -18,7 +19,7 @@ use Soosyze\Components\Http\Stream;
  *
  * @author Mathieu NOËL <mathieu@soosyze.com>
  */
-class StreamFactory
+class StreamFactory implements StreamFactoryInterface
 {
     /**
      * Create a new stream from a string.

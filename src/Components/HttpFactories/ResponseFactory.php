@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Soosyze\Components\HttpFactories;
 
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Soosyze\Components\Http\Response;
 
@@ -20,7 +21,7 @@ use Soosyze\Components\Http\Response;
  *
  * @author Mathieu NOËL <mathieu@soosyze.com>
  */
-class ResponseFactory
+class ResponseFactory implements ResponseFactoryInterface
 {
     /**
      * Create a new response.

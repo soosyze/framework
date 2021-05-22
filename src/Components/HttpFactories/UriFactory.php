@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Soosyze\Components\HttpFactories;
 
+use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
 use Soosyze\Components\Http\Uri;
 
@@ -20,7 +21,7 @@ use Soosyze\Components\Http\Uri;
  *
  * @author Mathieu NOËL <mathieu@soosyze.com>
  */
-class UriFactory
+class UriFactory implements UriFactoryInterface
 {
     /**
      * Create a new URI.
