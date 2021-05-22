@@ -20,6 +20,11 @@ namespace Soosyze\Components\Form;
 class FormBuilder extends FormGroupBuilder
 {
     /**
+     * @var array
+     */
+    protected $values = [];
+
+    /**
      * Déclare l'ouverture du formulaire.
      *
      * @param array $attr
@@ -82,5 +87,19 @@ class FormBuilder extends FormGroupBuilder
             '<form%s>',
             $this->renderAttrInput($attr)
         ) . self::EOL;
+    }
+
+    /**
+     * Hydrate les valeurs du formulaire.
+     *
+     * @param array $values
+     *
+     * @return $this
+     */
+    public function setValues(array $values): self
+    {
+        $this->values = array_merge($this->values, $values);
+
+        return $this;
     }
 }

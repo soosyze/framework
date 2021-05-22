@@ -25,6 +25,13 @@ use Soosyze\Exception\Container\NotFoundException;
 class Container implements ContainerInterface
 {
     /**
+     * Liste des alias.
+     *
+     * @var array
+     */
+    protected $alias = [];
+
+    /**
      * Liste des services.
      *
      * @var array
@@ -68,21 +75,21 @@ class Container implements ContainerInterface
     /**
      * Charges un service.
      *
-     * @param string $key   Nom du service.
-     * @param string $class Objet à instancier.
-     * @param array  $arg   Arguments d'instanciation.
-     * @param array  $hooks Liste des hooks.
+     * @param string $key       Nom du service.
+     * @param string $class     Objet à instancier.
+     * @param array  $arguments Arguments d'instanciation.
+     * @param array  $hooks     Liste des hooks.
      *
      * @return $this
      */
     public function setService(
         string $key,
         string $class,
-        array $arg = [],
+        array $arguments = [],
         array $hooks = []
     ): self {
-        $this->services[ $key ] = [ 'class' => $class, 'arguments' => $arg, 'hooks' => $hooks ];
-        $this->loadHooks([ $this->services[ $key ] ]);
+        $this->services[ $key ] = compact('class', 'arguments', 'hooks');
+        $this->loadHooks([ $key =>  $this->services[ $key ] ]);
 
         return $this;
     }
@@ -159,13 +166,13 @@ class Container implements ContainerInterface
      */
     public function get(string $id)
     {
-        if (isset($this->instances[ $key ])) {
-            return $this->instances[ $key ];
+        if (isset($this->instances[ $id ])) {
+            return $this->instances[ $id ];
         }
 
-        if (!isset($this->services[ $key ])) {
+        if (!isset($this->services[ $id ])) {
             throw new NotFoundException(
-                htmlspecialchars("Service $key does not exist.")
+                htmlspecialchars("Service $id does not exist.")
             );
         }
 
@@ -174,16 +181,16 @@ class Container implements ContainerInterface
              * ReflectionClass à la même fonctionnalité que call_user_func_array
              * mais pour le constructeur d'un objet.
              */
-            $ref = new \ReflectionClass($this->services[ $key ][ 'class' ]);
+            $ref = new \ReflectionClass($this->services[ $id ][ 'class' ]);
         } catch (\ReflectionException $ex) {
             throw new ContainerException(
-                htmlspecialchars("Class $key is not exist.")
+                htmlspecialchars("Class $id is not exist.")
             );
         }
 
-        $args     = $this->matchArgs($key);
+        $args     = $this->matchArgs($ref, $id);
         $instance = $ref->newInstanceArgs($args);
-        $this->setInstance($key, $instance);
+        $this->setInstance($id, $instance);
 
         return $instance;
     }
@@ -252,7 +259,7 @@ class Container implements ContainerInterface
     {
         if (!\is_array($config) && !($config instanceof \ArrayAccess)) {
             throw new \InvalidArgumentException(
-                'The configuration must be an ArrayAccess array or instance.'
+                'The configuration must be an \ArrayAccess array or instance.'
             );
         }
         $this->config = $config;
@@ -270,6 +277,8 @@ class Container implements ContainerInterface
     protected function loadHooks(array $services): void
     {
         foreach ($services as $service => $value) {
+            $this->alias[ $value[ 'class' ] ] = $service;
+
             if (!isset($value[ 'hooks' ])) {
                 continue;
             }
@@ -283,34 +292,72 @@ class Container implements ContainerInterface
      * Alimente les arguments d'un service avec
      * des valeurs, des élements de configuration ou/et d'autres services.
      *
-     * @param string $key Nom du service.
+     * @param \ReflectionClass $ref
+     * @param string           $key Nom du service.
      *
-     * @return array Arguments chargés.
+     * @throws \RuntimeException
+     * @return array             Arguments chargés.
      */
-    private function matchArgs(string $key): array
+    private function matchArgs(\ReflectionClass $ref, string $key): array
     {
-        if (!isset($this->services[ $key ][ 'arguments' ])) {
+        $construct = $ref->getConstructor();
+        if ($construct === null) {
             return [];
         }
 
-        $args = $this->services[ $key ][ 'arguments' ];
+        $params = $construct->getParameters();
+        $args   = $this->services[ $key ][ 'arguments' ] ?? [];
+        $out    = [];
 
-        foreach ($args as &$arg) {
-            /* Injecte d'autres services comme argument d'instantiation du service appelé. */
-            if (strpos($arg, '@') === 0) {
-                $arg = $this->get(substr($arg, 1));
+        foreach ($params as $param) {
+            $nameParam = $param->getName();
+            if (isset($args[ $nameParam ])) {
+                $out[] = $this->matchParam($args[ $nameParam ]);
+
+                continue;
             }
-            /* Injecte un parmètre comme argument d'instantiation du service appelé. */
-            elseif (strpos($arg, '#') === 0) {
-                $arg = $this->config[ substr($arg, 1) ];
+
+            $typeParam = (string) $param->getType();
+            if (isset($this->alias[ $typeParam ])) {
+                $out[] = $this->get($this->alias[ $typeParam ]);
+
+                continue;
             }
-            /* Dans le cas ou ont souhaites échaper l'appel à un autre service ou un paramètre. */
-            elseif (strpos($arg, '\@') === 0 || strpos($arg, '\#') === 0) {
-                $arg = substr($arg, 1);
+
+            if ($param->isOptional() === false) {
+                throw new \RuntimeException("The $typeParam parameter is absent");
             }
         }
-        unset($arg);
 
-        return $args;
+        return $out;
+    }
+
+    /**
+     * Alimente les arguments d'un service avec
+     * des valeurs, des élements de configuration ou/et d'autres services.
+     *
+     * @param mixed $arg
+     *
+     * @return mixed
+     */
+    private function matchParam($arg)
+    {
+        if (!\is_string($arg)) {
+            return $arg;
+        }
+        /* Injecte d'autres services comme argument d'instantiation du service appelé. */
+        if (strpos($arg, '@') === 0) {
+            return $this->get(substr($arg, 1));
+        }
+        /* Injecte un parmètre comme argument d'instantiation du service appelé. */
+        if (strpos($arg, '#') === 0) {
+            return $this->config[ substr($arg, 1) ];
+        }
+        /* Dans le cas ou ont souhaites échaper l'appel à un autre service ou un paramètre. */
+        if (strpos($arg, '\@') === 0 || strpos($arg, '\#') === 0) {
+            return substr($arg, 1);
+        }
+
+        return $arg;
     }
 }
