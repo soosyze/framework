@@ -8,6 +8,7 @@
 
 namespace Soosyze\Components\HttpClient;
 
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Soosyze\Components\Http\Response;
@@ -19,7 +20,7 @@ use Soosyze\Components\HttpClient\Exception\RequestException;
 /**
  * @author Mathieu NOËL <mathieu@soosyze.com>
  */
-class Client
+class Client implements ClientInterface
 {
     /**
      * cUrl handle
