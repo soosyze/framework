@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Soosyze\Components\HttpClient\Exception;
 
+use Psr\Http\Client\RequestExceptionInterface;
 use Psr\Http\Message\RequestInterface;
 use Soosyze\Components\HttpClient\Exception\ClientException;
 
@@ -14,7 +15,7 @@ use Soosyze\Components\HttpClient\Exception\ClientException;
  *      - Request is invalid (e.g. method is missing)
  *      - Runtime request errors (e.g. the body stream is not seekable)
  */
-class RequestException extends ClientException
+class RequestException extends ClientException implements RequestExceptionInterface
 {
     /**
      * Request instance

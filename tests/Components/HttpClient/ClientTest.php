@@ -2,6 +2,7 @@
 
 namespace Soosyze\Tests\Components\HttpClient;
 
+use Psr\Http\Client\NetworkExceptionInterface;
 use Soosyze\Components\Http\Request;
 use Soosyze\Components\Http\Uri;
 use Soosyze\Components\HttpClient\Client;
@@ -53,7 +54,10 @@ class ClientTest extends \PHPUnit\Framework\TestCase
             Uri::create('https://fdhgqstedhrfthjdrtutrdyj.com')
         );
 
-        $this->expectException(\Exception::class);
-        $this->client->sendRequest($request);
+        try {
+            $this->client->sendRequest($request);
+        } catch (NetworkExceptionInterface $ex) {
+            $this->assertEquals($request, $ex->getRequest());
+        }
     }
 }
