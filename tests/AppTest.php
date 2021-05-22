@@ -14,15 +14,11 @@ class AppTest extends \PHPUnit\Framework\TestCase
      */
     protected static $object;
 
-    public static function setUpBeforeClass(): void
-    {
-    }
-
     protected function setUp(): void
     {
         $serverRequest = new ServerRequest(
             'GET',
-            Uri::create('http://test.com/?q=index'),
+            Uri::create('http://test.com/index'),
             [],
             null,
             '1.1',
@@ -53,7 +49,7 @@ class AppTest extends \PHPUnit\Framework\TestCase
     public function testRunJson(): void
     {
         self::$object->addHook('app.response.before', function (&$request, $response) {
-            $uri     = Uri::create('http://test.com?q=json');
+            $uri     = Uri::create('http://test.com/json');
             $request = new ServerRequest('GET', $uri);
         });
 
