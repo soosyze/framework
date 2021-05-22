@@ -150,22 +150,15 @@ class Container implements ContainerInterface
      * Si le service existe alors on le retourne, sinon on injecte
      * ses dépendances et retourne son instance.
      *
-     * @param string $key Nom du service.
+     * @param string $id Nom du service.
      *
-     * @throws \InvalidArgumentException La fonction get accepte uniquement les chaînes de caractères.
-     * @throws NotFoundException         Le service appelé n'existe pas.
-     * @throws ContainerException        La classe n'est pas instanciable.
+     * @throws NotFoundException  Le service appelé n'existe pas.
+     * @throws ContainerException La classe n'est pas instanciable.
      *
      * @return object
      */
-    public function get($key)
+    public function get(string $id)
     {
-        if (!is_string($key)) {
-            throw new \InvalidArgumentException(htmlspecialchars(
-                "Get function only accepts strings. Input was : $key."
-            ));
-        }
-
         if (isset($this->instances[ $key ])) {
             return $this->instances[ $key ];
         }
@@ -198,21 +191,13 @@ class Container implements ContainerInterface
     /**
      * Si le service existe.
      *
-     * @param string $key Nom du service.
-     *
-     * @throws \InvalidArgumentException La fonction get accepte uniquement les chaînes de caractères.
+     * @param string $id Nom du service.
      *
      * @return bool
      */
-    public function has($key)
+    public function has(string $id): bool
     {
-        if (!is_string($key)) {
-            throw new \InvalidArgumentException(htmlspecialchars(
-                "Get function only accepts strings. Input was: $key."
-            ));
-        }
-
-        return isset($this->services[ $key ]) || isset($this->instances[ $key ]);
+        return isset($this->services[ $id ]) || isset($this->instances[ $id ]);
     }
 
     /**

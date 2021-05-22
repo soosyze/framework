@@ -129,11 +129,6 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     public function providerGetException(): \Generator
     {
         yield [
-            1,
-            \InvalidArgumentException::class,
-            'Get function only accepts strings. Input was : 1.'
-        ];
-        yield [
             'error',
             NotFoundExceptionInterface::class,
             'Service error does not exist.'
@@ -150,32 +145,6 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $this->object->setInstance('service1', new Service1);
 
         $this->assertTrue($this->object->has('service1'));
-    }
-
-    /**
-     * @dataProvider providerHasException
-     *
-     * @param mixed                   $key
-     * @param class-string<Throwable> $exceptionClass
-     */
-    public function testHasException(
-        $key,
-        string $exceptionClass,
-        string $exceptionMessage
-    ): void {
-        $this->expectException($exceptionClass);
-        $this->expectExceptionMessage($exceptionMessage);
-        $this->expectException(\Exception::class);
-        $this->object->has($key);
-    }
-
-    public function providerHasException(): \Generator
-    {
-        yield [
-            1,
-            \InvalidArgumentException::class,
-            'Get function only accepts strings. Input was: 1.'
-        ];
     }
 
     public function testHook(): void
