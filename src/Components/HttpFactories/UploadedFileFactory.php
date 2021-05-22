@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Soosyze\Components\HttpFactories;
 
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UploadedFileFactoryInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Soosyze\Components\Http\UploadedFile;
 
@@ -21,7 +22,7 @@ use Soosyze\Components\Http\UploadedFile;
  *
  * @author Mathieu NOËL <mathieu@soosyze.com>
  */
-class UploadedFileFactory
+class UploadedFileFactory implements UploadedFileFactoryInterface
 {
     /**
      * Create a new uploaded file.

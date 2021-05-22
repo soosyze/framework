@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Soosyze\Components\HttpFactories;
 
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Soosyze\Components\Http\Request;
 use Soosyze\Components\Http\Uri;
@@ -21,7 +22,7 @@ use Soosyze\Components\Http\Uri;
  *
  * @author Mathieu NOËL <mathieu@soosyze.com>
  */
-class RequestFactory
+class RequestFactory implements RequestFactoryInterface
 {
     /**
      * Create a new request.
