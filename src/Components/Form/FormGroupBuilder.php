@@ -151,7 +151,7 @@ class FormGroupBuilder
             $item = $this->getItem($arg[ 0 ]);
             $attr = $arg[ 1 ] ?? [];
 
-            $item[ 'attr' ] = $this->merge_attr($item[ 'attr' ], $attr);
+            $item[ 'attr' ] = $this->mergeAttr($item[ 'attr' ], $attr);
 
             $method = self::$typeInputRender[ $type ];
 
@@ -715,14 +715,12 @@ class FormGroupBuilder
      *
      * @param array $tab1
      * @param array $tab2
-     * @param bool  $crushed
      *
      * @return array Fusion des 2 tableaux.
      */
-    protected function merge_attr(
+    protected function mergeAttr(
         array $tab1 = [],
-        array $tab2 = [],
-        bool $crushed = false
+        array $tab2 = []
     ): array {
         if (!$tab1 && $tab2) {
             return $tab2;
@@ -734,7 +732,7 @@ class FormGroupBuilder
             return [];
         }
         $intersect = array_intersect_key($tab1, $tab2);
-        if ($intersect && !$crushed) {
+        if ($intersect) {
             foreach ($intersect as $key => $value) {
                 $tab2[ $key ] .= ' ' . $value;
             }
@@ -767,7 +765,7 @@ class FormGroupBuilder
     protected function addAttrRecurses(string $key, array $attr): bool
     {
         if (isset($this->form[ $key ])) {
-            $this->form[ $key ][ 'attr' ] = $this->merge_attr($this->form[ $key ][ 'attr' ], $attr);
+            $this->form[ $key ][ 'attr' ] = $this->mergeAttr($this->form[ $key ][ 'attr' ], $attr);
 
             return true;
         }
@@ -848,20 +846,20 @@ class FormGroupBuilder
      *
      * @return void
      */
-    private function array_splice_assoc(
+    private function arraySpliceAssoc(
         array &$input,
         $offset,
         $length,
         array $replacement,
         bool $after = false
     ): void {
-        $key_indices = array_flip(array_keys($input));
+        $keyIndices = array_flip(array_keys($input));
 
         if (isset($input[ $offset ]) && is_string($offset)) {
-            $offset = $key_indices[ $offset ];
+            $offset = $keyIndices[ $offset ];
         }
         if (isset($input[ $length ]) && is_string($length)) {
-            $length = $key_indices[ $length ] - $offset;
+            $length = $keyIndices[ $length ] - $offset;
         }
 
         $input = array_slice($input, 0, $offset + ($after
@@ -886,7 +884,7 @@ class FormGroupBuilder
         if (isset($this->form[ $key ])) {
             $subform = new FormGroupBuilder;
             $callback($subform);
-            $this->array_splice_assoc($this->form, $key, ($after
+            $this->arraySpliceAssoc($this->form, $key, ($after
                     ? $key
                     : 0), $subform->getForm(), $after);
 

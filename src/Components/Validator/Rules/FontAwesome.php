@@ -42,7 +42,7 @@ class FontAwesome extends \Soosyze\Components\Validator\Rule
      */
     protected function test(string $key, $value, $args, bool $not): void
     {
-        [ $pattern, $stylesPattern ] = $this->getPatern($args);
+        [ $pattern, $stylesPattern ] = $this->getPattern($args);
 
         if (!preg_match($pattern, $value) && $not) {
             $this->addReturn($key, 'must', [ ':list' => $stylesPattern ]);
@@ -62,7 +62,7 @@ class FontAwesome extends \Soosyze\Components\Validator\Rule
         ];
     }
 
-    private function getPatern(?string $args): array
+    private function getPattern(?string $args): array
     {
         if ($args === null) {
             return [ '/fa(b|s)? fa-[a-z]+/', 'brands,solid' ];

@@ -266,34 +266,34 @@ class Util
     /**
      * Néttoye la chaine pour correspondre au chemin d'une requête.
      *
-     * @param string $path           Chemin à nettoyer.
-     * @param string $character_mask Liste de caractères à supprimer en début et fin de chaîne.
+     * @param string $path          Chemin à nettoyer.
+     * @param string $characterMask Liste de caractères à supprimer en début et fin de chaîne.
      *
      * @return string Chemin nettoyé.
      */
     public static function cleanPath(
         string $path,
-        string $character_mask = "/ \t\n\r\0\x0B"
+        string $characterMask = "/ \t\n\r\0\x0B"
     ): string {
         $str = str_replace('\\', '/', $path);
         $str = preg_replace('/\/+/', '/', $str);
 
-        return rtrim($str, $character_mask);
+        return rtrim($str, $characterMask);
     }
 
     /**
      * Néttoye la chaine pour correspondre au chemin du système.
      *
-     * @param string $dir            Chemin à nettoyer.
-     * @param string $character_mask Liste de caractères à supprimer en début et fin de chaîne.
+     * @param string $dir           Chemin à nettoyer.
+     * @param string $characterMask Liste de caractères à supprimer en début et fin de chaîne.
      *
      * @return string Chemin nettoyé.
      */
     public static function cleanDir(
         string $dir,
-        string $character_mask = "/ \t\n\r\0\x0B"
+        string $characterMask = "/ \t\n\r\0\x0B"
     ): string {
-        $str = self::cleanPath($dir, $character_mask);
+        $str = self::cleanPath($dir, $characterMask);
 
         return str_replace('/', DIRECTORY_SEPARATOR, $str);
     }

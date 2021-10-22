@@ -74,10 +74,10 @@ class Client implements ClientInterface
                 throw new RequestException($request, curl_error($this->handle));
         }
 
-        $code        = curl_getinfo($this->handle, CURLINFO_RESPONSE_CODE);
-        $header_size = curl_getinfo($this->handle, CURLINFO_HEADER_SIZE);
-        $headers     = substr($exec, 0, $header_size);
-        $body        = substr($exec, $header_size);
+        $code       = curl_getinfo($this->handle, CURLINFO_RESPONSE_CODE);
+        $headerSize = curl_getinfo($this->handle, CURLINFO_HEADER_SIZE);
+        $headers    = substr($exec, 0, $headerSize);
+        $body       = substr($exec, $headerSize);
 
         curl_close($this->handle);
         unset($this->handle);
