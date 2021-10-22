@@ -87,7 +87,7 @@ class FormBuilder extends FormGroupBuilder
      */
     public function form_open(array $attrAdd = []): string
     {
-        $attr = $this->merge_attr($this->form[ 'open' ][ 'attr' ], $attrAdd);
+        $attr = $this->mergeAttr($this->form[ 'open' ][ 'attr' ], $attrAdd);
 
         return sprintf(
             '<form%s>',

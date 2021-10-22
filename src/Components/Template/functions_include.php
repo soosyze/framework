@@ -41,14 +41,14 @@ function not_empty_or(&$var, $default = '')
  * Si la condition est valide alors la première valeur est retournée sinon la seconde valeur est retournée.
  *
  * @param mixed $condition
- * @param mixed $value_true
- * @param mixed $value_false
+ * @param mixed $valueTrue
+ * @param mixed $valueFalse
  *
  * @return mixed
  */
-function if_or($condition, $value_true, $value_false = '')
+function if_or($condition, $valueTrue, $valueFalse = '')
 {
     return $condition
-        ? $value_true
-        : $value_false;
+        ? $valueTrue
+        : $valueFalse;
 }
