@@ -19,6 +19,8 @@ namespace Soosyze\Components\Form;
  */
 class FormBuilder extends FormGroupBuilder
 {
+    const HTTP_METHODS = [ 'DELETE', 'OPTION', 'PATCH', 'PUT' ];
+
     /**
      * @var array
      */
@@ -31,6 +33,10 @@ class FormBuilder extends FormGroupBuilder
      */
     public function __construct(array $attr = [])
     {
+        if (!empty($attr[ 'method' ]) && in_array(strtoupper($attr[ 'method' ]), self::HTTP_METHODS)) {
+            $this->hidden('__method', [ 'value' => $attr[ 'method' ] ]);
+            $attr[ 'method' ] = 'post';
+        }
         $this->openForm($attr);
     }
 

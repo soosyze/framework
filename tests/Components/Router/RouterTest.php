@@ -30,7 +30,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
             Route::get('page', '/:id', 'TestController@page', [ ':id' => '[0-9]+' ]);
             Route::post('post', '/:id/post', 'TestController@post', [ ':id' => '[0-9]+' ]);
             Route::put('put', '/:id/put', 'TestController@put', [ ':id' => '[0-9]+' ]);
-            Route::path('path', '/:id/path', 'TestController@path', [ ':id' => '[0-9]+' ]);
+            Route::patch('patch', '/:id/patch', 'TestController@patch', [ ':id' => '[0-9]+' ]);
             Route::option('option', '/:id/option', 'TestController@option', [ ':id' => '[0-9]+' ]);
             Route::delete('delete', '/:id/delete', 'TestController@delete', [ ':id' => '[0-9]+' ]);
             Route::get('page.format', '/:id.:ext', 'TestController@format', [

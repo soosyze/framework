@@ -119,13 +119,13 @@ final class Route
      *
      * @return void
      */
-    public static function path(
+    public static function patch(
         string $key,
         string $path,
         string $uses,
         array $withs = []
     ): void {
-        self::addMethod('path', $key, $path, $uses, $withs);
+        self::addMethod('patch', $key, $path, $uses, $withs);
     }
 
     /**
