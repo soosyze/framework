@@ -100,7 +100,7 @@ abstract class App
      *
      * @return self Instance unique de App.
      */
-    public static function getInstance(ServerRequestInterface $request): self
+    public static function getInstance(?ServerRequestInterface $request = null): self
     {
         if (self::$instance === null) {
             self::$instance = new static($request);

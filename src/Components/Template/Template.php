@@ -429,7 +429,7 @@ class Template
      *
      * @return string
      */
-    private function filter(string $key, string $value): string
+    private function filter(string $key, $value)
     {
         if (isset($this->filters[ $key ])) {
             foreach ($this->filters[ $key ] as $filter) {

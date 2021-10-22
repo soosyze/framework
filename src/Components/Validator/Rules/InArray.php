@@ -30,9 +30,9 @@ class InArray extends \Soosyze\Components\Validator\Rule
         $array = explode(',', $args);
 
         if (!in_array($value, $array) && $not) {
-            $this->addReturn($key, 'must', [ ':list' => $args ]);
+            $this->addReturn($key, 'must', [ ':list' => implode(', ', $array) ]);
         } elseif (in_array($value, $array) && !$not) {
-            $this->addReturn($key, 'not', [ ':list' => $args ]);
+            $this->addReturn($key, 'not', [ ':list' => implode(', ', $array) ]);
         }
     }
 

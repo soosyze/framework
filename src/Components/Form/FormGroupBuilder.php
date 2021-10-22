@@ -387,7 +387,7 @@ class FormGroupBuilder
      */
     public function textarea(
         string $name,
-        string $content = '',
+        ?string $content = '',
         array $attr = []
     ): self {
         return $this->input($name, [

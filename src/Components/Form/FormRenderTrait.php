@@ -59,7 +59,7 @@ trait FormRenderTrait
             }
             $html .= in_array($key, self::$attributesUnique)
                 ? ' ' . $key
-                : ' ' . htmlspecialchars($key) . '="' . htmlentities($value) . '"';
+                : ' ' . htmlspecialchars($key) . '="' . htmlentities((string) $value) . '"';
         }
 
         return $html;
@@ -204,7 +204,7 @@ trait FormRenderTrait
             '<textarea name="%s"%s>%s</textarea>',
             htmlspecialchars($key),
             $this->renderAttrInput($item[ 'attr' ]),
-            htmlentities($item[ 'content' ])
+            htmlentities($item[ 'content' ] ?? '')
         ) . self::EOL . $this->renderFeedback($key);
     }
 
