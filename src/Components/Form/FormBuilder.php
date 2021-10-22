@@ -102,7 +102,7 @@ class FormBuilder extends FormGroupBuilder
      *
      * @return $this
      */
-    public function setValues(array $values): self
+    public function setValues(array $values)
     {
         $this->values = array_merge($this->values, $values);
 
