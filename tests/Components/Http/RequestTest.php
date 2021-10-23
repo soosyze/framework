@@ -20,7 +20,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     public function testConstructException(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectErrorMessage('The method is not valid (only CONNECT|DELETE|GET|HEAD|OPTIONS|PATCH|POST|PURGE|PUT|TRACE).');
+        $this->expectExceptionMessage('The method is not valid (only CONNECT|DELETE|GET|HEAD|OPTIONS|PATCH|POST|PURGE|PUT|TRACE).');
         new Request('error', new Uri());
     }
 
@@ -43,7 +43,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     public function testWithMethodException($method): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectErrorMessage('The method must be a string');
+        $this->expectExceptionMessage('The method must be a string');
         $this->object->withMethod($method);
     }
 
@@ -89,7 +89,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     public function testWithRequestTargetException(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectErrorMessage('The target of the request must be a string.');
+        $this->expectExceptionMessage('The target of the request must be a string.');
         $this->object->withRequestTarget(0);
     }
 

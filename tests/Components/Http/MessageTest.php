@@ -25,7 +25,7 @@ class MessageTest extends \PHPUnit\Framework\TestCase
     public function testWithProtocolVersionValueException($version): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectErrorMessage('The specified protocol is invalid.');
+        $this->expectExceptionMessage('The specified protocol is invalid.');
         $this->object->withProtocolVersion($version);
     }
 
@@ -137,7 +137,7 @@ class MessageTest extends \PHPUnit\Framework\TestCase
         string $exceptionMessage
     ): void {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectErrorMessage($exceptionMessage);
+        $this->expectExceptionMessage($exceptionMessage);
         $this->object->withHeader($name, $value);
     }
 

@@ -284,7 +284,7 @@ class ServerRequestTest extends \PHPUnit\Framework\TestCase
     public function testWithUploadedFilesException(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectErrorMessage('The input parameter is not in the correct format.');
+        $this->expectExceptionMessage('The input parameter is not in the correct format.');
         $this->object->withUploadedFiles([ 'tmp_name' => '' ]);
     }
 
@@ -337,7 +337,7 @@ class ServerRequestTest extends \PHPUnit\Framework\TestCase
     public function testParsedBodyException($data): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectErrorMessage('First parameter to withParsedBody MUST be object, array or null.');
+        $this->expectExceptionMessage('First parameter to withParsedBody MUST be object, array or null.');
         $this->object->withParsedBody($data);
     }
 

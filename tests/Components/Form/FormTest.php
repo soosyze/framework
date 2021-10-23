@@ -163,7 +163,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     public function testInputException(): void
     {
         $this->expectException(\BadMethodCallException::class);
-        $this->expectErrorMessage('The error type field does not exist');
+        $this->expectExceptionMessage('The error type field does not exist');
         $this->object->error('inputTextarea', 'lorem ipsum');
     }
 
@@ -376,7 +376,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     public function testGetItemException(): void
     {
         $this->expectException(\OutOfBoundsException::class);
-        $this->expectErrorMessage('The item error was not found.');
+        $this->expectExceptionMessage('The item error was not found.');
         $this->object->text('textName1')->getItem('error');
     }
 
@@ -483,7 +483,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     public function testBeforeException(): void
     {
         $this->expectException(\OutOfBoundsException::class);
-        $this->expectErrorMessage('The item error was not found.');
+        $this->expectExceptionMessage('The item error was not found.');
         $this->object->before('error', function () {
         });
     }
@@ -491,7 +491,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     public function testAfterException(): void
     {
         $this->expectException(\OutOfBoundsException::class);
-        $this->expectErrorMessage('The item error was not found.');
+        $this->expectExceptionMessage('The item error was not found.');
         $this->object->after('error', function () {
         });
     }
@@ -584,7 +584,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     public function testPreprendException(): void
     {
         $this->expectException(\OutOfBoundsException::class);
-        $this->expectErrorMessage('The item error was not found.');
+        $this->expectExceptionMessage('The item error was not found.');
         $this->object->prepend('error', function () {
         });
     }
@@ -592,7 +592,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     public function testappendException(): void
     {
         $this->expectException(\OutOfBoundsException::class);
-        $this->expectErrorMessage('The item error was not found.');
+        $this->expectExceptionMessage('The item error was not found.');
         $this->object->append('error', function () {
         });
     }
