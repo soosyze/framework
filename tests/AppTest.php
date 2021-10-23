@@ -113,7 +113,7 @@ class AppTest extends \PHPUnit\Framework\TestCase
         self::$object->setSettings(['files' => [ 'files/public' ] ]);
 
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectErrorMessage('The framework parameter must return a string.');
+        $this->expectExceptionMessage('The framework parameter must return a string.');
         self::$object->getDir('files');
     }
 

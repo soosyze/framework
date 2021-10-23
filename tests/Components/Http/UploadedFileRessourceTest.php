@@ -45,14 +45,14 @@ class UploadedFileRessourceTest extends \PHPUnit\Framework\TestCase
         unlink($targetPath);
 
         $this->expectException(\RuntimeException::class);
-        $this->expectErrorMessage('The file has already been moved.');
+        $this->expectExceptionMessage('The file has already been moved.');
         $this->object->moveTo($targetPath);
     }
 
     public function testMoveExceptionTarget(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectErrorMessage('Target is incorrect.');
+        $this->expectExceptionMessage('Target is incorrect.');
         $this->object->moveTo(1);
     }
 
@@ -63,7 +63,7 @@ class UploadedFileRessourceTest extends \PHPUnit\Framework\TestCase
         unlink($targetPath);
 
         $this->expectException(\RuntimeException::class);
-        $this->expectErrorMessage('The file has already been moved.');
+        $this->expectExceptionMessage('The file has already been moved.');
         $this->object->getStream();
     }
 

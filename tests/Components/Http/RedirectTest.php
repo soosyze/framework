@@ -28,7 +28,7 @@ class RedirectTest extends \PHPUnit\Framework\TestCase
     public function testRedirectException(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectErrorMessage('Status code is invalid for redirect.');
+        $this->expectExceptionMessage('Status code is invalid for redirect.');
         new Redirect('http://exemple.com', 200);
     }
 }
