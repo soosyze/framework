@@ -107,9 +107,9 @@ class Config implements \ArrayAccess
         if ($key) {
             $this->data[ $file ][ $key ] = $value;
         } else {
-            $this->data[ $file ] = !is_array($value)
-                ? [ $value ]
-                : $value;
+            $this->data[ $file ] = is_array($value)
+                ? $value
+                : [ $value ];
         }
         if (isset($this->data[ $file ])) {
             Util::saveJson($this->path, $file, $this->data[ $file ]);

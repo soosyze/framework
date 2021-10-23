@@ -40,7 +40,7 @@ class FileMimes extends FileExtensions
             return;
         }
 
-        $this->mimetypes = include 'mimetypes_by_extensions.php';
+        $this->mimetypes = include __DIR__ . '/mimetypes_by_extensions.php';
 
         $info = $this->getMime($value);
 

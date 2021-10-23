@@ -158,7 +158,7 @@ class Client implements ClientInterface
 
         $result = curl_setopt_array($this->handle, $this->curlOptions);
 
-        if ($result === false) {
+        if (!$result) {
             throw new ClientException('Unable to configure cURL session');
         }
     }

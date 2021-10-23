@@ -133,7 +133,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($body->eof());
 
         /* Va lire caractère par caractère jusqu'a arriver à la fin de la chaine. */
-        while ($body->eof() === false) {
+        while (!$body->eof()) {
             $body->read(1);
         }
         $this->assertTrue($body->eof());

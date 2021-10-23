@@ -52,7 +52,7 @@ class DateAfter extends Date
      */
     protected function testDateAfter(string $key, $value, $arg, bool $not): void
     {
-        if (!($value > $arg) && $not) {
+        if ($value <= $arg && $not) {
             $this->addReturn($key, 'after', [ ':dateafter' => $arg ]);
         } elseif (($value > $arg) && !$not) {
             $this->addReturn($key, 'not_after', [ ':dateafter' => $arg ]);

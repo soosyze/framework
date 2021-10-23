@@ -87,7 +87,7 @@ class Stream implements StreamInterface
      */
     public function __toString(): string
     {
-        if (!isset($this->stream)) {
+        if ($this->stream === null) {
             return '';
         }
 
@@ -116,7 +116,7 @@ class Stream implements StreamInterface
         try {
             $handle = fopen($filename, $mode);
         } catch (\Exception $ex) {
-            throw new \RuntimeException('The file cannot be opened.');
+            throw new \RuntimeException('The file cannot be opened.', $ex->getCode(), $ex);
         }
 
         return new Stream($handle);
@@ -127,7 +127,7 @@ class Stream implements StreamInterface
      */
     public function close()
     {
-        if (isset($this->stream)) {
+        if ($this->stream !== null) {
             fclose($this->stream);
             $this->detach();
         }
@@ -156,7 +156,7 @@ class Stream implements StreamInterface
      */
     public function getSize()
     {
-        if (!isset($this->stream)) {
+        if ($this->stream === null) {
             return null;
         }
         $stats = fstat($this->stream);
@@ -175,7 +175,7 @@ class Stream implements StreamInterface
      */
     public function tell()
     {
-        if (!isset($this->stream)) {
+        if ($this->stream === null) {
             throw new \RuntimeException('Stream is detached.');
         }
         if (($handle = ftell($this->stream)) === false) {
@@ -192,7 +192,7 @@ class Stream implements StreamInterface
      */
     public function eof()
     {
-        if (!isset($this->stream)) {
+        if ($this->stream === null) {
             throw new \RuntimeException('Stream is detached.');
         }
 
@@ -226,7 +226,7 @@ class Stream implements StreamInterface
      */
     public function seek($offset, $whence = SEEK_SET)
     {
-        if (!isset($this->stream)) {
+        if ($this->stream === null) {
             throw new \RuntimeException('Stream is detached.');
         }
         $this->valideSeekable();
@@ -244,7 +244,7 @@ class Stream implements StreamInterface
      */
     public function rewind()
     {
-        if (!isset($this->stream)) {
+        if ($this->stream === null) {
             throw new \RuntimeException('Stream is detached.');
         }
         $this->valideSeekable();
@@ -274,7 +274,7 @@ class Stream implements StreamInterface
      */
     public function write($string)
     {
-        if (!isset($this->stream)) {
+        if ($this->stream === null) {
             throw new \RuntimeException('Stream is detached.');
         }
         $this->valideWrite();
@@ -308,7 +308,7 @@ class Stream implements StreamInterface
      */
     public function read($length)
     {
-        if (!isset($this->stream)) {
+        if ($this->stream === null) {
             throw new \RuntimeException('Stream is detached.');
         }
         $this->valideRead();
@@ -334,7 +334,7 @@ class Stream implements StreamInterface
      */
     public function getContents()
     {
-        if (!isset($this->stream)) {
+        if ($this->stream === null) {
             throw new \RuntimeException('Stream is detached.');
         }
         $this->valideRead();

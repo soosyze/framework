@@ -66,7 +66,7 @@ class Min extends Size
 
         if ($length < $sizeMin && $not) {
             $this->addReturn($key, 'must', [ ':min' => $min ]);
-        } elseif (!($length < $sizeMin) && !$not) {
+        } elseif ($length >= $sizeMin && !$not) {
             $this->addReturn($key, 'not', [ ':min' => $min ]);
         }
     }

@@ -37,7 +37,7 @@ class FileMimetypes extends File
 
         $mtype = $this->getMime($value);
 
-        if (!(strpos($mtype, $args) === 0) && $not) {
+        if (strpos($mtype, $args) !== 0 && $not) {
             $this->addReturn($key, 'mime_types', [ ':list' => $args ]);
         } elseif (strpos($mtype, $args) === 0 && !$not) {
             $this->addReturn($key, 'not_mime_types', [ ':list' => $args ]);

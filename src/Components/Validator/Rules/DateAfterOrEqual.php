@@ -40,7 +40,7 @@ class DateAfterOrEqual extends DateAfter
      */
     protected function testDateAfter(string $key, $value, $arg, bool $not): void
     {
-        if (!($value >= $arg) && $not) {
+        if ($value < $arg && $not) {
             $this->addReturn('date_after_or_equal', 'after', [ ':dateafter' => $arg ]);
         } elseif (($value >= $arg) && !$not) {
             $this->addReturn('date_after_or_equal', 'not_after', [ ':dateafter' => $arg ]);

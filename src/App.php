@@ -456,8 +456,8 @@ abstract class App
      */
     protected function parseResponse($response): ResponseInterface
     {
-        return !($response instanceof ResponseInterface)
-            ? new Response(200, new Stream($response))
-            : $response;
+        return $response instanceof ResponseInterface
+            ? $response
+            : new Response(200, new Stream($response));
     }
 }
