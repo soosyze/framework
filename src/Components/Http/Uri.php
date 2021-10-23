@@ -488,9 +488,9 @@ class Uri implements UriInterface
             throw new \InvalidArgumentException('The port is not in the TCP/UDP port.');
         }
 
-        return !$this->validPortStandard($port)
-            ? (int) $port
-            : null;
+        return $this->validPortStandard($port)
+            ? null
+            : (int) $port;
     }
 
     /**

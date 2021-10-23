@@ -474,9 +474,9 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     protected function getScriptName(string $default = '/'): string
     {
-        $filename = basename(!empty($this->serverParams[ 'SCRIPT_FILENAME' ])
-            ? $this->serverParams[ 'SCRIPT_FILENAME' ]
-            : '');
+        $filename = basename(empty($this->serverParams[ 'SCRIPT_FILENAME' ])
+            ? ''
+            : $this->serverParams[ 'SCRIPT_FILENAME' ]);
         if (basename($this->serverParams[ 'SCRIPT_NAME' ]
                     ?? null) === $filename) {
             return $this->serverParams[ 'SCRIPT_NAME' ];

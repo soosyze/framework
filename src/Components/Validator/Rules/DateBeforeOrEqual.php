@@ -42,7 +42,7 @@ class DateBeforeOrEqual extends DateBefore
      */
     protected function testDateBefore(string $key, $value, $arg, bool $not): void
     {
-        if (!($value <= $arg) && $not) {
+        if ($value > $arg && $not) {
             $this->addReturn($key, 'before', [ ':datebefore' => $arg ]);
         } elseif (($value <= $arg) && !$not) {
             $this->addReturn($key, 'not_before', [ ':datebefore' => $arg ]);

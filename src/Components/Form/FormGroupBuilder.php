@@ -158,9 +158,7 @@ class FormGroupBuilder
             return $this->$method($arg[ 0 ], $item);
         }
 
-        throw new \BadMethodCallException(htmlspecialchars(
-            "The $type type field does not exist"
-        ));
+        throw new \BadMethodCallException(htmlspecialchars("The $type type field does not exist"));
     }
 
     /**
@@ -732,7 +730,7 @@ class FormGroupBuilder
             return [];
         }
         $intersect = array_intersect_key($tab1, $tab2);
-        if ($intersect) {
+        if ($intersect !== []) {
             foreach ($intersect as $key => $value) {
                 $tab2[ $key ] .= ' ' . $value;
             }

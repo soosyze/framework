@@ -64,7 +64,7 @@ class Max extends Size
 
         if (($length > $sizeMax) && $not) {
             $this->addReturn($key, 'must', [ ':max' => $max ]);
-        } elseif (!($length > $sizeMax) && !$not) {
+        } elseif ($length <= $sizeMax && !$not) {
             $this->addReturn($key, 'not', [ ':max' => $max ]);
         }
     }

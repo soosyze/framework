@@ -55,7 +55,7 @@ abstract class ImageDimensions extends FileMimetypes
     {
         [ $width, $height ] = getimagesize($upload->getStream()->getMetadata('uri'));
 
-        return compact('width', 'height');
+        return ['width' => $width, 'height' => $height];
     }
 
     /**

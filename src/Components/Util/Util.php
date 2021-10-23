@@ -496,7 +496,7 @@ class Util
      *               et la seconde la valeur numérique à remplacer.
      */
     public static function strHumansTimeDiff(
-        \DateTime $from,
+        \DateTimeInterface $from,
         string $to = 'now'
     ): array {
         $interval = \date_create($to)->diff($from);
@@ -532,7 +532,7 @@ class Util
                 : '%s second';
         }
 
-        $suffix = $interval->invert
+        $suffix = $interval->invert !== 0
             ? ' ago'
             : '';
 

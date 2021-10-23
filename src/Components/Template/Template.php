@@ -277,7 +277,7 @@ class Template
      */
     public function render(): string
     {
-        require_once 'functions_include.php';
+        require_once __DIR__ . '/functions_include.php';
         $section = [];
         foreach ($this->sections as $key => &$subTpl) {
             $section[ $key ] = $subTpl !== null

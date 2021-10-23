@@ -48,7 +48,7 @@ class Token extends Size
             $this->addReturn($key, 'error');
         } elseif ($_SESSION[ 'token' ][ $name ] != $value) {
             $this->addReturn($key, 'invalid');
-        } elseif ($_SESSION[ 'token_time' ][ $name ] <= (time() - intval($intervale))) {
+        } elseif ($_SESSION[ 'token_time' ][ $name ] <= (time() - (int) $intervale)) {
             $this->addReturn($key, 'time');
         }
     }
