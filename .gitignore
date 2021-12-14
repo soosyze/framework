@@ -6,7 +6,7 @@
 /vendor/
 
 # Files
+/*.cache
 /*.lock
 /*.phar
-/.php_cs.cache
 /.phpunit.result.cache

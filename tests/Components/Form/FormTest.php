@@ -82,9 +82,9 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->object->number('inputNumber', [ ':actions' => 1 ]);
 
         $this->assertEquals(
-             '<input name="inputNumber" type="number" id="inputNumber">' . PHP_EOL,
-             $this->object->form_input('inputNumber')
-         );
+            '<input name="inputNumber" type="number" id="inputNumber">' . PHP_EOL,
+            $this->object->form_input('inputNumber')
+        );
         $this->assertEquals(
             '<button class="btn input-number-decrement" data-target="#inputNumber" type="button" id="inputNumber-decrement">'
             . '<i class="fa fa-minus" aria-hidden="true"></i>'
