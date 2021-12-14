@@ -1,6 +1,6 @@
 # Soosyze Framework
 
-[![Build Status](https://travis-ci.org/soosyze/framework.svg?branch=master)](https://travis-ci.org/soosyze/framework "Travis")
+[![Build Status](https://github.com/soosyze/framework/workflows/Tests/badge.svg?branch=master)](https://github.com/soosyze/framework/actions?query=branch:master "Tests")
 [![Coverage Status](https://coveralls.io/repos/github/soosyze/framework/badge.svg?branch=master)](https://coveralls.io/github/soosyze/framework?branch=master "Coveralls")
 [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/soosyze/framework/blob/master/LICENSE "LICENSE")
 [![Packagist](https://img.shields.io/packagist/v/soosyze/framework.svg)](https://packagist.org/packages/soosyze/framework "Packagist")
@@ -36,11 +36,10 @@ Soosyze Framework est un micro-framework MVC object offrant un socle solide de d
 
 ## Version PHP
 
-| Version PHP                 | SoosyzeFramework 3.x |
-|-----------------------------|----------------------|
-| <= 5.4                      | ✗ Non supporté       |
-| 5.5 / 5.6                   | ✓ Supporté           |
-| 7.0 / 7.1 / 7.2 / 7.3 / 7.4 | ✓ Supporté           |
+| Version PHP     | SoosyzeFramework 3.x |
+|-----------------|----------------------|
+| <= 7.1          | ✗ Non supporté       |
+| 7.2 / 7.3 / 7.4 | ✓ Supporté           |
 
 ## Extensions
 

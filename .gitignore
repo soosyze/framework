@@ -1,6 +1,7 @@
 # Repertory
 /.scannerwork
 /.history
+/bin/
 /build/
 /nbproject/
 /vendor/
