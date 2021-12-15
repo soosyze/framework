@@ -24,7 +24,7 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-session": "*",
-        "php": ">=5.5",
+        "php": ">=7.2 || <=7.4",
         "psr/container": "^2.0",
         "psr/http-client": "^1.0",
         "psr/http-factory": "^1.0",
@@ -37,7 +37,6 @@
         "soosyze/php-cs-fixer-config": "^1.0"
     },
     "suggest": {
-        "friendsofphp/php-cs-fixer": "Pour normaliser le code PHP.",
         "phpdocumentor/phpdocumentor": "Pour générer une documentation en ligne de commande.",
         "phpmetrics/phpmetrics": "Pour générer un rapport de l'état du code au format HTML.",
         "psr/http-factory": "Pour une meilleur abstraction entre les différents projets utilisant http-message"
@@ -53,6 +52,8 @@
         }
     },
     "config": {
-        "optimize-autoloader": true
+        "bin-dir": "bin",
+        "optimize-autoloader": true,
+        "classmap-authoritative": true
     }
 }
