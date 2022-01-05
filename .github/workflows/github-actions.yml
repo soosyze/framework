@@ -33,6 +33,10 @@ jobs:
         if: matrix.analysis
         run: bin/php-cs-fixer fix --ansi --dry-run --using-cache=no --verbose
 
+      - name: Static analysis
+        if: matrix.analysis
+        run: bin/phpstan
+
       - name: Unit tests
         run: bin/phpunit --coverage-clover clover.xml
 
