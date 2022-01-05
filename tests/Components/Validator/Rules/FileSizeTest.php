@@ -70,8 +70,8 @@ class FileSizeTest extends RuleFile
             'not_file_min' => $this->uplaod_img
         ])->setRules([
             /* Text */
-            'file_min'     => 'min:15',
-            'not_file_min' => '!min:15'
+            'file_min'     => 'min:15B',
+            'not_file_min' => '!min:15B'
         ]);
 
         $this->assertFalse($this->object->isValid());

@@ -28,7 +28,7 @@ class ToBool extends \Soosyze\Components\Validator\Filter
      *
      * @return bool
      */
-    protected function clean(string $key, $value, $args)
+    protected function clean(string $key, $value, $args): bool
     {
         if (!$this->isBool($value)) {
             throw new \InvalidArgumentException('The type must be validated before being filtered.');

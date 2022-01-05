@@ -20,10 +20,10 @@ class AlphaNumText extends Regex
     /**
      * Test si la valeur est alpha numérique et possède des caractères textuelles [a-zA-Z0-9 .!?,;:_-].
      *
-     * @param string     $key   Clé du test.
-     * @param string     $value Valeur à tester.
-     * @param mixed|null $args  Argument de test.
-     * @param bool       $not   Inverse le test.
+     * @param string $key   Clé du test.
+     * @param string $value Valeur à tester.
+     * @param mixed  $args  Argument de test.
+     * @param bool   $not   Inverse le test.
      */
     protected function test(string $key, $value, $args, bool $not): void
     {

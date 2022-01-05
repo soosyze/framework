@@ -44,6 +44,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The method must be a string');
+        /** @phpstan-ignore-next-line */
         $this->object->withMethod($method);
     }
 

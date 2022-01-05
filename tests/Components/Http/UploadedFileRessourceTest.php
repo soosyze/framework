@@ -53,6 +53,7 @@ class UploadedFileRessourceTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Target is incorrect.');
+        /** @phpstan-ignore-next-line */
         $this->object->moveTo(1);
     }
 

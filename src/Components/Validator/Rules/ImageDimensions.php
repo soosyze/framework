@@ -24,11 +24,15 @@ abstract class ImageDimensions extends FileMimetypes
      *
      * @param string                $key   Clé du test.
      * @param UploadedFileInterface $value Valeur à tester.
-     * @param string                $args  Argument de test.
+     * @param mixed                 $args  Argument de test.
      * @param bool                  $not   Inverse le test.
      */
     public function test(string $key, $value, $args, bool $not): void
     {
+        if (!is_string($args)) {
+            throw new \TypeError('The argument must be a string.');
+        }
+
         parent::test('file_mimetypes', $value, 'image', true);
 
         if ($this->hasErrors()) {
@@ -53,7 +57,11 @@ abstract class ImageDimensions extends FileMimetypes
      */
     protected function getDimensions(UploadedFileInterface $upload): array
     {
-        [ $width, $height ] = getimagesize($upload->getStream()->getMetadata('uri'));
+        /** @var string $uri */
+        $uri = $upload->getStream()->getMetadata('uri');
+        /** @var array $imageSize */
+        $imageSize = getimagesize($uri);
+        [ $width, $height ] = $imageSize;
 
         return ['width' => $width, 'height' => $height];
     }

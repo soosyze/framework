@@ -22,13 +22,13 @@ class ToFloat extends \Soosyze\Components\Validator\Filter
      *
      * @param string $key   Identifiant de la valeur.
      * @param mixed  $value Valeur à filtrer.
-     * @param string $args  Argument de filtre.
+     * @param mixed  $args  Argument de filtre.
      *
      * @throws \InvalidArgumentException The type must be validated before being filtered.
      *
      * @return float
      */
-    protected function clean(string $key, $value, $args)
+    protected function clean(string $key, $value, $args): float
     {
         if (($out = filter_var($value, FILTER_VALIDATE_FLOAT)) === false) {
             throw new \InvalidArgumentException('The type must be validated before being filtered.');

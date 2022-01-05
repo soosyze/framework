@@ -22,7 +22,7 @@ class EqualStrict extends \Soosyze\Components\Validator\Rule
      *
      * @param string $key   Clé du test.
      * @param scalar $value Valeur à tester.
-     * @param string $args  Valeur de comparaison.
+     * @param mixed  $args  Valeur de comparaison.
      * @param bool   $not   Inverse le test.
      */
     protected function test(string $key, $value, $args, bool $not): void

@@ -338,6 +338,7 @@ class ServerRequestTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('First parameter to withParsedBody MUST be object, array or null.');
+        /** @phpstan-ignore-next-line */
         $this->object->withParsedBody($data);
     }
 

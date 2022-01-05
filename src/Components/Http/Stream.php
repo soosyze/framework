@@ -67,7 +67,7 @@ class Stream implements StreamInterface
      *
      * @see http://php.net/manual/fr/wrappers.php.php
      *
-     * @param null|object|resource|scalar $mixed
+     * @param mixed $mixed
      *
      * @throws \InvalidArgumentException Le type de données n'est pas pris en charge par flux de données.
      */
@@ -93,6 +93,7 @@ class Stream implements StreamInterface
 
         $this->seek(0);
 
+        /** @phpstan-ignore-next-line */
         return (string) stream_get_contents($this->stream);
     }
 
@@ -105,19 +106,14 @@ class Stream implements StreamInterface
      * @throws \InvalidArgumentException Le mode de lecture n'est pas valide.
      * @throws \RuntimeException         Le fichier ne peut pas être ouvert.
      *
-     * @return \Soosyze\Components\Http\Stream
+     * @return Stream
      */
-    public static function createStreamFromFile($filename, $mode = 'r')
+    public static function createStreamFromFile(string $filename, string $mode = 'r'): StreamInterface
     {
         if (!in_array($mode, self::$modes[ 'read' ])) {
             throw new \InvalidArgumentException('The mode is invalid.');
         }
-
-        try {
-            $handle = fopen($filename, $mode);
-        } catch (\Exception $ex) {
-            throw new \RuntimeException('The file cannot be opened.', $ex->getCode(), $ex);
-        }
+        $handle = Utils::tryFopen($filename, $mode);
 
         return new Stream($handle);
     }
@@ -125,7 +121,7 @@ class Stream implements StreamInterface
     /**
      * Ferme le flux de données et toutes les autres ressources.
      */
-    public function close()
+    public function close(): void
     {
         if ($this->stream !== null) {
             fclose($this->stream);
@@ -154,7 +150,7 @@ class Stream implements StreamInterface
      *
      * @return int|null Renvoie la taille en octets si elle est connue, ou null si elle est inconne.
      */
-    public function getSize()
+    public function getSize(): ?int
     {
         if ($this->stream === null) {
             return null;
@@ -163,7 +159,7 @@ class Stream implements StreamInterface
 
         return $stats === false
             ? null
-            :  $stats[ 'size' ] ?? null;
+            :  $stats[ 'size' ];
     }
 
     /**
@@ -173,7 +169,7 @@ class Stream implements StreamInterface
      *
      * @return int Position du pointeur de fichier
      */
-    public function tell()
+    public function tell(): int
     {
         if ($this->stream === null) {
             throw new \RuntimeException('Stream is detached.');
@@ -190,7 +186,7 @@ class Stream implements StreamInterface
      *
      * @return bool
      */
-    public function eof()
+    public function eof(): bool
     {
         if ($this->stream === null) {
             throw new \RuntimeException('Stream is detached.');
@@ -204,7 +200,7 @@ class Stream implements StreamInterface
      *
      * @return bool
      */
-    public function isSeekable()
+    public function isSeekable(): bool
     {
         $seekable = $this->getMetadata('seekable');
 
@@ -224,7 +220,7 @@ class Stream implements StreamInterface
      *
      * @return void
      */
-    public function seek($offset, $whence = SEEK_SET)
+    public function seek($offset, $whence = SEEK_SET): void
     {
         if ($this->stream === null) {
             throw new \RuntimeException('Stream is detached.');
@@ -242,7 +238,7 @@ class Stream implements StreamInterface
      *
      * @return void
      */
-    public function rewind()
+    public function rewind(): void
     {
         if ($this->stream === null) {
             throw new \RuntimeException('Stream is detached.');
@@ -258,7 +254,7 @@ class Stream implements StreamInterface
      *
      * @return bool
      */
-    public function isWritable()
+    public function isWritable(): bool
     {
         return in_array($this->getMetadata('mode'), self::$modes[ 'write' ]);
     }
@@ -272,7 +268,7 @@ class Stream implements StreamInterface
      *
      * @return int Renvoie le nombre d'octets écrits dans le flux.
      */
-    public function write($string)
+    public function write($string): int
     {
         if ($this->stream === null) {
             throw new \RuntimeException('Stream is detached.');
@@ -290,7 +286,7 @@ class Stream implements StreamInterface
      *
      * @return bool
      */
-    public function isReadable()
+    public function isReadable(): bool
     {
         return in_array($this->getMetadata('mode'), self::$modes[ 'read' ]);
     }
@@ -306,7 +302,7 @@ class Stream implements StreamInterface
      *
      * @return string Renvoie les données lues dans le flux ou une chaîne vide si aucun octet n'est disponible.
      */
-    public function read($length)
+    public function read($length): string
     {
         if ($this->stream === null) {
             throw new \RuntimeException('Stream is detached.');
@@ -332,7 +328,7 @@ class Stream implements StreamInterface
      *
      * @return string
      */
-    public function getContents()
+    public function getContents(): string
     {
         if ($this->stream === null) {
             throw new \RuntimeException('Stream is detached.');
@@ -392,19 +388,16 @@ class Stream implements StreamInterface
     /**
      * Charge un flux à partir d'une valeur scalaire.
      *
-     * @param mixed $scalar Valeur scalaire.
+     * @param null|scalar $scalar Valeur scalaire.
      *
      * @return resource
      */
     private function createStreamFromScalar($scalar)
     {
-        $handle = fopen('php://temp', 'r+');
+        $handle = Utils::tryFopen('php://temp', 'r+');
 
-        if ($handle === false) {
-            throw new \Exception();
-        }
         if ($scalar !== '') {
-            fwrite($handle, $scalar);
+            fwrite($handle, (string) $scalar);
             fseek($handle, 0);
         }
 

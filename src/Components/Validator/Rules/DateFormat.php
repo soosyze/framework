@@ -24,11 +24,14 @@ class DateFormat extends \Soosyze\Components\Validator\Rule
      *
      * @param string $key   Clé du test.
      * @param string $value Valeur à tester.
-     * @param string $args  Format de la date (ex: Y-m-d).
+     * @param mixed  $args  Format de la date (ex: Y-m-d).
      * @param bool   $not   Inverse le test.
      */
     protected function test(string $key, $value, $args, bool $not): void
     {
+        if (!is_string($args)) {
+            throw new \TypeError('The date format must be a string.');
+        }
         $dateFormat  = date_parse_from_format($args, $value);
         $errorFormat = $dateFormat[ 'error_count' ] === 0 && $dateFormat[ 'warning_count' ] === 0;
 

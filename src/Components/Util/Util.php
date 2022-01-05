@@ -107,9 +107,15 @@ class Util
             );
         }
 
-        $out = json_decode(file_get_contents($strFile), $assoc, 512, JSON_UNESCAPED_UNICODE);
+        $data = file_get_contents($strFile);
+        if ($data === false) {
+            throw new \RuntimeException(
+                htmlspecialchars("An error is encountered while reading $strFile file.")
+            );
+        }
+        $out = json_decode($data, $assoc, 512, JSON_UNESCAPED_UNICODE);
 
-        if ((!is_array($out) && $assoc) || (!is_object($out) && !$assoc)) {
+        if (!is_array($out) && !is_object($out)) {
             throw new \Exception(
                 htmlspecialchars("The JSON $strFile file is invalid.")
             );
@@ -139,15 +145,21 @@ class Util
         }
 
         $pathFile = $cleanPath . self::DS . $strFileName . '.json';
-
-        if (!file_exists($pathFile)) {
-            $file = fopen($pathFile, 'w+');
-            fwrite($file, json_encode($data, JSON_UNESCAPED_UNICODE));
-
-            return fclose($file);
+        if (file_exists($pathFile)) {
+            return null;
         }
 
-        return null;
+        $file = self::tryFopen($pathFile, 'w+');
+
+        $jsonEncode = json_encode($data, JSON_UNESCAPED_UNICODE);
+        if ($jsonEncode === false) {
+            throw new \RuntimeException(
+                "An error is encountered while serializing the $pathFile file."
+            );
+        }
+        fwrite($file, $jsonEncode);
+
+        return fclose($file);
     }
 
     /**
@@ -164,11 +176,19 @@ class Util
         string $strFileName,
         array $data
     ): bool {
-        $fp = fopen(
-            self::cleanPath($strPath) . self::DS . $strFileName . '.json',
+        $pathFile = self::cleanPath($strPath) . self::DS . $strFileName . '.json';
+        $fp = self::tryFopen(
+            $pathFile,
             'w'
         );
-        fwrite($fp, json_encode($data, JSON_UNESCAPED_UNICODE));
+
+        $jsonEncode = json_encode($data, JSON_UNESCAPED_UNICODE);
+        if ($jsonEncode === false) {
+            throw new \RuntimeException(
+                "An error is encountered while serializing the $pathFile file."
+            );
+        }
+        fwrite($fp, $jsonEncode);
 
         return fclose($fp);
     }
@@ -276,7 +296,7 @@ class Util
         string $characterMask = "/ \t\n\r\0\x0B"
     ): string {
         $str = str_replace('\\', '/', $path);
-        $str = preg_replace('/\/+/', '/', $str);
+        $str = preg_replace('/\/+/', '/', $str) ?? '';
 
         return rtrim($str, $characterMask);
     }
@@ -396,7 +416,7 @@ class Util
         string $ignore = ''
     ): string {
         $output = mb_strtolower($str, 'UTF-8');
-        $output = str_replace(self::$search, self::$replace, $output) ?? '';
+        $output = str_replace(self::$search, self::$replace, $output);
         $output = preg_replace('/([^\w' . $ignore . ']|_)+/i', $separator, $output) ?? '';
 
         return trim($output, $separator);
@@ -465,9 +485,10 @@ class Util
 
     /**
      * Retourne la quantité de données maximum à l'upload autorisé par votre configuration.
+     * Ou null si aucune donnée minimum ne peut-être trouvée.
      * memory_limit: -1 no limit
      */
-    public static function getOctetUploadLimit(): int
+    public static function getOctetUploadLimit(): ?int
     {
         $limitMin = [];
         foreach ([ 'upload_max_filesize', 'post_max_size', 'memory_limit' ] as $ini) {
@@ -483,7 +504,14 @@ class Util
             }
         }
 
-        return min(...$limitMin);
+        try {
+            /** @var int $min */
+            $min = min(...$limitMin);
+        } catch (\ArgumentCountError $e) {
+            return null;
+        }
+
+        return $min;
     }
 
     /**
@@ -499,7 +527,7 @@ class Util
         \DateTimeInterface $from,
         string $to = 'now'
     ): array {
-        $interval = \date_create($to)->diff($from);
+        $interval = self::tryDateCreate($to)->diff($from);
 
         if (($value = $interval->y) >= 1) {
             $str = $value > 1
@@ -539,5 +567,39 @@ class Util
         return $value > 1
             ? [ $str . $suffix, $value ]
             : [ $str . $suffix, 1 ];
+    }
+
+    /**
+     * @param string $filename
+     * @param string $mode
+     *
+     * @throws \RuntimeException
+     * @return resource
+     */
+    public static function tryFopen(string $filename, string $mode)
+    {
+        try {
+            /** @var resource $handle */
+            $handle = fopen($filename, $mode);
+        } catch (\Exception $e) {
+            throw new \RuntimeException(sprintf(
+                'Unable to open "%s" using mode "%s": %s',
+                $filename,
+                $mode,
+                $e->getMessage()
+            ), 0, $e);
+        }
+
+        return $handle;
+    }
+
+    public static function tryDateCreate(string $to = 'now'): \DateTime
+    {
+        $handle = \date_create($to);
+        if ($handle === false) {
+            throw new \InvalidArgumentException('The date must be in valid format');
+        }
+
+        return $handle;
     }
 }

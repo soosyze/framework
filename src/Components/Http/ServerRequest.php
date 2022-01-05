@@ -70,14 +70,14 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Construit une requête coté serveur.
      *
-     * @param string          $method       Méthode HTTP ('GET'|'POST'|...).
-     * @param UriInterface    $uri          L'URI de la requête.
-     * @param array           $headers      Les en-têtes du message.
-     * @param StreamInterface $body         Corp de la requête.
-     * @param string          $version      La version du protocole HTTP.
-     * @param array           $serverParams Paramètres de la requête.
-     * @param array           $cookies      Les cookies.
-     * @param array           $uploadFiles  Fichiers transmis au serveur.
+     * @param string               $method       Méthode HTTP ('GET'|'POST'|...).
+     * @param UriInterface         $uri          L'URI de la requête.
+     * @param array                $headers      Les en-têtes du message.
+     * @param StreamInterface|null $body         Corp de la requête.
+     * @param string               $version      La version du protocole HTTP.
+     * @param array                $serverParams Paramètres de la requête.
+     * @param array                $cookies      Les cookies.
+     * @param array                $uploadFiles  Fichiers transmis au serveur.
      */
     public function __construct(
         string $method,
@@ -154,7 +154,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @return string
      */
-    public function getBasePath($scriptName = '')
+    public function getBasePath(string $scriptName = ''): string
     {
         $filename = $this->getScriptName($scriptName);
         $baseUrl  = $this->uri->getScheme() . '://' . $this->uri->getHost();
@@ -172,7 +172,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @return bool
      */
-    public function isAjax()
+    public function isAjax(): bool
     {
         return !empty($this->serverParams[ 'HTTP_X_REQUESTED_WITH' ]) && strtolower($this->serverParams[ 'HTTP_X_REQUESTED_WITH' ]) === 'xmlhttprequest';
     }
@@ -183,7 +183,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @return bool
      */
-    public function isMaxSize()
+    public function isMaxSize(): bool
     {
         return empty($this->parseBody) && empty($this->uploadFiles) && isset($this->serverParams[ 'CONTENT_LENGTH' ]) && $this->serverParams[ 'CONTENT_LENGTH' ] > 0;
     }
@@ -197,7 +197,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @return array
      */
-    public function getServerParams()
+    public function getServerParams(): array
     {
         return $this->serverParams;
     }
@@ -212,7 +212,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @return array
      */
-    public function getCookieParams()
+    public function getCookieParams(): array
     {
         return $this->cookieParams;
     }
@@ -228,7 +228,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @return static
      */
-    public function withCookieParams(array $cookies)
+    public function withCookieParams(array $cookies): ServerRequestInterface
     {
         $clone               = clone $this;
         $clone->cookieParams = $cookies;
@@ -246,7 +246,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @return array
      */
-    public function getQueryParams()
+    public function getQueryParams(): array
     {
         return $this->queryParams;
     }
@@ -259,7 +259,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @return static
      */
-    public function withQueryParams(array $query)
+    public function withQueryParams(array $query): ServerRequestInterface
     {
         $clone              = clone $this;
         $clone->queryParams = $query;
@@ -276,7 +276,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @return array Arbre de tableau des instances de UploadedFileInterface; un vide
      *               Le tableau DOIT être retourné si aucune donnée n'est présente.
      */
-    public function getUploadedFiles()
+    public function getUploadedFiles(): array
     {
         return $this->uploadFiles;
     }
@@ -289,7 +289,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @throws \InvalidArgumentException Les contenus doivent être tous des instance d'UploadedFileInterface.
      * @return static
      */
-    public function withUploadedFiles(array $uploadedFiles)
+    public function withUploadedFiles(array $uploadedFiles): ServerRequestInterface
     {
         $clone              = clone $this;
         $clone->uploadFiles = self::parseFilesToUploadFiles($uploadedFiles);
@@ -321,7 +321,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *                                   à condition de.
      * @return static
      */
-    public function withParsedBody($data)
+    public function withParsedBody($data): ServerRequestInterface
     {
         $this->filtreBody($data);
         $clone = clone $this;
@@ -341,7 +341,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @return array Attributs dérivés de la requête.
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
@@ -362,9 +362,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function getAttribute($name, $default = null)
     {
-        return isset($this->attributes[ $name ])
-            ? $this->attributes[ $name ]
-            : $default;
+        return $this->attributes[ $name ] ?? $default;
     }
 
     /**
@@ -384,7 +382,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @return static
      */
-    public function withAttribute($name, $value)
+    public function withAttribute($name, $value): ServerRequestInterface
     {
         $clone                      = clone $this;
         $clone->attributes[ $name ] = $value;
@@ -404,7 +402,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @return static
      */
-    public function withoutAttribute($name)
+    public function withoutAttribute($name): ServerRequestInterface
     {
         $clone = clone $this;
         if (isset($clone->attributes[ $name ])) {
@@ -516,17 +514,17 @@ class ServerRequest extends Request implements ServerRequestInterface
      * Parcours récursif à partir d'une clé standard (tmp_name, size, name...)
      * pour remplir par référence la variable output et regrouper les éléments par fichier.
      *
-     * @param array|mixed $output Tableau qui sera rempli par référence.
-     * @param array       $array  Informations contenus dans l'une des clés standards.
-     * @param string      $name   Clés standards de la variable superglobale $_FILES.
+     * @param array|null $output Tableau qui sera rempli par référence.
+     * @param array      $array  Informations contenus dans l'une des clés standards.
+     * @param string     $name   Clés standards de la variable superglobale $_FILES.
      *
      * @return void
      */
-    private static function normaliseFile(&$output, array $array, string $name): void
+    private static function normaliseFile(?array &$output, array $array, string $name): void
     {
         /* Troisième parcour. */
         foreach ($array as $key => $value) {
-            if (is_array($value)) {
+            if (is_array($value) && $output !== null) {
                 self::normaliseFile($output[ $key ], $value, $name);
             }
             if (!is_array($value)) {

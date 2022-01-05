@@ -24,7 +24,7 @@ class FileExtensions extends File
      *
      * @param string                $key   Clé du test.
      * @param UploadedFileInterface $value Valeur à tester.
-     * @param string                $args  Liste d'extensions séparé par une virgule.
+     * @param mixed                 $args  Liste d'extensions séparé par une virgule.
      * @param bool                  $not   Inverse le test.
      */
     protected function test(string $key, $value, $args, bool $not): void
@@ -35,6 +35,9 @@ class FileExtensions extends File
             return;
         }
 
+        if (!is_string($args)) {
+            throw new \TypeError('The list of allowed extensions must be a string.');
+        }
         $extensions = explode(',', $args);
         $extension  = $this->getExtension($value);
 

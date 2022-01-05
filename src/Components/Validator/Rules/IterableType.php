@@ -22,7 +22,7 @@ class IterableType extends \Soosyze\Components\Validator\Rule
      *
      * @param string $key    Clé du test.
      * @param mixed  $values Valeur à tester.
-     * @param string $arg    Argument de test.
+     * @param mixed  $arg    Argument de test.
      * @param bool   $not    Inverse le test.
      */
     protected function test(string $key, $values, $arg, bool $not): void

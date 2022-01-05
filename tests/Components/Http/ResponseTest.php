@@ -59,6 +59,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
     public function testWithStatusInvalidArgumentException($code, $reasonPhrase): void
     {
         $this->expectException(\InvalidArgumentException::class);
+        /** @phpstan-ignore-next-line */
         $this->object->withStatus($code, $reasonPhrase);
     }
 

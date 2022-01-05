@@ -23,7 +23,7 @@ class Token extends Size
      *
      * @param string $key   Clé du test.
      * @param string $value Valeur à tester.
-     * @param string $args  Nombre de seconde ou le token est valide (défaut 15 minutes),
+     * @param mixed  $args  Nombre de seconde ou le token est valide (défaut 15 minutes),
      *                      si la valeur du time = 0 alors le test du temps de validation n'est pas effectif.
      * @param bool   $not   Inverse le test.
      *
@@ -38,11 +38,11 @@ class Token extends Size
             ]);
         }
 
-        if (empty($args)) {
-            $args = 900;
-        }
-        $intervale = $this->getComparator($args);
-        $name      = $this->getKey();
+        $intervale = is_numeric($args)
+            ? $this->getComparator($args)
+            : 900;
+
+        $name = $this->getKey();
 
         if (!isset($_SESSION[ 'token' ][ $name ]) && !isset($_SESSION[ 'token_time' ][ $name ])) {
             $this->addReturn($key, 'error');

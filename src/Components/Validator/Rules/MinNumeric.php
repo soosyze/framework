@@ -22,7 +22,7 @@ class MinNumeric extends Min
      *
      * @param string  $key   Clé du test.
      * @param numeric $value Valeur à tester.
-     * @param string  $args  Valeur de comparraison.
+     * @param mixed   $args  Valeur de comparraison.
      * @param bool    $not   Inverse le test.
      *
      * @throws \InvalidArgumentException La valeur min n'est pas numérique.
@@ -32,6 +32,9 @@ class MinNumeric extends Min
         $length = $this->getSizeNumeric($value);
         if ($this->hasErrors()) {
             return;
+        }
+        if (!is_numeric($args)) {
+            throw new \TypeError('The arguments must be a numeric.');
         }
         $this->sizeMin($key, $length, $args, $not);
     }

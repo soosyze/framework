@@ -24,7 +24,7 @@ class FileMimetypes extends File
      *
      * @param string                $key   Clé du test.
      * @param UploadedFileInterface $value Valeur à tester.
-     * @param string                $args  Mime exacte ou le type du mime du fichier.
+     * @param mixed                 $args  Mime exacte ou le type du mime du fichier.
      * @param bool                  $not   Inverse le test.
      */
     protected function test(string $key, $value, $args, bool $not): void
@@ -36,6 +36,10 @@ class FileMimetypes extends File
         }
 
         $mtype = $this->getMime($value);
+
+        if (!is_string($args)) {
+            throw new \TypeError('The argument must be a string.');
+        }
 
         if (strpos($mtype, $args) !== 0 && $not) {
             $this->addReturn($key, 'mime_types', [ ':list' => $args ]);

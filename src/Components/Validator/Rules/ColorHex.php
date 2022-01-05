@@ -20,10 +20,10 @@ class ColorHex extends Regex
     /**
      * Test si la valeur correspond à une couleur au format hexadécimale à 3 ou 6 caractères.
      *
-     * @param string     $key   Clé du test.
-     * @param string     $value Valeur à tester.
-     * @param mixed|null $args  Argument de test.
-     * @param bool       $not   Inverse le test.
+     * @param string $key   Clé du test.
+     * @param string $value Valeur à tester.
+     * @param mixed  $args  Argument de test.
+     * @param bool   $not   Inverse le test.
      */
     protected function test(string $key, $value, $args, bool $not): void
     {

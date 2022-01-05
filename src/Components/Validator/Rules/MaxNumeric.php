@@ -22,7 +22,7 @@ class MaxNumeric extends Max
      *
      * @param string  $key   Clé du test.
      * @param numeric $value Valeur à tester.
-     * @param string  $args  Valeur de comparraison.
+     * @param mixed   $args  Valeur de comparraison.
      * @param bool    $not   Inverse le test.
      */
     protected function test(string $key, $value, $args, bool $not): void
@@ -30,6 +30,9 @@ class MaxNumeric extends Max
         $length = $this->getSizeNumeric($value);
         if ($this->hasErrors()) {
             return;
+        }
+        if (!is_numeric($args)) {
+            throw new \TypeError('The comparison argument must be numeric.');
         }
         $this->sizeMax($key, $length, $args, $not);
     }

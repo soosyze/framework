@@ -22,7 +22,7 @@ class BetweenNumeric extends Between
      *
      * @param string  $key   Clé du test.
      * @param numeric $value Valeur à tester.
-     * @param string  $args  Liste de 2 valeurs de comparaison séparées par une virgule.
+     * @param mixed   $args  Liste de 2 valeurs de comparaison séparées par une virgule.
      * @param bool    $not   Inverse le test.
      */
     protected function test(string $key, $value, $args, bool $not): void
@@ -31,6 +31,9 @@ class BetweenNumeric extends Between
 
         if ($this->hasErrors()) {
             return;
+        }
+        if (!is_string($args)) {
+            throw new \TypeError('The comparisons arguments must be a string.');
         }
 
         [ $min, $max ] = $this->getParamMinMax($args);

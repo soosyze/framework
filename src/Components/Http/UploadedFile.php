@@ -78,7 +78,7 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Représentation du fichier en flux de données.
      *
-     * @var StreamInterface
+     * @var StreamInterface|null
      */
     protected $stream;
 
@@ -122,7 +122,7 @@ class UploadedFile implements UploadedFileInterface
      * @throws \InvalidArgumentException La clé tmp_name est requise.
      * @return UploadedFileInterface
      */
-    public static function create(array $file)
+    public static function create(array $file): UploadedFileInterface
     {
         if (!isset($file[ 'tmp_name' ])) {
             throw new \InvalidArgumentException('The tmp_name key is required.');
@@ -155,7 +155,7 @@ class UploadedFile implements UploadedFileInterface
      *                           créé.
      * @return StreamInterface   Stream représentation du fichier téléchargé.
      */
-    public function getStream()
+    public function getStream(): StreamInterface
     {
         if ($this->isError()) {
             throw new \RuntimeException('A download error prevents recovery of the stream.');
@@ -166,7 +166,11 @@ class UploadedFile implements UploadedFileInterface
         }
 
         if (empty($this->stream)) {
-            $this->stream = new Stream(fopen($this->file, 'r'));
+            $this->stream = new Stream(
+                $this->file === null
+                    ? null
+                    : Utils::tryFopen($this->file, 'r')
+            );
         }
 
         return $this->stream;
@@ -188,7 +192,7 @@ class UploadedFile implements UploadedFileInterface
      * @throws \InvalidArgumentException Une erreur est survenue.
      * @return void
      */
-    public function moveTo($targetPath)
+    public function moveTo($targetPath): void
     {
         if ($this->moved) {
             throw new \RuntimeException('The file has already been moved.');
@@ -204,9 +208,9 @@ class UploadedFile implements UploadedFileInterface
                 ? $this->moveToSapi($targetPath)
                 : $this->moveToNoSapi($targetPath);
         } else {
-            $handle = fopen($targetPath, 'w');
+            $handle = Utils::tryFopen($targetPath, 'w');
 
-            fwrite($handle, $this->stream->getContents());
+            fwrite($handle, $this->getStream()->getContents());
             fclose($handle);
 
             $this->moved = true;
@@ -218,7 +222,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @return int|null Taille du fichier en octets ou null si inconnu.
      */
-    public function getSize()
+    public function getSize(): ?int
     {
         return $this->size;
     }
@@ -232,7 +236,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @return int Une des constantes UPLOAD_ERR_XXX de PHP.
      */
-    public function getError()
+    public function getError(): int
     {
         return $this->error;
     }
@@ -247,7 +251,7 @@ class UploadedFile implements UploadedFileInterface
      * @return string|null Nom de fichier envoyé par le client ou null si aucun.
      *                     a été fourni.
      */
-    public function getClientFilename()
+    public function getClientFilename(): ?string
     {
         return $this->name;
     }
@@ -262,7 +266,7 @@ class UploadedFile implements UploadedFileInterface
      * @return string|null Le type de média envoyé par le client ou null si aucun
      *                     a été fourni.
      */
-    public function getClientMediaType()
+    public function getClientMediaType(): ?string
     {
         return $this->type;
     }
@@ -292,7 +296,7 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Déclenche une exception si le nom du fichier n'est pas valide.
      *
-     * @param string|null $name Nom du fichier
+     * @param mixed $name Nom du fichier
      *
      * @throws \InvalidArgumentException Le nom du fichier doit être une chaine de caractère ou null.
      *
@@ -310,7 +314,7 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Déclenche une exception si la taille du fichier n'est pas valide.
      *
-     * @param int|null $size Taille du fichier.
+     * @param mixed $size Taille du fichier.
      *
      * @throws \InvalidArgumentException La taille du fichier doit-être un nombre entier ou null
      *
@@ -328,7 +332,7 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Déclenche une exception si le type du fichier n'est pas valide.
      *
-     * @param string|null $type Type du fichier
+     * @param mixed $type Type du fichier
      *
      * @throws \InvalidArgumentException Le type du fichier doit être une chaine de caractère ou null.
      *
@@ -346,7 +350,7 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Déclence une exception si le type d'error n'est pas valide.
      *
-     * @param int $error Type d'erreur.
+     * @param mixed $error Type d'erreur.
      *
      * @throws \InvalidArgumentException Le type d'erreur n'est pas valide.
      *
@@ -370,6 +374,7 @@ class UploadedFile implements UploadedFileInterface
      */
     private function moveToSapi(string $targetPath): bool
     {
+        /** @phpstan-ignore-next-line */
         return rename($this->file, $targetPath);
     }
 
@@ -385,9 +390,11 @@ class UploadedFile implements UploadedFileInterface
      */
     private function moveToNoSapi(string $targetPath): bool
     {
+        /** @phpstan-ignore-next-line */
         if (!is_uploaded_file($this->file)) {
             throw new \RuntimeException('The file was not downloaded by HTTP POST.');
         }
+        /** @phpstan-ignore-next-line */
         if (!move_uploaded_file($this->file, $targetPath)) {
             throw new \RuntimeException('An error occurred while moving the file.');
         }
