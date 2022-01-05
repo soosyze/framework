@@ -28,18 +28,6 @@ class TokenTest extends Rule
         $this->assertTrue($this->object->isValid());
     }
 
-    public function testTokenException(): void
-    {
-        $_SESSION[ 'token' ]      = 'Lorem ipsum dolor sit amet';
-        $_SESSION[ 'token_time' ] = time();
-
-        $this->expectException(\Exception::class);
-        $this->object
-            ->addInput('field', 'error')
-            ->addRule('field', 'token:error')
-            ->isValid();
-    }
-
     public function testTokenErrorSession(): void
     {
         @session_destroy();

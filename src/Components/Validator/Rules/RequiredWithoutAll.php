@@ -20,10 +20,10 @@ class RequiredWithoutAll extends Required
     /**
      * Test si une valeur est requise si un ensemble de champs n'est pas présent.
      *
-     * @param string     $key   Clé du test.
-     * @param mixed      $value Valeur à tester.
-     * @param mixed|null $args  Argument de test.
-     * @param bool       $not   Inverse le test.
+     * @param string $key   Clé du test.
+     * @param mixed  $value Valeur à tester.
+     * @param mixed  $args  Argument de test.
+     * @param bool   $not   Inverse le test.
      */
     protected function test(string $key, $value, $args, bool $not): void
     {
@@ -43,6 +43,9 @@ class RequiredWithoutAll extends Required
     {
         if (empty($this->args)) {
             throw new \InvalidArgumentException('A field must be provided for the required with rule.');
+        }
+        if (!is_string($this->args)) {
+            throw new \TypeError('The argument must be a string.');
         }
         $fields = explode(',', $this->args);
         $errors = 0;

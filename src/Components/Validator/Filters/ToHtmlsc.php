@@ -28,7 +28,7 @@ class ToHtmlsc extends \Soosyze\Components\Validator\Filter
      *
      * @return string
      */
-    protected function clean(string $key, $value, $args)
+    protected function clean(string $key, $value, $args): string
     {
         if (!is_string($value)) {
             throw new \InvalidArgumentException('The type must be validated before being filtered.');

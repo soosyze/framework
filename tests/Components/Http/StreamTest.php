@@ -133,9 +133,11 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($body->eof());
 
         /* Va lire caractère par caractère jusqu'a arriver à la fin de la chaine. */
+        /** @phpstan-ignore-next-line */
         while (!$body->eof()) {
             $body->read(1);
         }
+        /** @phpstan-ignore-next-line */
         $this->assertTrue($body->eof());
     }
 
@@ -255,6 +257,7 @@ class StreamTest extends \PHPUnit\Framework\TestCase
         $body = new Stream('test');
 
         $this->expectException(RuntimeException::class);
+        /** @phpstan-ignore-next-line */
         $body->read('error');
     }
 

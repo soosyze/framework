@@ -20,10 +20,10 @@ class RessourceType extends \Soosyze\Components\Validator\Rule
     /**
      * Test si la valeur est égale à "1", "true", "on" et "yes".
      *
-     * @param string     $key   Clé du test.
-     * @param mixed      $value Valeur à tester.
-     * @param mixed|null $args  Argument de test.
-     * @param bool       $not   Inverse le test.
+     * @param string $key   Clé du test.
+     * @param mixed  $value Valeur à tester.
+     * @param mixed  $args  Argument de test.
+     * @param bool   $not   Inverse le test.
      */
     protected function test(string $key, $value, $args, bool $not): void
     {

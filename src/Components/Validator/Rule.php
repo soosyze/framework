@@ -34,7 +34,7 @@ abstract class Rule
     /**
      * Argument de test.
      *
-     * @var string
+     * @var mixed
      */
     protected $args = '';
 
@@ -97,10 +97,10 @@ abstract class Rule
     /**
      * Exécute le test de validation.
      *
-     * @param string     $keyRule  Clé du test.
-     * @param string     $keyValue Identifiant de la valeur.
-     * @param mixed|null $args     Argument de test, peut-être une valeur d'un champ.
-     * @param bool       $not      Inverse le test.
+     * @param string $keyRule  Clé du test.
+     * @param string $keyValue Identifiant de la valeur.
+     * @param mixed  $args     Argument de test, peut-être une valeur d'un champ.
+     * @param bool   $not      Inverse le test.
      *
      * @return $this
      */
@@ -270,8 +270,8 @@ abstract class Rule
      * Défini le test.
      *
      * @param string $keyRule Clé du test.
-     * @param string $value   Valeur à tester.
-     * @param string $args    Argument de test.
+     * @param mixed  $value   Valeur à tester.
+     * @param mixed  $args    Argument de test.
      * @param bool   $not     Inverse le test.
      *
      * @return void
@@ -319,12 +319,10 @@ abstract class Rule
      * @throws \InvalidArgumentException The minimum value must not be greater than the maximum value.
      *
      * @return numeric[] Tableau des valeurs min et max.
+     * @phpstan-return array{min: numeric, max: numeric}
      */
-    protected function getParamMinMax(?string $arg): array
+    protected function getParamMinMax(string $arg): array
     {
-        if ($arg === null) {
-            throw new \InvalidArgumentException('Between values are invalid.');
-        }
         $explode = explode(',', $arg);
         if (!isset($explode[ 0 ], $explode[ 1 ])) {
             throw new \InvalidArgumentException('Between values are invalid.');

@@ -37,11 +37,14 @@ class FontAwesome extends \Soosyze\Components\Validator\Rule
      *
      * @param string $key   Clé du test.
      * @param string $value Valeur à tester.
-     * @param string $args  Styles de fontawesome acceptés.
+     * @param mixed  $args  Styles de fontawesome acceptés.
      * @param bool   $not   Inverse le test.
      */
     protected function test(string $key, $value, $args, bool $not): void
     {
+        if (!is_string($args)) {
+            throw new \TypeError('The argument must be a string.');
+        }
         [ $pattern, $stylesPattern ] = $this->getPattern($args);
 
         if (!preg_match($pattern, $value) && $not) {

@@ -42,7 +42,7 @@ class Message implements MessageInterface
     /**
      * Les entêtes.
      *
-     * @var array
+     * @var string[][]
      */
     protected $headers = [];
 
@@ -65,7 +65,7 @@ class Message implements MessageInterface
      *
      * @return string
      */
-    public function getProtocolVersion()
+    public function getProtocolVersion(): string
     {
         return $this->protocolVersion;
     }
@@ -75,9 +75,9 @@ class Message implements MessageInterface
      *
      * @param string $version Version du protocole HTTP.
      *
-     * @return $this
+     * @return static
      */
-    public function withProtocolVersion($version)
+    public function withProtocolVersion($version): MessageInterface
     {
         $clone                  = clone $this;
         $clone->protocolVersion = $this->filterProtocolVersion($version);
@@ -88,9 +88,9 @@ class Message implements MessageInterface
     /**
      * Renvoie le tableau d'en-tête.
      *
-     * @return array
+     * @return string[][]
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers;
     }
@@ -102,7 +102,7 @@ class Message implements MessageInterface
      *
      * @return bool Renvoie true si l'en-tête est trouvé sinon faux.
      */
-    public function hasHeader($name)
+    public function hasHeader($name): bool
     {
         return isset($this->name[ strtolower($name) ]);
     }
@@ -115,7 +115,7 @@ class Message implements MessageInterface
      * @return string[] Si l'en-tête est trouvé alors il est renvoyé
      *                  toutes ses valeurs, sinon un tableau vide.
      */
-    public function getHeader($name)
+    public function getHeader($name): array
     {
         return $this->hasHeader($name)
             ? $this->headers[ $this->name[ strtolower($name) ] ]
@@ -130,7 +130,7 @@ class Message implements MessageInterface
      * @return string Si l'en-tête est trouvé alors il est renvoyé
      *                toutes les valeurs de l'en-tête concaténés par une virgule, sinon une chaine vide.
      */
-    public function getHeaderLine($name)
+    public function getHeaderLine($name): string
     {
         return $this->hasHeader($name)
             ? implode(',', $this->getHeader($name))
@@ -143,9 +143,9 @@ class Message implements MessageInterface
      * @param string          $name  Nom du champ d'en-tête insensible à la casse.
      * @param string|string[] $value Valeur(s) de l'en-tête.
      *
-     * @return $this
+     * @return static
      */
-    public function withHeader($name, $value)
+    public function withHeader($name, $value): MessageInterface
     {
         $clone                            = clone $this;
         $values                           = $clone->validateAndTrimHeader($name, $value);
@@ -161,9 +161,9 @@ class Message implements MessageInterface
      * @param string          $name  Nom du champ d'en-tête insensible à la casse.
      * @param string|string[] $value Valeur(s) de l'en-tête.
      *
-     * @return $this
+     * @return static
      */
-    public function withAddedHeader($name, $value)
+    public function withAddedHeader($name, $value): MessageInterface
     {
         $clone  = clone $this;
         $values = $this->validateAndTrimHeader($name, $value);
@@ -184,9 +184,9 @@ class Message implements MessageInterface
      *
      * @param string $name Nom de champ d'en-tête insensible à la casse à supprimer.
      *
-     * @return $this
+     * @return static
      */
-    public function withoutHeader($name)
+    public function withoutHeader($name): MessageInterface
     {
         $clone = clone $this;
         if ($clone->hasHeader($name)) {
@@ -201,7 +201,7 @@ class Message implements MessageInterface
      *
      * @return StreamInterface Renvoie le corps en tant que flux.
      */
-    public function getBody()
+    public function getBody(): StreamInterface
     {
         return $this->body;
     }
@@ -211,9 +211,9 @@ class Message implements MessageInterface
      *
      * @param StreamInterface $body Le corp.
      *
-     * @return $this
+     * @return static
      */
-    public function withBody(StreamInterface $body)
+    public function withBody(StreamInterface $body): MessageInterface
     {
         $clone       = clone $this;
         $clone->body = $body;
@@ -224,7 +224,7 @@ class Message implements MessageInterface
     /**
      * Filtre la version du protocole.
      *
-     * @param string $version
+     * @param mixed $version
      *
      * @throws \InvalidArgumentException Le protocole spécifié n'est pas valide.
      *
@@ -274,8 +274,8 @@ class Message implements MessageInterface
      *
      * @see https://tools.ietf.org/html/rfc7230#section-3.2.4
      *
-     * @param string       $header
-     * @param array|string $values
+     * @param mixed $header
+     * @param mixed $values
      *
      * @throws \InvalidArgumentException;
      *

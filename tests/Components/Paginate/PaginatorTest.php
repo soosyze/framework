@@ -88,11 +88,10 @@ class PaginatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider providerSetMaxPageException
      *
-     * @param mixed                    $max
      * @param class-string<\Throwable> $exceptionClass
      */
     public function testSetMaxPageException(
-        $max,
+        int $max,
         string $exceptionClass,
         string $exceptionMessage
     ): void {
@@ -105,11 +104,6 @@ class PaginatorTest extends \PHPUnit\Framework\TestCase
 
     public function providerSetMaxPageException(): \Generator
     {
-        yield [
-            'error',
-            \InvalidArgumentException::class,
-            'The number of pages to display must be greater than or equal to three.'
-        ];
         yield [
             2,
             \InvalidArgumentException::class,

@@ -62,7 +62,7 @@ abstract class Size extends \Soosyze\Components\Validator\Rule
         $size = 0;
         if (is_int($value) || is_float($value)) {
             $size = $value;
-        } elseif (is_string($value) || method_exists($value, '__toString')) {
+        } elseif (is_string($value) || (is_object($value) && method_exists($value, '__toString'))) {
             $size = strlen((string) $value);
         } elseif (is_array($value)) {
             $size = count($value);

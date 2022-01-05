@@ -14,13 +14,17 @@ namespace Soosyze\Components\Validator;
  * Valide des valeurs à partir de tests chaînés.
  *
  * @author Mathieu NOËL <mathieu@soosyze.com>
+ *
+ * @phpstan-type Error array<string, array<string, string>>
+ * @phpstan-type Errors array<string, Error>
  */
 class Validator
 {
     /**
      * Règles de validations.
      *
-     * @var array<string, string|Validator>
+     * @var array
+     * @phpstan-var array<string, string|Validator>
      */
     protected $rules = [];
 
@@ -99,7 +103,7 @@ class Validator
     /**
      * Champs à tester.
      *
-     * @var array[]
+     * @var array
      */
     protected $inputs = [];
 
@@ -270,7 +274,7 @@ class Validator
      *
      * @return $this
      */
-    public function addInput($key, $value): self
+    public function addInput(string $key, $value): self
     {
         $this->inputs[ $key ] = $value;
 
@@ -335,6 +339,7 @@ class Validator
      * @param string $key Nom du champ.
      *
      * @return array
+     * @phpstan-return Error
      */
     public function getError(string $key): array
     {
@@ -346,7 +351,8 @@ class Validator
      *
      * @codeCoverageIgnore getter
      *
-     * @return array<string, array<string, array<string, string>>>
+     * @return array
+     * @phpstan-return Errors
      */
     public function getErrors(): array
     {
@@ -621,6 +627,7 @@ class Validator
      * @param string $rule Règle compléte.
      *
      * @return array
+     * @phpstan-return array{string, string, bool}
      */
     protected function getInfosRule(string $rule): array
     {
@@ -629,7 +636,7 @@ class Validator
         $name = $exp[ 0 ][ 0 ] === '!'
             ? substr($exp[ 0 ], 1)
             : $exp[ 0 ];
-        $arg  = $exp[ 1 ] ?? null;
+        $arg  = $exp[ 1 ] ?? '';
 
         /* Si l'argument fait référence à un autre champ. */
         if ($arg && $arg[ 0 ] === '@') {
@@ -664,6 +671,7 @@ class Validator
             ));
         }
 
+        /** @var Rule $class */
         return (new $class)->hydrate($name, $key, $arg, $not);
     }
 

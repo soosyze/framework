@@ -66,6 +66,7 @@ class Router
         $routesByMethod = Route::getRouteByMethod($request->getMethod());
 
         foreach ($routesByMethod as $key) {
+            /** @var array $route */
             $route = Route::getRoute($key);
 
             if (!empty($route[ 'with' ])) {
@@ -94,7 +95,7 @@ class Router
     public function execute(array $route, ?RequestInterface $request = null)
     {
         $class  = strstr($route[ 'uses' ], '@', true);
-        $method = substr(strrchr($route[ 'uses' ], '@'), 1);
+        $method = ltrim($route[ 'uses' ], $class . '@');
 
         /* Cherche les différents paramètres de l'URL pour l'injecter dans la méthode. */
         if (!empty($route[ 'with' ])) {
@@ -111,8 +112,6 @@ class Router
             $property = $reflection->getProperty('container');
             $property->setAccessible(true);
             $property->setValue($obj, $this->container);
-        } else {
-            $obj->container = $this->container;
         }
 
         return $reflection->getMethod($method)->invokeArgs($obj, $params);
@@ -159,14 +158,16 @@ class Router
 
         $path = $route[ 'path' ];
         foreach ($route[ 'with' ] as $key => $value) {
-            if ($strict && !isset($params[ $key ])) {
-                throw new \InvalidArgumentException(htmlspecialchars(
-                    "the argument $key is missing"
-                ));
-            }
-            if (!$strict && !isset($params[ $key ])) {
+            if (!isset($params[ $key ])) {
+                if ($strict) {
+                    throw new \InvalidArgumentException(htmlspecialchars(
+                        "the argument $key is missing"
+                    ));
+                }
+
                 continue;
             }
+
             $value = str_replace([ '(', '/' ], [ '(?:', '\/' ], $value);
             if ($strict && !preg_match('/^' . $value . '$/', $params[ $key ])) {
                 throw new Exception\RouteArgumentException($params[ $key ], $value, $path);
