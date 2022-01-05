@@ -20,10 +20,10 @@ class Between extends Size
     /**
      * Test si une valeur est entre 2 valeurs de comparaison.
      *
-     * @param string                                                        $key   Clé du test.
-     * @param array|float|int|object|ressource|string|UploadedFileInterface $value Valeur à tester.
-     * @param string                                                        $args  Liste de 2 valeurs de comparaison séparées par une virgule.
-     * @param bool                                                          $not   Inverse le test.
+     * @param string                                                       $key   Clé du test.
+     * @param array|float|int|object|resource|string|UploadedFileInterface $value Valeur à tester.
+     * @param mixed                                                        $args  Liste de 2 valeurs de comparaison séparées par une virgule.
+     * @param bool                                                         $not   Inverse le test.
      */
     protected function test(string $key, $value, $args, bool $not): void
     {
@@ -31,6 +31,9 @@ class Between extends Size
 
         if ($this->hasErrors()) {
             return;
+        }
+        if (!is_string($args)) {
+            throw new \TypeError('The comparisons arguments must be a string.');
         }
 
         [ $min, $max ] = $this->getParamMinMax($args);
@@ -84,11 +87,8 @@ class Between extends Size
      *
      * @return array
      */
-    protected function getParamMinMax(?string $args): array
+    protected function getParamMinMax(string $args): array
     {
-        if ($args === null) {
-            throw new \InvalidArgumentException('Between values are invalid.');
-        }
         $explode = explode(',', $args);
         if (!isset($explode[ 0 ], $explode[ 1 ])) {
             throw new \InvalidArgumentException('Between values are invalid.');

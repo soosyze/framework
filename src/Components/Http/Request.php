@@ -40,7 +40,7 @@ class Request extends Message implements RequestInterface
     /**
      * L'URI de la requête.
      *
-     * @var \Psr\Http\Message\UriInterface
+     * @var UriInterface
      */
     protected $uri;
 
@@ -97,7 +97,7 @@ class Request extends Message implements RequestInterface
      *
      * @return string Renvoie la méthode de requête.
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
@@ -109,7 +109,7 @@ class Request extends Message implements RequestInterface
      *
      * @return string Cible ce la requête.
      */
-    public function getRequestTarget()
+    public function getRequestTarget(): string
     {
         if ($this->requestTarget !== null) {
             return $this->requestTarget;
@@ -134,7 +134,7 @@ class Request extends Message implements RequestInterface
      * @return UriInterface Renvoie une instance d'UriInterface
      *                      représentant l'URI de la requête.
      */
-    public function getUri()
+    public function getUri(): UriInterface
     {
         return $this->uri;
     }
@@ -147,7 +147,7 @@ class Request extends Message implements RequestInterface
      * @throws \InvalidArgumentException pour les méthodes HTTP invalides.
      * @return static
      */
-    public function withMethod($method)
+    public function withMethod($method): RequestInterface
     {
         $clone         = clone $this;
         $clone->method = $this->filterMethod($method);
@@ -165,7 +165,7 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
-    public function withRequestTarget($requestTarget)
+    public function withRequestTarget($requestTarget): RequestInterface
     {
         if (!is_string($requestTarget)) {
             throw new \InvalidArgumentException('The target of the request must be a string.');
@@ -186,7 +186,7 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
-    public function withUri(UriInterface $uri, $preserveHost = false)
+    public function withUri(UriInterface $uri, $preserveHost = false): RequestInterface
     {
         $clone      = clone $this;
         $clone->uri = $uri;
@@ -204,7 +204,7 @@ class Request extends Message implements RequestInterface
     /**
      * Filtre la méthde HTTP de la requête.
      *
-     * @param string $method Méthode HTTP ('GET'|'POST'|...).
+     * @param mixed $method Méthode HTTP ('GET'|'POST'|...).
      *
      * @throws \InvalidArgumentException La méthode doit être une chaine de caractère.
      * @throws \InvalidArgumentException La méthode n'est pas prise en charge par la requête.

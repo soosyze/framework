@@ -3,6 +3,7 @@
 namespace Soosyze\Tests\Components\Util;
 
 use Soosyze\Components\Util\Util;
+use Soosyze\Tests\Traits\DateTime;
 
 require_once __DIR__ . '/../../Resources/Functions.php';
 
@@ -11,6 +12,8 @@ require_once __DIR__ . '/../../Resources/Functions.php';
  */
 class UtilTest extends \PHPUnit\Framework\TestCase
 {
+    use DateTime;
+
     private const PATH = 'tests/Components/Util/build';
 
     private const FILE = 'file';
@@ -225,7 +228,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
      */
     public function testStrTimeDiffHumans(string $expectedHumansTime, string $date): void
     {
-        $data = Util::strHumansTimeDiff(date_create($date));
+        $data = Util::strHumansTimeDiff(self::dateCreate($date));
         $this->assertEquals($expectedHumansTime, sprintf($data[ 0 ], $data[ 1 ]));
     }
 

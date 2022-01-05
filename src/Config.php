@@ -30,7 +30,7 @@ class Config implements \ArrayAccess
     /**
      * Les données de la configurations.
      *
-     * @var mixed[]
+     * @var array<string, array<string, array|null|scalar>>
      */
     private $data = [];
 
@@ -81,12 +81,10 @@ class Config implements \ArrayAccess
         $this->loadConfig($file);
 
         if ($key) {
-            return $this->data[ $file ][ $key ]
-                ?? $default;
+            return $this->data[ $file ][ $key ] ?? $default;
         }
 
-        return $this->data[ $file ]
-            ?? $default;
+        return $this->data[ $file ] ?? $default;
     }
 
     /**
@@ -96,7 +94,6 @@ class Config implements \ArrayAccess
      * @param mixed  $value  Valeur à stocker.
      *
      * @throws \InvalidArgumentException La clé est invalide, elle doit être composée de 2 parties séparées par un point.
-     *
      * @return $this
      */
     public function set(string $strKey, $value): self
@@ -126,7 +123,6 @@ class Config implements \ArrayAccess
      * @param string $strKey "nom_fichier.nom_clé".
      *
      * @throws \InvalidArgumentException
-     *
      * @return $this
      */
     public function del(string $strKey): self
@@ -172,6 +168,12 @@ class Config implements \ArrayAccess
      */
     public function offsetExists($offset): bool
     {
+        if (!is_string($offset)) {
+            throw new \InvalidArgumentException(
+                sprintf('The key of must be of type string: %s given', gettype($offset))
+            );
+        }
+
         return $this->has($offset);
     }
 
@@ -186,6 +188,12 @@ class Config implements \ArrayAccess
      */
     public function offsetGet($offset)
     {
+        if (!is_string($offset)) {
+            throw new \InvalidArgumentException(
+                sprintf('The key of must be of type string: %s given', gettype($offset))
+            );
+        }
+
         return $this->get($offset);
     }
 
@@ -201,6 +209,11 @@ class Config implements \ArrayAccess
      */
     public function offsetSet($offset, $value): void
     {
+        if (!is_string($offset)) {
+            throw new \InvalidArgumentException(
+                sprintf('The key of must be of type string: %s given', gettype($offset))
+            );
+        }
         $this->set($offset, $value);
     }
 
@@ -215,6 +228,11 @@ class Config implements \ArrayAccess
      */
     public function offsetUnset($offset): void
     {
+        if (!is_string($offset)) {
+            throw new \InvalidArgumentException(
+                sprintf('The key of must be of type string: %s given', gettype($offset))
+            );
+        }
         $this->del($offset);
     }
 
@@ -224,12 +242,13 @@ class Config implements \ArrayAccess
      * @param string $strKey Nom de la clé.
      *
      * @return array
+     * @phpstan-return array{string, string|null}
      */
     protected function prepareKey(string $strKey): array
     {
         $file = strstr($strKey, '.');
         if ($file !== false) {
-            return [ strstr($strKey, '.', true), trim($file, '.') ];
+            return [ trim($strKey, $file . '.'), trim($file, '.') ];
         }
 
         return [ $strKey, null ];
@@ -251,6 +270,7 @@ class Config implements \ArrayAccess
         $file = $this->path . $nameConfig . '.json';
 
         if (file_exists($file)) {
+            /** @phpstan-ignore-next-line */
             $this->data[ $nameConfig ] = Util::getJson($file);
         }
     }

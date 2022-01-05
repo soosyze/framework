@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Soosyze\Components\Validator\Rules;
 
+use Psr\Http\Message\UploadedFileInterface;
+
 /**
  * {@inheritdoc}
  *
@@ -27,13 +29,17 @@ class FileMimes extends FileExtensions
     /**
      * Test si l'extension du fichier est autorisée.
      *
-     * @param string $key   Clé du test.
-     * @param mixed  $value Valeur à tester.
-     * @param string $args  Liste des extensions autorisées.
-     * @param bool   $not   Inverse le test.
+     * @param string                $key   Clé du test.
+     * @param UploadedFileInterface $value Valeur à tester.
+     * @param mixed                 $args  Liste des extensions autorisées.
+     * @param bool                  $not   Inverse le test.
      */
     protected function test(string $key, $value, $args, bool $not): void
     {
+        if (!is_string($args)) {
+            throw new \TypeError('The list of allowed extensions must be a string.');
+        }
+
         parent::test('file_extensions', $value, $args, $not);
 
         if ($this->hasErrors()) {

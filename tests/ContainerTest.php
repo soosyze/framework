@@ -108,6 +108,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(Service1::class, $service1);
         $this->assertTrue($service1->isOk());
 
+        /** @phpstan-ignore-next-line */
         $service1snd = $this->object->service1();
         $this->assertInstanceOf(Service1::class, $service1snd);
         $this->assertTrue($service1snd->isOk());
@@ -116,11 +117,10 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider providerGetException
      *
-     * @param mixed                   $key
      * @param class-string<Throwable> $exceptionClass
      */
     public function testGetInvalidArgumentException(
-        $key,
+        string $key,
         string $exceptionClass,
         string $exceptionMessage
     ): void {

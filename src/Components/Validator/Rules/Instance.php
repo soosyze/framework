@@ -22,7 +22,7 @@ class Instance extends \Soosyze\Components\Validator\Rule
      *
      * @param string $key    Clé du test.
      * @param string $values Valeur à tester.
-     * @param string $args   Argument de test.
+     * @param mixed  $args   Argument de test.
      * @param bool   $not    Inverse le test.
      */
     protected function test(string $key, $values, $args, bool $not): void

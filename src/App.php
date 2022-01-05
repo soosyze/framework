@@ -103,6 +103,12 @@ abstract class App
     public static function getInstance(?ServerRequestInterface $request = null): self
     {
         if (self::$instance === null) {
+            if (!$request instanceof ServerRequestInterface) {
+                throw new \InvalidArgumentException(
+                    'The request must be an implementation of Psr\Http\Message\ServerRequestInterface.'
+                );
+            }
+
             self::$instance = new static($request);
         }
 
@@ -377,6 +383,9 @@ abstract class App
         bool $addEnv = true
     ): string {
         $root = $this->getSetting('root', '');
+        if (!is_string($root)) {
+            throw new \InvalidArgumentException('The root parameter must be a string.');
+        }
         $dir  = $this->getSettingEnv($key, $default, $addEnv);
 
         return Util::cleanDir("$root/$dir");
@@ -450,7 +459,7 @@ abstract class App
      *
      * Les données doivent pouvoir être prise en charge par le Stream de la réponse.
      *
-     * @param ResponseInterface|bool|float|int|object|ressource|string|null $response
+     * @param mixed $response
      *
      * @return ResponseInterface
      */

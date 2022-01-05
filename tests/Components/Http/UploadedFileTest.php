@@ -96,6 +96,7 @@ class UploadedFileTest extends \PHPUnit\Framework\TestCase
     public function testMoveExceptionTarget(): void
     {
         $this->expectException(\Exception::class);
+        /** @phpstan-ignore-next-line */
         $this->object->moveTo(1);
     }
 

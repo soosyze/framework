@@ -24,13 +24,15 @@ class Image extends FileMimes
      *
      * @param string                $key   Clé du test.
      * @param UploadedFileInterface $value Valeur à tester.
-     * @param string                $args  Liste d'extensions d'images autorisées.
+     * @param mixed                 $args  Liste d'extensions d'images autorisées.
      * @param bool                  $not   Inverse le test.
      */
     protected function test(string $key, $value, $args, bool $not): void
     {
-        $extensions = $args
-            ?? 'jpe,jpg,jpeg,png,gif,svg';
+        if (!is_string($args)) {
+            throw new \TypeError('The argument must be a string.');
+        }
+        $extensions = $args === '' ? 'jpe,jpg,jpeg,png,gif,svg' : $args;
         parent::test('file_mimes', $value, $extensions, $not);
 
         if ($this->hasErrors()) {

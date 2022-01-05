@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Soosyze\Components\Validator\Filters;
 
+use Soosyze\Components\Validator\Filter;
+
 /**
  * {@inheritdoc}
  *
@@ -22,19 +24,23 @@ class ToTrim extends \Soosyze\Components\Validator\Filter
      *
      * @param string $key   Identifiant de la valeur.
      * @param mixed  $value Valeur à filtrer.
-     * @param string $args  Argument de filtre.
+     * @param mixed  $args  Argument de filtre.
      *
      * @throws \InvalidArgumentException The type must be validated before being filtered.
      *
      * @return string
      */
-    protected function clean(string $key, $value, $args)
+    protected function clean(string $key, $value, $args): string
     {
         if (!is_string($value)) {
             throw new \InvalidArgumentException('The type must be validated before being filtered.');
         }
+        if (!is_string($args)) {
+            throw new \InvalidArgumentException(
+                sprintf('The argument must be of type string: %s given', gettype($args))
+            );
+        }
 
-        return trim($value, $args
-            ?? " \t\n\r\0\x0B");
+        return trim($value, $args === '' ? " \t\n\r\0\x0B" : $args);
     }
 }

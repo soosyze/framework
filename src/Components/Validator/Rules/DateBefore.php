@@ -22,12 +22,16 @@ class DateBefore extends Date
      *
      * @param string $key   Clé du test.
      * @param string $value Date à tester.
-     * @param string $args  Date de comparaison.
+     * @param mixed  $args  Date de comparaison.
      * @param bool   $not   Inverse le test.
      */
     protected function test(string $key, $value, $args, bool $not): void
     {
+        if (!is_string($args)) {
+            throw new \TypeError('The comparison argument must be string.');
+        }
         parent::test('date', $args, '', true);
+
         if ($this->hasErrors()) {
             throw new \InvalidArgumentException('The comparison date is not correct.');
         }

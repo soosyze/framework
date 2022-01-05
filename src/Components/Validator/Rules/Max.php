@@ -24,7 +24,7 @@ class Max extends Size
      *
      * @param string                                       $key   Clé du test.
      * @param int|float|string|array|UploadedFileInterface $value Valeur à tester.
-     * @param string                                       $args  Valeur de comparraison.
+     * @param mixed                                        $args  Valeur de comparraison.
      * @param bool                                         $not   Inverse le test.
      */
     protected function test(string $key, $value, $args, bool $not): void
@@ -32,6 +32,9 @@ class Max extends Size
         $length = $this->getSize($value);
         if ($this->hasErrors()) {
             return;
+        }
+        if (!is_numeric($args) && !is_string($args)) {
+            throw new \TypeError('The arguments must be a string or numeric.');
         }
         $this->sizeMax($key, $length, $args, $not);
     }
@@ -51,10 +54,10 @@ class Max extends Size
     /**
      * Test si une valeur est plus grande que la valeur de comparaison.
      *
-     * @param string    $key    Clé du test.
-     * @param float|int $length Taille de la valeur.
-     * @param string    $max    Valeur de comparraison.
-     * @param bool      $not    Inverse le test.
+     * @param string         $key    Clé du test.
+     * @param float|int      $length Taille de la valeur.
+     * @param numeric|string $max    Valeur de comparraison.
+     * @param bool           $not    Inverse le test.
      *
      * @return void
      */

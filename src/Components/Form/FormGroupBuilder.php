@@ -836,33 +836,25 @@ class FormGroupBuilder
      *
      * @see http://php.net/manual/fr/function.array-slice.php
      *
-     * @param array      $input       Tableau associatif.
-     * @param int|string $offset
-     * @param int|string $length
-     * @param array      $replacement
-     * @param bool       $after       Si le tableau de remplacement doit être intègré après.
+     * @param array  $input       Tableau associatif.
+     * @param string $key
+     * @param array  $replacement
+     * @param bool   $after       Si le tableau de remplacement doit être intègré après.
      *
      * @return void
      */
     private function arraySpliceAssoc(
         array &$input,
-        $offset,
-        $length,
+        string $key,
         array $replacement,
-        bool $after = false
+        bool $after
     ): void {
-        $keyIndices = array_flip(array_keys($input));
+        /** @var int $offset */
+        $offset = array_flip(array_keys($input))[$key];
 
-        if (isset($input[ $offset ]) && is_string($offset)) {
-            $offset = $keyIndices[ $offset ];
-        }
-        if (isset($input[ $length ]) && is_string($length)) {
-            $length = $keyIndices[ $length ] - $offset;
-        }
-
-        $input = array_slice($input, 0, $offset + ($after
-                ? 1
-                : 0), true) + $replacement + array_slice($input, $offset + $length, null, true);
+        $input = array_slice($input, 0, $offset + ($after ? 1 : 0), true)
+            + $replacement
+            + array_slice($input, $offset, null, true);
     }
 
     /**
@@ -882,9 +874,7 @@ class FormGroupBuilder
         if (isset($this->form[ $key ])) {
             $subform = new FormGroupBuilder;
             $callback($subform);
-            $this->arraySpliceAssoc($this->form, $key, ($after
-                    ? $key
-                    : 0), $subform->getForm(), $after);
+            $this->arraySpliceAssoc($this->form, $key, $subform->getForm(), $after);
 
             return true;
         }

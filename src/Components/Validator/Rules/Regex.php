@@ -22,11 +22,14 @@ class Regex extends \Soosyze\Components\Validator\Rule
      *
      * @param string $key   Clé du test.
      * @param string $value Valeur à tester.
-     * @param string $args  Expression régulière.
+     * @param mixed  $args  Expression régulière.
      * @param bool   $not   Inverse le test.
      */
     protected function test(string $key, $value, $args, bool $not): void
     {
+        if (!is_string($args)) {
+            throw new \TypeError('The argument must be a string.');
+        }
         if (!preg_match($args, $value) && $not) {
             $this->addReturn($key, 'must', [ ':regex' => $args ]);
         } elseif (preg_match($args, $value) && !$not) {

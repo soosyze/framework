@@ -175,7 +175,7 @@ class Response extends Message implements ResponseInterface
      *
      * @return static
      */
-    public function withStatus($code, $reasonPhrase = '')
+    public function withStatus($code, $reasonPhrase = ''): ResponseInterface
     {
         $clone       = clone $this;
         $clone->code = $this->filtreCode($code);
@@ -202,7 +202,7 @@ class Response extends Message implements ResponseInterface
     /**
      * Filtre le code d'état.
      *
-     * @param int $code Code d'état.
+     * @param mixed $code Code d'état.
      *
      * @throws \InvalidArgumentException Le code de statut n'est pas valide.
      *

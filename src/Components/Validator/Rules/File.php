@@ -22,10 +22,10 @@ class File extends \Soosyze\Components\Validator\Rule
     /**
      * Test si la valeur est un fichier.
      *
-     * @param string     $key   Clé du test.
-     * @param mixed      $value Valeur à tester.
-     * @param mixed|null $args  Argument de test.
-     * @param bool       $not   Inverse le test.
+     * @param string $key   Clé du test.
+     * @param mixed  $value Valeur à tester.
+     * @param mixed  $args  Argument de test.
+     * @param bool   $not   Inverse le test.
      */
     protected function test(string $key, $value, $args, bool $not): void
     {
@@ -115,12 +115,13 @@ class File extends \Soosyze\Components\Validator\Rule
      */
     protected function getMime(UploadedFileInterface $upload): string
     {
+        /** @var string $file */
         $file = $upload->getStream()->getMetadata('uri');
 
         $mime = (new \finfo(FILEINFO_MIME_TYPE))->file($file);
 
         if ($mime === false) {
-            throw new \Exception();
+            throw new \RuntimeException('An error occurred while returning information about a file.');
         }
 
         return $mime;

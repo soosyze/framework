@@ -61,6 +61,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
     public function testWithSchemeInvalidArgumentException($schema): void
     {
         $this->expectException(\InvalidArgumentException::class);
+        /** @phpstan-ignore-next-line */
         $this->object->withScheme($schema);
     }
 
@@ -112,6 +113,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('foo', Uri::create('http://foo@bar.com/')->getUserInfo());
 
         $this->assertEquals('', $this->object->withUserInfo('')->getUserInfo());
+        /** @phpstan-ignore-next-line */
         $this->assertEquals('', $this->object->withUserInfo(null)->getUserInfo());
         $this->assertEquals('user:foo', $this->object->withUserInfo('user', 'foo')->getUserInfo());
         $this->assertEquals('foo', $this->object->withUserInfo('foo')->getUserInfo());
@@ -143,6 +145,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
         $uri = new Uri();
 
         $this->expectException(\Exception::class);
+        /** @phpstan-ignore-next-line */
         $uri->withPort('error');
     }
 
@@ -170,6 +173,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
         $uri = new Uri();
 
         $this->expectException(\Exception::class);
+        /** @phpstan-ignore-next-line */
         $uri->withUserInfo(1);
     }
 
@@ -185,6 +189,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
         $uri = new Uri();
 
         $this->expectException(\Exception::class);
+        /** @phpstan-ignore-next-line */
         $uri->withHost(1);
     }
 
@@ -200,6 +205,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
         $uri = new Uri();
 
         $this->expectException(\Exception::class);
+        /** @phpstan-ignore-next-line */
         $uri->withPath(1);
     }
 
@@ -215,6 +221,7 @@ class UriTest extends \PHPUnit\Framework\TestCase
         $uri = new Uri();
 
         $this->expectException(\Exception::class);
+        /** @phpstan-ignore-next-line */
         $uri->withQuery(1);
     }
 

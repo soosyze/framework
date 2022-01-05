@@ -28,7 +28,7 @@ class ToInt extends \Soosyze\Components\Validator\Filter
      *
      * @return int
      */
-    protected function clean(string $key, $value, $args)
+    protected function clean(string $key, $value, $args): int
     {
         if (($out = filter_var($value, FILTER_VALIDATE_INT)) === false) {
             throw new \InvalidArgumentException('The type must be validated before being filtered.');

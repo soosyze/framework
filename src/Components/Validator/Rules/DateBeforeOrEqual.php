@@ -22,7 +22,7 @@ class DateBeforeOrEqual extends DateBefore
      *
      * @param string $key   Clé du test.
      * @param string $value Date à tester.
-     * @param string $args  Date de comparaison.
+     * @param mixed  $args  Date de comparaison.
      * @param bool   $not   Inverse le test.
      */
     protected function test(string $key, $value, $args, bool $not): void

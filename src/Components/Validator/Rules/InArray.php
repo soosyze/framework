@@ -22,12 +22,18 @@ class InArray extends \Soosyze\Components\Validator\Rule
      *
      * @param string $key   Clé du test.
      * @param scalar $value Valeur à tester.
-     * @param string $args  Tableau de comparaison.
+     * @param mixed  $args  Tableau de comparaison.
      * @param bool   $not   Inverse le test.
      */
     protected function test(string $key, $value, $args, bool $not): void
     {
-        $array = explode(',', $args);
+        if (is_string($args)) {
+            $array = explode(',', $args);
+        } elseif (is_array($args)) {
+            $array = $args;
+        } else {
+            throw new \TypeError('The arguments must be a string or array.');
+        }
 
         if (!in_array($value, $array) && $not) {
             $this->addReturn($key, 'must', [ ':list' => implode(', ', $array) ]);

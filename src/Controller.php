@@ -73,7 +73,7 @@ class Controller
      * @param string $key  Nom du service.
      * @param array  $args Paramètres passés à la fonction.
      *
-     * @return object
+     * @return mixed
      */
     public function __call(string $key, array $args)
     {
@@ -87,9 +87,9 @@ class Controller
      *
      * @param string $key Nom du service.
      *
-     * @return object Service dans le container.
+     * @return mixed Service dans le container.
      */
-    public function get(string $key): object
+    public function get(string $key)
     {
         return $this->container->get($key);
     }

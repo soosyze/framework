@@ -102,19 +102,19 @@ class Paginator
     /**
      * Change la page courante.
      *
-     * @param numeric $current
+     * @param int $current
      *
      * @throws \InvalidArgumentException La page courante doit être
      *                                   un nombre numérique supérieur à 1.
      *
      * @return $this
      */
-    public function setCurrent($current): self
+    public function setCurrent(int $current): self
     {
-        if (!is_numeric($current) || $current < 1) {
+        if ($current < 1) {
             throw new \InvalidArgumentException('The current page must be a numeric number greater than 1.');
         }
-        $this->current = (int) $current;
+        $this->current = $current;
 
         return $this;
     }
@@ -122,19 +122,19 @@ class Paginator
     /**
      * Change le nombre de page maximum à afficher.
      *
-     * @param numeric $max
+     * @param int $max
      *
      * @throws \InvalidArgumentException Le nombre de page à afficher doit être
      *                                   supérieur ou égale à trois.
      *
      * @return $this
      */
-    public function setMaxPage($max = 3): self
+    public function setMaxPage(int $max = 3): self
     {
-        if (!is_numeric($max) || $max < 3) {
+        if ($max < 3) {
             throw new \InvalidArgumentException('The number of pages to display must be greater than or equal to three.');
         }
-        $this->nbMaxPage = (int) $max;
+        $this->nbMaxPage = $max;
 
         return $this;
     }

@@ -77,7 +77,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testInputNumber()
+    public function testInputNumber(): void
     {
         $this->object->number('inputNumber', [ ':actions' => 1 ]);
 
@@ -164,6 +164,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\BadMethodCallException::class);
         $this->expectExceptionMessage('The error type field does not exist');
+        /** @phpstan-ignore-next-line */
         $this->object->error('inputTextarea', 'lorem ipsum');
     }
 
@@ -433,21 +434,25 @@ class FormTest extends \PHPUnit\Framework\TestCase
     public function testAfter(): void
     {
         $this->object
+            ->text('key_field_1')
+            ->text('key_field_2')
             ->text('1')
-            ->text('2')
+            ->text('key_field_4')
             ->after('1', function ($form) {
                 $form->text('3');
             })
-            ->after('1', function ($form) {
+            ->after('key_field_4', function ($form) {
                 $form->text('4');
             });
 
         $this->assertEquals(
             '<form method="post" action="http://localhost/">' . PHP_EOL .
+            '<input name="key_field_1" type="text" id="key_field_1">' . PHP_EOL .
+            '<input name="key_field_2" type="text" id="key_field_2">' . PHP_EOL .
             '<input name="1" type="text" id="1">' . PHP_EOL .
-            '<input name="4" type="text" id="4">' . PHP_EOL .
             '<input name="3" type="text" id="3">' . PHP_EOL .
-            '<input name="2" type="text" id="2">' . PHP_EOL .
+            '<input name="key_field_4" type="text" id="key_field_4">' . PHP_EOL .
+            '<input name="4" type="text" id="4">' . PHP_EOL .
             '</form>' . PHP_EOL,
             (string) $this->object
         );

@@ -3,6 +3,7 @@
 namespace Soosyze\Tests;
 
 use Psr\Http\Message\RequestInterface;
+use Soosyze\App;
 use Soosyze\Components\Http\ServerRequest;
 use Soosyze\Components\Http\Uri;
 use Soosyze\Tests\Resources\App\AppCore;
@@ -10,7 +11,7 @@ use Soosyze\Tests\Resources\App\AppCore;
 class AppTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AppCore
+     * @var App
      */
     protected static $object;
 

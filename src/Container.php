@@ -240,9 +240,11 @@ class Container implements ContainerInterface
             return $out;
         }
         foreach ($this->hooks[ $key ] as $services => $func) {
-            $out = \is_string($func)
-                ? call_user_func_array([ $this->get($services), $func ], $args)
-                : call_user_func_array($func, $args);
+            if (\is_string($func)) {
+                $out =  $this->get($services)->$func(...$args);
+            } else {
+                $out =  call_user_func_array($func, $args);
+            }
         }
 
         return $out;
