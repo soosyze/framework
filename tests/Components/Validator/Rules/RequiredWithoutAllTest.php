@@ -79,4 +79,15 @@ class RequiredWithoutAllTest extends Rule
         $this->expectException(\Exception::class);
         $this->object->addRule('field', 'required_without_all:')->isValid();
     }
+
+    public function testExceptionArgMin(): void
+    {
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage('The argument must be a string.');
+        $this->object
+            ->addInput('args', 1)
+            ->addInput('field', '1')
+            ->addRule('field', 'required_without_all:@args')
+            ->isValid();
+    }
 }

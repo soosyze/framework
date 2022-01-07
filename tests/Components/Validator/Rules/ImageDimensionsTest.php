@@ -95,4 +95,15 @@ class ImageDimensionsTest extends RuleFile
         $this->assertFalse($this->object->isValid());
         $this->assertCount(3, $this->object->getErrors());
     }
+
+    public function testExceptionArg(): void
+    {
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage('The argument must be a string.');
+        $this->object
+            ->addInput('args', 1)
+            ->addInput('field', '1')
+            ->addRule('field', 'image_dimensions_width:@args')
+            ->isValid();
+    }
 }

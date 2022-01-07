@@ -80,4 +80,15 @@ class RequiredWithTest extends Rule
         $this->expectException(\Exception::class);
         $this->object->addRule('field', 'required_with:')->isValid();
     }
+
+    public function testExceptionArgMin(): void
+    {
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage('The argument must be a string.');
+        $this->object
+            ->addInput('args', 1)
+            ->addInput('field', '1')
+            ->addRule('field', 'required_with:@args')
+            ->isValid();
+    }
 }

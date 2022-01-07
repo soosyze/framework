@@ -583,10 +583,9 @@ class Util
             $handle = fopen($filename, $mode);
         } catch (\Exception $e) {
             throw new \RuntimeException(sprintf(
-                'Unable to open "%s" using mode "%s": %s',
+                'Unable to open "%s" using mode "%s".',
                 $filename,
-                $mode,
-                $e->getMessage()
+                $mode
             ), 0, $e);
         }
 
@@ -597,7 +596,7 @@ class Util
     {
         $handle = \date_create($to);
         if ($handle === false) {
-            throw new \InvalidArgumentException('The date must be in valid format');
+            throw new \InvalidArgumentException('The date must be in valid format.');
         }
 
         return $handle;

@@ -8,19 +8,23 @@ class TokenTest extends Rule
     {
         $_SESSION[ 'token' ]      = [
             'token'          => 'Lorem ipsum dolor sit amet',
+            'token_arg'      => 'Lorem ipsum dolor sit amet',
             'token_required' => 'Lorem ipsum dolor sit amet'
         ];
         $_SESSION[ 'token_time' ] = [
             'token'          => time(),
+            'token_arg'      => time(),
             'token_required' => time()
         ];
 
         $this->object->setInputs([
             'token'              => 'Lorem ipsum dolor sit amet',
+            'token_arg'          => 'Lorem ipsum dolor sit amet',
             'token_required'     => 'Lorem ipsum dolor sit amet',
             'token_not_required' => ''
         ])->setRules([
             'token'              => 'token',
+            'token_arg'          => 'token:900',
             'token_required'     => 'required|token',
             'token_not_required' => '!required|token'
         ]);

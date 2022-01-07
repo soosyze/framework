@@ -67,7 +67,7 @@ class FontAwesome extends \Soosyze\Components\Validator\Rule
 
     private function getPattern(?string $args): array
     {
-        if ($args === null) {
+        if (empty($args)) {
             return [ '/fa(b|s)? fa-[a-z]+/', 'brands,solid' ];
         }
 
