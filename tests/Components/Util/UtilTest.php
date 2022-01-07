@@ -221,6 +221,11 @@ class UtilTest extends \PHPUnit\Framework\TestCase
     {
         \Soosyze\Components\Util\Input::reset();
         $this->assertEquals(1024, Util::getOctetUploadLimit());
+
+        \Soosyze\Components\Util\Input::addIni('upload_max_filesize', null);
+        \Soosyze\Components\Util\Input::addIni('post_max_size', null);
+        \Soosyze\Components\Util\Input::addIni('memory_limit', null);
+        $this->assertNull(Util::getOctetUploadLimit());
     }
 
     /**
@@ -264,5 +269,19 @@ class UtilTest extends \PHPUnit\Framework\TestCase
         yield ['1 minute ago', 'now -1 minute'];
         yield ['2 minutes', 'now +2 minute +1 second'];
         yield ['2 minutes ago', 'now -2 minute'];
+    }
+
+    public function testTryFopenRuntimeException(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Unable to open "fileError.json" using mode "d".');
+        Util::tryFopen('fileError.json', 'd');
+    }
+
+    public function testTryDateCreateRuntimeException(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The date must be in valid format.');
+        Util::tryDateCreate('error');
     }
 }

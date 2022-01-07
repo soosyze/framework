@@ -55,4 +55,15 @@ class ImageTest extends RuleFile
             ->addRule('image', 'image:xml')
             ->isValid();
     }
+
+    public function testExceptionArg(): void
+    {
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage('The argument must be a string.');
+        $this->object
+            ->addInput('args', 1)
+            ->addInput('field', '1')
+            ->addRule('field', 'fontawesome:@args')
+            ->isValid();
+    }
 }

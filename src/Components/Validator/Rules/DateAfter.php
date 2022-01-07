@@ -28,7 +28,7 @@ class DateAfter extends Date
     protected function test(string $key, $value, $args, bool $not): void
     {
         if (!is_string($args)) {
-            throw new \TypeError('The comparison argument must be string.');
+            throw new \TypeError('The comparison argument must be a string.');
         }
         parent::test('date', $args, '', true);
 

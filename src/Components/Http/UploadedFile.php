@@ -105,9 +105,9 @@ class UploadedFile implements UploadedFileInterface
         ?string $type = null,
         int $error = UPLOAD_ERR_OK
     ) {
-        $this->name  = $this->filterName($name);
-        $this->size  = $this->filterSize($size);
-        $this->type  = $this->filterType($type);
+        $this->name  = $name;
+        $this->size  = $size;
+        $this->type  = $type;
         $this->error = $this->filterError($error);
         if (!$this->isError()) {
             $this->filterFile($file);
@@ -291,60 +291,6 @@ class UploadedFile implements UploadedFileInterface
         } else {
             throw new \InvalidArgumentException('The file resource is not readable.');
         }
-    }
-
-    /**
-     * Déclenche une exception si le nom du fichier n'est pas valide.
-     *
-     * @param mixed $name Nom du fichier
-     *
-     * @throws \InvalidArgumentException Le nom du fichier doit être une chaine de caractère ou null.
-     *
-     * @return string|null Nom du fichier filtré.
-     */
-    protected function filterName($name): ?string
-    {
-        if (!is_string($name) && $name !== null) {
-            throw new \InvalidArgumentException('The file name must be a string or null.');
-        }
-
-        return $name;
-    }
-
-    /**
-     * Déclenche une exception si la taille du fichier n'est pas valide.
-     *
-     * @param mixed $size Taille du fichier.
-     *
-     * @throws \InvalidArgumentException La taille du fichier doit-être un nombre entier ou null
-     *
-     * @return int|null Taille du fichier filtré.
-     */
-    protected function filterSize($size): ?int
-    {
-        if (!is_int($size) && $size !== null) {
-            throw new \InvalidArgumentException('The file size must be a integer or null');
-        }
-
-        return $size;
-    }
-
-    /**
-     * Déclenche une exception si le type du fichier n'est pas valide.
-     *
-     * @param mixed $type Type du fichier
-     *
-     * @throws \InvalidArgumentException Le type du fichier doit être une chaine de caractère ou null.
-     *
-     * @return string|null Type du fichier filtré.
-     */
-    protected function filterType($type): ?string
-    {
-        if (!is_string($type) && $type !== null) {
-            throw new \InvalidArgumentException('The file type must be a string or null.');
-        }
-
-        return $type;
     }
 
     /**

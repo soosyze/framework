@@ -125,4 +125,15 @@ class BetweenTest extends Rule
         $this->assertFalse($this->object->isValid());
         $this->assertCount(3, $this->object->getErrors());
     }
+
+    public function testExceptionArg(): void
+    {
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage('The comparisons arguments must be a string.');
+        $this->object
+            ->addInput('args', 1)
+            ->addInput('field', '1')
+            ->addRule('field', 'between_numeric:@args')
+            ->isValid();
+    }
 }

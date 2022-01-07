@@ -31,8 +31,8 @@ class MaxNumeric extends Max
         if ($this->hasErrors()) {
             return;
         }
-        if (!is_numeric($args)) {
-            throw new \TypeError('The comparison argument must be numeric.');
+        if (!is_numeric($args) && !is_string($args)) {
+            throw new \TypeError('The comparison argument must be a string or numeric.');
         }
         $this->sizeMax($key, $length, $args, $not);
     }

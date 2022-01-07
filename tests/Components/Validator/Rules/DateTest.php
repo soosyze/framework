@@ -195,4 +195,37 @@ class DateTest extends Rule
         $this->assertFalse($this->object->isValid());
         $this->assertCount(2, $this->object->getErrors());
     }
+
+    public function testDateAfterExceptionArg(): void
+    {
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage('The comparison argument must be a string.');
+        $this->object
+            ->addInput('args', 1)
+            ->addInput('field', '1')
+            ->addRule('field', 'date_after:@args')
+            ->isValid();
+    }
+
+    public function testDateBeforeExceptionArg(): void
+    {
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage('The comparison argument must be a string.');
+        $this->object
+            ->addInput('args', 1)
+            ->addInput('field', '1')
+            ->addRule('field', 'date_before:@args')
+            ->isValid();
+    }
+
+    public function testDateFormatExceptionArg(): void
+    {
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage('The date format must be a string.');
+        $this->object
+            ->addInput('args', 1)
+            ->addInput('field', '1')
+            ->addRule('field', 'date_format:@args')
+            ->isValid();
+    }
 }

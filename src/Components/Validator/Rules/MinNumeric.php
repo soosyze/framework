@@ -33,8 +33,8 @@ class MinNumeric extends Min
         if ($this->hasErrors()) {
             return;
         }
-        if (!is_numeric($args)) {
-            throw new \TypeError('The arguments must be a numeric.');
+        if (!is_numeric($args) && !is_string($args)) {
+            throw new \TypeError('The comparison argument must be a string or numeric.');
         }
         $this->sizeMin($key, $length, $args, $not);
     }
