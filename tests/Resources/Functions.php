@@ -50,7 +50,7 @@ namespace Soosyze\Components\Util
             ];
         }
 
-        public static function addIni(string $key, string $value): void
+        public static function addIni(string $key, ?string $value): void
         {
             self::$iniGet[ $key ] = $value;
         }

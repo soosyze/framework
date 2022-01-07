@@ -133,6 +133,28 @@ class MinTest extends Rule
             ->addRule('field', 'min:error')
             ->isValid();
     }
+
+    public function testExceptionArgMin(): void
+    {
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage('The comparison argument must be a string or numeric.');
+        $this->object
+            ->addInput('args', true)
+            ->addInput('field', '1')
+            ->addRule('field', 'min:@args')
+            ->isValid();
+    }
+
+    public function testExceptionArgMinNumeric(): void
+    {
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage('The comparison argument must be a string or numeric.');
+        $this->object
+            ->addInput('args', true)
+            ->addInput('field', '1')
+            ->addRule('field', 'min_numeric:@args')
+            ->isValid();
+    }
 }
 
 class ObjectTest

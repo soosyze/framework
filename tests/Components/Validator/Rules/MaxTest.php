@@ -90,12 +90,34 @@ class MaxTest extends Rule
         $this->assertCount(2, $this->object->getErrors());
     }
 
-    public function testMaxExceptionMin(): void
+    public function testMaxExceptionMax(): void
     {
         $this->expectException(\Exception::class);
         $this->object
             ->addInput('field', 4)
             ->addRule('field', 'max:error')
+            ->isValid();
+    }
+
+    public function testExceptionArgMax(): void
+    {
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage('The comparison argument must be a string or numeric.');
+        $this->object
+            ->addInput('args', true)
+            ->addInput('field', '1')
+            ->addRule('field', 'max:@args')
+            ->isValid();
+    }
+
+    public function testExceptionArgMaxNumeric(): void
+    {
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage('The comparison argument must be a string or numeric.');
+        $this->object
+            ->addInput('args', true)
+            ->addInput('field', '1')
+            ->addRule('field', 'max_numeric:@args')
             ->isValid();
     }
 }

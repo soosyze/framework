@@ -35,4 +35,15 @@ class FileExtensionTest extends RuleFile
         $this->assertFalse($this->object->isValid());
         $this->assertCount(3, $this->object->getErrors());
     }
+
+    public function testExceptionArg(): void
+    {
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage('The list of allowed extensions must be a string.');
+        $this->object
+            ->addInput('args', 1)
+            ->addInput('field', $this->uplaod_img)
+            ->addRule('field', 'file_extensions:@args')
+            ->isValid();
+    }
 }

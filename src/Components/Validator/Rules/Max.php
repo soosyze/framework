@@ -34,7 +34,7 @@ class Max extends Size
             return;
         }
         if (!is_numeric($args) && !is_string($args)) {
-            throw new \TypeError('The arguments must be a string or numeric.');
+            throw new \TypeError('The comparison argument must be a string or numeric.');
         }
         $this->sizeMax($key, $length, $args, $not);
     }

@@ -106,9 +106,25 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(isset($this->object[ 'testConfig.key1' ]));
     }
 
+    public function testHasArrayAccessInvalidArgumentException(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The key of must be of type string: integer given');
+        /** @phpstan-ignore-next-line */
+        isset($this->object[ 1 ]);
+    }
+
     public function testGetArrayAccess(): void
     {
         $this->assertEquals('value1', $this->object[ 'testConfig.key1' ]);
+    }
+
+    public function testGetArrayAccessInvalidArgumentException(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The key of must be of type string: integer given');
+        /** @phpstan-ignore-next-line */
+        $this->object[ 1 ];
     }
 
     public function testSetArrayAccess(): void
@@ -118,10 +134,24 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('value3', $this->object[ 'testConfig.key3' ]);
     }
 
+    public function testSetArrayAccessInvalidArgumentException(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The key of must be of type string: integer given');
+        $this->object[ 1 ] = 'value3';
+    }
+
     public function testDelArrayAccess(): void
     {
         unset($this->object[ 'testConfig.key3' ]);
 
         $this->assertNull($this->object[ 'testConfig.key3' ]);
+    }
+
+    public function testDelArrayAccessInvalidArgumentException(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The key of must be of type string: integer given');
+        unset($this->object[ 1 ]);
     }
 }

@@ -32,4 +32,14 @@ class ToTrimTest extends Filter
             ->addRule('field', 'to_trim')
             ->isValid();
     }
+
+    public function testExceptionArg(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->object
+            ->addInput('args', 1)
+            ->addInput('field', '1')
+            ->addRule('field', 'to_trim:@args')
+            ->isValid();
+    }
 }

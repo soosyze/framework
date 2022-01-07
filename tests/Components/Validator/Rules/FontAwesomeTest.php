@@ -31,4 +31,15 @@ class FontAwesomeTest extends Rule
         $this->assertFalse($this->object->isValid());
         $this->assertCount(2, $this->object->getErrors());
     }
+
+    public function testExceptionArg(): void
+    {
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage('The argument must be a string.');
+        $this->object
+            ->addInput('args', 1)
+            ->addInput('field', '1')
+            ->addRule('field', 'fontawesome:@args')
+            ->isValid();
+    }
 }
