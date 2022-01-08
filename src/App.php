@@ -437,14 +437,14 @@ abstract class App
     {
         $modules = $this->loadModules();
         foreach ($modules as $module) {
-            if ($module->getPathBoot()) {
+            if ($module->getPathBoot() !== '') {
                 include_once $module->getPathBoot();
             }
-            if ($module->getPathRoutes()) {
+            if ($module->getPathRoutes() !== '') {
                 include_once $module->getPathRoutes();
             }
 
-            if ($module->getPathServices()) {
+            if ($module->getPathServices() !== '') {
                 $services = include_once $module->getPathServices();
                 if ($services !== true) {
                     $this->services += $services;
