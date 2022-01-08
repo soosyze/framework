@@ -182,13 +182,13 @@ final class Route
      *
      * @param string $prefix
      *
-     * @return static
+     * @return self
      */
     public static function prefix(string $prefix)
     {
         self::$prefix = $prefix;
 
-        return new static;
+        return new self;
     }
 
     /**
@@ -196,13 +196,13 @@ final class Route
      *
      * @param string $name
      *
-     * @return static
+     * @return self
      */
     public static function name(string $name)
     {
         self::$name = $name;
 
-        return new static;
+        return new self;
     }
 
     /**
@@ -238,7 +238,7 @@ final class Route
     {
         self::$namespace = trim($namespace, '\\/');
 
-        return new static;
+        return new self;
     }
 
     /**

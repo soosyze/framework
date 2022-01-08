@@ -442,7 +442,7 @@ class Util
             : 0;
         $number = number_format($size / pow(1024, $power), $precision, '.', ' ');
 
-        return rtrim($number, '.0')
+        return rtrim($number, '.0') !== ''
             ? rtrim($number, '.0') . ' ' . $units[ $power ]
             : $default;
     }
@@ -592,7 +592,10 @@ class Util
         return $handle;
     }
 
-    public static function tryDateCreate(string $to = 'now'): \DateTime
+    /**
+     * @return \DateTime|\DateTimeImmutable
+     */
+    public static function tryDateCreate(string $to = 'now'): \DateTimeInterface
     {
         $handle = \date_create($to);
         if ($handle === false) {
