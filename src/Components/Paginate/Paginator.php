@@ -178,7 +178,7 @@ class Paginator
             $out .= "<li><a href=\"{$url}\"> &raquo;</a></li>" . PHP_EOL;
         }
 
-        return $out
+        return $out !== ''
             ? '<ul class="pagination">' . PHP_EOL . $out . '</ul>' . PHP_EOL
             : '';
     }

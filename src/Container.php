@@ -88,7 +88,7 @@ class Container implements ContainerInterface
         array $arguments = [],
         array $hooks = []
     ): self {
-        $this->services[ $key ] = compact('class', 'arguments', 'hooks');
+        $this->services[ $key ] = ['class' => $class, 'arguments' => $arguments, 'hooks' => $hooks];
         $this->loadHooks([ $key =>  $this->services[ $key ] ]);
 
         return $this;
@@ -240,11 +240,9 @@ class Container implements ContainerInterface
             return $out;
         }
         foreach ($this->hooks[ $key ] as $services => $func) {
-            if (\is_string($func)) {
-                $out =  $this->get($services)->$func(...$args);
-            } else {
-                $out =  call_user_func_array($func, $args);
-            }
+            $out = \is_string($func)
+                ? $this->get($services)->$func(...$args)
+                : call_user_func_array($func, $args);
         }
 
         return $out;
@@ -303,7 +301,7 @@ class Container implements ContainerInterface
     private function matchArgs(\ReflectionClass $ref, string $key): array
     {
         $construct = $ref->getConstructor();
-        if ($construct === null) {
+        if (!$construct instanceof \ReflectionMethod) {
             return [];
         }
 
@@ -326,7 +324,7 @@ class Container implements ContainerInterface
                 continue;
             }
 
-            if ($param->isOptional() === false) {
+            if (!$param->isOptional()) {
                 throw new \RuntimeException("The $typeParam parameter is absent");
             }
         }
