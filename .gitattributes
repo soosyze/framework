@@ -9,3 +9,4 @@
 phpdoc.dist.xml export-ignore
 phpstan.neon.dist export-ignore
 phpunit.xml export-ignore
+rector.php export-ignore
