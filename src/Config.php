@@ -30,7 +30,7 @@ class Config implements \ArrayAccess
     /**
      * Les données de la configurations.
      *
-     * @var array<string, array<string, array|null|scalar>>
+     * @var array<string, array<string, mixed>>
      */
     private $data = [];
 
