@@ -1,7 +1,9 @@
 <?php
 
-use Soosyze\Components\Router\Route;
+use Soosyze\Components\Router\RouteCollection;
+use Soosyze\Components\Router\RouteGroup;
 
-Route::useNamespace('Soosyze\Tests\Resources\App');
-Route::get('test', '/index', 'TestController@index');
-Route::get('test.json', '/json', 'TestController@getApi');
+RouteCollection::setNamespace('Soosyze\Tests\Resources\App\TestController')->group(function (RouteGroup $r) {
+    $r->get('test', '/index', '@index');
+    $r->get('test.json', '/json', '@getApi');
+});
