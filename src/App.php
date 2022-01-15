@@ -222,7 +222,7 @@ abstract class App
         $this->container->callHook('app.response.before', [ &$request, &$response ]);
 
         if (($route = $this->router->parse($request)) && $response->getStatusCode() === 404) {
-            $this->container->callHook($route[ 'key' ] . '.response.before', [
+            $this->container->callHook($route->getKey() . '.response.before', [
                 &$request,
                 &$response
             ]);
@@ -230,7 +230,7 @@ abstract class App
             $exec     = $this->router->execute($route, $request);
             $response = $this->parseResponse($exec);
 
-            $this->container->callHook($route[ 'key' ] . '.response.after', [
+            $this->container->callHook($route->getKey() . '.response.after', [
                 $this->request,
                 &$response
             ]);
