@@ -15,7 +15,7 @@ class AppTest extends \PHPUnit\Framework\TestCase
      */
     protected static $object;
 
-    protected function setUp(): void
+    public function setUp(): void
     {
         $serverRequest = new ServerRequest(
             'GET',

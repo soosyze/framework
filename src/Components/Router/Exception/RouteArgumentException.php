@@ -20,24 +20,24 @@ class RouteArgumentException extends \Exception
     /**
      * Construit l'exception à partir des données de la route.
      *
-     * @param string          $param     Clé paramétrable de la route.
-     * @param string          $condition Condition pour que la route soit valide (regex).
-     * @param string          $path      L'URL appelée.
-     * @param int             $code      Code de l'exception.
-     * @param \Exception|null $previous  Exception précédente.
+     * @param string          $with     Clé paramétrable de la route.
+     * @param string          $pattern  Condition pour que la route soit valide (regex).
+     * @param string          $path     L'URL appelée.
+     * @param int             $code     Code de l'exception.
+     * @param \Exception|null $previous Exception précédente.
      */
     public function __construct(
-        string $param,
-        string $condition,
+        string $with,
+        string $pattern,
         string $path,
         int $code = 0,
         ?\Exception $previous = null
     ) {
         $msg = sprintf(
             'The parameter %s of the %s route does not fulfill the %s condition.',
-            $param,
+            $with,
             $path,
-            $condition
+            $pattern
         );
         parent::__construct(htmlspecialchars($msg), $code, $previous);
     }
