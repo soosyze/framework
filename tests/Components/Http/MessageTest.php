@@ -44,59 +44,81 @@ class MessageTest extends \PHPUnit\Framework\TestCase
 
     public function testWithHeader(): void
     {
-        $clone = $this->object->withHeader('Location', 'http://www.example.com/');
-        $this->assertEquals([ 'Location' => [ 'http://www.example.com/' ] ], $clone->getHeaders());
+        $clone = $this->object->withHeader('location', [ 'http://www.foo.com' ]);
+        $this->assertEquals([ 'location' => [ 'http://www.foo.com' ] ], $clone->getHeaders());
 
-        $clone2 = $this->object->withHeader('Location', [ 'http://www.example.com/' ]);
-        $this->assertEquals([ 'Location' => [ 'http://www.example.com/' ] ], $clone2->getHeaders());
+        $clone = $clone->withHeader('LOCATION', 'http://www.bar.com');
+        $this->assertEquals([ 'LOCATION' => [ 'http://www.bar.com' ] ], $clone->getHeaders());
     }
 
     public function testGetHeaders(): void
     {
         $this->assertEquals([], $this->object->getHeaders());
-        $clone = $this->object->withHeader('Location', 'http://www.example.com/');
-        $this->assertEquals([ 'Location' => [ 'http://www.example.com/' ] ], $clone->getHeaders());
+        $clone = $this->object->withHeader('location', 'http://www.foo.com');
+        $this->assertEquals([ 'location' => [ 'http://www.foo.com' ] ], $clone->getHeaders());
     }
 
     public function testHasHeader(): void
     {
-        $this->assertFalse($this->object->hasHeader('Location'));
-        $clone = $this->object->withHeader('Location', 'http://www.example.com/');
-        $this->assertTrue($clone->hasHeader('Location'));
+        $this->assertFalse($this->object->hasHeader('location'));
+        $clone = $this->object->withHeader('location', 'http://www.foo.com');
+
+        $this->assertTrue($clone->hasHeader('location'));
+        $this->assertTrue($clone->hasHeader('LOCATION'));
     }
 
     public function testGetHeader(): void
     {
-        $this->assertEquals([], $this->object->getHeader('Location'));
-        $clone = $this->object->withHeader('Location', 'http://www.example.com/');
-        $this->assertEquals([ 'http://www.example.com/' ], $clone->getHeader('location'));
+        $this->assertEquals([], $this->object->getHeader('location'));
+        $clone = $this->object->withHeader('location', 'http://www.foo.com');
+
+        $this->assertEquals([ 'http://www.foo.com' ], $clone->getHeader('location'));
+        $this->assertEquals([ 'http://www.foo.com' ], $clone->getHeader('LOCATION'));
     }
 
     public function testGetHeaderLine(): void
     {
-        $clone = $this->object->withHeader('Location', 'http://www.foo.com/');
+        $clone = $this->object->withAddedHeader('location', 'http://www.foo.com/');
+        $this->assertEquals(
+            'http://www.foo.com/',
+            $clone->getHeaderLine('location')
+        );
+        $this->assertEquals(
+            'http://www.foo.com/',
+            $clone->getHeaderLine('LOCATION')
+        );
 
-        $this->assertEquals($clone->getHeaderLine('location'), 'http://www.foo.com/');
+        $clone = $clone->withAddedHeader('location', 'http://www.bar.com/');
         $this->assertEquals(
             'http://www.foo.com/,http://www.bar.com/',
-            $clone->withAddedHeader('Location', 'http://www.bar.com/')->getHeaderLine('location')
+            $clone->getHeaderLine('location')
+        );
+        $this->assertEquals(
+            'http://www.foo.com/,http://www.bar.com/',
+            $clone->getHeaderLine('LOCATION')
         );
     }
 
     public function testWithAddedHeader(): void
     {
-        $clone = $this->object->withAddedHeader('Location', 'http://www.example.com/');
-        $this->assertEquals([ 'http://www.example.com/' ], $clone->getHeader('location'));
+        $clone = $this->object->withAddedHeader('LOCATION', 'http://www.foo.com');
+        $this->assertEquals([ 'http://www.foo.com' ], $clone->getHeader('location'));
+
+        $clone = $clone->withAddedHeader('location', 'http://www.bar.com');
+        $this->assertEquals(
+            [ 'http://www.foo.com', 'http://www.bar.com' ],
+            $clone->getHeader('location')
+        );
     }
 
     public function testWithAddedHeaderMultiple(): void
     {
         $clone = $this->object
-            ->withAddedHeader('Location', 'http://www.example.com/')
-            ->withAddedHeader('Location', 'http://www.example.com/');
+            ->withAddedHeader('location', 'http://www.foo.com')
+            ->withAddedHeader('LOCATION', 'http://www.bar.com');
 
         $this->assertEquals(
-            [ 'Location' => [ 'http://www.example.com/', 'http://www.example.com/' ] ],
+            [ 'location' => [ 'http://www.foo.com', 'http://www.bar.com' ] ],
             $clone->getHeaders()
         );
     }

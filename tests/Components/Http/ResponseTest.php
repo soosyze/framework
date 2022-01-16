@@ -32,7 +32,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         $rep = new Response(
             404,
             new Stream('Page not found, sorry'),
-            [ 'Localtion' => [ '/error' ] ],
+            [ 'localtion' => [ '/error' ] ],
             'Page not found'
         );
 
@@ -90,7 +90,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(
             [
                 'HTTP/1.0 404 Not Found',
-                'localtion: /error'
+                'Localtion: /error'
             ],
             \Soosyze\Components\Http\Output::$headers
         );
