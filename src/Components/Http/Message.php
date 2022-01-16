@@ -147,10 +147,15 @@ class Message implements MessageInterface
      */
     public function withHeader($name, $value): MessageInterface
     {
-        $clone                            = clone $this;
-        $values                           = $clone->validateAndTrimHeader($name, $value);
-        $clone->headers[ $name ]          = $values;
-        $clone->name[ strtolower($name) ] = $name;
+        $clone  = clone $this;
+        $values = $clone->validateAndTrimHeader($name, $value);
+
+        $normalized = strtolower($name);
+        if (isset($clone->name[ $normalized ])) {
+            unset($clone->headers[ $clone->name[ $normalized ] ]);
+        }
+        $clone->name[ $normalized ] = $name;
+        $clone->headers[ $name ]    = $values;
 
         return $clone;
     }
@@ -168,12 +173,15 @@ class Message implements MessageInterface
         $clone  = clone $this;
         $values = $this->validateAndTrimHeader($name, $value);
 
-        if (!$this->hasHeader($name)) {
-            $clone->name[ strtolower($name) ] = $name;
+        $normalized = strtolower($name);
+        if (!isset($clone->name[ $normalized ])) {
+            $clone->name[ $normalized ] = $name;
         }
+
+        $header = $clone->name[ $normalized ];
         /* Pour ne pas écraser les valeurs avec le array merge utilise une boucle simple. */
         foreach ($values as $head) {
-            $clone->headers[ $clone->name[ strtolower($name) ] ][] = $head;
+            $clone->headers[ $header ][] = $head;
         }
 
         return $clone;
@@ -188,10 +196,16 @@ class Message implements MessageInterface
      */
     public function withoutHeader($name): MessageInterface
     {
-        $clone = clone $this;
-        if ($clone->hasHeader($name)) {
-            unset($clone->headers[ $this->name[ strtolower($name) ] ], $clone->name[ strtolower($name) ]);
+        $normalized = strtolower($name);
+
+        if (!isset($this->name[$normalized])) {
+            return $this;
         }
+
+        $header = $this->name[$normalized];
+
+        $clone = clone $this;
+        unset($clone->headers[$header], $clone->name[$normalized]);
 
         return $clone;
     }
@@ -249,10 +263,15 @@ class Message implements MessageInterface
     protected function withHeaders(array $headers): void
     {
         $this->headers = [];
-        foreach ($headers as $key => $value) {
-            $this->headers[ strtolower($key) ] = is_array($value)
-                ? $value
-                : [ $value ];
+        foreach ($headers as $name => $value) {
+            $values = $this->validateAndTrimHeader($name, $value);
+
+            $normalized = strtolower($name);
+            if (isset($this->name[ $normalized ])) {
+                unset($this->headers[ $this->name[ $normalized ] ]);
+            }
+            $this->name[ $normalized ] = $name;
+            $this->headers[ $name ]    = $values;
         }
     }
 
