@@ -75,21 +75,24 @@ class Container implements ContainerInterface
     /**
      * Charges un service.
      *
-     * @param string $key       Nom du service.
-     * @param string $class     Objet à instancier.
-     * @param array  $arguments Arguments d'instanciation.
-     * @param array  $hooks     Liste des hooks.
+     * @param string $key   Nom du service.
+     * @param string $class Objet à instancier.
+     * @param array  $attr  Arguments d'instanciation.
      *
      * @return $this
      */
     public function setService(
         string $key,
         string $class,
-        array $arguments = [],
-        array $hooks = []
+        array $attr = []
     ): self {
-        $this->services[ $key ] = ['class' => $class, 'arguments' => $arguments, 'hooks' => $hooks];
-        $this->loadHooks([ $key =>  $this->services[ $key ] ]);
+        $this->services[ $key ] = [
+            'class'     => $class,
+            'arguments' => $attr[ 'arguments' ] ?? null,
+            'hooks'     => $attr[ 'hook' ] ?? null,
+            'calls'     => $attr[ 'calls' ] ?? null
+        ];
+        $this->load([ $key =>  $this->services[ $key ] ]);
 
         return $this;
     }
@@ -104,7 +107,7 @@ class Container implements ContainerInterface
     public function setServices(array $services): self
     {
         $this->services = $services;
-        $this->loadHooks($services);
+        $this->load($services);
 
         return $this;
     }
@@ -119,7 +122,7 @@ class Container implements ContainerInterface
     public function addServices(array $services): self
     {
         $this->services += $services;
-        $this->loadHooks($services);
+        $this->load($services);
 
         return $this;
     }
@@ -132,9 +135,10 @@ class Container implements ContainerInterface
      *
      * @return $this
      */
-    public function setInstance($key, $instance): self
+    public function setInstance($key, object $instance): self
     {
         $this->instances[ $key ] = $instance;
+        $this->alias[ get_class($instance) ] = $key;
 
         return $this;
     }
@@ -169,8 +173,12 @@ class Container implements ContainerInterface
         if (isset($this->instances[ $id ])) {
             return $this->instances[ $id ];
         }
+        if (isset($this->alias[ $id ])) {
+            return $this->get($this->alias[ $id ]);
+        }
 
-        if (!isset($this->services[ $id ])) {
+        $className = $this->services[ $id ][ 'class' ] ?? null;
+        if ($className === null) {
             throw new NotFoundException(
                 htmlspecialchars("Service $id does not exist.")
             );
@@ -181,16 +189,18 @@ class Container implements ContainerInterface
              * ReflectionClass à la même fonctionnalité que call_user_func_array
              * mais pour le constructeur d'un objet.
              */
-            $ref = new \ReflectionClass($this->services[ $id ][ 'class' ]);
+            $ref = new \ReflectionClass($className);
         } catch (\ReflectionException $ex) {
             throw new ContainerException(
                 htmlspecialchars("Class $id is not exist.")
             );
         }
 
-        $args     = $this->matchArgs($ref, $id);
+        $args     = $this->getArgs($ref, $id);
         $instance = $ref->newInstanceArgs($args);
+
         $this->setInstance($id, $instance);
+        $this->setCalls($id);
 
         return $instance;
     }
@@ -257,7 +267,7 @@ class Container implements ContainerInterface
      */
     public function setConfig($config): self
     {
-        if (!\is_array($config) && !($config instanceof \ArrayAccess)) {
+        if (!\is_array($config) && !($config instanceof ArrayAccess)) {
             throw new \InvalidArgumentException(
                 'The configuration must be an \ArrayAccess array or instance.'
             );
@@ -274,7 +284,7 @@ class Container implements ContainerInterface
      *
      * @return void
      */
-    protected function loadHooks(array $services): void
+    protected function load(array $services): void
     {
         foreach ($services as $service => $value) {
             $this->alias[ $value[ 'class' ] ] = $service;
@@ -293,39 +303,39 @@ class Container implements ContainerInterface
      * des valeurs, des élements de configuration ou/et d'autres services.
      *
      * @param \ReflectionClass $ref
-     * @param string           $key Nom du service.
+     * @param string           $id  Nom du service.
      *
      * @throws \RuntimeException
      * @return array             Arguments chargés.
      */
-    private function matchArgs(\ReflectionClass $ref, string $key): array
+    private function getArgs(\ReflectionClass $ref, string $id): array
     {
         $construct = $ref->getConstructor();
         if (!$construct instanceof \ReflectionMethod) {
             return [];
         }
 
-        $params = $construct->getParameters();
-        $args   = $this->services[ $key ][ 'arguments' ] ?? [];
+        $args   = $this->services[ $id ][ 'arguments' ] ?? [];
         $out    = [];
 
-        foreach ($params as $param) {
-            $nameParam = $param->getName();
-            if (isset($args[ $nameParam ])) {
-                $out[] = $this->matchParam($args[ $nameParam ]);
+        foreach ($construct->getParameters() as $param) {
+            $name = $param->getName();
+            if (isset($args[ $name ])) {
+                $out[] = $this->matchParam($args[ $name ]);
 
                 continue;
             }
 
-            $typeParam = (string) $param->getType();
-            if (isset($this->alias[ $typeParam ])) {
-                $out[] = $this->get($this->alias[ $typeParam ]);
+            /** @var \ReflectionNamedType $type */
+            $type = $param->getType();
+            if (isset($this->alias[ $type->getName() ])) {
+                $out[] = $this->get($this->alias[ $type->getName() ]);
 
                 continue;
             }
 
             if (!$param->isOptional()) {
-                throw new \RuntimeException("The $typeParam parameter is absent");
+                throw new \RuntimeException("The $name parameter is absent");
             }
         }
 
@@ -359,5 +369,27 @@ class Container implements ContainerInterface
         }
 
         return $arg;
+    }
+
+    /**
+     * Injection de réglage.
+     *
+     * @param string $id
+     *
+     * @return $this
+     */
+    private function setCalls(string $id): self
+    {
+        $calls = $this->services[ $id ][ 'calls' ] ?? null;
+        if ($calls === null) {
+            return $this;
+        }
+
+        foreach ($calls as $method => $value) {
+            $arg = $this->matchParam($value);
+            $this->instances[ $id ]->$method($arg);
+        }
+
+        return $this;
     }
 }
