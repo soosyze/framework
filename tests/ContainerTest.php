@@ -42,7 +42,9 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     public function testSetService(): void
     {
         $this->object
-            ->setService('service2', Service2::class, [ 'service1' => '@service1' ])
+            ->setService('service2', Service2::class, [
+                'arguments' => [ 'service1' => '@service1' ]
+            ])
             ->setService('service1', Service1::class);
 
         $this->assertInstanceOf(Service2::class, $this->object->get('service2'));
@@ -52,7 +54,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     {
         $this->object
             ->setService('service3', Service3::class, [
-                'str'      => '\@service1'
+                'arguments' => [ 'str' => '\@service1' ]
             ])
             ->setService('service1', Service1::class);
 
@@ -67,7 +69,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $this->object
             ->setConfig([ 'testConfig.key1' => 'value1' ])
             ->setService('service3', Service3::class, [
-                'str'      => '#testConfig.key1'
+                'arguments' => [ 'str' => '#testConfig.key1' ]
             ])
             ->setService('service1', Service1::class);
 
@@ -104,14 +106,17 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     {
         $this->object->setInstance('service1', new Service1);
 
-        $service1 = $this->object->get('service1');
-        $this->assertInstanceOf(Service1::class, $service1);
-        $this->assertTrue($service1->isOk());
+        $services = [
+            $this->object->get('service1'),
+            $this->object->get(Service1::class),
+            /** @phpstan-ignore-next-line */
+            $this->object->service1()
+        ];
 
-        /** @phpstan-ignore-next-line */
-        $service1snd = $this->object->service1();
-        $this->assertInstanceOf(Service1::class, $service1snd);
-        $this->assertTrue($service1snd->isOk());
+        foreach ($services as $service) {
+            $this->assertInstanceOf(Service1::class, $service);
+            $this->assertTrue($service->isOk());
+        }
     }
 
     /**
@@ -183,5 +188,18 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->object->setConfig('error');
+    }
+
+    public function testCalls(): void
+    {
+        $this->object
+            ->setService('service1', Service1::class, [
+                'calls' => [ 'setData' => 1 ]
+        ]);
+
+        $service1 = $this->object->get('service1');
+
+        $this->assertInstanceOf(Service1::class, $service1);
+        $this->assertEquals(1, $service1->getData());
     }
 }
