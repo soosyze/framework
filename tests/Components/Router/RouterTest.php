@@ -4,6 +4,7 @@ namespace Soosyze\Tests\Components\Router;
 
 use Psr\Http\Message\RequestInterface;
 use Soosyze\Components\Http\Request;
+use Soosyze\Components\Http\ServerRequest;
 use Soosyze\Components\Http\Uri;
 use Soosyze\Components\Router\Route;
 use Soosyze\Components\Router\RouteCollection;
@@ -32,13 +33,21 @@ class RouterTest extends \PHPUnit\Framework\TestCase
                 $r->option('option', '/option', '@option');
                 $r->delete('delete', '/delete', '@delete');
                 $r->get('page.format', '.:ext', '@format', [ ':ext' => 'json|xml' ]);
+                $r->get('page.format.csv', '.csv', '@optionalFormat');
+                $r->get('page.service', '/service', '@service');
+                $r->get('page.request', '/request/{idRequest}', '@request')->whereDigits('{idRequest}');
             });
         });
     }
 
     protected function setUp(): void
     {
-        $this->object = new Router();
+        $serverRequest = new ServerRequest(
+            'GET',
+            Uri::create('http://test.com?key=value')
+        );
+
+        $this->object = new Router($serverRequest);
     }
 
     /**
@@ -111,9 +120,11 @@ class RouterTest extends \PHPUnit\Framework\TestCase
     {
         yield [ 'hello world !', 'http://test.com' ];
         yield [ 'hello world !', 'http://test.com/' ];
-        yield [ 'hello page 1', 'http://test.com/page/1' ];
-        yield [ 'hello page 1', 'http://test.com/page/1?s=title#foo' ];
-        yield [ 'hello json 1', 'http://test.com/page/1.json' ];
+        yield [ 'page 1', 'http://test.com/page/1' ];
+        yield [ 'page 1', 'http://test.com/page/1?s=title#foo' ];
+        yield [ 'page 1, format json', 'http://test.com/page/1.json' ];
+        yield [ 'page 1, format csv', 'http://test.com/page/1.csv' ];
+        yield [ 'page 1, request 1 to method GET', 'http://test.com/page/1/request/1' ];
     }
 
     public function testExecuteSetRequest(): void
