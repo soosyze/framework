@@ -199,7 +199,7 @@ abstract class App
 
         $this->loadRoutesAndServices();
 
-        $this->router = (new Router($this->container))
+        $this->router = (new Router($this->request, $this->container))
             ->setRequest($this->request)
             ->setBasePath($this->request->getBasePath());
 

@@ -12,6 +12,7 @@ namespace Soosyze\Components\Router;
 
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Soosyze\Components\Router\Exception\RouteArgumentException;
 use Soosyze\Components\Router\Exception\RouteNotFoundException;
 
@@ -30,6 +31,11 @@ final class Router
     protected $currentRequest = null;
 
     /**
+     * @var ServerRequestInterface
+     */
+    protected $serverRequest;
+
+    /**
      * La base de l'URL de vos routes.
      *
      * @var string
@@ -46,11 +52,13 @@ final class Router
     /**
      * Construit le router avec la liste des routes et les objets à appeler.
      *
+     * @param ServerRequestInterface  $serverRequest
      * @param ContainerInterface|null $container
      */
-    public function __construct(?ContainerInterface $container = null)
+    public function __construct(ServerRequestInterface $serverRequest, ?ContainerInterface $container = null)
     {
-        $this->container = $container;
+        $this->serverRequest = $serverRequest;
+        $this->container     = $container;
     }
 
     /**
@@ -100,25 +108,28 @@ final class Router
      */
     public function execute(Route $route, ?RequestInterface $request = null)
     {
-        [ $class, $method ] = $route->getCallable();
+        [ $className, $methodName ] = $route->getCallable();
 
         /* Cherche les différents paramètres de l'URL pour l'injecter dans la méthode. */
-        if (!empty($route->getWiths())) {
-            $params = $this->parseWiths($route, $request);
-        }
+        $withs = $route->getWiths() === null
+            ? null
+            : $this->parseWiths($route, $request);
 
-        /* Ajoute la requête en dernier paramètre de fonction. */
-        $params[] = $request ?? $this->currentRequest;
+        $controller = new $className();
+        $reflection = new \ReflectionClass($controller);
 
-        $obj        = new $class();
-        $reflection = new \ReflectionClass($obj);
         if ($reflection->hasProperty('container')) {
             $property = $reflection->getProperty('container');
             $property->setAccessible(true);
-            $property->setValue($obj, $this->container);
+            $property->setValue($controller, $this->container);
         }
 
-        return $reflection->getMethod($method)->invokeArgs($obj, $params);
+        /** @var \ReflectionMethod $reflectionMethod */
+        $reflectionMethod = $reflection->getMethod($methodName);
+
+        $args = $this->getArgs($reflectionMethod, $withs);
+
+        return $reflectionMethod->invokeArgs($controller, $args);
     }
 
     /**
@@ -316,7 +327,7 @@ final class Router
      *
      * @return array Paramètres présents dans la requête.
      */
-    public function parseWiths(Route $route, ?RequestInterface $request): array
+    public function parseWiths(Route $route, ?RequestInterface $request = null): array
     {
         $path    = $this->getPathFromRequest($request);
         $pattern = $this->getRegexForPath($route->getPath(), $route->getWiths() ?? []);
@@ -330,5 +341,32 @@ final class Router
         }
 
         return [];
+    }
+
+    protected function getArgs(\ReflectionMethod $reflectionMethod, ?array $withs): array
+    {
+        $args = [];
+        /** @var \ReflectionParameter $parameter */
+        foreach ($reflectionMethod->getParameters() as $parameter) {
+            $parameterName = $parameter->name;
+            if (isset($withs[ $parameterName ])) {
+                $args[$parameterName] = $withs[ $parameterName ];
+
+                continue;
+            }
+
+            $parameterType = $parameter->getType();
+            if ($parameterType instanceof \ReflectionNamedType && $parameterType->getName() === ServerRequestInterface::class) {
+                $args[ $parameterName ] = $this->serverRequest;
+
+                continue;
+            }
+
+            if (!$parameter->isOptional()) {
+                throw new \RuntimeException("The $parameterName parameter is absent");
+            }
+        }
+
+        return $args;
     }
 }
