@@ -2,6 +2,8 @@
 
 namespace Soosyze\Tests\Resources\Router;
 
+use Psr\Http\Message\ServerRequestInterface;
+
 class TestController
 {
     public function index(): string
@@ -9,13 +11,31 @@ class TestController
         return 'hello world !';
     }
 
-    public function format(string $item, string $ext): string
+    public function format(int $id, string $ext): string
     {
-        return "hello $ext $item";
+        return sprintf('page %d, format %s', $id, $ext);
     }
 
-    public function page(string $item): string
+    /**
+     * @param string $ext
+     */
+    public function optionalFormat(int $id, $ext = 'csv'): string
     {
-        return 'hello page ' . $item;
+        return sprintf('page %d, format %s', $id, $ext);
+    }
+
+    public function page(int $id): string
+    {
+        return sprintf('page %d', $id);
+    }
+
+    public function request(int $id, int $idRequest, ServerRequestInterface $serverRequest): string
+    {
+        return sprintf(
+            'page %d, request %d to method %s',
+            $id,
+            $idRequest,
+            $serverRequest->getMethod()
+        );
     }
 }

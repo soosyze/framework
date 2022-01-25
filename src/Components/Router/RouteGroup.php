@@ -82,6 +82,11 @@ final class RouteGroup
         $group($routerGroup);
 
         unset($routerGroup);
+
+        $this->namespaceGroup = '';
+        $this->nameGroup      = '';
+        $this->prefixGroup    = '';
+        $this->withsGroup     = null;
     }
 
     /**
