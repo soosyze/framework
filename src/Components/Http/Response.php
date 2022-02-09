@@ -133,24 +133,6 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * Renvoie les informations de la réponse et son contenu.
-     *
-     * @return string
-     */
-    public function __toString(): string
-    {
-        header('HTTP/' . $this->protocolVersion . ' ' . $this->code . ' ' . $this->reasonPhrase, true, $this->code);
-
-        foreach ($this->headers as $name => $values) {
-            foreach ($values as $value) {
-                header("$name: $value", false);
-            }
-        }
-
-        return (string) $this->getBody();
-    }
-
-    /**
      * Obtient le code d'état de la réponse.
      *
      * @return int Code d'état.
