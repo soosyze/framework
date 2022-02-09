@@ -4,13 +4,13 @@
  * @see https://mwop.net/blog/2014-08-11-testing-output-generating-code.html
  */
 
-namespace Soosyze\Components\Http
+namespace Soosyze
 {
 
     abstract class Output
     {
         /**
-         * @var string[]
+         * @var array
          */
         public static $headers = [];
 
@@ -25,9 +25,12 @@ namespace Soosyze\Components\Http
         return false;
     }
 
-    function header(string $value): void
-    {
-        Output::$headers[] = $value;
+    function header(
+        string $value,
+        bool $replace = true,
+        int $http_response_code = null
+    ): void {
+        Output::$headers[] = [$value, $replace, $http_response_code];
     }
 }
 

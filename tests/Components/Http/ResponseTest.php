@@ -81,18 +81,4 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(404, $clone->getStatusCode());
         $this->assertEquals('Not Found perso', $clone->getReasonPhrase());
     }
-
-    public function testToString(): void
-    {
-        $rep = new Response(404, new Stream('Page not found, sorry'), [ 'Localtion' => '/error' ]);
-
-        $this->assertEquals('Page not found, sorry', (string) $rep);
-        $this->assertEquals(
-            [
-                'HTTP/1.0 404 Not Found',
-                'Localtion: /error'
-            ],
-            \Soosyze\Components\Http\Output::$headers
-        );
-    }
 }
