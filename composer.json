@@ -24,7 +24,7 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-session": "*",
-        "php": ">=7.2 || <=7.4",
+        "php": ">=7.2",
         "psr/container": "^2.0",
         "psr/http-client": "^1.0",
         "psr/http-factory": "^1.0",
