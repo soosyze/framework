@@ -239,7 +239,7 @@ class Container implements ContainerInterface
      * @param string $name Clé pour appeler la fonction.
      * @param array  $args Paramètres passés à la fonction.
      *
-     * @return mixed|void le résultat des fonctions appelées ou rien
+     * @return mixed le résultat des fonctions appelées ou rien
      */
     public function callHook(string $name, array $args = [])
     {
@@ -250,9 +250,17 @@ class Container implements ContainerInterface
             return $out;
         }
         foreach ($this->hooks[ $key ] as $services => $func) {
-            $out = \is_string($func)
-                ? $this->get($services)->$func(...$args)
-                : call_user_func_array($func, $args);
+            $callable = is_string($func)
+                ? [ $this->get($services), $func ]
+                : $func;
+
+            if (\is_callable($callable)) {
+                $out = call_user_func_array($callable, $args);
+            } else {
+                throw new \RuntimeException(
+                    sprintf('The hook %s must be a callable', $key)
+                );
+            }
         }
 
         return $out;
