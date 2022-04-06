@@ -392,6 +392,72 @@ class Validator
     }
 
     /**
+     * Retourn un champ.
+     *
+     * @codeCoverageIgnore getter
+     *
+     * @param string $key     Nom du champ.
+     * @param int    $default Valeur de retour par défaut.
+     *
+     * @return int Valeur d'un champ.
+     */
+    public function getInputInt(string $key, int $default = 0): int
+    {
+        return isset($this->inputs[ $key ]) && is_numeric($this->inputs[ $key ])
+            ? (int) $this->inputs[ $key ]
+            : $default;
+    }
+
+    /**
+     * Retourn un champ.
+     *
+     * @codeCoverageIgnore getter
+     *
+     * @param string $key     Nom du champ.
+     * @param string $default Valeur de retour par défaut.
+     *
+     * @return string Valeur d'un champ.
+     */
+    public function getInputString(string $key, string $default = ''): string
+    {
+        return isset($this->inputs[ $key ]) && is_string($this->inputs[ $key ])
+            ? $this->inputs[ $key ]
+            : $default;
+    }
+
+    /**
+     * Retourn un champ.
+     *
+     * @codeCoverageIgnore getter
+     *
+     * @param string $key     Nom du champ.
+     * @param array  $default Valeur de retour par défaut.
+     *
+     * @return array Valeur d'un champ.
+     */
+    public function getInputArray(string $key, array $default = []): array
+    {
+        return isset($this->inputs[ $key ]) && is_array($this->inputs[ $key ])
+            ? $this->inputs[ $key ]
+            : $default;
+    }
+
+    /**
+     * Retourn un champ.
+     *
+     * @codeCoverageIgnore getter
+     *
+     * @param string $key     Nom du champ.
+     * @param bool   $default Valeur de retour par défaut.
+     *
+     * @return bool Valeur d'un champ.
+     */
+    public function getInputBool(string $key): bool
+    {
+        return !empty($this->inputs[ $key ]);
+    }
+
+    /**
      * Retourne les champs.
      *
      * @return array Valeur des champs.

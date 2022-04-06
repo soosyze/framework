@@ -33,6 +33,40 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($object->isValid());
     }
 
+    public function getInput(): void
+    {
+        $this->object->setInputs([
+                'field_array'   => [ 'foo' ],
+                'field_bool'    => 'on',
+                'field_int'     => 1,
+                'field_mixed'   => new \stdClass(),
+                'field_numeric' => '1',
+                'field_string'  => 'foo',
+            ])
+            ->setRules([
+                'field_array'   => '!required',
+                'field_bool'    => '!required',
+                'field_int'     => '!required',
+                'field_mixed'   => '!required',
+                'field_numeric' => '!required',
+                'field_string'  => '!required'
+        ]);
+
+        $this->assertEquals([ 'foo' ], $this->object->getInputArray('field_array'));
+        $this->assertEquals(true, $this->object->getInputBool('field_bool'));
+        $this->assertEquals(1, $this->object->getInputInt('field_int'));
+        $this->assertEquals(new \stdClass(), $this->object->getInput('field_mixed'));
+        $this->assertEquals(1, $this->object->getInputInt('field_numeric'));
+        $this->assertEquals('foo', $this->object->getInputString('field_string'));
+
+        $this->assertEquals([], $this->object->getInputArray('field_empty_array'));
+        $this->assertEquals(false, $this->object->getInputBool('field_empty_bool'));
+        $this->assertEquals(0, $this->object->getInputInt('field_empty_int'));
+        $this->assertEquals(null, $this->object->getInput('field_empty_mixed'));
+        $this->assertEquals(0, $this->object->getInputInt('field_empty_numeric'));
+        $this->assertEquals('', $this->object->getInputString('field_empty_string'));
+    }
+
     public function testGetInputs(): void
     {
         $this->object->setInputs([
