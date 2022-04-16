@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Soosyze\Components\Router;
 
+use Soosyze\Components\Router\Exception\RouteArgumentException;
+
 /**
  * @author Mathieu NOËL <mathieu@soosyze.com>
  */
@@ -114,6 +116,53 @@ final class Route implements \JsonSerializable
         $this->withs[ $key ] = '[a-z\d\-]+';
 
         return $this;
+    }
+
+    /**
+     * Créer une expression régulière à partir du chemin et des arguments.
+     */
+    public function getRegexForPath(): string
+    {
+        $search  = [ '\\', '/' ];
+        $replace = [ '//', '\/' ];
+
+        if ($this->withs === null) {
+            return str_replace($search, $replace, $this->path);
+        }
+
+        foreach ($this->withs as $key => $with) {
+            $search[]  = '{' . $key . '}';
+            $replace[] = '(?<' . $key . '>' . str_replace([ '(', '/' ], [ '(?:', '\/' ], $with) . ')';
+        }
+
+        return str_replace($search, $replace, $this->path);
+    }
+
+    public function generatePath(?array $withs = null, bool $strict = true): string
+    {
+        if ($this->withs === null) {
+            return $this->path;
+        }
+
+        $path = $this->path;
+        foreach ($this->withs as $key => $value) {
+            if ($strict && !isset($withs[ $key ])) {
+                throw new \InvalidArgumentException(
+                    htmlspecialchars("the argument $key is missing")
+                );
+            }
+            if (!$strict && !isset($withs[ $key ])) {
+                continue;
+            }
+            $pattern = str_replace([ '(', '/' ], [ '(?:', '\/' ], $value);
+            /** @phpstan-var array $withs */
+            if ($strict && !preg_match('/^' . $pattern . '$/', (string) $withs[ $key ])) {
+                throw new RouteArgumentException($withs[ $key ], $pattern, $path);
+            }
+            $path = str_replace('{' . $key . '}', $withs[ $key ], $path);
+        }
+
+        return $path;
     }
 
     private function filterPath(string $path): string

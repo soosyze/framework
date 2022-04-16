@@ -13,7 +13,6 @@ namespace Soosyze\Components\Router;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Soosyze\Components\Router\Exception\RouteArgumentException;
 use Soosyze\Components\Router\Exception\RouteNotFoundException;
 
 /**
@@ -84,7 +83,7 @@ final class Router
             $route = RouteCollection::getRoute($key);
 
             if (!empty($route->getWiths())) {
-                $pattern = $this->getRegexForPath($route->getPath(), $route->getWiths());
+                $pattern = $route->getRegexForPath();
 
                 if (preg_match('/^(' . $pattern . ')$/', $requestPath)) {
                     return $route;
@@ -133,28 +132,6 @@ final class Router
     }
 
     /**
-     * Créer une expression régulière à partir du chemin et des arguments d'une route.
-     *
-     * @param string $path  Chemin de la route.
-     * @param array  $withs Arguments de la route.
-     *
-     * @return string
-     */
-    public function getRegexForPath(string $path, array $withs): string
-    {
-        array_walk($withs, static function (&$with, $key): void {
-            $with = str_replace([ '(', '/' ], [ '(?:', '\/' ], $with);
-            $key  = trim($key, '{}');
-            $with = "(?<$key>$with)";
-        });
-
-        $pattern = str_replace([ '\\', '/' ], [ '//', '\/' ], $path);
-        $keys    = array_keys($withs);
-
-        return str_replace($keys, $withs, $pattern);
-    }
-
-    /**
      * Retourne un chemin à partir du nom d'une route.
      *
      * @param string $name   Nom de la route.
@@ -172,29 +149,7 @@ final class Router
             throw new RouteNotFoundException('The path does not exist.');
         }
 
-        $path = $route->getPath();
-        if ($route->getWiths() === null) {
-            return $path;
-        }
-
-        foreach ($route->getWiths() as $key => $value) {
-            if ($strict && !isset($withs[ $key ])) {
-                throw new \InvalidArgumentException(htmlspecialchars(
-                    "the argument $key is missing"
-                ));
-            }
-            if (!$strict && !isset($withs[ $key ])) {
-                continue;
-            }
-            $pattern = str_replace([ '(', '/' ], [ '(?:', '\/' ], $value);
-            /** @phpstan-var array $withs */
-            if ($strict && !preg_match('/^' . $pattern . '$/', (string) $withs[ $key ])) {
-                throw new RouteArgumentException($withs[ $key ], $pattern, $path);
-            }
-            $path = str_replace($key, $withs[ $key ], $path);
-        }
-
-        return $path;
+        return $route->generatePath($withs, $strict, $strict);
     }
 
     /**
@@ -329,10 +284,7 @@ final class Router
      */
     public function parseWiths(Route $route, ?RequestInterface $request = null): array
     {
-        $path    = $this->getPathFromRequest($request);
-        $pattern = $this->getRegexForPath($route->getPath(), $route->getWiths() ?? []);
-
-        if (preg_match("/$pattern/", $path, $matches)) {
+        if (preg_match('/' . $route->getRegexForPath() . '/', $this->getPathFromRequest($request), $matches)) {
             array_shift($matches);
 
             return array_filter($matches, static function ($key): bool {
