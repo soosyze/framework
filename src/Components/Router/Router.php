@@ -144,7 +144,7 @@ final class Router
     {
         array_walk($withs, static function (&$with, $key): void {
             $with = str_replace([ '(', '/' ], [ '(?:', '\/' ], $with);
-            $key  = trim($key, ':{}');
+            $key  = trim($key, '{}');
             $with = "(?<$key>$with)";
         });
 
