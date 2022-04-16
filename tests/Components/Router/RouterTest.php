@@ -25,14 +25,14 @@ class RouterTest extends \PHPUnit\Framework\TestCase
             $r->post('filter', '/', 'Soosyze\Tests\Resources\Router\TestController@filter');
         });
         RouteCollection::setNamespace('Soosyze\Tests\Resources\Router\TestController')->name('test.')->prefix('/page')->group(function (RouteGroup $r): void {
-            $r->prefix('/:id', [ ':id' => '\d+' ])->group(function (RouteGroup $r) {
+            $r->prefix('/{id}', [ '{id}' => '\d+' ])->group(function (RouteGroup $r) {
                 $r->get('page', '/', '@page');
                 $r->post('post', '/post', '@post');
                 $r->put('put', '/put', '@put');
                 $r->patch('patch', '/patch', '@patch');
                 $r->option('option', '/option', '@option');
                 $r->delete('delete', '/delete', '@delete');
-                $r->get('page.format', '.:ext', '@format', [ ':ext' => 'json|xml' ]);
+                $r->get('page.format', '.{ext}', '@format', [ '{ext}' => 'json|xml' ]);
                 $r->get('page.format.csv', '.csv', '@optionalFormat');
                 $r->get('page.service', '/service', '@service');
                 $r->get('page.request', '/request/{idRequest}', '@request')->whereDigits('{idRequest}');
@@ -151,16 +151,16 @@ class RouterTest extends \PHPUnit\Framework\TestCase
 
     public function testGetRegexForPath(): void
     {
-        $str = 'index/page/:id/edit';
+        $str = 'index/page/{id}/edit';
 
         $this->assertEquals(
             'index\/page\/(?<id>\d+)\/edit',
-            $this->object->getRegexForPath($str, [ ':id' => '\d+' ])
+            $this->object->getRegexForPath($str, [ '{id}' => '\d+' ])
         );
 
         $this->assertEquals(
             'index\/page\/(?<id>(?:\d+))\/edit',
-            $this->object->getRegexForPath($str, [ ':id' => '(\d+)' ])
+            $this->object->getRegexForPath($str, [ '{id}' => '(\d+)' ])
         );
     }
 
@@ -185,11 +185,11 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         ];
         yield 'testGetRouteStrictParam' => [
             'http://test.com/page/1',
-            [ 'test.page', [ ':id' => '1' ] ]
+            [ 'test.page', [ '{id}' => '1' ] ]
         ];
         yield 'testGetRouteParam' => [
-            'http://test.com/page/:id.json',
-            [ 'test.page.format', [ ':ext' => 'json' ], false ]
+            'http://test.com/page/{id}.json',
+            [ 'test.page.format', [ '{ext}' => 'json' ], false ]
         ];
     }
 
@@ -220,8 +220,8 @@ class RouterTest extends \PHPUnit\Framework\TestCase
     public function providerGetRouteException(): \Generator
     {
         yield [ 'error', [] ];
-        yield [ 'test.page', [ ':id' => 'error' ] ];
-        yield [ 'test.page', [ ':error' => 1 ] ];
+        yield [ 'test.page', [ 'id' => 'error' ] ];
+        yield [ 'test.page', [ 'error' => 1 ] ];
     }
 
     public function testGetBasePath(): void
