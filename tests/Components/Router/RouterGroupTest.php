@@ -8,7 +8,7 @@ use Soosyze\Components\Router\RouteGroup;
 
 class RouterGroupTest extends \PHPUnit\Framework\TestCase
 {
-    private const WITHS = [ '{id}' => '\d+' ];
+    private const WITHS = [ 'id' => '\d+' ];
 
     public function testGetRoutes(): void
     {
@@ -31,8 +31,8 @@ class RouterGroupTest extends \PHPUnit\Framework\TestCase
                 });
 
                 $r->prefix('/api')->setNamespace('\ApiController')->name('api.')->group(function (RouteGroup $r) {
-                    $r->get('json', '/{format}', '@format', [ '{format}' => 'json' ]);
-                    $r->get('xml', '/{format}', '@format', [ '{format}' => 'xml' ]);
+                    $r->get('json', '/{format}', '@format', [ 'format' => 'json' ]);
+                    $r->get('xml', '/{format}', '@format', [ 'format' => 'xml' ]);
                 });
             });
         });
@@ -54,14 +54,14 @@ class RouterGroupTest extends \PHPUnit\Framework\TestCase
                 'get',
                 '/page/{id}/api/{format}',
                 'Soosyze\Tests\Resources\Router\ApiController@format',
-                self::WITHS + [ '{format}' => 'json' ]
+                self::WITHS + [ 'format' => 'json' ]
             ),
             'test.api.xml'  => new Route(
                 'test.api.xml',
                 'get',
                 '/page/{id}/api/{format}',
                 'Soosyze\Tests\Resources\Router\ApiController@format',
-                self::WITHS + [ '{format}' => 'xml' ]
+                self::WITHS + [ 'format' => 'xml' ]
             )
         ];
         $this->assertEquals(
