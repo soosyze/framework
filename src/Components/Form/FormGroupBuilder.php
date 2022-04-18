@@ -17,6 +17,7 @@ namespace Soosyze\Components\Form;
  *
  * @author Mathieu NOËL <mathieu@soosyze.com>
  *
+ * @method form_button( string $key, array $attr = [] ): self
  * @method form_group( string $key, array $attr = [] ): self
  * @method form_html( string $key, array $attr = [] ): self
  * @method form_label( string $key, array $attr = [] ): self
@@ -26,7 +27,6 @@ namespace Soosyze\Components\Form;
  * @method form_textarea( string $key, array $attr = [] ): self
  * @method form_token( string $key, array $attr = [] ): self
  *
- * @method button( string $key, array $attr = [] ): self
  * @method checkbox( string $key, array $attr = [] ): self
  * @method color( string $key, array $attr = [] ): self
  * @method date( string $key, array $attr = [] ): self
@@ -58,7 +58,6 @@ class FormGroupBuilder
      * @var string[]
      */
     protected static $typeInputBasic = [
-        'button',
         'checkbox',
         'color',
         'date',
@@ -85,6 +84,7 @@ class FormGroupBuilder
      * @var string[]
      */
     protected static $typeInputRender = [
+        'form_button'   => 'renderButton',
         'form_group'    => 'renderGroup',
         'form_html'     => 'renderHtml',
         'form_label'    => 'renderLabel',
@@ -390,6 +390,25 @@ class FormGroupBuilder
     ): self {
         return $this->input($name, [
             'type' => 'textarea', 'content' => $content, 'attr' => $attr + [ 'id' => $name ]
+        ]);
+    }
+
+    /**
+     * Enregistre un button.
+     *
+     * @param string $name    Clé unique.
+     * @param string $content Contenu du button.
+     * @param array  $attr    Liste d'attributs.
+     *
+     * @return $this
+     */
+    public function button(
+        string $name,
+        ?string $content = '',
+        array $attr = []
+    ): self {
+        return $this->input($name, [
+            'type' => 'button', 'content' => $content, 'attr' => $attr + [ 'id' => $name ]
         ]);
     }
 
