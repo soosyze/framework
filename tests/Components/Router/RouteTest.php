@@ -73,8 +73,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
         Route $route,
         array $withs,
         bool $strict = true
-    ): void
-    {
+    ): void {
         $this->assertEquals($pathExpected, $route->generatePath($withs, $strict));
     }
 

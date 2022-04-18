@@ -111,7 +111,7 @@ final class Router
 
         /* Cherche les différents paramètres de l'URL pour l'injecter dans la méthode. */
         $withs = $route->getWiths() === null
-            ? null
+            ? $route->getWithsDefault()
             : $this->parseWiths($route, $request);
 
         $controller = new $className();
@@ -149,7 +149,7 @@ final class Router
             throw new RouteNotFoundException('The path does not exist.');
         }
 
-        return $route->generatePath($withs, $strict, $strict);
+        return $route->generatePath($withs, $strict);
     }
 
     /**
@@ -286,6 +286,10 @@ final class Router
     {
         if (preg_match('/' . $route->getRegexForPath() . '/', $this->getPathFromRequest($request), $matches)) {
             array_shift($matches);
+
+            if ($route->getWithsDefault()) {
+                $matches += $route->getWithsDefault();
+            }
 
             return array_filter($matches, static function ($key): bool {
                 return !is_int($key);

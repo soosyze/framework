@@ -25,6 +25,8 @@ class RouterTest extends \PHPUnit\Framework\TestCase
             $r->post('filter', '/', 'Soosyze\Tests\Resources\Router\TestController@filter');
         });
         RouteCollection::setNamespace('Soosyze\Tests\Resources\Router\TestController')->name('test.')->prefix('/page')->group(function (RouteGroup $r): void {
+            $r->get('index', '/', '@page');
+
             $r->prefix('/{id}', [ 'id' => '\d+' ])->group(function (RouteGroup $r) {
                 $r->get('page', '/', '@page');
                 $r->post('post', '/post', '@post');
@@ -120,6 +122,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
     {
         yield [ 'hello world !', 'http://test.com' ];
         yield [ 'hello world !', 'http://test.com/' ];
+        yield [ 'page 1', 'http://test.com/page' ];
         yield [ 'page 1', 'http://test.com/page/1' ];
         yield [ 'page 1', 'http://test.com/page/1?s=title#foo' ];
         yield [ 'page 1, format json', 'http://test.com/page/1.json' ];
