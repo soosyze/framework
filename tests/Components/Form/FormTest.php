@@ -160,6 +160,16 @@ class FormTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    public function testButton(): void
+    {
+        $this->object->button('inputButton', 'lorem ipsum');
+
+        $this->assertEquals(
+            '<button name="inputButton" type="button" id="inputButton">lorem ipsum</button>' . PHP_EOL,
+            $this->object->form_button('inputButton')
+        );
+    }
+
     public function testInputException(): void
     {
         $this->expectException(\BadMethodCallException::class);

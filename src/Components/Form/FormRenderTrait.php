@@ -86,6 +86,8 @@ trait FormRenderTrait
             $html .= $this->renderLegend($key, $input);
         } elseif ($input[ 'type' ] === 'select') {
             $html .= $this->renderSelect($key, $input);
+        } elseif ($input[ 'type' ] === 'button') {
+            $html .= $this->renderButton($key, $input);
         } elseif ($input[ 'type' ] === 'textarea') {
             $html .= $this->renderTextarea($key, $input);
         } elseif ($input[ 'type' ] === 'html') {
@@ -203,6 +205,25 @@ trait FormRenderTrait
         return sprintf(
             '<textarea name="%s"%s>%s</textarea>',
             htmlspecialchars($key),
+            $this->renderAttrInput($item[ 'attr' ]),
+            htmlentities($item[ 'content' ] ?? '')
+        ) . self::EOL . $this->renderFeedback($key);
+    }
+
+    /**
+     * Génère une balise button.
+     *
+     * @param string $key
+     * @param array  $item
+     *
+     * @return string HTML
+     */
+    protected function renderButton(string $key, array $item): string
+    {
+        return sprintf(
+            '<button name="%s" type="%s"%s>%s</button>',
+            htmlspecialchars($key),
+            $item[ 'type' ],
             $this->renderAttrInput($item[ 'attr' ]),
             htmlentities($item[ 'content' ] ?? '')
         ) . self::EOL . $this->renderFeedback($key);
