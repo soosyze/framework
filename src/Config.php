@@ -246,9 +246,10 @@ class Config implements \ArrayAccess
      */
     protected function prepareKey(string $strKey): array
     {
-        $file = strstr($strKey, '.');
-        if ($file !== false) {
-            return [ trim($strKey, $file . '.'), trim($file, '.') ];
+        $file = trim($strKey, '.');
+        if (strpos($file, '.') !== false) {
+            /** @phpstan-ignore-next-line */
+            return [ strstr($file, '.', true), trim(strstr($file, '.'), '.') ];
         }
 
         return [ $strKey, null ];
