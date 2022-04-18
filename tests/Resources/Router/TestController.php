@@ -24,7 +24,7 @@ class TestController
         return sprintf('page %d, format %s', $id, $ext);
     }
 
-    public function page(int $id): string
+    public function page(int $id = 1): string
     {
         return sprintf('page %d', $id);
     }

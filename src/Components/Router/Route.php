@@ -42,6 +42,11 @@ final class Route implements \JsonSerializable
      */
     private $withs = null;
 
+    /**
+     * @var array<string, null|numeric|string>|null
+     */
+    private $withsDefault = null;
+
     public function __construct(
         string $key,
         string $method,
@@ -86,6 +91,11 @@ final class Route implements \JsonSerializable
         return $this->withs;
     }
 
+    public function getWithsDefault(): ?array
+    {
+        return $this->withsDefault;
+    }
+
     public function jsonSerialize()
     {
         return [
@@ -114,6 +124,16 @@ final class Route implements \JsonSerializable
     public function whereSlug(string $key): self
     {
         $this->withs[ $key ] = '[a-z\d\-]+';
+
+        return $this;
+    }
+
+    /**
+     * @param null|numeric|string $value
+     */
+    public function setDefault(string $key, $value): self
+    {
+        $this->withsDefault[ $key ] = $value;
 
         return $this;
     }
