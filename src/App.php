@@ -209,6 +209,18 @@ abstract class App
         return $this;
     }
 
+    public function setRequest(ServerRequestInterface $request): self
+    {
+        $this->request = $request;
+        $this->router
+            ->setRequest($this->request)
+            ->setServerRequest($this->request)
+            ->setBasePath($this->request->getBasePath());
+        $this->container->setInstance('router', $this->router);
+
+        return $this;
+    }
+
     /**
      * Lance l'application.
      *

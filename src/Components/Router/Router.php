@@ -244,6 +244,20 @@ final class Router
     }
 
     /**
+     * Ajoute une nouvelle requête courante.
+     *
+     * @param ServerRequestInterface $serverRequest
+     *
+     * @return $this
+     */
+    public function setServerRequest(ServerRequestInterface $serverRequest): self
+    {
+        $this->serverRequest = $serverRequest;
+
+        return $this;
+    }
+
+    /**
      * Parse les paramètres de la requête et retourne la chaine qui servira à l'execution.
      *
      * @param RequestInterface $request
