@@ -457,7 +457,7 @@ abstract class App
             }
 
             if ($module->getPathServices() !== '') {
-                $services = include_once $module->getPathServices();
+                $services = include $module->getPathServices();
                 if ($services !== true) {
                     $this->services += $services;
                 }
