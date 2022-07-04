@@ -447,8 +447,7 @@ class Validator
      *
      * @codeCoverageIgnore getter
      *
-     * @param string $key     Nom du champ.
-     * @param bool   $default Valeur de retour par défaut.
+     * @param string $key Nom du champ.
      *
      * @return bool Valeur d'un champ.
      */

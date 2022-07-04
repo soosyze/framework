@@ -29,7 +29,7 @@ class Ip extends \Soosyze\Components\Validator\Rule
     {
         $version = 'IP';
         if (empty($args)) {
-            $options = null;
+            $options = 0;
         } elseif ($args === '4') {
             $version = 'IPv4';
             $options = FILTER_FLAG_IPV4;

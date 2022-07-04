@@ -124,11 +124,13 @@ class Client implements ClientInterface
      */
     protected function setCurlInit(): void
     {
-        $this->handle = curl_init();
-
-        if (!is_resource($this->handle)) {
-            throw new ClientException(curl_error($this->handle));
+        /** @var resource|false $handle */
+        $handle = curl_init();
+        if ($handle === false) {
+            throw new ClientException();
         }
+
+        $this->handle = $handle;
     }
 
     /**

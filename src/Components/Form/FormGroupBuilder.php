@@ -747,7 +747,7 @@ class FormGroupBuilder
         if ($tab1 && !$tab2) {
             return $tab1;
         }
-        if (!$tab1 && !$tab2) {
+        if ($tab1 === [] && $tab2 === []) {
             return [];
         }
         $intersect = array_intersect_key($tab1, $tab2);
