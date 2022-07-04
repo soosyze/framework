@@ -179,7 +179,7 @@ final class Route implements \JsonSerializable
             if ($strict && !preg_match('/^' . $pattern . '$/', (string) $withs[ $key ])) {
                 throw new RouteArgumentException($withs[ $key ], $pattern, $path);
             }
-            $path = str_replace('{' . $key . '}', $withs[ $key ], $path);
+            $path = str_replace('{' . $key . '}', (string) $withs[ $key ], $path);
         }
 
         return $path;
