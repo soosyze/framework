@@ -8,6 +8,7 @@ use Soosyze\Container;
 use Soosyze\Tests\Resources\Container\Service1;
 use Soosyze\Tests\Resources\Container\Service2;
 use Soosyze\Tests\Resources\Container\Service3;
+use Soosyze\Tests\Resources\Container\Service4;
 use Throwable;
 
 class ContainerTest extends \PHPUnit\Framework\TestCase
@@ -77,6 +78,20 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(Service3::class, $service3);
         $this->assertEquals('value1', $service3->getStr());
+    }
+
+    public function testSetServiceParamDefaultConfig(): void
+    {
+        $this->object
+            ->setService('service4', Service4::class, [
+                'arguments' => [ 'str' => '#testConfig.error' ]
+            ])
+            ->setService('service1', Service1::class);
+
+        $service3 = $this->object->get('service4');
+
+        $this->assertInstanceOf(Service4::class, $service3);
+        $this->assertEquals('default', $service3->getStr());
     }
 
     public function testSetInstance(): void
