@@ -329,7 +329,13 @@ class Container implements ContainerInterface
         foreach ($construct->getParameters() as $param) {
             $name = $param->getName();
             if (isset($args[ $name ])) {
-                $out[] = $this->matchParam($args[ $name ]);
+                $match = $this->matchParam($args[ $name ]);
+
+                if ($match === null && $param->isOptional()) {
+                    continue;
+                }
+
+                $out[] = $match;
 
                 continue;
             }
