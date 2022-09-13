@@ -40,6 +40,7 @@ Soosyze Framework est un micro-framework MVC object offrant un socle solide de d
 |-----------------|----------------------|
 | <= 7.1          | ✗ Non supporté       |
 | 7.2 / 7.3 / 7.4 | ✓ Supporté           |
+| 8.0 / 8.1       | ✓ Supporté           |
 
 ## Extensions
 

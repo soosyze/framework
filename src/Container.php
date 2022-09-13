@@ -375,7 +375,7 @@ class Container implements ContainerInterface
         }
         /* Injecte un parmètre comme argument d'instantiation du service appelé. */
         if (strpos($arg, '#') === 0) {
-            return $this->config[ substr($arg, 1) ];
+            return $this->config[ substr($arg, 1) ] ?? null;
         }
         /* Dans le cas ou ont souhaites échaper l'appel à un autre service ou un paramètre. */
         if (strpos($arg, '\@') === 0 || strpos($arg, '\#') === 0) {
