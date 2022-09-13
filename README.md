@@ -26,15 +26,15 @@ Soosyze Framework est un micro-framework MVC object offrant un socle solide de d
   * Moteur de Template,
   * Création de Pagination.
 
-# Sommaire
+## Sommaire
 
 * [Requirements](#requirements)
 * [Installation](#installation)
 * [License](#license)
 
-# Requirements
+## Requirements
 
-## Version PHP
+### Version PHP
 
 | Version PHP     | SoosyzeFramework 3.x |
 |-----------------|----------------------|
@@ -42,7 +42,7 @@ Soosyze Framework est un micro-framework MVC object offrant un socle solide de d
 | 7.2 / 7.3 / 7.4 | ✓ Supporté           |
 | 8.0 / 8.1       | ✓ Supporté           |
 
-## Extensions
+### Extensions
 
 * `curl` si vous utilisez le composant HttpClient.
 * `date` si vous utilisez le composant Validator.
@@ -55,13 +55,13 @@ Soosyze Framework est un micro-framework MVC object offrant un socle solide de d
 
 Ces extensions sont généralement actives par défauts.
 
-## Permission des fichiers et répértoire
+### Permission des fichiers et répértoire
 
 La permission d'écrire et lire les fichiers.
 
-# Installation
+## Installation
 
-## Composer
+### Composer
 
 Vous pouvez utiliser [Composer](https://getcomposer.org/) pour l'installation avec la commande suivante :
 
@@ -75,6 +75,6 @@ Ou, si vous utilisez le PHAR (assurez-vous que l'exécutable php.exe est dans vo
 php composer.phar require soosyze/framework
 ```
 
-# License
+## License
 
 Soosyze Framework est sous licence MIT. Voir le fichier de licence pour plus d'informations.
