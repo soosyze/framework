@@ -27,7 +27,7 @@ class AlphaNum extends \Soosyze\Components\Validator\Rule
      */
     protected function test(string $key, $value, $args, bool $not): void
     {
-        if (!ctype_alnum($value) && $not) {
+        if ((!is_string($value) || !ctype_alnum($value)) && $not) {
             $this->addReturn($key, 'must');
         } elseif (ctype_alnum($value) && !$not) {
             $this->addReturn($key, 'not');
