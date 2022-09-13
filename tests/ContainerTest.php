@@ -80,18 +80,31 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('value1', $service3->getStr());
     }
 
-    public function testSetServiceParamDefaultConfig(): void
+    /**
+     * @dataProvider providerParamDefaultConfig
+     */
+    public function testSetServiceParamDefaultConfig(array $args): void
     {
         $this->object
-            ->setService('service4', Service4::class, [
-                'arguments' => [ 'str' => '#testConfig.error' ]
-            ])
+            ->setService('service4', Service4::class, $args)
             ->setService('service1', Service1::class);
 
         $service3 = $this->object->get('service4');
 
         $this->assertInstanceOf(Service4::class, $service3);
         $this->assertEquals('default', $service3->getStr());
+    }
+
+    public function providerParamDefaultConfig(): \Generator
+    {
+        yield 'with error config' => [
+            [
+                'arguments' => [ 'str' => '#testConfig.error' ]
+            ]
+        ];
+        yield 'with void config' => [
+            []
+        ];
     }
 
     public function testSetInstance(): void
