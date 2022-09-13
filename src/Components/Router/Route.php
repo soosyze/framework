@@ -96,6 +96,9 @@ final class Route implements \JsonSerializable
         return $this->withsDefault;
     }
 
+    /**
+     * @return mixed
+     */
     public function jsonSerialize()
     {
         return [
