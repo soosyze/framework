@@ -604,4 +604,52 @@ class Util
 
         return $handle;
     }
+
+    /**
+     * @param mixed $var
+     */
+    public static function export($var, string $prefix = ''): string
+    {
+        if (is_array($var)) {
+            if (empty($var)) {
+                $out = '[]';
+            } else {
+                $out = "[\n";
+
+                $exportKeys = array_values($var) != $var;
+                foreach ($var as $key => $value) {
+                    $out .= '  '
+                        . ($exportKeys
+                            ? static::export($key) . ' => '
+                            : '')
+                        . static::export($value, '  ') . ",\n";
+                }
+                $out .= ']';
+            }
+        } elseif (is_bool($var)) {
+            $out = $var
+                ? 'true'
+                : 'false';
+        } elseif (is_string($var)) {
+            if (strpos($var, "\n") !== false || strpos($var, '\'') !== false) {
+                $var = str_replace(
+                    [ '\\', '$', '"', "\n", "\r", "\t"],
+                    [ '\\\\', '\\$', '\\"', '\\n', '\\r', '\\t'],
+                    $var
+                );
+
+                $out = '"' . $var . '"';
+            } else {
+                $out = '\'' . $var . '\'';
+            }
+        } elseif (is_object($var) && $var instanceof \stdClass) {
+            $out = '(object) ' . static::export((array) $var, $prefix);
+        } else {
+            $out = var_export($var, true);
+        }
+
+        return $prefix !== ''
+            ? str_replace("\n", "\n{$prefix}", $out)
+            : $out;
+    }
 }

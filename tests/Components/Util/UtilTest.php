@@ -284,4 +284,64 @@ class UtilTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionMessage('The date must be in valid format.');
         Util::tryDateCreate('error');
     }
+
+    /**
+     * @dataProvider providerExportPhp
+     *
+     * @param mixed $var
+     */
+    public function testExportPhp($var, string $expected): void
+    {
+        $this->assertEquals($expected, Util::export($var));
+    }
+
+    public function providerExportPhp(): \Generator
+    {
+        yield 'array' => [
+            [
+                'string',
+                true,
+                false,
+                1,
+                [1, 2, 3],
+            ],
+            <<<PHP
+[
+  'string',
+  true,
+  false,
+  1,
+  [
+    1,
+    2,
+    3,
+  ],
+]
+PHP
+        ];
+        yield 'array with keys' => [
+            [
+                'string',
+                true,
+                false,
+                1,
+                [1, 2, 3],
+                'key' => 'value',
+            ],
+            <<<PHP
+[
+  0 => 'string',
+  1 => true,
+  2 => false,
+  3 => 1,
+  4 => [
+    1,
+    2,
+    3,
+  ],
+  'key' => 'value',
+]
+PHP
+        ];
+    }
 }
