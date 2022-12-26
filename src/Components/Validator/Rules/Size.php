@@ -37,14 +37,13 @@ abstract class Size extends \Soosyze\Components\Validator\Rule
         }
         $str = strtolower($size);
         if (preg_match('/^(\d+)(b|kb|mb|gb|tb|pb|eb|zb|yb)$/i', $str, $matches)) {
-            $units = [
+            $power = [
                 'b'  => 0, 'kb' => 1, 'mb' => 2,
                 'gb' => 3, 'tb' => 4, 'pb' => 5,
                 'eb' => 6, 'zb' => 7, 'yb' => 8
-            ];
-            $power = $units[ strtolower($matches[ 2 ]) ];
+            ][ strtolower($matches[ 2 ]) ];
 
-            return pow(1024, $power) * $matches[ 1 ];
+            return pow(1024, $power) * (int) $matches[ 1 ];
         }
 
         throw new \InvalidArgumentException('The value must be numeric or in file size format.');
