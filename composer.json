@@ -39,8 +39,7 @@
     },
     "suggest": {
         "phpdocumentor/phpdocumentor": "Pour générer une documentation en ligne de commande.",
-        "phpmetrics/phpmetrics": "Pour générer un rapport de l'état du code au format HTML.",
-        "psr/http-factory": "Pour une meilleur abstraction entre les différents projets utilisant http-message"
+        "phpmetrics/phpmetrics": "Pour générer un rapport de l'état du code au format HTML."
     },
     "autoload": {
         "psr-4": {
