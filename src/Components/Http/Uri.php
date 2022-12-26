@@ -596,7 +596,7 @@ class Uri implements UriInterface
     {
         return preg_replace_callback(
             '/(?:[^' . self::CHAR_UNRESERVED . self::CHAR_SUB_DELIMS . '%:@\/]++|%(?![A-Fa-f0-9]{2}))/',
-            function ($match) {
+            function ($match): string {
                 return rawurlencode($match[ 0 ]);
             },
             $query

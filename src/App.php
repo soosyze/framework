@@ -346,7 +346,7 @@ abstract class App
      */
     public function getEnvironment(): string
     {
-        if (!empty($this->environnement)) {
+        if ($this->environnement !== []) {
             $host      = gethostname();
             $authority = $this->request->getUri()->getAuthority();
 

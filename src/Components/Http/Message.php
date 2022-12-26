@@ -296,7 +296,7 @@ class Message implements MessageInterface
      * @param mixed $header
      * @param mixed $values
      *
-     * @throws \InvalidArgumentException;
+     * @throws \InvalidArgumentException
      *
      * @return array
      */

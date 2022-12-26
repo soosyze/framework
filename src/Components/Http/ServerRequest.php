@@ -185,7 +185,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function isMaxSize(): bool
     {
-        return empty($this->parseBody) && empty($this->uploadFiles) && isset($this->serverParams[ 'CONTENT_LENGTH' ]) && $this->serverParams[ 'CONTENT_LENGTH' ] > 0;
+        return empty($this->parseBody) && $this->uploadFiles === [] && isset($this->serverParams[ 'CONTENT_LENGTH' ]) && $this->serverParams[ 'CONTENT_LENGTH' ] > 0;
     }
 
     /**

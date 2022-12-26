@@ -39,7 +39,7 @@ class RequiredWithout extends Required
      *
      * @return bool
      */
-    protected function isOneVoidValue()
+    protected function isOneVoidValue(): bool
     {
         if (empty($this->args)) {
             throw new \InvalidArgumentException('A field must be provided for the required with rule.');
