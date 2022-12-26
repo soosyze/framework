@@ -45,7 +45,7 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
 
     public function testAddFilterVar(): void
     {
-        $function = function ($html) {
+        $function = function ($html): string {
             return strtolower($html);
         };
 
@@ -71,7 +71,7 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
 
     public function testAddFilterBlock(): void
     {
-        $function = function ($html) {
+        $function = function ($html): string {
             return strtolower($html);
         };
 
@@ -84,7 +84,7 @@ class TemplateTest extends \PHPUnit\Framework\TestCase
 
     public function testAddFilterOutput(): void
     {
-        $function = function ($html) {
+        $function = function ($html): string {
             return strtolower($html);
         };
 

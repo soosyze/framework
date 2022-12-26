@@ -5,7 +5,6 @@ declare(strict_types=1);
 /**
  * Soosyze Framework https://soosyze.com
  *
- * @package Soosyze\Components\Form
  * @license https://github.com/soosyze/framework/blob/master/LICENSE (MIT License)
  */
 

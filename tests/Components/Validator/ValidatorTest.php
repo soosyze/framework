@@ -294,10 +294,10 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->setAttributs([
                 'field' => [
                     'equal'  => [
-                        ':label' => function ($label) {
+                        ':label' => function ($label): string {
                             return strtoupper($label);
                         },
-                        ':value' => function ($value) {
+                        ':value' => function ($value): string {
                             return 'field_2 : ' . $value;
                         }
                     ]
