@@ -61,7 +61,7 @@ class Min extends Size
      * @param numeric|string $min    Valeur de comparraison.
      * @param bool           $not    Inverse le test
      *
-     * @return void.
+     * @return void
      */
     protected function sizeMin(string $key, $length, $min, bool $not): void
     {
