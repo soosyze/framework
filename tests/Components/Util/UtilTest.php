@@ -246,7 +246,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
         yield ['2 years ago', 'now -2 years'];
         /* MONTH */
         yield ['1 month', 'now +1 month +1 second'];
-        yield ['1 month ago', 'now -1 month'];
+        yield ['1 month ago', 'now -1 month -1 day'];
         yield ['2 months', 'now +2 month +1 second'];
         yield ['2 months ago', 'now -2 month'];
         /* WEEK */
