@@ -14,68 +14,6 @@ class UtilTest extends \PHPUnit\Framework\TestCase
 {
     use DateTime;
 
-    private const PATH = 'tests/Components/Util/build';
-
-    private const FILE = 'file';
-
-    private const PATH_FILE = 'tests/Components/Util/build/file.json';
-
-    private const PATH_FILE_ERROR = 'tests/Components/Util/build/fileError.json';
-
-    public static function tearDownAfterClass(): void
-    {
-        if (file_exists(self::PATH_FILE)) {
-            unlink(self::PATH_FILE);
-        }
-        if (file_exists(self::PATH_FILE_ERROR)) {
-            unlink(self::PATH_FILE_ERROR);
-        }
-        if (is_dir(self::PATH)) {
-            rmdir(self::PATH);
-        }
-    }
-
-    public function testCreateJson(): void
-    {
-        $output = Util::createJson(self::PATH, self::FILE);
-        $this->assertFileExists(self::PATH_FILE);
-        $this->assertTrue($output);
-
-        $output = Util::createJson(self::PATH, self::FILE);
-        $this->assertNull($output);
-    }
-
-    public function testSaveJson(): void
-    {
-        $output = Util::saveJson(self::PATH, self::FILE, [ 'key' => 'value' ]);
-        $this->assertTrue($output);
-    }
-
-    public function testGetJsonExceptionContent(): void
-    {
-        fopen(self::PATH_FILE_ERROR, 'w+');
-
-        $this->expectException(\Exception::class);
-        Util::getJson(self::PATH_FILE_ERROR);
-    }
-
-    public function testGetJsonExceptionFile(): void
-    {
-        $this->expectException(\Exception::class);
-        Util::getJson('error');
-    }
-
-    public function testGetJsonExceptionExtension(): void
-    {
-        $this->expectException(\Exception::class);
-        Util::getJson(__FILE__);
-    }
-
-    public function testGetJson(): void
-    {
-        $this->assertEquals([ 'key' => 'value' ], Util::getJson(self::PATH_FILE));
-    }
-
     public function testGetFileExtension(): void
     {
         $this->assertEquals('php', Util::getFileExtension(__FILE__));
@@ -83,7 +21,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
 
     public function testGetFolder(): void
     {
-        $this->assertEquals([ 'build' ], Util::getFolder(__DIR__));
+        $this->assertEquals([ 'Json' ], Util::getFolder(dirname(__DIR__, 2) . '/Resources/Util'));
     }
 
     public function testArrayPrefixValue(): void
