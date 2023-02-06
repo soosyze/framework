@@ -54,8 +54,6 @@ class Redirect extends Response
      * @param int $code Le code d'état filtré.
      *
      * @throws \InvalidArgumentException Status code is invalid for redirect.
-     *
-     * @return int
      */
     protected function filtreCode($code = 301): int
     {

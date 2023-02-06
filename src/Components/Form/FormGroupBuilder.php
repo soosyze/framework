@@ -204,9 +204,6 @@ class FormGroupBuilder
     /**
      * Place l'element en premier dans un élément.
      *
-     * @param string   $key
-     * @param callable $callback
-     *
      * @throws \OutOfBoundsException
      *
      * @return $this
@@ -223,9 +220,6 @@ class FormGroupBuilder
     /**
      * Place l'element en dernier dans un élément.
      *
-     * @param string   $key
-     * @param callable $callback
-     *
      * @throws \OutOfBoundsException
      *
      * @return $this
@@ -241,8 +235,6 @@ class FormGroupBuilder
 
     /**
      * Retourne les paramètres du formulaire.
-     *
-     * @return array
      */
     public function getForm(): array
     {
@@ -538,8 +530,6 @@ class FormGroupBuilder
      *
      * @codeCoverageIgnore setter
      *
-     * @param array $errs
-     *
      * @return $this
      */
     public function setErrors(array $errs): self
@@ -554,8 +544,6 @@ class FormGroupBuilder
      *
      * @codeCoverageIgnore add
      *
-     * @param string $err
-     *
      * @return $this
      */
     public function addError(string $err): self
@@ -569,8 +557,6 @@ class FormGroupBuilder
      * Rajoute plusieurs erreurs.
      *
      * @codeCoverageIgnore adds
-     *
-     * @param array $errs
      *
      * @return $this
      */
@@ -587,8 +573,6 @@ class FormGroupBuilder
      * Ajoute les success.
      *
      * @codeCoverageIgnore setter
-     *
-     * @param array $success
      *
      * @return $this
      */
@@ -676,8 +660,6 @@ class FormGroupBuilder
      * @param string $key   Clé du champ multiple.
      * @param array  $value Liste des champs.
      * @param array  $attr  Attributs à ajouter.
-     *
-     * @return void
      */
     protected function addAttrsArray(string $key, array $value, array $attr = []): void
     {
@@ -732,9 +714,6 @@ class FormGroupBuilder
     /**
      * Fusionne 2 tableaux sans écrasement de données si l'un des 2 est vide.
      *
-     * @param array $tab1
-     * @param array $tab2
-     *
      * @return array Fusion des 2 tableaux.
      */
     protected function mergeAttr(
@@ -751,10 +730,8 @@ class FormGroupBuilder
             return [];
         }
         $intersect = array_intersect_key($tab1, $tab2);
-        if ($intersect !== []) {
-            foreach ($intersect as $key => $value) {
-                $tab2[ $key ] .= ' ' . $value;
-            }
+        foreach ($intersect as $key => $value) {
+            $tab2[ $key ] .= ' ' . $value;
         }
 
         return array_merge($tab1, $tab2);
@@ -764,8 +741,6 @@ class FormGroupBuilder
      * Si une balise est requise.
      *
      * @param string $key Clé unique.
-     *
-     * @return bool
      */
     protected function isRequired(string $key): bool
     {
@@ -778,8 +753,6 @@ class FormGroupBuilder
      *
      * @param string $key  Clé unique.
      * @param array  $attr Liste des attributs à ajouter.
-     *
-     * @return bool
      */
     protected function addAttrRecurses(string $key, array $attr): bool
     {
@@ -830,10 +803,6 @@ class FormGroupBuilder
 
     /**
      * Ajoute un formulaire au début du formulaire courant.
-     *
-     * @param FormGroupBuilder $form
-     *
-     * @return void
      */
     protected function addFirst(FormGroupBuilder $form): void
     {
@@ -842,10 +811,6 @@ class FormGroupBuilder
 
     /**
      * Ajoute un formulaire à la fin du formulaire courant.
-     *
-     * @param FormGroupBuilder $form
-     *
-     * @return void
      */
     protected function addEnd(FormGroupBuilder $form): void
     {
@@ -857,12 +822,8 @@ class FormGroupBuilder
      *
      * @see http://php.net/manual/fr/function.array-slice.php
      *
-     * @param array  $input       Tableau associatif.
-     * @param string $key
-     * @param array  $replacement
-     * @param bool   $after       Si le tableau de remplacement doit être intègré après.
-     *
-     * @return void
+     * @param array $input Tableau associatif.
+     * @param bool  $after Si le tableau de remplacement doit être intègré après.
      */
     private function arraySpliceAssoc(
         array &$input,
@@ -884,8 +845,6 @@ class FormGroupBuilder
      * @param string   $key      Clé unique.
      * @param callable $callback Fonction de création du sous-formulaire.
      * @param bool     $after    Si l'item doit être placé après l'élément représenter par la clé.
-     *
-     * @return bool
      */
     private function addItem(
         string $key,
@@ -919,8 +878,6 @@ class FormGroupBuilder
      * @param string   $key      Clé unique.
      * @param callable $callback Fonction de création du sous-formulaire.
      * @param bool     $after    Si l'item doit être placé après l'élément représenter par la clé.
-     *
-     * @return bool
      */
     private function addItemInto(
         string $key,

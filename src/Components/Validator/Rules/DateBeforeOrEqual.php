@@ -37,8 +37,6 @@ class DateBeforeOrEqual extends DateBefore
      * @param string $value Date à tester.
      * @param string $arg   Date de comparaison.
      * @param bool   $not   Inverse le test.
-     *
-     * @return void
      */
     protected function testDateBefore(string $key, $value, $arg, bool $not): void
     {

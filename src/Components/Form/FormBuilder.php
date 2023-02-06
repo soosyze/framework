@@ -28,8 +28,6 @@ class FormBuilder extends FormGroupBuilder
 
     /**
      * Déclare l'ouverture du formulaire.
-     *
-     * @param array $attr
      */
     public function __construct(array $attr = [])
     {
@@ -42,8 +40,6 @@ class FormBuilder extends FormGroupBuilder
 
     /**
      * Le formulaire au format HTML.
-     *
-     * @return string
      */
     public function __toString(): string
     {
@@ -97,8 +93,6 @@ class FormBuilder extends FormGroupBuilder
 
     /**
      * Hydrate les valeurs du formulaire.
-     *
-     * @param array $values
      *
      * @return $this
      */

@@ -96,8 +96,6 @@ class Controller
 
     /**
      * Retourne le chemin du fichier de configuration des routes.
-     *
-     * @return string
      */
     public function getPathRoutes(): string
     {
@@ -106,8 +104,6 @@ class Controller
 
     /**
      * Retourne le chemin du fichier de configuration des services.
-     *
-     * @return string
      */
     public function getPathServices(): string
     {
@@ -123,10 +119,6 @@ class Controller
      * Retourne une réponse avec le statut 404.
      *
      * @codeCoverageIgnore Fonction testé directement avec l'objet Response.
-     *
-     * @param RequestInterface|null $request
-     *
-     * @return Response
      */
     protected function get404(?RequestInterface $request = null): Response
     {
@@ -147,8 +139,6 @@ class Controller
      *
      * @param int   $code    Le statut de la réponse.
      * @param array $content Le contenu à retourner.
-     *
-     * @return Response
      */
     protected function json(int $code = 200, array $content = []): Response
     {

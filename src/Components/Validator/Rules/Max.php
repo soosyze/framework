@@ -58,8 +58,6 @@ class Max extends Size
      * @param float|int      $length Taille de la valeur.
      * @param numeric|string $max    Valeur de comparraison.
      * @param bool           $not    Inverse le test.
-     *
-     * @return void
      */
     protected function sizeMax(string $key, $length, $max, bool $not): void
     {

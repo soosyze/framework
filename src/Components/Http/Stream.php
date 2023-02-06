@@ -82,8 +82,6 @@ class Stream implements StreamInterface
      * Lit toutes les données du flux dans une chaîne.
      *
      * @see http://php.net/manual/fr/language.oop5.magic.php#object.tostring
-     *
-     * @return string
      */
     public function __toString(): string
     {
@@ -183,8 +181,6 @@ class Stream implements StreamInterface
 
     /**
      * Renvoie true si le flux se trouve à la fin du flux.
-     *
-     * @return bool
      */
     public function eof(): bool
     {
@@ -197,8 +193,6 @@ class Stream implements StreamInterface
 
     /**
      * Renvoie si la position du flux peut-être modifié.
-     *
-     * @return bool
      */
     public function isSeekable(): bool
     {
@@ -217,8 +211,6 @@ class Stream implements StreamInterface
      *                    basé sur le décalage de recherche.
      *
      * @throws \RuntimeException Une erreur est survenue.
-     *
-     * @return void
      */
     public function seek($offset, $whence = SEEK_SET): void
     {
@@ -235,8 +227,6 @@ class Stream implements StreamInterface
      * Replace le pointeur au début du flux.
      *
      * @throws \RuntimeException Une erreur est survenue.
-     *
-     * @return void
      */
     public function rewind(): void
     {
@@ -251,8 +241,6 @@ class Stream implements StreamInterface
 
     /**
      * Renvoie si le flux est inscriptible ou non.
-     *
-     * @return bool
      */
     public function isWritable(): bool
     {
@@ -283,8 +271,6 @@ class Stream implements StreamInterface
 
     /**
      * Retourne si le flux est lisible ou non.
-     *
-     * @return bool
      */
     public function isReadable(): bool
     {
@@ -325,8 +311,6 @@ class Stream implements StreamInterface
      * Renvoie le contenu restant.
      *
      * @throws \RuntimeException Une erreur c'est produit pendant la lecture du flux.
-     *
-     * @return string
      */
     public function getContents(): string
     {

@@ -45,8 +45,6 @@ class BoolType extends \Soosyze\Components\Validator\Rule
      * Fixed bug #49510 (Boolean validation fails with FILTER_NULL_ON_FAILURE with empty string or false.)
      *
      * @param mixed $var Variable testée.
-     *
-     * @return bool
      */
     protected function isBool($var): bool
     {

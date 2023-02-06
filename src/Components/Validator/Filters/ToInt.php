@@ -25,8 +25,6 @@ class ToInt extends \Soosyze\Components\Validator\Filter
      * @param mixed  $args  Argument de filtre.
      *
      * @throws \InvalidArgumentException The type must be validated before being filtered.
-     *
-     * @return int
      */
     protected function clean(string $key, $value, $args): int
     {

@@ -62,8 +62,6 @@ class Message implements MessageInterface
 
     /**
      * Retourne la version du protocole HTTP.
-     *
-     * @return string
      */
     public function getProtocolVersion(): string
     {
@@ -255,10 +253,6 @@ class Message implements MessageInterface
 
     /**
      * Ajoute les en-têtes au message.
-     *
-     * @param array $headers
-     *
-     * @return void
      */
     protected function withHeaders(array $headers): void
     {
@@ -297,8 +291,6 @@ class Message implements MessageInterface
      * @param mixed $values
      *
      * @throws \InvalidArgumentException
-     *
-     * @return array
      */
     private function validateAndTrimHeader($header, $values): array
     {

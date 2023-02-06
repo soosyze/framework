@@ -43,12 +43,12 @@ final class RouteCollection
     /**
      * @var array|null
      */
-    private static $withs = null;
+    private static $withs;
 
     /**
      * @var self|null
      */
-    private static $instance = null;
+    private static $instance;
 
     private function __construct()
     {

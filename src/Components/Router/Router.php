@@ -27,7 +27,7 @@ final class Router
      *
      * @var RequestInterface
      */
-    protected $currentRequest = null;
+    protected $currentRequest;
 
     /**
      * @var ServerRequestInterface
@@ -50,9 +50,6 @@ final class Router
 
     /**
      * Construit le router avec la liste des routes et les objets à appeler.
-     *
-     * @param ServerRequestInterface  $serverRequest
-     * @param ContainerInterface|null $container
      */
     public function __construct(ServerRequestInterface $serverRequest, ?ContainerInterface $container = null)
     {
@@ -62,8 +59,6 @@ final class Router
 
     /**
      * Appel un objet et sa méthode en fonction de la requête.
-     *
-     * @param RequestInterface $request
      *
      * @return Route|null La route ou null si non trouvée.
      */
@@ -100,10 +95,8 @@ final class Router
     /**
      * Exécute la méthode d'un contrôleur à partir d'une route et de la requête.
      *
-     * @param Route            $route
-     * @param RequestInterface $request
-     *
-     * @return mixed Le retour de la méthode appelée.
+     * @param  RequestInterface $request
+     * @return mixed            Le retour de la méthode appelée.
      */
     public function execute(Route $route, ?RequestInterface $request = null)
     {
@@ -137,8 +130,6 @@ final class Router
      * @param string $name   Nom de la route.
      * @param array  $withs  Variables requises par la route.
      * @param bool   $strict Autorise la construction de routes partielles.
-     *
-     * @return string
      */
     public function generatePath(
         string $name,
@@ -158,8 +149,6 @@ final class Router
      * @param string $name   Nom de la route.
      * @param array  $withs  Variables requises par la route.
      * @param bool   $strict Autorise la construction de routes partielles.
-     *
-     * @return string
      */
     public function generateUrl(
         string $name,
@@ -175,8 +164,6 @@ final class Router
      * @param string $name   Nom de la route.
      * @param array  $withs  Variables requises par la route.
      * @param bool   $strict Autorise la construction de routes partielles.
-     *
-     * @return RequestInterface
      */
     public function generateRequest(
         string $name,
@@ -197,8 +184,6 @@ final class Router
      * Construit une route manuellement.
      *
      * @param string $path Le chemin de la route.
-     *
-     * @return string
      */
     public function makeUrl(string $path): string
     {
@@ -207,8 +192,6 @@ final class Router
 
     /**
      * Ajoute la base de l'URL de vos routes (schéma + host + path - script_name).
-     *
-     * @param string $basePath
      *
      * @return $this
      */
@@ -232,8 +215,6 @@ final class Router
     /**
      * Ajoute une nouvelle requête courante.
      *
-     * @param RequestInterface $request
-     *
      * @return $this
      */
     public function setRequest(RequestInterface $request): self
@@ -245,8 +226,6 @@ final class Router
 
     /**
      * Ajoute une nouvelle requête courante.
-     *
-     * @param ServerRequestInterface $serverRequest
      *
      * @return $this
      */
@@ -263,8 +242,6 @@ final class Router
      * @param RequestInterface $request
      *
      * @throws \InvalidArgumentException
-     *
-     * @return string
      */
     public function getPathFromRequest(?RequestInterface $request = null): string
     {

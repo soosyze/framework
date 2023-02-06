@@ -80,8 +80,6 @@ class Template
 
     /**
      * Retourne le rendu de la template.
-     *
-     * @return string
      */
     public function __toString(): string
     {
@@ -179,8 +177,6 @@ class Template
      *
      * @codeCoverageIgnore getter
      *
-     * @param string $key
-     *
      * @return mixed
      */
     public function getVar(string $key)
@@ -192,8 +188,6 @@ class Template
      * Retourne toutes les variables de la template.
      *
      * @codeCoverageIgnore getter
-     *
-     * @return array
      */
     public function getVars(): array
     {
@@ -206,8 +200,6 @@ class Template
      * @param string $key Nom de la template recherchée
      *
      * @throws \Exception Le bloc n'existe pas.
-     *
-     * @return Template
      */
     public function getBlock(string $key): Template
     {
@@ -234,8 +226,6 @@ class Template
      * Retourne le nom de la template.
      *
      * @codeCoverageIgnore getter
-     *
-     * @return string
      */
     public function getName(): string
     {
@@ -246,8 +236,6 @@ class Template
      * Retourne le chemin de la template.
      *
      * @codeCoverageIgnore getter
-     *
-     * @return string
      */
     public function getPath(): string
     {
@@ -258,8 +246,6 @@ class Template
      * Change le nom de la template.
      *
      * @codeCoverageIgnore setter
-     *
-     * @param string $name
      *
      * @return $this
      */
@@ -300,8 +286,6 @@ class Template
     /**
      * Défini les noms de fichier de remplacement.
      *
-     * @param array $names
-     *
      * @return $this
      */
     public function setNamesOverride(array $names): self
@@ -314,8 +298,6 @@ class Template
     /**
      * Ajoute un nom de fichier de remplacement.
      *
-     * @param string $name
-     *
      * @return $this
      */
     public function addNameOverride(string $name): self
@@ -327,8 +309,6 @@ class Template
 
     /**
      * Ajoute des noms de fichier de remplacement.
-     *
-     * @param array $names
      *
      * @return $this
      */
@@ -344,8 +324,6 @@ class Template
     /**
      * Ajoute un chemin de remplacement.
      *
-     * @param string $name
-     *
      * @return $this
      */
     public function addPathOverride(string $name): self
@@ -359,8 +337,6 @@ class Template
      * Recherche récursive d'un bloc de la template à partir de sa clé.
      *
      * @param string $key Clé unique.
-     *
-     * @return Template|null
      */
     public function searchBlock(string $key): ?Template
     {
@@ -383,8 +359,7 @@ class Template
     /**
      * Ajoute une fonction de filtre pour le rendu de la template.
      *
-     * @param string   $key      Description
-     * @param callable $function
+     * @param string $key Description
      *
      * @return $this
      */

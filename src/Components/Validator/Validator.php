@@ -168,8 +168,6 @@ class Validator
      *
      * @param string $key  Clé du test.
      * @param string $rule Function de test.
-     *
-     * @return self
      */
     public static function addTestGlobal(string $key, string $rule): self
     {
@@ -195,10 +193,6 @@ class Validator
 
     /**
      * Ajoute des messages globaux de retours personnalisés.
-     *
-     * @param array $messages
-     *
-     * @return self
      */
     public static function setMessagesGlobal(array $messages): self
     {
@@ -209,8 +203,6 @@ class Validator
 
     /**
      * Ajoute des messages de retours personnalisés.
-     *
-     * @param array $messages
      *
      * @return $this
      */
@@ -224,9 +216,6 @@ class Validator
     /**
      * Ajoute un message de retours personnalisés.
      *
-     * @param string $key
-     * @param array  $message
-     *
      * @return $this
      */
     public function addMessage(string $key, array $message): self
@@ -238,8 +227,6 @@ class Validator
 
     /**
      * Ajoute des attributs de retours personnalisés.
-     *
-     * @param array $attributs
      *
      * @return $this
      */
@@ -303,9 +290,6 @@ class Validator
      *
      * @codeCoverageIgnore add
      *
-     * @param string $key
-     * @param string $label
-     *
      * @return $this
      */
     public function addLabel(string $key, string $label): self
@@ -338,7 +322,6 @@ class Validator
      *
      * @param string $key Nom du champ.
      *
-     * @return array
      * @phpstan-return Error
      */
     public function getError(string $key): array
@@ -351,7 +334,6 @@ class Validator
      *
      * @codeCoverageIgnore getter
      *
-     * @return array
      * @phpstan-return Errors
      */
     public function getErrors(): array
@@ -516,8 +498,6 @@ class Validator
      * @codeCoverageIgnore has
      *
      * @param string $key Nom de l'erreur.
-     *
-     * @return bool
      */
     public function hasError(string $key): bool
     {
@@ -528,8 +508,6 @@ class Validator
      * Si il y a eu des erreurs.
      *
      * @codeCoverageIgnore has
-     *
-     * @return bool
      */
     public function hasErrors(): bool
     {
@@ -542,8 +520,6 @@ class Validator
      * @codeCoverageIgnore has
      *
      * @param string $key Nom du champ.
-     *
-     * @return bool
      */
     public function hasInput(string $key): bool
     {
@@ -610,12 +586,6 @@ class Validator
 
     /**
      * Parcours les erreurs.
-     *
-     * @param array  $errors
-     * @param string $strKey
-     * @param bool   $rule
-     *
-     * @return array
      */
     protected function resucrsiveError(
         array $errors,
@@ -644,8 +614,6 @@ class Validator
      *
      * @param string $key   La clé des tests
      * @param Rule[] $rules Les règles.
-     *
-     * @return void
      */
     protected function execute(string $key, array $rules): void
     {
@@ -691,7 +659,6 @@ class Validator
      *
      * @param string $rule Règle compléte.
      *
-     * @return array
      * @phpstan-return array{string, string, bool}
      */
     protected function getInfosRule(string $rule): array
@@ -742,11 +709,6 @@ class Validator
 
     /**
      * Valorise la règle du label, attributs, messages personnalisés.
-     *
-     * @param string $key
-     * @param Rule   $rule
-     *
-     * @return Rule
      */
     protected function valoriseRule(string $key, Rule $rule): Rule
     {

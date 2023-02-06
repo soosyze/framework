@@ -111,7 +111,7 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The key of must be of type string: integer given');
         /** @phpstan-ignore-next-line */
-        isset($this->object[ 1 ]);
+        $this->object[ 1 ];
     }
 
     public function testGetArrayAccess(): void

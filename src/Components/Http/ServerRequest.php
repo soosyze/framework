@@ -65,7 +65,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @var null|array|object
      */
-    protected $parseBody = null;
+    protected $parseBody;
 
     /**
      * Construit une requête coté serveur.
@@ -97,8 +97,6 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     /**
      * Construit une requête à partir des paramètre du serveur.
-     *
-     * @return ServerRequest
      */
     public static function create(): ServerRequest
     {
@@ -151,8 +149,6 @@ class ServerRequest extends Request implements ServerRequestInterface
      * Cette méthode ne fait pas partie de la norme PSR-7.
      *
      * @param string $scriptName Nom du script (optionnel).
-     *
-     * @return string
      */
     public function getBasePath(string $scriptName = ''): string
     {
@@ -169,8 +165,6 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Si la requête est envoyée par Ajax.
      * Cette méthode ne fait pas partie de la norme PSR-7.
-     *
-     * @return bool
      */
     public function isAjax(): bool
     {
@@ -180,8 +174,6 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Si la requête dépasse la taille maximum autorisée.
      * Cette méthode ne fait pas partie de la norme PSR-7.
-     *
-     * @return bool
      */
     public function isMaxSize(): bool
     {
@@ -194,8 +186,6 @@ class ServerRequest extends Request implements ServerRequestInterface
      * Récupère les données liées à l'environnement de demande entrante,
      * typiquement dérivé de superglobal $_SERVER de PHP. Les données ne sont PAS
      * REQUIS pour provenir de $_SERVER.
-     *
-     * @return array
      */
     public function getServerParams(): array
     {
@@ -209,8 +199,6 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * Les données DOIVENT être compatibles avec la structure du $_COOKIE
      * superglobal.
-     *
-     * @return array
      */
     public function getCookieParams(): array
     {
@@ -243,8 +231,6 @@ class ServerRequest extends Request implements ServerRequestInterface
      * params. Si vous devez vous assurer que vous n'obtenez que l'original
      * valeurs, vous devrez peut-être analyser la chaîne de requête à partir de `getUri()->getQuery()`
      * ou à partir du paramètre du serveur `QUERY_STRING`.
-     *
-     * @return array
      */
     public function getQueryParams(): array
     {
@@ -421,8 +407,6 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @see https://www.php-fig.org/psr/psr-7/#16-uploaded-files
      *
      * @param array $files
-     *
-     * @return array
      */
     public static function parseFiles(array $files): array
     {
@@ -467,8 +451,6 @@ class ServerRequest extends Request implements ServerRequestInterface
      * Permet de calculer le chemin de base de la requête.
      *
      * @param string $default La valeur par défaut du script.
-     *
-     * @return string
      */
     protected function getScriptName(string $default = '/'): string
     {
@@ -496,8 +478,6 @@ class ServerRequest extends Request implements ServerRequestInterface
      * à partir des clés standards (tmp_name, size, name...).
      *
      * @param array $files Représentation de la variable $_FILE à partir de ses clés standards.
-     *
-     * @return array
      */
     private static function normaliseMultiFile(array $files): array
     {
@@ -517,8 +497,6 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @param array|null $output Tableau qui sera rempli par référence.
      * @param array      $array  Informations contenus dans l'une des clés standards.
      * @param string     $name   Clés standards de la variable superglobale $_FILES.
-     *
-     * @return void
      */
     private static function normaliseFile(?array &$output, array $array, string $name): void
     {
@@ -538,8 +516,6 @@ class ServerRequest extends Request implements ServerRequestInterface
      * les informations de fichier en instances de UploadedFileInterface.
      *
      * @param array $files Variable superglobale $_FILES parsée.
-     *
-     * @return array
      */
     private static function normaliseUplaod(array $files): array
     {
@@ -563,7 +539,6 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @param mixed $data
      *
      * @throws \InvalidArgumentException
-     * @return void
      */
     private function filtreBody($data): void
     {

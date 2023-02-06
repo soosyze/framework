@@ -36,9 +36,6 @@ class Client implements ClientInterface
      */
     protected $curlOptions;
 
-    /**
-     * @param array $curlOptions
-     */
     public function __construct(array $curlOptions = [])
     {
         $this->curlOptions = $curlOptions;
@@ -47,11 +44,7 @@ class Client implements ClientInterface
     /**
      * Sends a PSR-7 request and returns a PSR-7 response.
      *
-     * @param RequestInterface $request
-     *
      * @throws ClientException If an error happens while processing the request.
-     *
-     * @return ResponseInterface
      */
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
@@ -95,10 +88,7 @@ class Client implements ClientInterface
     /**
      * Parse les entêtes de la réponse.
      *
-     * @param string            $headers
-     * @param ResponseInterface $response
-     *
-     * @return ResponseInterface
+     * @param string $headers
      */
     protected function curlParseHeaders($headers, ResponseInterface $response): ResponseInterface
     {
@@ -119,8 +109,6 @@ class Client implements ClientInterface
 
     /**
      * @throws ClientException
-     *
-     * @return void
      */
     protected function setCurlInit(): void
     {
@@ -136,11 +124,7 @@ class Client implements ClientInterface
     /**
      * Charge la configuration de cUrl.
      *
-     * @param RequestInterface $request
-     *
      * @throws ClientException
-     *
-     * @return void
      */
     protected function setCurlOptions(RequestInterface $request): void
     {

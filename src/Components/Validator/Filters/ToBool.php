@@ -25,8 +25,6 @@ class ToBool extends \Soosyze\Components\Validator\Filter
      * @param mixed  $args  Argument de filtre.
      *
      * @throws \InvalidArgumentException The type must be validated before being filtered.
-     *
-     * @return bool
      */
     protected function clean(string $key, $value, $args): bool
     {
@@ -44,8 +42,6 @@ class ToBool extends \Soosyze\Components\Validator\Filter
      * Fixed bug #49510 (Boolean validation fails with FILTER_NULL_ON_FAILURE with empty string or false.)
      *
      * @param mixed $var
-     *
-     * @return bool
      */
     protected function isBool($var): bool
     {

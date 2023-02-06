@@ -27,14 +27,14 @@ class UploadedFile implements UploadedFileInterface
      *
      * @var string|null
      */
-    protected $file = null;
+    protected $file;
 
     /**
      * Chemin du fichier temporaire ($_FILES['key']['name']).
      *
      * @var string|null
      */
-    protected $name = null;
+    protected $name;
 
     /**
      * Taille du fichier en octets ($_FILES['key']['size']).
@@ -48,7 +48,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @var string|null
      */
-    protected $type = null;
+    protected $type;
 
     /**
      * Code erreur ($_FILES['key']['error']).
@@ -93,10 +93,6 @@ class UploadedFile implements UploadedFileInterface
      * Construit un fichier.
      *
      * @param string|resource|StreamInterface $file
-     * @param string|null                     $name
-     * @param int|null                        $size
-     * @param string|null                     $type
-     * @param int                             $error
      */
     public function __construct(
         $file,
@@ -120,7 +116,6 @@ class UploadedFile implements UploadedFileInterface
      * @param array $file Doit contenir la clé 'tmp_name' au minimum.
      *
      * @throws \InvalidArgumentException La clé tmp_name est requise.
-     * @return UploadedFileInterface
      */
     public static function create(array $file): UploadedFileInterface
     {
@@ -190,7 +185,6 @@ class UploadedFile implements UploadedFileInterface
      *                                   le deuxième ou suivant appel à la méthode.
      * @throws \InvalidArgumentException Si le $targetPath spécifié n'est pas valide.
      * @throws \InvalidArgumentException Une erreur est survenue.
-     * @return void
      */
     public function moveTo($targetPath): void
     {
@@ -277,8 +271,6 @@ class UploadedFile implements UploadedFileInterface
      * @param string|resource|StreamInterface $file Le fichier.
      *
      * @throws \InvalidArgumentException La ressource de fichier n'est pas lisible.
-     *
-     * @return void
      */
     protected function filterFile($file): void
     {
@@ -315,8 +307,6 @@ class UploadedFile implements UploadedFileInterface
      * Déplace le fichier dans un environnement SAPI.
      *
      * @param string $targetPath Cible du fichier.
-     *
-     * @return bool
      */
     private function moveToSapi(string $targetPath): bool
     {
@@ -331,8 +321,6 @@ class UploadedFile implements UploadedFileInterface
      *
      * @throws \RuntimeException Le fichier n'a pas été téléchargé par HTTP POST.
      * @throws \RuntimeException Une erreur est survenue dans le déplacement du fichier.
-     *
-     * @return bool
      */
     private function moveToNoSapi(string $targetPath): bool
     {
@@ -350,8 +338,6 @@ class UploadedFile implements UploadedFileInterface
 
     /**
      * Si le fichier ne contient pas le code UPLOAD_ERR_OK.
-     *
-     * @return bool
      */
     private function isError(): bool
     {

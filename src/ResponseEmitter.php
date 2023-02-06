@@ -19,8 +19,6 @@ class ResponseEmitter
 {
     /**
      * Renvoie les informations de la réponse et son contenu.
-     *
-     * @return string
      */
     public function emit(ResponseInterface $response): string
     {

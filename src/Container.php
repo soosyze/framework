@@ -209,8 +209,6 @@ class Container implements ContainerInterface
      * Si le service existe.
      *
      * @param string $id Nom du service.
-     *
-     * @return bool
      */
     public function has(string $id): bool
     {
@@ -287,10 +285,6 @@ class Container implements ContainerInterface
 
     /**
      * Charge les hooks contenus dans les services.
-     *
-     * @param array $services
-     *
-     * @return void
      */
     protected function load(array $services): void
     {
@@ -310,8 +304,7 @@ class Container implements ContainerInterface
      * Alimente les arguments d'un service avec
      * des valeurs, des élements de configuration ou/et d'autres services.
      *
-     * @param \ReflectionClass $ref
-     * @param string           $id  Nom du service.
+     * @param string $id Nom du service.
      *
      * @throws \RuntimeException
      * @return array             Arguments chargés.
@@ -387,8 +380,6 @@ class Container implements ContainerInterface
 
     /**
      * Injection de réglage.
-     *
-     * @param string $id
      *
      * @return $this
      */

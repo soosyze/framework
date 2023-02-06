@@ -91,8 +91,6 @@ class Paginator
 
     /**
      * Génère le code HTML de la pagination.
-     *
-     * @return string
      */
     public function __toString(): string
     {
@@ -102,11 +100,8 @@ class Paginator
     /**
      * Change la page courante.
      *
-     * @param int $current
-     *
      * @throws \InvalidArgumentException La page courante doit être
      *                                   un nombre numérique supérieur à 1.
-     *
      * @return $this
      */
     public function setCurrent(int $current): self
@@ -122,11 +117,8 @@ class Paginator
     /**
      * Change le nombre de page maximum à afficher.
      *
-     * @param int $max
-     *
      * @throws \InvalidArgumentException Le nombre de page à afficher doit être
      *                                   supérieur ou égale à trois.
-     *
      * @return $this
      */
     public function setMaxPage(int $max = 3): self
@@ -142,11 +134,8 @@ class Paginator
     /**
      * Change la clé du lien.
      *
-     * @param string $key
-     *
      * @throws \InvalidArgumentException La clé du lien doit être
      *                                   une chaine de caractère non null.
-     *
      * @return $this
      */
     public function setKey(string $key): self
@@ -158,8 +147,6 @@ class Paginator
 
     /**
      * Génère le code HTML de la pagination.
-     *
-     * @return string
      */
     public function render(): string
     {
@@ -185,8 +172,6 @@ class Paginator
 
     /**
      * Retourne la liste des pages.
-     *
-     * @return array
      */
     public function getPages(): array
     {
@@ -228,8 +213,6 @@ class Paginator
 
     /**
      * Retourne le numéro de la page suivante ou null si elle n'existe pas.
-     *
-     * @return int|null
      */
     public function getNextPage(): ?int
     {
@@ -240,8 +223,6 @@ class Paginator
 
     /**
      * Retourne le numéro de la page précédente ou null si elle n'existe pas.
-     *
-     * @return int|null
      */
     public function getPreviousPage(): ?int
     {
@@ -252,8 +233,6 @@ class Paginator
 
     /**
      * Retourne l'url de la page suivante ou null si elle n'existe pas.
-     *
-     * @return string|null
      */
     public function getNextUrl(): ?string
     {
@@ -262,8 +241,6 @@ class Paginator
 
     /**
      * Retourne l'url de la page précédente ou null si elle n'existe pas.
-     *
-     * @return string|null
      */
     public function getPreviousUrl(): ?string
     {
@@ -274,8 +251,6 @@ class Paginator
      * Retourne les données d'une page à partir de sa clé.
      *
      * @param int $key Numéro de la page.
-     *
-     * @return array
      */
     protected function getPage(int $key): array
     {
@@ -294,8 +269,6 @@ class Paginator
      * Retourne l'url d'une page à partir de sa clé ou null.
      *
      * @param int|null $key Numéro de la page.
-     *
-     * @return string|null
      */
     protected function getUrl(?int $key): ?string
     {

@@ -36,7 +36,6 @@ class BetweenNumeric extends Between
             throw new \TypeError('The comparisons arguments must be a string.');
         }
 
-        [ $min, $max ] = $this->getParamMinMax($args);
-        $this->sizeBetween($key, $length, $min, $max, $not);
+        $this->sizeBetween($key, $length, $this->getParamMinMax($args), $not);
     }
 }

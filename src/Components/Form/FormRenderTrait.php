@@ -46,8 +46,6 @@ trait FormRenderTrait
      * Met en forme les attributs pour les balises inputs standards.
      *
      * @param array $attr Listes des attributs enregistrés.
-     *
-     * @return string
      */
     protected function renderAttrInput(array $attr): string
     {
@@ -99,9 +97,6 @@ trait FormRenderTrait
     /**
      * Génère un label.
      *
-     * @param string $key
-     * @param array  $item
-     *
      * @return string HTML
      */
     protected function renderLabel(string $key, array $item): string
@@ -129,9 +124,6 @@ trait FormRenderTrait
     /**
      * Génère un champ.
      *
-     * @param string $key
-     * @param array  $item
-     *
      * @return string HTML
      */
     protected function renderInput(string $key, array $item): string
@@ -146,9 +138,6 @@ trait FormRenderTrait
 
     /**
      * Génère un groupe de champs.
-     *
-     * @param string $key
-     * @param array  $item
      *
      * @return string HTML
      */
@@ -174,9 +163,6 @@ trait FormRenderTrait
     /**
      * Génère une balise legend.
      *
-     * @param string $key
-     * @param array  $item
-     *
      * @return string HTML
      */
     protected function renderLegend(string $key, array $item): string
@@ -194,9 +180,6 @@ trait FormRenderTrait
     /**
      * Génère une balise textarea.
      *
-     * @param string $key
-     * @param array  $item
-     *
      * @return string HTML
      */
     protected function renderTextarea(string $key, array $item): string
@@ -211,9 +194,6 @@ trait FormRenderTrait
 
     /**
      * Génère une balise button.
-     *
-     * @param string $key
-     * @param array  $item
      *
      * @return string HTML
      */
@@ -230,9 +210,6 @@ trait FormRenderTrait
 
     /**
      * Génère une balise de selection.
-     *
-     * @param string $key
-     * @param array  $item
      *
      * @return string HTML
      */
@@ -252,10 +229,7 @@ trait FormRenderTrait
     /**
      * Génère les balises options ou optgroup
      *
-     * @param array  $options
      * @param scalar $select
-     *
-     * @return string
      */
     protected function renderSelectOptionGroup(array $options, $select): string
     {
@@ -280,10 +254,7 @@ trait FormRenderTrait
     /**
      * Génère une balise option
      *
-     * @param array  $option
      * @param scalar $select
-     *
-     * @return string
      */
     protected function renderSelectOption(array $option, $select): string
     {
@@ -306,9 +277,6 @@ trait FormRenderTrait
     /**
      * Génère une balise HTML.
      *
-     * @param string $key
-     * @param array  $item
-     *
      * @return string HTML
      */
     protected function renderHtml(string $key, array $item): string
@@ -327,8 +295,6 @@ trait FormRenderTrait
 
     /**
      * Génère des messages d'erreur ou de succes.
-     *
-     * @param string $key
      *
      * @return string HTML
      */

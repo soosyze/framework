@@ -7,7 +7,7 @@ class Service1
     /**
      * @var int|null
      */
-    private $number = null;
+    private $number;
 
     public function isOk(): bool
     {

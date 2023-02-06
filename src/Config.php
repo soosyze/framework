@@ -53,8 +53,6 @@ class Config implements \ArrayAccess
      * Si l'élément existe dans la configuration.
      *
      * @param string $strKey "nom_fichier" OU "nom_fichier.nom_clé".
-     *
-     * @return bool
      */
     public function has(string $strKey): bool
     {
@@ -149,8 +147,6 @@ class Config implements \ArrayAccess
      * Retourne le chemin des fichiers de configuration.
      *
      * @codeCoverageIgnore getter
-     *
-     * @return string
      */
     public function getPath(): string
     {
@@ -163,8 +159,6 @@ class Config implements \ArrayAccess
      * @see https://www.php.net/manual/en/arrayaccess.offsetexists.php
      *
      * @param mixed $offset Position à vérifier.
-     *
-     * @return bool
      */
     public function offsetExists($offset): bool
     {
@@ -204,8 +198,6 @@ class Config implements \ArrayAccess
      *
      * @param mixed $offset
      * @param mixed $value
-     *
-     * @return void
      */
     public function offsetSet($offset, $value): void
     {
@@ -223,8 +215,6 @@ class Config implements \ArrayAccess
      * @see https://www.php.net/manual/en/arrayaccess.offsetunset.php
      *
      * @param mixed $offset
-     *
-     * @return void
      */
     public function offsetUnset($offset): void
     {
@@ -241,7 +231,6 @@ class Config implements \ArrayAccess
      *
      * @param string $strKey Nom de la clé.
      *
-     * @return array
      * @phpstan-return array{string, string|null}
      */
     protected function prepareKey(string $strKey): array
@@ -259,8 +248,6 @@ class Config implements \ArrayAccess
      * Charge et garde en mémoire les données de configuration.
      *
      * @param string $nameConfig Nom du fichier de configuration
-     *
-     * @return void
      */
     protected function loadConfig(string $nameConfig): void
     {

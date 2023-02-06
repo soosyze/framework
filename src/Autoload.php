@@ -44,8 +44,6 @@ class Autoload
 
     /**
      * Créer notre autoload à partir de la liste des namespace.
-     *
-     * @param array $lib
      */
     public function __construct(array $lib = [])
     {
@@ -54,8 +52,6 @@ class Autoload
 
     /**
      * Ajoute une liste de namespace.
-     *
-     * @param array $lib
      *
      * @return $this
      */
@@ -83,8 +79,6 @@ class Autoload
     /**
      * Ajoute une liste de prefix pour trouver des classes.
      *
-     * @param array $prefix
-     *
      * @return $this
      */
     public function setPrefix(array $prefix): self
@@ -96,8 +90,6 @@ class Autoload
 
     /**
      * Appel l'autoload register.
-     *
-     * @return void
      */
     public function register(): void
     {
@@ -178,8 +170,6 @@ class Autoload
      * sinon retourne FALSE.
      *
      * @param string $file Chemin d'un fichier.
-     *
-     * @return bool
      */
     private function requireFile(string $file): bool
     {
@@ -196,8 +186,6 @@ class Autoload
      * Remplace les doubles anti-slash par un simple slash.
      *
      * @param string $str Chaine à remplacer.
-     *
-     * @return string
      */
     private function relplaceSlash($str): string
     {

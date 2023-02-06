@@ -36,8 +36,6 @@ class RequiredWithout extends Required
      * Test si toute les valeurs sont vide.
      *
      * @throws \InvalidArgumentException A field must be provided for the required with rule.
-     *
-     * @return bool
      */
     protected function isOneVoidValue(): bool
     {

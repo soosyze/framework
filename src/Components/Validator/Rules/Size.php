@@ -28,7 +28,7 @@ abstract class Size extends \Soosyze\Components\Validator\Rule
      *
      * @throws \InvalidArgumentException The value must be numeric or in file size format.
      *
-     * @return numeric|string La Taille de comparaison.
+     * @return numeric La Taille de comparaison.
      */
     protected function getComparator($size)
     {

@@ -21,8 +21,6 @@ interface RuleInputsInterface
      * Ajoute des champs.
      *
      * @param array $inputs Ensemble des champs.
-     *
-     * @return void
      */
     public function setInputs(array $inputs): void;
 }

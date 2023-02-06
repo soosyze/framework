@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Soosyze\Components\Validator;
 
+use Soosyze\Components\Validator\Comparators\MinMax;
+
 /**
  * Valide une valeur.
  *
@@ -120,8 +122,6 @@ abstract class Rule
 
     /**
      * Retourne toutes les erreurs.
-     *
-     * @return array
      */
     public function getErrors(): array
     {
@@ -130,8 +130,6 @@ abstract class Rule
 
     /**
      * Si une erreur existe.
-     *
-     * @return bool
      */
     public function hasErrors(): bool
     {
@@ -155,8 +153,6 @@ abstract class Rule
     /**
      * Modifie les attributs des messages d'erreur.
      *
-     * @param array $attributes
-     *
      * @return $this
      */
     public function setAttributs(array $attributes): self
@@ -168,8 +164,6 @@ abstract class Rule
 
     /**
      * Ajoute un label au champ.
-     *
-     * @param string $label
      *
      * @return $this
      */
@@ -198,8 +192,6 @@ abstract class Rule
 
     /**
      * Retourne la clé unique de la valeur.
-     *
-     * @return string
      */
     public function getKey(): string
     {
@@ -208,8 +200,6 @@ abstract class Rule
 
     /**
      * Retourne le nom du test.
-     *
-     * @return string
      */
     public function getName(): string
     {
@@ -218,8 +208,6 @@ abstract class Rule
 
     /**
      * Stop les tests suivants.
-     *
-     * @return void
      */
     public function stopPropagation(): void
     {
@@ -228,8 +216,6 @@ abstract class Rule
 
     /**
      * Stop les tests suivants immédiatement.
-     *
-     * @return void
      */
     public function stopImmediatePropagation(): void
     {
@@ -238,8 +224,6 @@ abstract class Rule
 
     /**
      * Si les tests suivants sont stoppés.
-     *
-     * @return bool
      */
     public function isStop(): bool
     {
@@ -248,8 +232,6 @@ abstract class Rule
 
     /**
      * Si les tests suivants sont stoppés immédiatement.
-     *
-     * @return bool
      */
     public function isStopImmediate(): bool
     {
@@ -273,8 +255,6 @@ abstract class Rule
      * @param mixed  $value   Valeur à tester.
      * @param mixed  $args    Argument de test.
      * @param bool   $not     Inverse le test.
-     *
-     * @return void
      */
     abstract protected function test(string $keyRule, $value, $args, bool $not): void;
 
@@ -291,8 +271,6 @@ abstract class Rule
      * @param string $keyRule    Clé du test.
      * @param string $keyMessage Identifiant du message à formater avec la valeur de test.
      * @param array  $attributes Liste d'arguments de remplacements pour personnaliser le message.
-     *
-     * @return void
      */
     protected function addReturn(
         string $keyRule,
@@ -314,42 +292,19 @@ abstract class Rule
      * @param string $arg Chaine de paramétre.
      *
      * @throws \InvalidArgumentException Between values are invalid.
-     * @throws \InvalidArgumentException The minimum value of between must be numeric.
-     * @throws \InvalidArgumentException The maximum value of entry must be numeric.
-     * @throws \InvalidArgumentException The minimum value must not be greater than the maximum value.
-     *
-     * @return numeric[] Tableau des valeurs min et max.
-     * @phpstan-return array{min: numeric, max: numeric}
      */
-    protected function getParamMinMax(string $arg): array
+    protected function getParamMinMax(string $arg): MinMax
     {
         $explode = explode(',', $arg);
         if (!isset($explode[ 0 ], $explode[ 1 ])) {
             throw new \InvalidArgumentException('Between values are invalid.');
         }
 
-        $min = $explode[ 0 ];
-        $max = $explode[ 1 ];
-
-        if (!is_numeric($min)) {
-            throw new \InvalidArgumentException('The minimum value of between must be numeric.');
-        }
-        if (!is_numeric($max)) {
-            throw new \InvalidArgumentException('The maximum value of entry must be numeric.');
-        }
-        if ($min > $max) {
-            throw new \InvalidArgumentException('The minimum value must not be greater than the maximum value.');
-        }
-
-        return [ 'min' => $min, 'max' => $max ];
+        return MinMax::create($explode[ 0 ], $explode[ 1 ]);
     }
 
     /**
      * Personnaliser les attributs de retour.
-     *
-     * @param array $attributes
-     *
-     * @return array
      */
     private function overrideAttributes(array $attributes): array
     {

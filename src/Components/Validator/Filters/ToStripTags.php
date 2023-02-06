@@ -27,8 +27,6 @@ class ToStripTags extends \Soosyze\Components\Validator\Filter
      * @param mixed  $args  Liste des balise HTML autorisés.
      *
      * @throws \InvalidArgumentException The type must be validated before being filtered.
-     *
-     * @return string
      */
     protected function clean(string $key, $value, $args = self::ALLOWABLE_TAGS): string
     {

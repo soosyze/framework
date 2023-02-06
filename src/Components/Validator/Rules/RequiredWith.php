@@ -36,8 +36,6 @@ class RequiredWith extends Required
      * Test si au moins une valeur n'est pas vide.
      *
      * @throws \InvalidArgumentException A field must be provided for the required with rule.
-     *
-     * @return bool
      */
     protected function isOneValue(): bool
     {

@@ -67,10 +67,7 @@ class File extends \Soosyze\Components\Validator\Rule
     /**
      * Vérifie si le fichier ne contient pas d'erreur.
      *
-     * @param string                $key   Clé du test.
-     * @param UploadedFileInterface $value
-     *
-     * @return void
+     * @param string $key Clé du test.
      */
     protected function checkErrorFile(string $key, UploadedFileInterface $value): void
     {
@@ -108,10 +105,6 @@ class File extends \Soosyze\Components\Validator\Rule
 
     /**
      * Retourne le mimetype du fichier.
-     *
-     * @param UploadedFileInterface $upload
-     *
-     * @return string
      */
     protected function getMime(UploadedFileInterface $upload): string
     {
@@ -129,8 +122,6 @@ class File extends \Soosyze\Components\Validator\Rule
 
     /**
      * Retourne l'extension du fichier.
-     *
-     * @param UploadedFileInterface $upload
      *
      * @return string Extension du fichier
      */

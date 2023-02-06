@@ -46,8 +46,6 @@ class Image extends FileMimes
      * Valide si une liste d'extensions correspond à un mimetype d'image.
      *
      * @param string $extensions Liste d'extensions d'images autorisées.
-     *
-     * @return void
      */
     protected function validMimeImageByExtension(string $extensions): void
     {
@@ -63,9 +61,7 @@ class Image extends FileMimes
     /**
      * Valide si un mimetype est celui d'une image.
      *
-     * @param string       $extension
-     * @param string|array $mimes     Mimetype ou liste de mimetype.
-     *
+     * @param  string|array              $mimes Mimetype ou liste de mimetype.
      * @throws \InvalidArgumentException L'extension n'est pas une extension d'image.
      */
     private function validMimeImage(string $extension, $mimes): void

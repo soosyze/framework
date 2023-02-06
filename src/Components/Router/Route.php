@@ -40,12 +40,12 @@ final class Route implements \JsonSerializable
     /**
      * @var array|null
      */
-    private $withs = null;
+    private $withs;
 
     /**
      * @var array<string, null|numeric|string>|null
      */
-    private $withsDefault = null;
+    private $withsDefault;
 
     public function __construct(
         string $key,

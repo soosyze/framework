@@ -76,8 +76,6 @@ class FileMimes extends FileExtensions
      *
      * @param string $info      Information sur le mimetype du fichier.
      * @param string $extension L'extension attendu.
-     *
-     * @return void
      */
     protected function validMime(string $info, string $extension): void
     {
@@ -98,8 +96,6 @@ class FileMimes extends FileExtensions
      *
      * @param string $info       Information sur le mimetype du fichier.
      * @param string $extensions Liste d'extensions séparées par une virgule.
-     *
-     * @return void
      */
     protected function validNotMime(string $info, string $extensions): void
     {

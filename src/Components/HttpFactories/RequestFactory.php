@@ -29,8 +29,6 @@ class RequestFactory implements RequestFactoryInterface
      *
      * @param string                                $method The HTTP method associated with the request.
      * @param \Psr\Http\Message\UriInterface|string $uri    The URI associated with the request.
-     *
-     * @return RequestInterface
      */
     public function createRequest(string $method, $uri): RequestInterface
     {

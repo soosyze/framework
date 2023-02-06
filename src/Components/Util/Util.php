@@ -209,8 +209,6 @@ class Util
      * Retourne l'extension d'un fichier passé en paramètre.
      *
      * @param string $pathFile Nom du fichier.
-     *
-     * @return string
      */
     public static function getFileBasename(string $pathFile): string
     {
@@ -324,8 +322,6 @@ class Util
      * @param string $needle         Chaîne recherché.
      * @param string $haystack       Chaine d'entrée
      * @param string $classHighlight Classe CSS de la surbrillance
-     *
-     * @return string
      */
     public static function strHighlight(
         string $needle,
@@ -343,8 +339,6 @@ class Util
      * @param string $search  Chaîne recherché.
      * @param string $replace Chaîne de remplacement.
      * @param string $subject Chaîne d'entrée.
-     *
-     * @return string
      */
     public static function strReplaceFirst(
         string $search,
@@ -364,8 +358,6 @@ class Util
      * @param string $search  Chaîne recherché.
      * @param string $replace Chaîne de remplacement.
      * @param string $subject Chaîne d'entrée.
-     *
-     * @return string
      */
     public static function strReplaceLast(
         string $search,
@@ -384,8 +376,6 @@ class Util
      *
      * @param int    $length Longueur de la chaîne à générer.
      * @param string $chars  Liste de caractères utilisés pour la génération aléatoire.
-     *
-     * @return string
      */
     public static function strRandom(
         int $length = 20,
@@ -407,8 +397,6 @@ class Util
      * @param string $str       Chaîne de caractère à traiter.
      * @param string $separator Caractère de remplacement.
      * @param string $ignore    Caractères ignorés par le remplacement.
-     *
-     * @return string
      */
     public static function strSlug(
         string $str,
@@ -428,8 +416,6 @@ class Util
      * @param int    $size      Valeur numértique.
      * @param int    $precision Le nombre de zéro après la virgule.
      * @param string $default   Valeur par défaut en cas d'abence de valeur.
-     *
-     * @return string
      */
     public static function strFileSizeFormatted(
         int $size,
@@ -450,10 +436,6 @@ class Util
     /**
      * Retourne le nombre d'octet à partir du format de données utilisé par le fichier php.ini
      * Exemple, pour la chaine '1M' il sera retourné 1048576.
-     *
-     * @param string $shortBytes
-     *
-     * @return int|null
      */
     public static function getOctetShortBytesPhp(string $shortBytes): ?int
     {
@@ -518,7 +500,6 @@ class Util
      * Différence entre 2 dates dans un format lisible par l'homme.
      *
      * @param \DateTime $from
-     * @param string    $to
      *
      * @return array La première valeur est la chaine de caractère
      *               et la seconde la valeur numérique à remplacer.
@@ -570,9 +551,6 @@ class Util
     }
 
     /**
-     * @param string $filename
-     * @param string $mode
-     *
      * @throws \RuntimeException
      * @return resource
      */

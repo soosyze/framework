@@ -24,19 +24,11 @@ class NetworkException extends ClientException implements NetworkExceptionInterf
      */
     protected $request;
 
-    /**
-     * Constructor of the class
-     *
-     * @param RequestInterface $request
-     * @param string           $message
-     * @param int              $code
-     * @param \Throwable|null  $previous
-     */
     public function __construct(
         RequestInterface $request,
         string $message = '',
         int $code = 0,
-        $previous = null
+        ?\Throwable $previous = null
     ) {
         $this->request = $request;
 
@@ -47,8 +39,6 @@ class NetworkException extends ClientException implements NetworkExceptionInterf
      * Returns the request.
      *
      * The request object MAY be a different object from the one passed to ClientInterface::sendRequest()
-     *
-     * @return RequestInterface
      */
     public function getRequest(): RequestInterface
     {

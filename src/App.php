@@ -52,7 +52,7 @@ abstract class App
      *
      * @var self
      */
-    private static $instance = null;
+    private static $instance;
 
     /**
      * Le routeur.
@@ -118,7 +118,6 @@ abstract class App
     /**
      * Charge les paramètres du framework.
      *
-     * @param array $settings
      *
      * @return $this
      */
@@ -131,8 +130,6 @@ abstract class App
 
     /**
      * Revoie les paramètres du framework.
-     *
-     * @return array
      */
     public function getSettings(): array
     {
@@ -142,8 +139,7 @@ abstract class App
     /**
      * Revoie la valeur d'un paramètre du framework ou le paramètre par défaut.
      *
-     * @param string $key
-     * @param mixed  $default
+     * @param mixed $default
      *
      * @return mixed
      */
@@ -155,13 +151,8 @@ abstract class App
     /**
      * Revoie la valeur d'un paramètre du framework ou le paramètre par défaut avec l'environnement en suffixe.
      *
-     * @param string $key
-     * @param string $default
-     * @param bool   $addEnv
      *
      * @throws \InvalidArgumentException
-     *
-     * @return string
      */
     public function getSettingEnv(
         string $key,
@@ -318,8 +309,6 @@ abstract class App
     /**
      * Ajoute l'environnement par défaut.
      *
-     * @param string $nameEnv
-     *
      * @return $this
      */
     public function setEnvironmentDefault(string $nameEnv): self
@@ -331,8 +320,6 @@ abstract class App
 
     /**
      * Retourne la requête courante.
-     *
-     * @return ServerRequestInterface
      */
     public function getRequest(): ServerRequestInterface
     {
@@ -341,8 +328,6 @@ abstract class App
 
     /**
      * Retourne la clé de l'environnement ou une chaine vide si la machine n'est pas reconnue.
-     *
-     * @return string
      */
     public function getEnvironment(): string
     {
@@ -364,8 +349,6 @@ abstract class App
      * Si la machine fait partie de l'environnement passé en paramètre.
      *
      * @param string $nameEnv Nom de l'environnement.
-     *
-     * @return bool
      */
     public function isEnvironnement(string $nameEnv): bool
     {
@@ -386,8 +369,6 @@ abstract class App
      * @param bool   $addEnv  Si le retour doit prendre en compte l'environnement.
      *
      * @throws \InvalidArgumentException The framework parameter must return a string.
-     *
-     * @return string
      */
     public function getDir(
         string $key,
@@ -412,8 +393,6 @@ abstract class App
      * @param bool   $addEnv  Si le retour doit prendre en compte l'environnement.
      *
      * @throws \InvalidArgumentException The framework parameter must return a string.
-     *
-     * @return string
      */
     public function getPath(
         string $key,
@@ -428,8 +407,6 @@ abstract class App
 
     /**
      * Charge les instances des services hors modules.
-     *
-     * @return array
      */
     abstract protected function loadServices(): array;
 
@@ -442,8 +419,6 @@ abstract class App
 
     /**
      * Cherche les routes des modules et les charge dans l'application.
-     *
-     * @return void
      */
     protected function loadRoutesAndServices(): void
     {
@@ -472,8 +447,6 @@ abstract class App
      * Les données doivent pouvoir être prise en charge par le Stream de la réponse.
      *
      * @param mixed $response
-     *
-     * @return ResponseInterface
      */
     protected function parseResponse($response): ResponseInterface
     {

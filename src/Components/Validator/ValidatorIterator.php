@@ -19,9 +19,6 @@ class ValidatorIterator extends Validator
 {
     /**
      * {@inheritdoc}
-     *
-     * @param string $key
-     * @param array  $rules
      */
     protected function execute(string $key, array $rules): void
     {

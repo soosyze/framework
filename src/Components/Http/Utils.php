@@ -5,9 +5,6 @@ namespace Soosyze\Components\Http;
 final class Utils
 {
     /**
-     * @param string $filename
-     * @param string $mode
-     *
      * @throws \RuntimeException
      * @return resource
      */

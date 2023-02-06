@@ -33,7 +33,7 @@ final class RouteGroup
     /**
      * @var array|null
      */
-    private $withsGroup = null;
+    private $withsGroup;
 
     /**
      * @var string
@@ -53,7 +53,7 @@ final class RouteGroup
     /**
      * @var array|null
      */
-    private $withsCurrent = null;
+    private $withsCurrent;
 
     public function __construct(
         string $namespaceCurrent,
@@ -210,8 +210,6 @@ final class RouteGroup
      * @param string     $path   La route
      * @param string     $uses   Nom de la classe et sa méthode séparées par '@'
      * @param array|null $withs  Liste des arguments.
-     *
-     * @return Route
      */
     private function addMethod(
         string $method,

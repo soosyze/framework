@@ -60,7 +60,7 @@ class Uri implements UriInterface
      *
      * @var int|null
      */
-    protected $port = null;
+    protected $port;
 
     /**
      * Chemin de l'URI.
@@ -99,14 +99,11 @@ class Uri implements UriInterface
     /**
      * Construit une URI à partir de chacun de ses attributs.
      *
-     * @param string   $scheme   $_SERVER['REQUEST_SCHEME']
-     * @param string   $host     $_SERVER['HTTP_HOST']
-     * @param string   $path     $_SERVER['PHP_SELF']
-     * @param int|null $port     $_SERVER['SERVER_PORT']
-     * @param string   $query    $_SERVER['QUERY_STRING']
-     * @param string   $fragment
-     * @param string   $user
-     * @param string   $password
+     * @param string   $scheme $_SERVER['REQUEST_SCHEME']
+     * @param string   $host   $_SERVER['HTTP_HOST']
+     * @param string   $path   $_SERVER['PHP_SELF']
+     * @param int|null $port   $_SERVER['SERVER_PORT']
+     * @param string   $query  $_SERVER['QUERY_STRING']
      */
     public function __construct(
         string $scheme = '',
@@ -399,8 +396,6 @@ class Uri implements UriInterface
      * Cette méthode ne fait pas partie de la norme PSR-7
      *
      * @param int $port Port à tester.
-     *
-     * @return bool
      */
     public static function validePort(int $port): bool
     {
@@ -574,10 +569,6 @@ class Uri implements UriInterface
 
     /**
      * Si le port est prise en charge.
-     *
-     * @param int $port
-     *
-     * @return bool
      */
     protected function validPortStandard(int $port): bool
     {

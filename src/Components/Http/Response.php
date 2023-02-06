@@ -125,7 +125,7 @@ class Response extends Message implements ResponseInterface
         $this->code         = $this->filtreCode($code);
         $this->reasonPhrase = $reasonPhrase === '' && isset($this->reasonPhraseDefault[ $this->code ])
             ? $this->reasonPhraseDefault[ $this->code ]
-            : (string) $reasonPhrase;
+            : $reasonPhrase;
         $this->body         = $body === null
             ? new Stream(null)
             : $body;

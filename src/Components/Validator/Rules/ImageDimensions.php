@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Soosyze\Components\Validator\Rules;
 
 use Psr\Http\Message\UploadedFileInterface;
+use Soosyze\Components\Validator\Comparators\MinMax;
 
 /**
  * {@inheritdoc}
@@ -39,13 +40,11 @@ abstract class ImageDimensions extends FileMimetypes
             return;
         }
 
-        $between = $this->getParamMinMax($args);
-
         $length = $this->getDimensions($value);
         $type   = $key === 'image_dimensions_height'
             ? 'height'
             : 'width';
-        $this->sizeBetween($key, $length[ $type ], $between[ 'min' ], $between[ 'max' ], $not);
+        $this->sizeBetween($key, $length[ $type ], $this->getParamMinMax($args), $not);
     }
 
     /**
@@ -69,28 +68,26 @@ abstract class ImageDimensions extends FileMimetypes
     /**
      * Test la taille d'une image.
      *
-     * @param string  $key         Clé du test.
-     * @param int     $lengthValue Hauteur de l'image en pixel.
-     * @param numeric $min         Hauteur minimum autorisée.
-     * @param numeric $max         Hauteur maximum autorisée.
-     * @param bool    $not         Inverse le test.
+     * @param string $key         Clé du test.
+     * @param int    $lengthValue Hauteur de l'image en pixel.
+     * @param MinMax $comparator  Hauteur minimum et maximum autorisées.
+     * @param bool   $not         Inverse le test.
      */
     protected function sizeBetween(
         string $key,
         $lengthValue,
-        $min,
-        $max,
+        MinMax $comparator,
         bool $not
     ): void {
-        if (!($lengthValue <= $max && $lengthValue >= $min) && $not) {
+        if (!($lengthValue <= $comparator->getValueMax() && $lengthValue >= $comparator->getValueMin()) && $not) {
             $this->addReturn($key, 'must', [
-                ':min' => $min,
-                ':max' => $max
+                ':min' => $comparator->getValueMin(),
+                ':max' => $comparator->getValueMax()
             ]);
-        } elseif ($lengthValue <= $max && $lengthValue >= $min && !$not) {
+        } elseif ($lengthValue <= $comparator->getValueMax() && $lengthValue >= $comparator->getValueMin() && !$not) {
             $this->addReturn($key, 'not_must', [
-                ':min' => $min,
-                ':max' => $max
+                ':min' => $comparator->getValueMin(),
+                ':max' => $comparator->getValueMax()
             ]);
         }
     }

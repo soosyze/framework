@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Soosyze\Components\Validator\Rules;
 
+use Soosyze\Components\Validator\Comparators\MinMax;
+
 /**
  * {@inheritdoc}
  *
@@ -36,8 +38,7 @@ class Between extends Size
             throw new \TypeError('The comparisons arguments must be a string.');
         }
 
-        [ $min, $max ] = $this->getParamMinMax($args);
-        $this->sizeBetween($key, $length, $min, $max, $not);
+        $this->sizeBetween($key, $length, $this->getParamMinMax($args), $not);
     }
 
     /**
@@ -46,8 +47,8 @@ class Between extends Size
     protected function messages(): array
     {
         $output           = parent::messages();
-        $output[ 'must' ] = 'The :label field must be between :min and :max.';
-        $output[ 'not' ]  = 'The :label field must not be between :min and :max.';
+        $output['must'] = 'The :label field must be between :min and :max.';
+        $output['not']  = 'The :label field must not be between :min and :max.';
 
         return $output;
     }
@@ -57,59 +58,52 @@ class Between extends Size
      *
      * @param string  $key    Clé du test.
      * @param numeric $length Valeur de la taille.
-     * @param array   $min    Valeur minimum.
-     * @param array   $max    Valeur maximum.
      * @param bool    $not    Inverse le test.
-     *
-     * @return void
      */
     protected function sizeBetween(
         string $key,
         $length,
-        array $min,
-        array $max,
+        MinMax $comparator,
         bool $not
     ): void {
-        if (!($length <= $max[ 'size' ] && $length >= $min[ 'size' ]) && $not) {
-            $this->addReturn($key, 'must', [ ':min' => $min[ 'value' ], ':max' => $max[ 'value' ] ]);
-        } elseif ($length <= $max[ 'size' ] && $length >= $min[ 'size' ] && !$not) {
-            $this->addReturn($key, 'not', [ ':min' => $min[ 'value' ], ':max' => $max[ 'value' ] ]);
+        if (!($length <= $comparator->getComparatorMax() && $length >= $comparator->getComparatorMin()) && $not) {
+            $this->addReturn($key, 'must', [
+                ':min' => $comparator->getValueMin(),
+                ':max' => $comparator->getValueMax()
+            ]);
+        } elseif ($length <= $comparator->getComparatorMax() && $length >= $comparator->getComparatorMin() && !$not) {
+            $this->addReturn($key, 'not', [
+                ':min' => $comparator->getValueMin(),
+                ':max' => $comparator->getValueMax()
+            ]);
         }
     }
 
     /**
      * {@inheritdoc}
      *
-     * @param string $args
-     *
      * @throws \InvalidArgumentException Between values are invalid.
      * @throws \InvalidArgumentException The minimum value must not be greater than the maximum value.
-     *
-     * @return array
      */
-    protected function getParamMinMax(string $args): array
+    protected function getParamMinMax(string $args): MinMax
     {
         $explode = explode(',', $args);
-        if (!isset($explode[ 0 ], $explode[ 1 ])) {
+        if (!isset($explode[0], $explode[1])) {
             throw new \InvalidArgumentException('Between values are invalid.');
         }
 
-        $min = $this->getComparator($explode[ 0 ]);
-        $max = $this->getComparator($explode[ 1 ]);
+        $comparatorMin = $this->getComparator($explode[0]);
+        $comparatorMax = $this->getComparator($explode[1]);
 
-        if ($min > $max) {
+        if ($comparatorMin > $comparatorMax) {
             throw new \InvalidArgumentException('The minimum value must not be greater than the maximum value.');
         }
 
-        return [
-            [
-                'value' => $explode[ 0 ],
-                'size'  => $min
-            ],
-            [
-                'value' => $explode[ 1 ],
-                'size'  => $max
-            ]
-        ];
+        return MinMax::create(
+            $explode[ 0 ],
+            $explode[ 1 ],
+            $comparatorMin,
+            $comparatorMax
+        );
     }
 }
