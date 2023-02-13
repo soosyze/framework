@@ -14,6 +14,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Soosyze\Components\Http\Response;
 use Soosyze\Components\Http\Stream;
+use Soosyze\Components\Router\RouteCollection;
 use Soosyze\Components\Router\Router;
 use Soosyze\Components\Util\Util;
 use Soosyze\Container;
@@ -81,6 +82,11 @@ abstract class App
      * @var array
      */
     private $services = [];
+
+    /**
+     * @var RouteCollection
+     */
+    private $routeCollection;
 
     /**
      * À la construction de notre application ont créé l'objet Request
@@ -190,7 +196,7 @@ abstract class App
 
         $this->loadRoutesAndServices();
 
-        $this->router = (new Router($this->request, $this->container))
+        $this->router = (new Router($this->routeCollection, $this->request, $this->container))
             ->setRequest($this->request)
             ->setBasePath($this->request->getBasePath());
 
@@ -422,13 +428,12 @@ abstract class App
      */
     protected function loadRoutesAndServices(): void
     {
+        $this->routeCollection = new RouteCollection();
         $modules = $this->loadModules();
         foreach ($modules as $module) {
-            if ($module->getPathBoot() !== '') {
-                include_once $module->getPathBoot();
-            }
             if ($module->getPathRoutes() !== '') {
-                include_once $module->getPathRoutes();
+                $router = include $module->getPathRoutes();
+                $router->getRoutes($this->routeCollection);
             }
 
             if ($module->getPathServices() !== '') {

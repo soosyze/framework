@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Soosyze\Components\Router;
 
+use Soosyze\Components\Router\Exception\RouteNotFoundException;
+
 /**
  * @author Mathieu NOËL <mathieu@soosyze.com>
  */
@@ -18,137 +20,138 @@ final class RouteCollection
     /**
      * @var array
      */
-    private static $routes = [];
+    private $routes = [];
 
     /**
      * @var array
      */
-    private static $routesByMethod = [];
+    private $routesByMethod = [];
 
     /**
      * @var string
      */
-    private static $namespace = '';
+    private $namespace = '';
 
     /**
      * @var string
      */
-    private static $name = '';
+    private $name = '';
 
     /**
      * @var string
      */
-    private static $prefix = '';
+    private $prefix = '';
 
     /**
      * @var array|null
      */
-    private static $withs;
-
-    /**
-     * @var self|null
-     */
-    private static $instance;
-
-    private function __construct()
-    {
-    }
+    private $withs;
 
     /**
      * Ajoute une route à la collection.
      */
-    public static function addRoute(Route $route): void
+    public function addRoute(Route $route): Route
     {
-        self::$routes[ $route->getKey() ]              = $route;
-        self::$routesByMethod[ $route->getMethod() ][] = $route->getKey();
+        $this->routes[$route->getKey()] = $route;
+        $this->routesByMethod[$route->getMethod()][] = $route->getKey();
+
+        return $this->routes[$route->getKey()];
     }
 
     /**
      * Créer un group de route.
      */
-    public static function group(callable $group): void
+    public function group(\Closure $group): void
     {
-        $routerGroup = new RouteGroup(static::$namespace, static::$name, static::$prefix, static::$withs);
+        $group(
+            new RouteGroup(
+                $this,
+                $this->namespace,
+                $this->name,
+                $this->prefix,
+                $this->withs
+            )
+        );
 
-        $group($routerGroup);
-
-        unset($routerGroup);
-
-        static::$namespace = '';
-        static::$name      = '';
-        static::$prefix    = '';
-        static::$withs     = null;
+        $this->namespace = '';
+        $this->name      = '';
+        $this->prefix    = '';
+        $this->withs     = null;
     }
 
     /**
      * Spécifie le prefixe des chemins.
      */
-    public static function prefix(string $prefix): self
+    public function prefix(string $prefix): self
     {
-        static::$prefix = $prefix;
+        $this->prefix = $prefix;
 
-        return self::getInstance();
+        return $this;
     }
 
     /**
      * Spécifie les paramètres des chemins.
      */
-    public static function withs(array $withs): self
+    public function withs(array $withs): self
     {
-        static::$withs = $withs;
+        $this->withs = $withs;
 
-        return self::getInstance();
+        return $this;
     }
 
     /**
      * Spécifie le prefixe des noms.
      */
-    public static function name(string $name): self
+    public function name(string $name): self
     {
-        static::$name = $name;
+        $this->name = $name;
 
-        return self::getInstance();
+        return $this;
     }
 
     /**
      * Spécifie le namespace des contrôleurs.
      */
-    public static function setNamespace(string $namespace): self
+    public function setNamespace(string $namespace): self
     {
-        static::$namespace = $namespace;
+        $this->namespace = $namespace;
 
-        return self::getInstance();
+        return $this;
     }
 
     /**
      * Retourne la liste des routes.
      */
-    public static function getRoutes(): array
+    public function getRoutes(): array
     {
-        return self::$routes;
+        return $this->routes;
     }
 
     /**
      * Retourne une route.
      */
-    public static function getRoute(string $key): ?Route
+    public function getRoute(string $key): ?Route
     {
-        return self::$routes[ $key ] ?? null;
+        return $this->routes[$key] ?? null;
+    }
+
+    /**
+     * Retourne une route.
+     */
+    public function tryGetRoute(string $key): Route
+    {
+        if ($this->routes[$key] === null) {
+            throw new RouteNotFoundException('The path does not exist.');
+        }
+
+        return $this->routes[$key];
     }
 
     /**
      * Retourne la liste des routes par méthodes.
      */
-    public static function getRoutesByMethod(string $method): array
+    public function getRoutesByMethod(string $method): array
     {
-        return self::$routesByMethod[ strtolower($method) ] ?? [];
-    }
-
-    /**
-     * Retourne l'intance unique de la collection.
-     */
-    private static function getInstance(): self
-    {
-        return self::$instance ?? self::$instance = new self();
+        return $this->routesByMethod[strtolower($method)] ?? [];
     }
 }

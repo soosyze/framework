@@ -12,9 +12,18 @@ namespace Soosyze\Components\Router;
 
 /**
  * @author Mathieu NOËL <mathieu@soosyze.com>
+ *
+ * @method Route get(string $key, string $path, string $uses, ?array $withs = null)    Ajoute une route avec la méthode GET.
+ * @method Route post(string $key, string $path, string $uses, ?array $withs = null)   Ajoute une route avec la méthode POST.
+ * @method Route put(string $key, string $path, string $uses, ?array $withs = null)    Ajoute une route avec la méthode PUT.
+ * @method Route patch(string $key, string $path, string $uses, ?array $withs = null)  Ajoute une route avec la méthode PATCH.
+ * @method Route option(string $key, string $path, string $uses, ?array $withs = null) Ajoute une route avec la méthode OPTION.
+ * @method Route delete(string $key, string $path, string $uses, ?array $withs = null) Ajoute une route avec la méthode DELETE.
  */
 final class RouteGroup
 {
+    private const HTTP_METHOD = ['get', 'post', 'put', 'patch', 'delete', 'option'];
+
     /**
      * @var string
      */
@@ -55,12 +64,17 @@ final class RouteGroup
      */
     private $withsCurrent;
 
+    /** @var RouteCollection */
+    private $collection;
+
     public function __construct(
+        RouteCollection $collection,
         string $namespaceCurrent,
         string $nameCurrent,
         string $prefixCurrent,
         ?array $withsCurrent = null
     ) {
+        $this->collection       = $collection;
         $this->namespaceCurrent = $namespaceCurrent;
         $this->nameCurrent      = $nameCurrent;
         $this->prefixCurrent    = $prefixCurrent;
@@ -68,20 +82,38 @@ final class RouteGroup
     }
 
     /**
+     * Route Ajoute une route avec la méthode HTTP.
+     *
+     * @param string $name Methode HTTP
+     * @param array  $args [string $key, string $path, string $uses, ?array $withs = null]
+     *
+     * @return Route
+     */
+    public function __call(string $name, array $args)
+    {
+        if (in_array($name, self::HTTP_METHOD)) {
+            return $this->addMethod($name, ...$args);
+        }
+
+        throw new \BadMethodCallException(
+            sprintf('Method %s does not exist', $name)
+        );
+    }
+
+    /**
      * Créer un group de route.
      */
-    public function group(callable $group): void
+    public function group(\Closure $group): void
     {
-        $routerGroup = new self(
-            $this->namespaceCurrent . $this->namespaceGroup,
-            $this->nameCurrent . $this->nameGroup,
-            $this->prefixCurrent . $this->prefixGroup,
-            $this->arrayMerge($this->withsCurrent, $this->withsGroup)
+        $group(
+            new self(
+                $this->collection,
+                $this->namespaceCurrent . $this->namespaceGroup,
+                $this->nameCurrent . $this->nameGroup,
+                $this->prefixCurrent . $this->prefixGroup,
+                self::arrayMerge($this->withsCurrent, $this->withsGroup)
+            )
         );
-
-        $group($routerGroup);
-
-        unset($routerGroup);
 
         $this->namespaceGroup = '';
         $this->nameGroup      = '';
@@ -131,78 +163,6 @@ final class RouteGroup
     }
 
     /**
-     * Ajoute une route avec la méthode GET.
-     */
-    public function get(
-        string $key,
-        string $path,
-        string $uses,
-        ?array $withs = null
-    ): Route {
-        return $this->addMethod('get', $key, $path, $uses, $withs);
-    }
-
-    /**
-     * Ajoute une route avec la méthode POST.
-     */
-    public function post(
-        string $key,
-        string $path,
-        string $uses,
-        ?array $withs = null
-    ): Route {
-        return $this->addMethod('post', $key, $path, $uses, $withs);
-    }
-
-    /**
-     * Ajoute une route avec la méthode PUT.
-     */
-    public function put(
-        string $key,
-        string $path,
-        string $uses,
-        ?array $withs = null
-    ): Route {
-        return $this->addMethod('put', $key, $path, $uses, $withs);
-    }
-
-    /**
-     * Ajoute une route avec la méthode PATCH.
-     */
-    public function patch(
-        string $key,
-        string $path,
-        string $uses,
-        ?array $withs = null
-    ): Route {
-        return $this->addMethod('patch', $key, $path, $uses, $withs);
-    }
-
-    /**
-     * Ajoute une route avec la méthode DELETE.
-     */
-    public function delete(
-        string $key,
-        string $path,
-        string $uses,
-        ?array $withs = null
-    ): Route {
-        return $this->addMethod('delete', $key, $path, $uses, $withs);
-    }
-
-    /**
-     * Ajoute une route avec la méthode OPTION.
-     */
-    public function option(
-        string $key,
-        string $path,
-        string $uses,
-        ?array $withs = null
-    ): Route {
-        return $this->addMethod('option', $key, $path, $uses, $withs);
-    }
-
-    /**
      * Ajoute une route.
      *
      * @param string     $method Type de la méthode.
@@ -216,28 +176,23 @@ final class RouteGroup
         string $key,
         string $path,
         string $uses,
-        ?array $withs
+        ?array $withs = null
     ): Route {
-        RouteCollection::addRoute(
+        return $this->collection->addRoute(
             new Route(
                 $this->nameCurrent . $key,
                 $method,
                 $this->prefixCurrent . $path,
                 $this->namespaceCurrent . $uses,
-                $this->arrayMerge($this->withsCurrent, $withs)
+                self::arrayMerge($this->withsCurrent, $withs)
             )
         );
-
-        /** @phpstan-var Route */
-        return RouteCollection::getRoute($this->nameCurrent . $key);
     }
 
-    private function arrayMerge(?array $array1, ?array $array2): ?array
+    private static function arrayMerge(?array $array1, ?array $array2): ?array
     {
-        if ($array1 === null && $array2 === null) {
-            return null;
-        }
-
-        return array_merge($array1 ?? [], $array2 ?? []);
+        return $array1 === null && $array2 === null
+            ? null
+            : array_merge($array1 ?? [], $array2 ?? []);
     }
 }

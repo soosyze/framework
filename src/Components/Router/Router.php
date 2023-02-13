@@ -49,10 +49,19 @@ final class Router
     protected $container;
 
     /**
+     * @var RouteCollection
+     */
+    protected $routeCollection;
+
+    /**
      * Construit le router avec la liste des routes et les objets à appeler.
      */
-    public function __construct(ServerRequestInterface $serverRequest, ?ContainerInterface $container = null)
-    {
+    public function __construct(
+        RouteCollection $routeCollection,
+        ServerRequestInterface $serverRequest,
+        ?ContainerInterface $container = null
+    ) {
+        $this->routeCollection = $routeCollection;
         $this->serverRequest = $serverRequest;
         $this->container     = $container;
     }
@@ -69,13 +78,13 @@ final class Router
 
         $method = $request->getHeaderLine('x-http-method-override');
 
-        $routesByMethod = RouteCollection::getRoutesByMethod(
+        $routesByMethod = $this->routeCollection->getRoutesByMethod(
             $method === '' ? $request->getMethod() : $method
         );
 
         foreach ($routesByMethod as $key) {
             /** @var Route $route */
-            $route = RouteCollection::getRoute($key);
+            $route = $this->routeCollection->getRoute($key);
 
             if (!empty($route->getWiths())) {
                 $pattern = $route->getRegexForPath();
@@ -136,11 +145,9 @@ final class Router
         ?array $withs = null,
         bool $strict = true
     ): string {
-        if (($route = RouteCollection::getRoute($name)) === null) {
-            throw new RouteNotFoundException('The path does not exist.');
-        }
-
-        return $route->generatePath($withs, $strict);
+        return $this->routeCollection
+            ->tryGetRoute($name)
+            ->generatePath($withs, $strict);
     }
 
     /**
@@ -249,7 +256,6 @@ final class Router
             throw new \InvalidArgumentException('No request is provided.');
         }
 
-        /** @var \Psr\Http\Message\UriInterface $uri */
         $uri = $request === null
             ? $this->currentRequest->getUri()
             : $request->getUri();

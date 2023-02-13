@@ -3,12 +3,13 @@
 namespace Soosyze\Tests\Components\Router;
 
 use Soosyze\Components\Router\Route;
+use Soosyze\Tests\Resources\Router\TestController;
 
 class RouteTest extends \PHPUnit\Framework\TestCase
 {
     public function testRouteGetter(): void
     {
-        $route = (new Route('index', 'get', '/', 'Soosyze\Tests\Resources\Router\TestController@index'))
+        $route = (new Route('index', 'get', '/', TestController::class . '@index'))
             ->whereDigits('digit')
             ->whereWords('words')
             ->whereSlug('slug');
@@ -17,7 +18,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('index', $route->getKey());
         $this->assertEquals('get', $route->getMethod());
         $this->assertEquals('/', $route->getPath());
-        $this->assertEquals('Soosyze\Tests\Resources\Router\TestController@index', $route->getUses());
+        $this->assertEquals(TestController::class . '@index', $route->getUses());
         $this->assertEquals(
             [ 'digit' => '\d+', 'words' => '\w+', 'slug' => '[a-z\d\-]+' ],
             $route->getWiths()
@@ -40,7 +41,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
                 'edit',
                 'get',
                 '/index/page/{id}/edit',
-                '\TestController@edit',
+                TestController::class . '@edit',
                 [ 'id' => '\d+' ]
             )
         ];
@@ -50,7 +51,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
                 'edit',
                 'get',
                 '/index/page/{id}/edit',
-                '\TestController@edit',
+                TestController::class . '@edit',
                 [ 'id' => '(\d+)' ]
             )
         ];
@@ -60,7 +61,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
                 'edit',
                 'get',
                 '/index/page',
-                '\TestController@page'
+                TestController::class . '@edit'
             )
         ];
     }
@@ -85,7 +86,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
                 'index',
                 'get',
                 '/index/menu/{menuId}/link/{linkId}',
-                '\TestController@index',
+                TestController::class . '@index',
                 [ 'menuId' => '\d+', 'linkId' => '\d+' ]
             ),
             [ 'menuId' => 1, 'linkId' => 1 ]
@@ -96,7 +97,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
                 'index',
                 'get',
                 '/index/menu/{menuId}/link/{linkId}',
-                '\TestController@index',
+                TestController::class . '@index',
                 [ 'menuId' => '\d+', 'linkId' => '\d+' ]
             ),
             [ 'menuId' => 1 ],
@@ -113,7 +114,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
             'edit',
             'get',
             '/index/page/{id}/edit',
-            '\TestController@edit',
+            TestController::class . '@edit',
             [ 'id' => '\d+' ]
         );
 

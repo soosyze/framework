@@ -10,6 +10,7 @@ use Soosyze\Components\Router\Route;
 use Soosyze\Components\Router\RouteCollection;
 use Soosyze\Components\Router\RouteGroup;
 use Soosyze\Components\Router\Router;
+use Soosyze\Tests\Resources\Router\TestController;
 
 class RouterTest extends \PHPUnit\Framework\TestCase
 {
@@ -18,13 +19,19 @@ class RouterTest extends \PHPUnit\Framework\TestCase
      */
     protected $object;
 
-    public static function setUpBeforeClass(): void
+    protected function setUp(): void
     {
-        RouteCollection::group(function (RouteGroup $r): void {
-            $r->get('index', '/', 'Soosyze\Tests\Resources\Router\TestController@index');
-            $r->post('filter', '/', 'Soosyze\Tests\Resources\Router\TestController@filter');
+        $serverRequest = new ServerRequest(
+            'GET',
+            Uri::create('http://test.com?key=value')
+        );
+
+        $collection = new RouteCollection();
+        $collection->group(function (RouteGroup $r): void {
+            $r->get('index', '/', TestController::class . '@index');
+            $r->post('filter', '/', TestController::class . '@filter');
         });
-        RouteCollection::setNamespace('Soosyze\Tests\Resources\Router\TestController')->name('test.')->prefix('/page')->group(function (RouteGroup $r): void {
+        $collection->setNamespace(TestController::class)->name('test.')->prefix('/page')->group(function (RouteGroup $r): void {
             $r->get('index', '/', '@page');
 
             $r->prefix('/{id}', [ 'id' => '\d+' ])->group(function (RouteGroup $r) {
@@ -40,16 +47,8 @@ class RouterTest extends \PHPUnit\Framework\TestCase
                 $r->get('page.request', '/request/{idRequest}', '@request')->whereDigits('idRequest');
             });
         });
-    }
 
-    protected function setUp(): void
-    {
-        $serverRequest = new ServerRequest(
-            'GET',
-            Uri::create('http://test.com?key=value')
-        );
-
-        $this->object = new Router($serverRequest);
+        $this->object = new Router($collection, $serverRequest);
     }
 
     /**
@@ -65,11 +64,11 @@ class RouterTest extends \PHPUnit\Framework\TestCase
     public function getParseProvider(): \Generator
     {
         yield [
-            new Route('index', 'get', '/', "Soosyze\Tests\Resources\Router\TestController@index"),
+            new Route('index', 'get', '/', TestController::class . '@index'),
             new Request('GET', Uri::create('http://test.com'))
         ];
         yield [
-            new Route('filter', 'post', '/', "Soosyze\Tests\Resources\Router\TestController@filter"),
+            new Route('filter', 'post', '/', TestController::class . '@filter'),
             new Request('POST', Uri::create('http://test.com'))
         ];
     }

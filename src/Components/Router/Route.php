@@ -56,7 +56,7 @@ final class Route implements \JsonSerializable
     ) {
         $this->key    = $key;
         $this->method = $method;
-        $this->path   = $this->filterPath($path);
+        $this->path   = self::filterPath($path);
         $this->uses   = $uses;
         $this->withs  = $withs;
     }
@@ -188,12 +188,10 @@ final class Route implements \JsonSerializable
         return $path;
     }
 
-    private function filterPath(string $path): string
+    private static function filterPath(string $path): string
     {
-        if ($path === '/') {
-            return '/';
-        }
-
-        return rtrim($path, '/');
+        return $path === '/'
+            ? '/'
+            : rtrim($path, '/');
     }
 }
