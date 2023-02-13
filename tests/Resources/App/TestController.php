@@ -6,10 +6,6 @@ use Psr\Http\Message\ResponseInterface;
 
 class TestController extends \Soosyze\Controller
 {
-    protected $pathRoutes   = __DIR__ . '/config/routes.php';
-
-    protected $pathServices = __DIR__ . '/config/services.php';
-
     public function index(): string
     {
         return 'ok';

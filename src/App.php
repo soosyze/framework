@@ -412,6 +412,11 @@ abstract class App
     }
 
     /**
+     * Charge le chemin absolue du projet.
+     */
+    abstract public function getProjectDir(): string;
+
+    /**
      * Charge les instances des services hors modules.
      */
     abstract protected function loadServices(): array;
@@ -419,9 +424,9 @@ abstract class App
     /**
      * Charge les instances des contrôleurs dans la table des modules (clé => objet).
      *
-     * @return Controller[]
+     * @return Module[]
      */
-    abstract protected function loadModules(): array;
+    abstract protected function loadModules(): iterable;
 
     /**
      * Cherche les routes des modules et les charge dans l'application.

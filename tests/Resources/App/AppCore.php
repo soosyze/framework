@@ -4,11 +4,14 @@ namespace Soosyze\Tests\Resources\App;
 
 class AppCore extends \Soosyze\App
 {
-    protected function loadModules(): array
+    public function getProjectDir(): string
     {
-        return [
-            new TestController()
-        ];
+        return __DIR__;
+    }
+
+    protected function loadModules(): iterable
+    {
+        yield new TestModule();
     }
 
     protected function loadServices(): array

@@ -31,32 +31,11 @@ use Soosyze\Components\Http\Stream;
 class Controller
 {
     /**
-     * Chemin du fichier contenant les routes.
-     *
-     * @var string
-     */
-    protected $pathRoutes = '';
-
-    /**
-     * Chemin du fichier contenant les services.
-     *
-     * @var string
-     */
-    protected $pathServices = '';
-
-    /**
      * Chemin du répertoire contenant les vues.
      *
      * @var string
      */
     protected $pathViews = '';
-
-    /**
-     * Chemin du fichier de boot du module
-     *
-     * @var string
-     */
-    protected $pathBoot = '';
 
     /**
      * Container d'injection de dépendance (CID).
@@ -92,27 +71,6 @@ class Controller
     public function get(string $key)
     {
         return $this->container->get($key);
-    }
-
-    /**
-     * Retourne le chemin du fichier de configuration des routes.
-     */
-    public function getPathRoutes(): string
-    {
-        return $this->pathRoutes;
-    }
-
-    /**
-     * Retourne le chemin du fichier de configuration des services.
-     */
-    public function getPathServices(): string
-    {
-        return $this->pathServices;
-    }
-
-    public function getPathBoot(): string
-    {
-        return $this->pathBoot;
     }
 
     /**
