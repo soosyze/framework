@@ -6,6 +6,14 @@ use Soosyze\Config;
 
 class ConfigTest extends \PHPUnit\Framework\TestCase
 {
+    private const PATH = 'tests/Resources/Config';
+
+    private const PATH_FILE_GET = self::PATH . '/data.json';
+
+    private const PATH_FILE_SET = self::PATH . '/dataSet.json';
+
+    private const PATH_FILE_DELETE = self::PATH . '/dataDelete.json';
+
     /**
      * @var Config
      */
@@ -13,15 +21,28 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
 
     protected function setUp(): void
     {
-        $this->object = new Config(__DIR__ . '/Resources/App/config', 'local');
+        $this->object = new Config(__DIR__ . '/Resources/Config');
+    }
+
+    protected function tearDown(): void
+    {
+        if (file_exists(self::PATH_FILE_SET)) {
+            unlink(self::PATH_FILE_SET);
+        }
+        if (file_exists(self::PATH_FILE_DELETE)) {
+            unlink(self::PATH_FILE_DELETE);
+        }
     }
 
     public function testhas(): void
     {
-        $this->assertTrue($this->object->has('testConfig.key1'));
-        $this->assertTrue($this->object->has('testConfig'));
-        $this->assertFalse($this->object->has('testConfig.notExist'));
+        $this->assertTrue($this->object->has('data'));
+        $this->assertTrue($this->object->has('data.key'));
+        $this->assertTrue($this->object->has('data.object1.key1'));
+        $this->assertTrue($this->object->has('data.object1.object2.key2'));
+
         $this->assertFalse($this->object->has('notExist'));
+        $this->assertFalse($this->object->has('data.notExist'));
     }
 
     /**
@@ -29,15 +50,39 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
      *
      * @param array|string $expectedValue
      */
-    public function testGet($expectedValue, string $config): void
+    public function testGet(string $config, $expectedValue): void
     {
         $this->assertEquals($expectedValue, $this->object->get($config));
     }
 
     public function providerConfigGet(): \Generator
     {
-        yield [ 'value1', 'testConfig.key1' ];
-        yield [ [ 'key1' => 'value1', 'key2' => 'value2' ], 'testConfig' ];
+        yield 'without' => [
+            'data',
+            [
+                'key' => 'value',
+                'object1' => [
+                    'key1' => 'value1',
+                    'object2' => ['key2' => 'value2']
+                ]
+            ]
+        ];
+        yield 'with key' => [
+            'data.key', 'value',
+        ];
+        yield 'with key that returns object' => [
+            'data.object1',
+            [
+                'key1' => 'value1',
+                'object2' => ['key2' => 'value2']
+            ],
+        ];
+        yield 'with 2 keys' => [
+            'data.object1.key1', 'value1',
+        ];
+        yield 'with 3 keys' => [
+            'data.object1.object2.key2', 'value2',
+        ];
     }
 
     /**
@@ -53,8 +98,9 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
 
     public function providerConfigKeyDefault(): \Generator
     {
-        yield [ 'testConfig.error', 'valueDefault' ];
-        yield [ 'error', 'valueDefault' ];
+        yield ['error', 'valueDefault'];
+        yield ['error.key1', 'valueDefault'];
+        yield ['error.key1.key2', 'valueDefault'];
     }
 
     /**
@@ -65,6 +111,8 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
      */
     public function testSet(string $config, $value, $expectedValue): void
     {
+        //copy(self::PATH_FILE_GET, self::PATH_FILE_SET);
+
         $this->object->set($config, $value);
 
         $this->assertEquals($expectedValue, $this->object->get($config));
@@ -73,25 +121,30 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
     public function providerSetConfig(): \Generator
     {
         /* Par clé */
-        yield [ 'testConfig.key3', 'value3', 'value3' ];
-        yield [ 'testConfig2.key1', 'value1', 'value1' ];
+        yield ['dataSet.key1', 'value1', 'value1'];
+        yield ['dataSet.object2', ['value2'], ['value2']];
         /* Par fichiers */
-        yield [ 'testConfig2', 'value1', [ 'value1' ] ];
-        yield [ 'testConfig2', [ 'value1', 'value2' ], [ 'value1', 'value2' ] ];
+        yield ['dataSet', 'value1', ['value1']];
+        yield ['dataSet', ['value1', 'value2'], ['value1', 'value2']];
     }
 
     public function testDel(): void
     {
-        $this->object->del('testConfig.key3');
+        copy(self::PATH_FILE_GET, self::PATH_FILE_DELETE);
 
-        $this->assertNull($this->object->get('testConfig.key3'));
+        $this->object->del('dataDelete.key');
+
+        $this->assertNull($this->object->get('dataDelete.key'));
     }
 
     public function testDelFile(): void
     {
-        $this->object->del('testConfig2');
+        copy(self::PATH_FILE_GET, self::PATH_FILE_DELETE);
 
-        $this->assertNull($this->object->get('testConfig2.key1'));
+        $this->object->del('dataDelete');
+
+        $this->assertNull($this->object->get('dataDelete'));
+        $this->assertFileNotExists(self::PATH_FILE_DELETE);
     }
 
     public function testDelVoid(): void
@@ -101,57 +154,60 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($this->object->get('void'));
     }
 
-    public function testHasArrayAccess(): void
+    public function testOffsetExists(): void
     {
-        $this->assertTrue(isset($this->object[ 'testConfig.key1' ]));
+        $this->assertTrue(isset($this->object['data.key']));
     }
 
-    public function testHasArrayAccessInvalidArgumentException(): void
+    public function testOffsetExistsInvalidArgumentException(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The key of must be of type string: integer given');
+        $this->assertIsBool(isset($this->object[1]));
+    }
+
+    public function testOffsetGet(): void
+    {
+        $this->assertEquals('value', $this->object['data.key']);
+    }
+
+    public function testOffsetGetInvalidArgumentException(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The key of must be of type string: integer given');
         /** @phpstan-ignore-next-line */
-        $this->object[ 1 ];
+        $this->object[1];
     }
 
-    public function testGetArrayAccess(): void
+    public function testOffsetSet(): void
     {
-        $this->assertEquals('value1', $this->object[ 'testConfig.key1' ]);
+        copy(self::PATH_FILE_GET, self::PATH_FILE_SET);
+
+        $this->object['dataSet.key3'] = 'value3';
+
+        $this->assertEquals('value3', $this->object['dataSet.key3']);
     }
 
-    public function testGetArrayAccessInvalidArgumentException(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('The key of must be of type string: integer given');
-        /** @phpstan-ignore-next-line */
-        $this->object[ 1 ];
-    }
-
-    public function testSetArrayAccess(): void
-    {
-        $this->object[ 'testConfig.key3' ] = 'value3';
-
-        $this->assertEquals('value3', $this->object[ 'testConfig.key3' ]);
-    }
-
-    public function testSetArrayAccessInvalidArgumentException(): void
+    public function testOffsetSetInvalidArgumentException(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The key of must be of type string: integer given');
-        $this->object[ 1 ] = 'value3';
+        $this->object[1] = 'value3';
     }
 
-    public function testDelArrayAccess(): void
+    public function testOffsetUnset(): void
     {
-        unset($this->object[ 'testConfig.key3' ]);
+        copy(self::PATH_FILE_GET, self::PATH_FILE_DELETE);
 
-        $this->assertNull($this->object[ 'testConfig.key3' ]);
+        unset($this->object['dataDelete.key']);
+
+        $this->assertNull($this->object['dataDelete.key']);
     }
 
-    public function testDelArrayAccessInvalidArgumentException(): void
+    public function testOffsetUnsetInvalidArgumentException(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The key of must be of type string: integer given');
-        unset($this->object[ 1 ]);
+        unset($this->object[1]);
     }
 }

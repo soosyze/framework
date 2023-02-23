@@ -30,7 +30,7 @@ class Config implements \ArrayAccess
     /**
      * Les données de la configurations.
      *
-     * @var array<string, array<string, mixed>>
+     * @var array
      */
     private $data = [];
 
@@ -43,10 +43,7 @@ class Config implements \ArrayAccess
      */
     public function __construct(string $pathConfig, string $pathEnv = '')
     {
-        $this->path = Util::cleanPath($pathConfig) . Util::DS;
-        $this->path .= $pathEnv !== ''
-            ? Util::cleanPath($pathEnv) . Util::DS
-            : '';
+        $this->path = Util::cleanPath(sprintf('%s/%s', $pathConfig, $pathEnv));
     }
 
     /**
@@ -56,12 +53,19 @@ class Config implements \ArrayAccess
      */
     public function has(string $strKey): bool
     {
-        [ $file, $key ] = $this->prepareKey($strKey);
-        $this->loadConfig($file);
+        $keys = $this->prepareKey($strKey);
+        $this->loadConfig($keys[0]);
 
-        return $key
-            ? isset($this->data[ $file ][ $key ])
-            : isset($this->data[ $file ]);
+        $array = $this->data;
+        foreach ($keys as $segment) {
+            if (is_array($array) && array_key_exists($segment, $array)) {
+                $array = $array[$segment];
+            } else {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -75,14 +79,19 @@ class Config implements \ArrayAccess
      */
     public function get(string $strKey, $default = null)
     {
-        [ $file, $key ] = $this->prepareKey($strKey);
-        $this->loadConfig($file);
+        $keys = self::prepareKey($strKey);
+        $this->loadConfig($keys[0]);
 
-        if ($key) {
-            return $this->data[ $file ][ $key ] ?? $default;
+        $array = $this->data;
+        foreach ($keys as $segment) {
+            if (is_array($array) && array_key_exists($segment, $array)) {
+                $array = $array[$segment];
+            } else {
+                return $default;
+            }
         }
 
-        return $this->data[ $file ] ?? $default;
+        return $array;
     }
 
     /**
@@ -96,21 +105,28 @@ class Config implements \ArrayAccess
      */
     public function set(string $strKey, $value): self
     {
-        [ $file, $key ] = $this->prepareKey($strKey);
-        $this->loadConfig($file);
+        $keys = self::prepareKey($strKey);
+        $file = $this->loadConfig($keys[0]);
 
-        if ($key) {
-            $this->data[ $file ][ $key ] = $value;
-        } else {
-            $this->data[ $file ] = is_array($value)
-                ? $value
-                : [ $value ];
+        if (!isset($this->data[$file])) {
+            Util::createJson($this->path, $file, []);
         }
-        if (isset($this->data[ $file ])) {
-            Util::saveJson($this->path, $file, $this->data[ $file ]);
-        } else {
-            Util::createJson($this->path, $file, $this->data[ $file ]);
+
+        $array = &$this->data;
+        foreach ($keys as $i => $key) {
+            if (count($keys) === 1) {
+                break;
+            }
+
+            unset($keys[$i]);
+
+            $array = &$array[$key];
         }
+
+        $array[array_shift($keys)] = $value;
+        $this->data[$file]= (array) $this->data[$file];
+
+        Util::saveJson($this->path, $file, $this->data[$file]);
 
         return $this;
     }
@@ -125,20 +141,37 @@ class Config implements \ArrayAccess
      */
     public function del(string $strKey): self
     {
-        [ $file, $key ] = $this->prepareKey($strKey);
-        $this->loadConfig($file);
-
+        $keys = self::prepareKey($strKey);
+        $file = $this->loadConfig($keys[0]);
+        
         if (!isset($this->data[ $file ])) {
             return $this;
         }
 
-        if ($key) {
-            unset($this->data[ $file ][ $key ]);
-            Util::saveJson($this->path, $file, $this->data[ $file ]);
-        } else {
-            unset($this->data[ $file ]);
-            unlink($this->path . $file . '.json');
+        if (count($keys) === 1) {
+            unset($this->data[$file]);
+            unlink($this->getPathname($file));
+
+            return $this;
         }
+
+        $array = &$this->data;
+        foreach ($keys as $i => $key) {
+            if (count($keys) === 1) {
+                break;
+            }
+
+            unset($keys[$i]);
+
+            if (!isset($array[$key]) || !is_array($array[$key])) {
+                break;
+            }
+
+            $array = &$array[$key];
+        }
+
+        unset($array[array_shift($keys)]);
+        Util::saveJson($this->path, $file, $this->data[$file]);
 
         return $this;
     }
@@ -231,17 +264,11 @@ class Config implements \ArrayAccess
      *
      * @param string $strKey Nom de la clé.
      *
-     * @phpstan-return array{string, string|null}
+     * @return array<string>
      */
-    protected function prepareKey(string $strKey): array
+    protected static function prepareKey(string $strKey): array
     {
-        $file = trim($strKey, '.');
-        if (strpos($file, '.') !== false) {
-            /** @phpstan-ignore-next-line */
-            return [ strstr($file, '.', true), trim(strstr($file, '.'), '.') ];
-        }
-
-        return [ $strKey, null ];
+        return explode('.', trim($strKey, '.'));
     }
 
     /**
@@ -249,17 +276,23 @@ class Config implements \ArrayAccess
      *
      * @param string $nameConfig Nom du fichier de configuration
      */
-    protected function loadConfig(string $nameConfig): void
+    protected function loadConfig(string $nameConfig): string
     {
-        if (isset($this->data[ $nameConfig ])) {
-            return;
+        if (isset($this->data[$nameConfig])) {
+            return $nameConfig;
         }
 
-        $file = $this->path . $nameConfig . '.json';
+        $file =  $this->getPathname($nameConfig);
 
         if (file_exists($file)) {
-            /** @phpstan-ignore-next-line */
-            $this->data[ $nameConfig ] = Util::getJson($file);
+            $this->data[$nameConfig] = Util::getJson($file);
         }
+
+        return $nameConfig;
+    }
+
+    private function getPathname(string $finename): string
+    {
+        return sprintf('%s/%s.json', $this->path, $finename);
     }
 }
